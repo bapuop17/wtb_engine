@@ -1,0 +1,47 @@
+name: World Talk Brief 1080p Cloud Engine (Test + 24x7 Auto)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3,7,11,15,19,23 * * *'
+
+jobs:
+  build-1080p-videos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install System FFmpeg & Fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-dejavu-core ffmpeg
+
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install edge-tts gTTS feedparser requests pillow "moviepy<2.0" numpy beautifulsoup4 opencv-python-headless google-api-python-client google-auth-oauthlib
+
+      - name: Run World Talk Brief 1080p Broadcast Engine
+        env:
+          YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
+        run: |
+          python3 -u wtb_engine.py
+
+      - name: Upload Generated 1080p Videos & Thumbnail to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: World-Talk-Brief-1080p-Output
+          path: |
+            output/WTB_1080p_Short_9x16.mp4
+            output/WTB_1080p_Long_16x9.mp4
+            output/WTB_1080p_Thumb_1.jpg
+            output/wtb_1080p_report.json
+          retention-days: 7
