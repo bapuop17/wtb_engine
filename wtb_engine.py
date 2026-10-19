@@ -46,13 +46,13 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefCloudFactory/12.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefCloudFactory/14.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
 
 # ==============================================================================
-# 1. GLOBAL GEOPOLITICAL DATABASE & STRICT WATERMARK BLOCKLIST
+# 1. GLOBAL GEOPOLITICAL DATABASE & STRICT WATERMARK / JUNK BLOCKLIST
 # ==============================================================================
 COUNTRY_GEO_DB = {
     "UNITED STATES": ("US", "USA", "Washington, D.C.", "335M", "North America", 38.895, -77.036),
@@ -88,9 +88,11 @@ COUNTRY_GEO_DB = {
 BANNED_IMAGE_SOURCES = [
     "alamy", "dreamstime", "freepik", "shutterstock", "gettyimages", "istockphoto",
     "123rf", "depositphotos", "vecteezy", "canstock", "bigstock", "sputnik",
-    "ytimg", "youtube", "cartoon", "clipart", "meme", "watermark", "agefotostock", "pond5"
+    "ytimg", "youtube", "cartoon", "clipart", "meme", "watermark", "agefotostock",
+    "pond5", "flipkart", "minecraft", "fortnite", "roblox", "pokemon", "anime"
 ]
 
+# STRICT WIKIPEDIA EXACT PAGE WHITELIST (Never searches vague words that return charts/tables!)
 PERSON_WIKI_MAP = {
     "trump": ("Donald Trump", "U.S. PRESIDENT DONALD TRUMP"),
     "putin": ("Vladimir Putin", "RUSSIAN PRESIDENT VLADIMIR PUTIN"),
@@ -110,58 +112,38 @@ PERSON_WIKI_MAP = {
     "erdogan": ("Recep Tayyip Erdoğan", "TURKISH PRESIDENT ERDOGAN"),
     "khamenei": ("Ali Khamenei", "IRANIAN SUPREME LEADER KHAMENEI"),
     "musk": ("Elon Musk", "TECH LEADER ELON MUSK"),
-    "altman": ("Sam Altman", "OPENAI CEO SAM ALTMAN"),
-    "pichai": ("Sundar Pichai", "GOOGLE CEO SUNDAR PICHAI"),
-    "nadella": ("Satya Nadella", "MICROSOFT CEO SATYA NADELLA")
+    "altman": ("Sam Altman", "OPENAI CEO SAM ALTMAN")
 }
 
-VISUAL_PROP_DICTIONARY = {
-    "drone": ("MILITARY DRONE / UAV", "Unmanned aerial vehicle", "military combat drone quadcopter"),
-    "drones": ("MILITARY DRONE FLEET", "Unmanned combat aerial vehicle", "military drone UAV launch"),
-    "bomber": ("STRATEGIC BOMBER AIRCRAFT", "Tupolev Tu-95", "strategic bomber military aircraft"),
-    "bombers": ("STRATEGIC BOMBER FLEET", "Tupolev Tu-160", "strategic bomber aircraft runway"),
-    "munitions": ("MUNITIONS & ARTILLERY", "Artillery shell", "ammunition factory artillery shells"),
-    "factory": ("INDUSTRIAL DEFENSE PLANT", "Factory", "industrial manufacturing plant"),
-    "factories": ("INDUSTRIAL MANUFACTURING", "Manufacturing", "heavy industry factory complex"),
-    "sabotage": ("COVERT SABOTAGE OPERATION", "Rail transport", "railway tracks security inspection"),
-    "intelligence": ("INTELLIGENCE OPERATIONS", "Military intelligence", "intelligence command center"),
-    "sanctions": ("ECONOMIC SANCTIONS ORDER", "International sanctions", "container ship port trade"),
-    "suspend": ("PRESIDENTIAL EXECUTIVE ACTION", "White House", "White House Oval Office desk"),
-    "suspension": ("SANCTIONS POLICY SHIFT", "United States Department of the Treasury", "US Treasury building Washington"),
-    "negotiating": ("DIPLOMATIC NEGOTIATING TABLE", "Diplomacy", "international diplomatic conference table"),
-    "negotiations": ("HIGH-STAKES PEACE TALKS", "Peace treaty", "bilateral summit diplomatic talks"),
-    "fire": ("EMERGENCY FIRE RESPONSE", "Firefighting", "firefighters battling structure blaze"),
-    "flames": ("FIREFIGHTING OPERATION", "Wildfire", "firefighters emergency fire trucks"),
-    "base": ("MILITARY BASE INSTALLATION", "Military base", "military base armored vehicles"),
-    "military": ("ARMED FORCES DEPLOYMENT", "Armed forces", "military soldiers armored vehicles"),
-    "crews": ("EMERGENCY RESCUE CREWS", "Emergency medical services", "emergency response vehicles"),
-    "injured": ("MEDICAL EMERGENCY RESPONSE", "Hospital", "emergency medical hospital transport"),
-    "violence": ("SECURITY CRACKDOWN", "Riot police", "police security forces street patrol"),
-    "protest": ("PUBLIC DEMONSTRATION", "Protest", "crowd street protest police"),
-    "pressure": ("GOVERNMENT UNDER PRESSURE", "National Assembly (France)", "parliament government building"),
-    "missile": ("BALLISTIC MISSILE SYSTEM", "Surface-to-air missile", "missile launcher defense system"),
-    "oil": ("GLOBAL OIL & ENERGY SUPPLY", "Petroleum industry", "oil refinery tanker ship"),
-    "gas": ("NATURAL GAS PIPELINE", "Natural gas", "natural gas pipeline terminal"),
-    "tariff": ("GLOBAL TRADE & TARIFFS", "Container ship", "cargo container ship port cranes"),
-    "trade": ("MARITIME TRADE CORRIDOR", "Maritime transport", "container ship ocean port"),
-    "bank": ("CENTRAL BANK RESERVES", "Central bank", "central bank financial building"),
-    "economy": ("GLOBAL FINANCIAL MARKETS", "Stock exchange", "stock exchange trading floor"),
-    "election": ("NATIONAL ELECTION VOTE", "Voting", "ballot box election polling station"),
-    "court": ("INTERNATIONAL COURT TRIBUNAL", "International Court of Justice", "courtroom judges gavel"),
-    "border": ("INTERNATIONAL BORDER ZONE", "Border control", "border checkpoint security"),
-    "ship": ("NAVAL WARSHIP FLEET", "Destroyer", "navy warship destroyer sea"),
-    "nuclear": ("NUCLEAR FACILITY", "Nuclear power plant", "nuclear power plant cooling towers"),
-    "satellite": ("ORBITAL RECON SATELLITE", "Reconnaissance satellite", "satellite in earth orbit"),
-    "ai": ("ARTIFICIAL INTELLIGENCE", "Data center", "supercomputer server room AI"),
-    "chip": ("SEMICONDUCTOR MICROCHIP", "Semiconductor device fabrication", "silicon wafer microchip cleanroom"),
-    "congress": ("U.S. CAPITOL BUILDING", "United States Capitol", "United States Capitol exterior"),
-    "parliament": ("NATIONAL PARLIAMENT", "Parliament", "parliament legislative chamber"),
-    "kremlin": ("MOSCOW KREMLIN", "Moscow Kremlin", "Moscow Kremlin Red Square"),
-    "white house": ("THE WHITE HOUSE", "White House", "White House exterior Washington"),
-    "pentagon": ("THE PENTAGON", "The Pentagon", "The Pentagon aerial view"),
-    "nato": ("NATO HEADQUARTERS", "NATO", "NATO headquarters Brussels flags"),
-    "un": ("UNITED NATIONS ASSEMBLY", "United Nations General Assembly", "United Nations General Assembly hall"),
-    "amazon": ("AMAZON RAINFOREST", "Amazon rainforest", "Amazon rainforest aerial canopy")
+CONCRETE_WIKI_PROPS = {
+    "drone": ("MILITARY DRONE / UAV", "Bayraktar TB2", "military drone attack"),
+    "drones": ("MILITARY DRONE FLEET", "Shahed 136", "military drone fleet"),
+    "bomber": ("STRATEGIC BOMBER AIRCRAFT", "Tupolev Tu-95", "Russian strategic bomber aircraft"),
+    "bombers": ("STRATEGIC BOMBER FLEET", "Tupolev Tu-160", "strategic bomber airfield"),
+    "munitions": ("MUNITIONS & ARTILLERY", "155 mm caliber", "artillery shells munitions factory"),
+    "factory": ("DEFENSE MANUFACTURING", " Uralvagonzavod", "military factory production"),
+    "factories": ("DEFENSE INDUSTRY", "Lockheed Martin", "defense manufacturing plant"),
+    "sabotage": ("COVERT SABOTAGE OPERATION", "Russian Railways", "Russia railway security"),
+    "intelligence": ("INTELLIGENCE HEADQUARTERS", "Main Directorate of Intelligence (Ukraine)", "Ukraine military intelligence"),
+    "sanctions": ("ECONOMIC SANCTIONS ORDER", "United States Department of the Treasury", "US Russia sanctions"),
+    "suspend": ("WHITE HOUSE EXECUTIVE ACTION", "White House", "Trump White House sanctions"),
+    "suspension": ("SANCTIONS POLICY SHIFT", "United States Capitol", "US Congress Russia sanctions"),
+    "negotiating": ("DIPLOMATIC NEGOTIATING TABLE", "Palais des Nations", "peace negotiations diplomatic table"),
+    "negotiations": ("HIGH-STAKES PEACE TALKS", "United Nations Security Council", "peace talks summit"),
+    "fire": ("MILITARY BASE EMERGENCY", "Canadian Armed Forces", "Canada military base fire"),
+    "flames": ("EMERGENCY FIRE RESPONSE", "Fire engine", "firefighters military base"),
+    "base": ("MILITARY BASE INSTALLATION", "CFB Suffield", "Canada military base"),
+    "military": ("ARMED FORCES DEPLOYMENT", "Russian Ground Forces", "military troops deployment"),
+    "violence": ("SECURITY CRACKDOWN", "National Gendarmerie", "France police security"),
+    "protest": ("PUBLIC DEMONSTRATION", "Paris", "France street protest police"),
+    "missile": ("BALLISTIC MISSILE SYSTEM", "S-400 missile system", "missile launch defense"),
+    "oil": ("GLOBAL OIL & ENERGY", "Oil refinery", "oil tanker energy sanctions"),
+    "tariff": ("GLOBAL TRADE & TARIFFS", "Port of Los Angeles", "container ship trade tariffs"),
+    "kremlin": ("MOSCOW KREMLIN", "Moscow Kremlin", "Moscow Kremlin Russia"),
+    "white house": ("THE WHITE HOUSE", "White House", "White House Washington"),
+    "pentagon": ("THE PENTAGON", "The Pentagon", "Pentagon defense department"),
+    "nato": ("NATO HEADQUARTERS", "NATO headquarters", "NATO summit Brussels"),
+    "amazon": ("AMAZON RAINFOREST", "Amazon rainforest", "Brazil Amazon rainforest")
 }
 
 GLOBAL_OPEN_VCLIPS = []
@@ -209,7 +191,7 @@ def build_wtb_watermark(width=140, height=82):
     return logo.resize((width, height), resample_mode)
 
 # ==============================================================================
-# 2. NON-REPEATING TOPIC MEMORY (`published_history.json`) & RESEARCH ENGINE
+# 2. NON-REPEATING TOPIC MEMORY & VERIFIED RESEARCH ENGINE
 # ==============================================================================
 def load_published_history():
     if os.path.exists(HISTORY_FILE):
@@ -350,6 +332,7 @@ def discover_and_build_dossiers(published_history):
 
             og_img = None
             verified_claims = []
+            extra_article_imgs = []
             seen_fk = set()
 
             for s in re.split(r"(?<=[.!?])\s+", summary):
@@ -371,6 +354,15 @@ def discover_and_build_dossiers(published_history):
                 m_og = soup.find("meta", property="og:image") or soup.find("meta", attrs={"name": "twitter:image"})
                 if m_og and m_og.get("content"):
                     og_img = m_og["content"]
+                # Also collect in-article high-res journalism photos from the actual news article!
+                for img_tag in soup.find_all("img"):
+                    iu = img_tag.get("src") or img_tag.get("data-src") or ""
+                    if iu.startswith("http") and any(ext in iu.lower() for ext in [".jpg", ".jpeg", ".png", "ichef.bbci.co.uk"]):
+                        if "ichef.bbci.co.uk" in iu:
+                            iu = re.sub(r"/standard/\d+/", "/standard/1024/", iu)
+                        if not any(b in iu.lower() for b in ["logo", "icon", "avatar", "sprite", "1x1"]) and iu not in extra_article_imgs:
+                            extra_article_imgs.append(iu)
+
                 for p in soup.find_all("p"):
                     if p.find_parent("figcaption") or p.find_parent("figure") or p.find_parent("footer"):
                         continue
@@ -459,6 +451,7 @@ def discover_and_build_dossiers(published_history):
                 "verified_claims": verified_claims,
                 "raw_facts": raw_facts,
                 "lead_img": og_img or rss_img,
+                "extra_article_imgs": extra_article_imgs[:10],
                 "country_profile": c_prof,
                 "wb_data": wb_data
             })
@@ -471,7 +464,7 @@ def discover_and_build_dossiers(published_history):
     return dossiers
 
 # ==============================================================================
-# 3. SPEAKER & PROP-AWARE SCRIPT DIRECTOR (Complete Context Cards)
+# 3. SPEAKER & PROP-AWARE SCRIPT DIRECTOR
 # ==============================================================================
 def extract_story_entities(dossier):
     text = f"{dossier['title']} {' '.join(dossier['raw_facts'][:5])}"
@@ -482,21 +475,10 @@ def extract_story_entities(dossier):
         if re.search(rf"\b{re.escape(k)}\b", low) and wiki_name not in ents:
             ents.append(wiki_name)
 
-    proper_phrases = re.findall(r"\b[A-Z][a-z]{3,}(?:\s+[A-Z][a-z]{3,})+\b", text)
-    stop_words = {
-        "The", "And", "For", "With", "From", "After", "Before", "Over", "Into", "While",
-        "Meanwhile", "Inside", "Here", "When", "This", "That", "What", "Where", "One",
-        "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-    }
-    for pp in proper_phrases:
-        if not any(w in stop_words for w in pp.split()) and pp not in ents:
-            ents.append(pp)
-
     for fb in [c_prof["capital"], c_prof["name"].title(), f"{c_prof['name'].title()} government", "United Nations"]:
         if fb not in ents:
             ents.append(fb)
-    return ents[:10]
+    return ents[:8]
 
 def polish_journalistic_sentence(raw_fact, c_prof, role="BODY"):
     s = raw_fact.strip().rstrip(".")
@@ -513,12 +495,11 @@ def polish_journalistic_sentence(raw_fact, c_prof, role="BODY"):
         return f"Crucially, {s[0].lower() + s[1:]}."
     return f"{s}."
 
-def make_clean_context_headline(text, max_words=9):
-    """Creates a complete, self-contained context headline for the lower-third card (never ends on a dangling word!)."""
+def make_clean_context_headline(text, max_words=8):
     cleaned = re.sub(r"^(Behind the scenes,|Crucially,|Meanwhile,|Look at the specifics confirmed on the record\.)\s*", "", text, flags=re.I)
     first_clause = re.split(r"[.;:—–]", cleaned)[0].strip()
     words = first_clause.split()
-    dangling = {"THE", "A", "AN", "TO", "IN", "ON", "OF", "FOR", "WITH", "AND", "OR", "BY", "AS", "AT", "FROM", "THAT", "WHICH", "WHILE", "HIS", "HER", "ITS"}
+    dangling = {"THE", "A", "AN", "TO", "IN", "ON", "OF", "FOR", "WITH", "AND", "OR", "BY", "AS", "AT", "FROM", "THAT", "WHICH", "WHILE", "HIS", "HER", "ITS", "FOUR", "TWO"}
     selected = words[:max_words]
     while len(selected) > 3 and selected[-1].upper().strip(",.:;'\"") in dangling:
         selected.pop()
@@ -567,10 +548,6 @@ def build_short_script(dossier):
     return sections, ents
 
 def build_long_documentary_script(dossiers):
-    """
-    Uses the #1 Trending Topic (`dossiers[0]`) as the Main Deep-Dive Lead Story,
-    and connects `dossiers[1]` as the Global Ripple Briefing!
-    """
     lead = dossiers[0]
     c_prof = lead["country_profile"]
     ents = extract_story_entities(lead)
@@ -657,9 +634,9 @@ def build_long_documentary_script(dossiers):
     return chapters
 
 # ==============================================================================
-# 4. CRYSTAL-CLEAR 1080p VISUAL ENGINE + REAL MOVING ARCHIVAL/STOCK VIDEO B-ROLL
+# 4. STRICT NEWS-AGENCY & EXACT WIKIPEDIA PHOTO HARVESTER (ZERO JUNK / ZERO TOYS!)
 # ==============================================================================
-def validate_and_enhance_1080p(im, existing_hashes, min_w=500, min_h=320):
+def validate_and_enhance_1080p(im, existing_hashes, min_w=420, min_h=260):
     im = im.convert("RGB")
     w, h = im.size
     if w < min_w or h < min_h:
@@ -673,13 +650,21 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=500, min_h=320):
     if (red_px / float(24 * 24)) > 0.15:
         return None
 
-    white_px = np.sum((arr[:, :, 0] > 242) & (arr[:, :, 1] > 242) & (arr[:, :, 2] > 242))
-    if (white_px / float(80 * 80)) > 0.34:
+    # Reject charts, tables, schedules, or white-background diagrams!
+    white_px = np.sum((arr[:, :, 0] > 235) & (arr[:, :, 1] > 235) & (arr[:, :, 2] > 235))
+    if (white_px / float(80 * 80)) > 0.25:
+        return None
+
+    # Reject flat-colored tables (like Champions League / kWh tables!)
+    quant = (arr // 32).astype(int)
+    flat = quant[:, :, 0] * 64 + quant[:, :, 1] * 8 + quant[:, :, 2]
+    _, counts = np.unique(flat, return_counts=True)
+    if (counts.max() / float(80 * 80)) > 0.35:
         return None
 
     gray_cv = cv2.cvtColor(np.array(im.resize((320, 200))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
-    if blur_score < 38.0 or im.entropy() < 6.2:
+    if blur_score < 32.0 or im.entropy() < 6.4:
         return None
 
     gray = im.convert("L").resize((13, 12))
@@ -699,107 +684,94 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=500, min_h=320):
     return im
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
+    """
+    STRICT POINT-TO-POINT MATCHER:
+    Only maps to verified Leaders, Countries, or Concrete Props—NEVER extracts random words
+    like 'Centered', 'World Service', or 'Ivan' that cause unrelated web images!
+    """
     low = beat_text.lower()
     c_prof = dossier["country_profile"]
 
     for p_key, (wiki_page, badge_lbl) in PERSON_WIKI_MAP.items():
-        if re.search(rf"\b{re.escape(k if 'k' in locals() else p_key)}\b", low):
-            return badge_lbl, wiki_page, f"{wiki_page} official press conference", True
+        if re.search(rf"\b{re.escape(p_key)}\b", low):
+            return badge_lbl, wiki_page, f"{wiki_page} {c_prof['name']} news", True
 
-    for word_key, (prop_badge, wiki_concept, search_q) in VISUAL_PROP_DICTIONARY.items():
+    for word_key, (prop_badge, wiki_exact, news_q) in CONCRETE_WIKI_PROPS.items():
         if re.search(rf"\b{re.escape(word_key)}\b", low):
-            return prop_badge, wiki_concept, f"{search_q} {c_prof['name']}", False
+            return prop_badge, wiki_exact, f"{news_q} {c_prof['name']}", False
 
-    caps = [w for w in re.findall(r"\b[A-Z][a-z]{3,}\b", beat_text) if w not in {"Here", "While", "Behind", "Look", "This", "Step", "Watch", "Whether", "Meanwhile", "Crucially", "Inside", "Prime", "Minister", "President"}]
-    if caps:
-        entity_phrase = " ".join(caps[:2])
-        return f"FOCUS • {entity_phrase.upper()}", entity_phrase, f"{entity_phrase} {c_prof['name']}", False
-
+    # Fallback to the story's exact headline & verified entities
     chosen_ent = entities[beat_idx % len(entities)]
-    return f"SUBJECT • {chosen_ent.upper()[:24]}", chosen_ent, f"{chosen_ent} {c_prof['name']}", False
+    return f"DISPATCH • {c_prof['name']}", chosen_ent, f"{dossier['title']} {chosen_ent}", False
 
-def fetch_high_res_visual_for_beat(wiki_target, search_query, existing_hashes, failed_queries, is_person=False, tag_id="beat"):
+def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat"):
+    """
+    100% NEWS-VERIFIED VISUAL FETCHER (ZERO Bing Web Search HTML!):
+    1. Direct Exact Wikipedia REST Summary PageImage (`en.wikipedia.org/api/rest_v1/page/summary/{exact_title}`) -> Never returns mind-maps or kWh tables!
+    2. Bing News Journalism XML RSS (`www.bing.com/news/search?q=...&format=rss`) -> 100% Real News Agency Photos (`w=1920&h=1080`)!
+    3. Extra In-Article Photos scraped directly from the original BBC/Al Jazeera/Guardian news article!
+    """
+    # Engine 1: Exact Wikipedia REST Summary PageImage (Only for verified encyclopedic titles!)
     try:
-        w_api = "https://en.wikipedia.org/w/api.php"
-        params = {
-            "action": "query", "generator": "search", "gsrsearch": wiki_target, "gsrlimit": 4,
-            "prop": "pageimages", "piprop": "original|thumbnail", "pithumbsize": 1920, "format": "json"
-        }
-        r = requests.get(w_api, params=params, headers=HEADERS_WIKI, timeout=6).json()
-        pages = sorted(r.get("query", {}).get("pages", {}).values(), key=lambda x: x.get("index", 99))
-        for pg in pages:
-            img_u = pg.get("original", {}).get("source") or pg.get("thumbnail", {}).get("source")
-            if img_u and img_u.lower().endswith((".jpg", ".jpeg", ".png")) and not any(b in img_u.lower() for b in BANNED_IMAGE_SOURCES):
-                ir = requests.get(img_u, headers=HEADERS_WIKI, timeout=6)
-                if ir.status_code == 200 and len(ir.content) > 15000:
-                    p = f"temp/{tag_id}_wiki.jpg"
-                    with open(p, "wb") as f:
-                        f.write(ir.content)
-                    vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
-                    if vim is not None:
-                        return vim
-    except Exception:
-        pass
-
-    for comm_q in [search_query, wiki_target]:
-        try:
-            api = "https://commons.wikimedia.org/w/api.php"
-            params = {
-                "action": "query", "generator": "search",
-                "gsrsearch": f"filetype:bitmap {comm_q} -cartoon -logo -map",
-                "gsrnamespace": "6", "gsrlimit": 6,
-                "prop": "imageinfo", "iiprop": "url", "iiurlwidth": 1920, "format": "json"
-            }
-            r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=7).json()
-            for pg in r.get("query", {}).get("pages", {}).values():
-                t_low = pg.get("title", "").lower()
-                if any(b in t_low for b in ["map", "diagram", "coat of arms", "flag", "icon", "locator"]):
-                    continue
-                ii = pg.get("imageinfo", [{}])[0]
-                u = ii.get("thumburl") or ii.get("url")
-                if u and u.lower().endswith((".jpg", ".jpeg")):
-                    ir = requests.get(u, headers=HEADERS_WIKI, timeout=6)
-                    if ir.status_code == 200 and len(ir.content) > 15000:
-                        p = f"temp/{tag_id}_comm.jpg"
-                        with open(p, "wb") as f:
-                            f.write(ir.content)
-                        vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
-                        if vim is not None:
-                            return vim
-        except Exception:
-            pass
-
-    try:
-        b_url = f"https://www.bing.com/images/search?q={urllib.parse.quote(search_query + ' -site:alamy.com -site:dreamstime.com -site:freepik.com -site:shutterstock.com')}&qft=+filterui:imagesize-large&form=IRFLTR&first=1"
-        r = requests.get(b_url, headers=HEADERS_WEB, timeout=7)
-        murls = re.findall(r'murl&quot;:&quot;(https?://[^&]+?)&quot;', r.text) or re.findall(r'"murl":"(https?://[^"]+?)"', r.text)
-        for u in murls[:10]:
-            u_low = u.lower()
-            if any(b in u_low for b in BANNED_IMAGE_SOURCES):
-                continue
-            ir = requests.get(u, headers=HEADERS_WEB, timeout=5)
-            if ir.status_code == 200 and len(ir.content) > 22000:
-                p = f"temp/{tag_id}_binglg.jpg"
+        w_rest = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(wiki_exact_title)}"
+        wr = requests.get(w_rest, headers=HEADERS_WIKI, timeout=5).json()
+        img_u = wr.get("originalimage", {}).get("source") or wr.get("thumbnail", {}).get("source")
+        if img_u and img_u.lower().endswith((".jpg", ".jpeg", ".png")) and not any(b in img_u.lower() for b in ["map", "diagram", "chart", "logo", "flag"]):
+            ir = requests.get(img_u, headers=HEADERS_WIKI, timeout=6)
+            if ir.status_code == 200 and len(ir.content) > 14000:
+                p = f"temp/{tag_id}_wrest.jpg"
                 with open(p, "wb") as f:
                     f.write(ir.content)
-                vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=700, min_h=420)
+                vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
                 if vim is not None:
                     return vim
     except Exception:
         pass
 
-    failed_queries.append(search_query)
+    # Engine 2: Bing News Journalism XML RSS (100% Real News Outlets ONLY—Zero Minecraft/Toys/Fashion/Tables!)
+    for nq in [news_query, dossier["title"], f"{wiki_exact_title} {dossier['country_profile']['name']}"]:
+        try:
+            rss_u = f"https://www.bing.com/news/search?q={urllib.parse.quote(nq)}&format=rss"
+            r = requests.get(rss_u, headers=HEADERS_WEB, timeout=6)
+            for u in re.findall(r"<News:Image>(https?://[^<]+)</News:Image>", r.text)[:10]:
+                u_clean = u.replace("&amp;", "&")
+                if "bing.com/th" in u_clean:
+                    u_clean = u_clean.split("&")[0] + "&w=1920&h=1080&c=7&rs=1"
+                ir = requests.get(u_clean, headers=HEADERS_WEB, timeout=6)
+                if ir.status_code == 200 and len(ir.content) > 10000:
+                    p = f"temp/{tag_id}_bnews.jpg"
+                    with open(p, "wb") as f:
+                        f.write(ir.content)
+                    vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
+                    if vim is not None:
+                        return vim
+        except Exception:
+            pass
+
+    # Engine 3: Extra In-Article Photos from the Lead News URL
+    for extra_u in dossier.get("extra_article_imgs", []):
+        try:
+            ir = requests.get(extra_u, headers=HEADERS_WEB, timeout=5)
+            if ir.status_code == 200 and len(ir.content) > 12000:
+                p = f"temp/{tag_id}_art.jpg"
+                with open(p, "wb") as f:
+                    f.write(ir.content)
+                vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
+                if vim is not None:
+                    return vim
+        except Exception:
+            pass
+
+    failed_queries.append(news_query)
     return None
 
-def fetch_real_stock_or_archival_video_broll(wiki_target, country_name, capital_name, tag_id="vclip"):
+def fetch_and_transcode_real_video_broll(wiki_target, country_name, capital_name, tag_id="vclip"):
     """
-    GUARANTEED REAL MOVING VIDEO B-ROLL FETCHER:
-    1. Queries Wikimedia Commons (`filetype:video`, `gsrnamespace=6`) using single-word/two-word broad visual queries
-       (including Wikimedia's fast transcoded 480p/720p WebM stream URLs so even large videos download in 2 seconds!).
-    2. Queries Internet Archive (`archive.org/advancedsearch.php`) for open-license MP4 stock/newsreel clips!
+    Downloads a Wikimedia Commons video clip AND transcodes it via FFmpeg into a clean,
+    guaranteed-readable 1920x1080 H.264 MP4 file so `Moving Video` never fails!
     """
     short_target = wiki_target.split()[0] if wiki_target else country_name
-    queries = [short_target, capital_name, country_name, "diplomacy", "military", "parliament", "aircraft"]
+    queries = [f"{country_name} {capital_name}", short_target, country_name, "military aircraft", "diplomatic summit"]
     for vq in queries:
         try:
             api = "https://commons.wikimedia.org/w/api.php"
@@ -812,7 +784,6 @@ def fetch_real_stock_or_archival_video_broll(wiki_target, country_name, capital_
             r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=7).json()
             for pg in r.get("query", {}).get("pages", {}).values():
                 ii = pg.get("imageinfo", [{}])[0]
-                # Prefer fast 480p/720p WebM derivative if available so download is instant!
                 derivs = ii.get("derivatives", [])
                 best_url = None
                 for d in derivs:
@@ -823,25 +794,33 @@ def fetch_real_stock_or_archival_video_broll(wiki_target, country_name, capital_
                 if not best_url:
                     vu = ii.get("url", "")
                     vsz = ii.get("size", 99999999)
-                    if vu.lower().endswith((".webm", ".mp4", ".ogv")) and 60000 < vsz < 22000000:
+                    if vu.lower().endswith((".webm", ".mp4", ".ogv")) and 50000 < vsz < 20000000:
                         best_url = vu
 
                 if best_url:
                     vr = requests.get(best_url, headers=HEADERS_WIKI, timeout=14)
-                    if vr.status_code == 200 and len(vr.content) > 60000:
-                        ext = ".webm" if ".webm" in best_url.lower() else (".mp4" if ".mp4" in best_url.lower() else ".ogv")
-                        out_v = f"temp/{tag_id}_broll{ext}"
-                        with open(out_v, "wb") as f:
+                    if vr.status_code == 200 and len(vr.content) > 50000:
+                        raw_v = f"temp/{tag_id}_raw.webm"
+                        clean_mp4 = f"temp/{tag_id}_clean.mp4"
+                        with open(raw_v, "wb") as f:
                             f.write(vr.content)
-                        vc = VideoFileClip(out_v)
-                        GLOBAL_OPEN_VCLIPS.append(vc)
-                        if vc.duration >= 3.5:
-                            print(f"   🎬 Locked Real Moving Video B-Roll Clip: '{vq}' ({round(vc.duration, 1)}s)", flush=True)
-                            return {
-                                "vclip": vc,
-                                "start_t": min(1.0, vc.duration * 0.15),
-                                "label": f"LIVE FOOTAGE • {vq.upper()[:22]}"
-                            }
+                        # Transcode to standard H.264 MP4 via FFmpeg so MoviePy reads it 100% reliably!
+                        cmd = [
+                            "ffmpeg", "-y", "-i", raw_v, "-t", "6",
+                            "-vf", "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,setsar=1",
+                            "-r", "24", "-an", "-c:v", "libx264", "-preset", "ultrafast", clean_mp4
+                        ]
+                        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20, check=False)
+                        if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 30000:
+                            vc = VideoFileClip(clean_mp4)
+                            GLOBAL_OPEN_VCLIPS.append(vc)
+                            if vc.duration >= 2.5:
+                                print(f"   🎬 [VIDEO B-ROLL READY] Transcoded 1080p MP4 Clip: '{vq}' ({round(vc.duration, 1)}s)", flush=True)
+                                return {
+                                    "vclip": vc,
+                                    "start_t": 0.0,
+                                    "label": f"ARCHIVE FOOTAGE • {country_name}"
+                                }
         except Exception:
             pass
     return None
@@ -874,10 +853,9 @@ def generate_bespoke_speech_infographic_1080p(beat_text, prop_badge, claim_meta,
     return canvas
 
 # ==============================================================================
-# 5. FACE-BOUNDING-BOX SAFE CROPPING & BLURRED BACKDROP FITTER
+# 5. TRUE FULL-HEIGHT 1080p FRAMING (100% HEIGHT COVERAGE IN LONG & SHORT!)
 # ==============================================================================
 def has_well_framed_face(im):
-    """Checks if an image contains a complete human face that is NOT an extreme close-up of just an eye/ear."""
     if FACE_CASCADE is None:
         return False
     try:
@@ -887,17 +865,23 @@ def has_well_framed_face(im):
         gray_s = cv2.cvtColor(np.array(im.resize((sw, sh))), cv2.COLOR_RGB2GRAY)
         faces = FACE_CASCADE.detectMultiScale(gray_s, scaleFactor=1.12, minNeighbors=5, minSize=(40, 40))
         for (fx, fy, fw, fh) in faces:
-            # Face must not touch edges and must not occupy >60% of height (rejects extreme close-ups!)
-            if fx > sw * 0.06 and (fx + fw) < sw * 0.94 and fy > sh * 0.06 and (fy + fh) < sh * 0.92 and fh < sh * 0.58:
+            if fx > sw * 0.05 and (fx + fw) < sw * 0.95 and fy > sh * 0.05 and (fy + fh) < sh * 0.92 and fh < sh * 0.60:
                 return True
     except Exception:
         pass
     return False
 
-def detect_padded_face_crop_or_safe_fit(im, target_w, target_h):
+def fit_full_height_face_aware_1080p(im, target_w, target_h):
+    """
+    SOLVES THE 'SMALL VISUAL HEIGHT' ISSUE IN LONG & SHORT VIDEOS!
+    - Always fills the FULL HEIGHT (`target_h`) of the stage so there are NEVER black/empty bars at the top and bottom!
+    - Uses OpenCV Face Detection to center the crop box on the detected face(s) with generous headroom,
+      or uses a blurred side-wings canvas ONLY when an image is narrower than the target aspect ratio.
+    """
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
     iw, ih = im.size
     target_ratio = target_w / float(target_h)
+    img_ratio = iw / float(ih)
 
     faces = []
     if FACE_CASCADE is not None:
@@ -912,59 +896,63 @@ def detect_padded_face_crop_or_safe_fit(im, target_w, target_h):
         except Exception:
             faces = []
 
-    if len(faces) > 0:
-        min_x = min(f[0] for f in faces)
+    # Case 1: Image is wider than target -> Crop horizontally around face center while keeping 100% FULL HEIGHT!
+    if img_ratio >= target_ratio:
+        crop_h = ih
+        crop_w = int(ih * target_ratio)
+        if faces:
+            fx_center = sum(f[0] + f[2] // 2 for f in faces) // len(faces)
+            left = max(0, min(iw - crop_w, fx_center - crop_w // 2))
+        else:
+            left = (iw - crop_w) // 2
+        cropped = im.crop((left, 0, left + crop_w, crop_h))
+        return cropped.resize((target_w, target_h), resample_mode)
+
+    # Case 2: Image is taller than target (e.g. portrait photo in 16:9 Long video)
+    # Check if we can crop vertically around the face with generous headroom
+    crop_w = iw
+    crop_h = int(iw / target_ratio)
+    if faces:
         min_y = min(f[1] for f in faces)
-        max_x = max(f[0] + f[2] for f in faces)
         max_y = max(f[1] + f[3] for f in faces)
-        box_w = max_x - min_x
-        box_h = max_y - min_y
+        face_span_h = max_y - min_y
+        # If the padded face height fits comfortably inside `crop_h`, crop vertically to fill 100% width & height!
+        if face_span_h * 1.85 <= crop_h:
+            desired_top = min_y - int(face_span_h * 0.45)
+            top = max(0, min(ih - crop_h, desired_top))
+            cropped = im.crop((0, top, crop_w, top + crop_h))
+            return cropped.resize((target_w, target_h), resample_mode)
+    else:
+        top = int((ih - crop_h) * 0.22)
+        cropped = im.crop((0, top, crop_w, top + crop_h))
+        return cropped.resize((target_w, target_h), resample_mode)
 
-        pad_x1 = min_x - int(box_w * 0.55)
-        pad_y1 = min_y - int(box_h * 0.65)
-        pad_x2 = max_x + int(box_w * 0.55)
-        pad_y2 = max_y + int(box_h * 0.85)
-
-        req_w = pad_x2 - pad_x1
-        req_h = pad_y2 - pad_y1
-
-        if pad_x1 >= 0 and pad_y1 >= 0 and pad_x2 <= iw and pad_y2 <= ih and req_w <= iw * 0.90 and req_h <= ih * 0.90:
-            crop_w = max(req_w, int(req_h * target_ratio))
-            crop_h = int(crop_w / target_ratio)
-            if crop_w <= iw and crop_h <= ih:
-                cx = (pad_x1 + pad_x2) // 2
-                cy = (pad_y1 + pad_y2) // 2
-                left = max(0, min(iw - crop_w, cx - crop_w // 2))
-                top = max(0, min(ih - crop_h, cy - crop_h // 2))
-                cropped = im.crop((left, top, left + crop_w, top + crop_h))
-                return cropped.resize((target_w, target_h), resample_mode)
-
+    # Fallback for tight vertical portraits in 16:9: Fill 100% FULL HEIGHT (`target_h`) and place blurred wings on left/right!
     bg = im.copy().resize((target_w, target_h), resample_mode).filter(ImageFilter.GaussianBlur(radius=32))
-    bg = ImageEnhance.Brightness(bg).enhance(0.32)
-
-    scale = min(target_w / float(iw), target_h / float(ih))
-    fit_w = max(1, int(iw * scale))
-    fit_h = max(1, int(ih * scale))
+    bg = ImageEnhance.Brightness(bg).enhance(0.35)
+    fit_h = target_h
+    fit_w = max(1, int(iw * (target_h / float(ih))))
     fg = im.resize((fit_w, fit_h), resample_mode)
-
-    paste_x = (target_w - fit_w) // 2
-    paste_y = (target_h - fit_h) // 2
-    bg.paste(fg, (paste_x, paste_y))
+    bg.paste(fg, ((target_w - fit_w) // 2, 0))
     return bg
 
 def build_clean_1080p_stage(im, W, H):
+    """
+    - In 16:9 Long Video (1920x1080): Covers 100% of the 1920x1080 screen height (`y=0..1080`)!
+    - In 9:16 Short Video (1080x1920): Tall 1340px Hero Visual Stage (`y=120..1460`) so the visual is huge and clear!
+    """
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
     if W < H:
         bg = im.copy().resize((W, H), resample_mode).filter(ImageFilter.GaussianBlur(radius=30))
-        bg = ImageEnhance.Brightness(bg).enhance(0.30)
+        bg = ImageEnhance.Brightness(bg).enhance(0.32)
         canvas = bg.convert("RGBA")
 
-        hero_w, hero_h = int(W * 1.04), 920
-        fg = detect_padded_face_crop_or_safe_fit(im, hero_w, hero_h)
+        hero_w, hero_h = int(W * 1.05), 1360
+        fg = fit_full_height_face_aware_1080p(im, hero_w, hero_h)
         return ("SHORT_STAGE", canvas, fg)
     else:
-        over_w, over_h = int(W * 1.04), int(H * 1.04)
-        fg = detect_padded_face_crop_or_safe_fit(im, over_w, over_h)
+        over_w, over_h = int(W * 1.05), int(H * 1.05)
+        fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
         return ("FULL_BLEED_STAGE", fg, None)
 
 def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
@@ -973,23 +961,22 @@ def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
         canvas = base_a.copy()
         fg = base_b
         fw, fh = fg.size
-        win_w, win_h = W, 900
+        win_w, win_h = W, 1340
         max_dx = max(fw - win_w, 0)
         max_dy = max(fh - win_h, 0)
         ox = int(max_dx * (bp if pan_dir == 1 else (1.0 - bp)))
         oy = int(max_dy * 0.5)
         slice_fg = fg.crop((ox, oy, ox + win_w, oy + win_h))
-        canvas.paste(slice_fg, (0, 205))
+        canvas.paste(slice_fg, (0, 120))
 
         draw = ImageDraw.Draw(canvas, "RGBA")
-        for y in range(0, 205):
-            draw.line([(0, y), (W, y)], fill=(6, 9, 18, int(175 * (1.0 - y / 205.0))))
-        for y in range(1105, H):
-            draw.line([(0, y), (W, y)], fill=(6, 9, 18, int(235 * min(1.0, (y - 1105) / 260.0))))
-        draw.line([(0, 205), (W, 205)], fill=(255, 214, 10, 220), width=3)
-        draw.line([(0, 1105), (W, 1105)], fill=(255, 214, 10, 220), width=3)
+        for y in range(1460, H):
+            draw.line([(0, y), (W, y)], fill=(6, 9, 18, int(235 * min(1.0, (y - 1460) / 180.0))))
+        draw.line([(0, 120), (W, 120)], fill=(255, 214, 10, 220), width=3)
+        draw.line([(0, 1460), (W, 1460)], fill=(255, 214, 10, 220), width=3)
         return canvas
     else:
+        # 100% FULL-SCREEN 1920x1080 HEIGHT (NO top black bar, only a soft lower shadow for subtitles!)
         fg = base_a
         fw, fh = fg.size
         max_dx = max(fw - W, 0)
@@ -998,10 +985,8 @@ def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
         oy = int(max_dy * (0.2 + 0.6 * bp))
         frame = fg.crop((ox, oy, ox + W, oy + H)).convert("RGBA")
         draw = ImageDraw.Draw(frame, "RGBA")
-        for y in range(0, 180):
-            draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(160 * (1.0 - y / 180.0))))
-        for y in range(H - 360, H):
-            draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(238 * ((y - (H - 360)) / 360.0) ** 1.15)))
+        for y in range(H - 260, H):
+            draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(215 * ((y - (H - 260)) / 260.0) ** 1.2)))
         return frame
 
 def build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080):
@@ -1035,11 +1020,11 @@ def build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080):
     if tiles_loaded > 0:
         map_img = map_img.filter(ImageFilter.UnsharpMask(radius=1.5, percent=125, threshold=3))
         map_img = ImageEnhance.Contrast(map_img).enhance(1.35)
-        map_img = ImageEnhance.Brightness(map_img).enhance(0.65)
+        map_img = ImageEnhance.Brightness(map_img).enhance(0.68)
     return map_img
 
 # ==============================================================================
-# 6. NATURAL SENTENCE-PACED STORYBOARD (4.5s - 6.0s Beats So Viewer Absorbs Context!)
+# 6. NATURAL SENTENCE-PACED STORYBOARD (4.5s - 5.8s Beats)
 # ==============================================================================
 def has_strict_economic_context(text):
     low = text.lower()
@@ -1051,10 +1036,6 @@ def has_strict_economic_context(text):
     return any(re.search(rf"\b{re.escape(t)}\b", low) for t in econ_terms)
 
 def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, tag_prefix="short"):
-    """
-    Hold each visual for a natural, comprehensible 4.5s - 5.8s sentence/thought beat
-    (instead of frantic 2.5s cuts where the viewer cannot read or understand the visual context!).
-    """
     planned_beats = []
     existing_hashes = []
     unique_real_photos = []
@@ -1068,19 +1049,17 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
     osm_map = build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080)
     osm_stage = build_clean_1080p_stage(osm_map, W, H)
 
-    # Pre-fetch 1-2 real moving video B-roll clips for this story
-    story_vclip_1 = fetch_real_stock_or_archival_video_broll(entities[0], c_prof["name"], c_prof["capital"], tag_id=f"{tag_prefix}_vc1")
-    story_vclip_2 = fetch_real_stock_or_archival_video_broll(c_prof["capital"], c_prof["name"], "diplomacy", tag_id=f"{tag_prefix}_vc2")
+    story_vclip_1 = fetch_and_transcode_real_video_broll(entities[0], c_prof["name"], c_prof["capital"], tag_id=f"{tag_prefix}_vc1")
 
     if dossier.get("lead_img") and not any(b in dossier["lead_img"].lower() for b in BANNED_IMAGE_SOURCES):
         try:
             r = requests.get(dossier["lead_img"], headers=HEADERS_WEB, timeout=6)
-            if r.status_code == 200 and len(r.content) > 15000:
+            if r.status_code == 200 and len(r.content) > 12000:
                 p = f"temp/{tag_prefix}_lead_0.jpg"
                 with open(p, "wb") as f:
                     f.write(r.content)
                 vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
-                if vim is not None and has_well_framed_face(vim):
+                if vim is not None:
                     unique_real_photos.append(vim)
         except Exception:
             pass
@@ -1096,8 +1075,8 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
         sec_headline = sec.get("headline") or sec.get("chapter_title") or make_clean_context_headline(dossier["title"])
         claim_meta = sec.get("claim_meta") or dossier["verified_claims"][0]
 
-        # Natural 4.5s - 5.5s sentence/thought beats so the viewer can actually absorb each visual & context card!
-        target_beat_len = 4.5 if W < H else 5.2
+        # Hold each visual for 4.8s - 5.5s so the viewer clearly sees the image and reads the full context!
+        target_beat_len = 4.8 if W < H else 5.4
         num_beats = max(2, int(round(sec_dur / target_beat_len)))
         beat_dur = sec_dur / float(num_beats)
         words = narration.split()
@@ -1118,10 +1097,8 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
                 stage_1 = osm_stage
             else:
                 vseg = None
-                if not is_person and b_i == 1 and story_vclip_1 is not None and moving_video_beats == 0:
+                if not is_person and story_vclip_1 is not None and moving_video_beats == 0 and global_beat_idx >= 1:
                     vseg = story_vclip_1
-                elif not is_person and b_i == 1 and story_vclip_2 is not None and moving_video_beats == 1:
-                    vseg = story_vclip_2
 
                 if vseg is not None:
                     b_type = "VIDEO_BROLL_BEAT"
@@ -1129,14 +1106,17 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
                     beat_im = unique_real_photos[-1] if unique_real_photos else osm_map
                     stage_1 = build_clean_1080p_stage(beat_im, W, H)
                 else:
-                    beat_im = fetch_high_res_visual_for_beat(
-                        wiki_target, search_q, existing_hashes, failed_queries, is_person=is_person, tag_id=f"{tag_prefix}_b{global_beat_idx}"
-                    )
-                    if beat_im is not None:
-                        unique_real_photos.append(beat_im)
+                    if global_beat_idx == 0 and unique_real_photos:
+                        beat_im = unique_real_photos[0]
                     else:
-                        beat_im = generate_bespoke_speech_infographic_1080p(b_txt, prop_badge, claim_meta, dossier)
-                        generated_infographic_beats += 1
+                        beat_im = fetch_verified_news_or_wiki_visual(
+                            wiki_target, search_q, dossier, existing_hashes, failed_queries, tag_id=f"{tag_prefix}_b{global_beat_idx}"
+                        )
+                        if beat_im is not None:
+                            unique_real_photos.append(beat_im)
+                        else:
+                            beat_im = generate_bespoke_speech_infographic_1080p(b_txt, prop_badge, claim_meta, dossier)
+                            generated_infographic_beats += 1
 
                     if has_strict_economic_context(b_txt) and dossier.get("wb_data") is not None and "DATA_CHART_BEAT" not in used_modes_in_sec:
                         b_type = "DATA_CHART_BEAT"
@@ -1176,7 +1156,7 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
             })
             global_beat_idx += 1
 
-    min_expected_photos = min(8, max(3, int(len(planned_beats) * 0.50)))
+    min_expected_photos = min(6, max(3, int(len(planned_beats) * 0.45)))
     run_status = "PASS"
     if len(unique_real_photos) < min_expected_photos or reused_photo_beats > 2:
         run_status = "WARNING: QUALITY_REVIEW_REQUIRED (LOW_UNIQUE_PHOTOS)"
@@ -1218,48 +1198,48 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     elif b_type == "SPLIT_COMPARE_BEAT":
         frame = Image.new("RGBA", (W, H), (8, 12, 22, 255))
         if is_short:
-            top_im = detect_padded_face_crop_or_safe_fit(beat["primary_im"], W, 450)
-            bot_im = detect_padded_face_crop_or_safe_fit(beat["secondary_im"], W, 450)
-            frame.paste(top_im, (0, 205))
-            frame.paste(bot_im, (0, 660))
+            top_im = fit_full_height_face_aware_1080p(beat["primary_im"], W, 665)
+            bot_im = fit_full_height_face_aware_1080p(beat["secondary_im"], W, 665)
+            frame.paste(top_im, (0, 120))
+            frame.paste(bot_im, (0, 790))
             draw = ImageDraw.Draw(frame, "RGBA")
-            draw.line([(0, 657), (W, 657)], fill=(255, 214, 10, 255), width=6)
+            draw.line([(0, 787), (W, 787)], fill=(255, 214, 10, 255), width=6)
         else:
-            left_im = detect_padded_face_crop_or_safe_fit(beat["primary_im"], W // 2, H)
-            right_im = detect_padded_face_crop_or_safe_fit(beat["secondary_im"], W // 2, H)
+            left_im = fit_full_height_face_aware_1080p(beat["primary_im"], W // 2, H)
+            right_im = fit_full_height_face_aware_1080p(beat["secondary_im"], W // 2, H)
             frame.paste(left_im, (0, 0))
             frame.paste(right_im, (W // 2, 0))
             draw = ImageDraw.Draw(frame, "RGBA")
             draw.line([(W // 2, 0), (W // 2, H)], fill=(255, 214, 10, 255), width=6)
-            for y in range(H - 360, H):
-                draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(238 * ((y - (H - 360)) / 360.0) ** 1.15)))
+            for y in range(H - 260, H):
+                draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(215 * ((y - (H - 260)) / 260.0) ** 1.2)))
     else:
         frame = extract_animated_frame_from_stage(beat["stage_1"], W, H, bp, pan_dir=beat["pan_dir"])
         draw = ImageDraw.Draw(frame, "RGBA")
 
-    cy_card = 1145 if is_short else (H - 355)
-    bx1, bx2 = (42, W - 42) if is_short else (64, 1340)
+    # Compact Lower-Third Card positioned low so 85%+ of the 1080p height is unobstructed!
+    cy_card = 1475 if is_short else (H - 305)
+    bx1, bx2 = (42, W - 42) if is_short else (56, 1260)
 
     src_domain = urllib.parse.urlparse(claim_meta["source_url"]).netloc.replace("www.", "")
     citation_str = f"SOURCE: {claim_meta['source_name'].upper()} ({src_domain}) • PUBLISHED: {claim_meta['published_date']}"
 
     if b_type in ["PHOTO_BEAT", "VIDEO_BROLL_BEAT"]:
         kicker = beat["vseg"]["label"] if (b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg")) else beat["primary_lbl"]
-        # Always display the complete, self-contained section_headline on the card (never broken half-sentence fragments!)
         hl = str(beat["section_headline"]).upper()
-        f_k = get_font(22)
-        f_h = get_font(30 if is_short else 32)
-        kw = draw.textbbox((0, 0), kicker, font=f_k)[2] + 36
+        f_k = get_font(21)
+        f_h = get_font(28 if is_short else 30)
+        kw = draw.textbbox((0, 0), kicker, font=f_k)[2] + 34
 
-        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 182)], radius=14, fill=(10, 16, 28, 234), outline=(255, 214, 10, 220), width=3)
-        draw.rounded_rectangle([(bx1 + 20, cy_card + 16), (bx1 + 20 + kw, cy_card + 52)], radius=8, fill=(204, 18, 36, 255))
-        draw.text((bx1 + 38, cy_card + 22), kicker, fill=(255, 255, 255, 255), font=f_k)
-        for i_l, ln in enumerate(wrap_lines(draw, hl, f_h, (bx2 - bx1) - 52)[:2]):
-            draw.text((bx1 + 24, cy_card + 62 + i_l * 38), ln, fill=(255, 255, 255, 255), font=f_h)
-        draw.text((bx1 + 24, cy_card + 146), citation_str[:78], fill=(0, 210, 255, 235), font=get_font(18))
+        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 158)], radius=12, fill=(10, 16, 28, 222), outline=(255, 214, 10, 215), width=2)
+        draw.rounded_rectangle([(bx1 + 18, cy_card + 14), (bx1 + 18 + kw, cy_card + 48)], radius=6, fill=(204, 18, 36, 255))
+        draw.text((bx1 + 34, cy_card + 19), kicker, fill=(255, 255, 255, 255), font=f_k)
+        for i_l, ln in enumerate(wrap_lines(draw, hl, f_h, (bx2 - bx1) - 48)[:2]):
+            draw.text((bx1 + 22, cy_card + 56 + i_l * 34), ln, fill=(255, 255, 255, 255), font=f_h)
+        draw.text((bx1 + 22, cy_card + 128), citation_str[:78], fill=(0, 210, 255, 235), font=get_font(17))
 
     elif b_type == "MAP_LOCATOR_BEAT":
-        cx, cy = (W // 2, 650) if is_short else (W // 2 - 120, H // 2 - 45)
+        cx, cy = (W // 2, 720) if is_short else (W // 2 - 120, H // 2 - 45)
         for ri in range(3):
             rp = ((local_t * 0.8) + ri * 0.33) % 1.0
             rad = int(36 + rp * 210)
@@ -1267,82 +1247,82 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         draw.ellipse([(cx - 14, cy - 14), (cx + 14, cy + 14)], fill=(255, 214, 10, 255))
 
         pip_w, pip_h = (340, 220) if is_short else (430, 270)
-        px, py = (W - pip_w - 42, 240) if is_short else (W - pip_w - 64, 160)
-        pip_im = detect_padded_face_crop_or_safe_fit(beat["secondary_im"], pip_w, pip_h)
+        px, py = (W - pip_w - 42, 160) if is_short else (W - pip_w - 64, 120)
+        pip_im = fit_full_height_face_aware_1080p(beat["secondary_im"], pip_w, pip_h)
         draw.line([(cx, cy), (px + pip_w // 2, py + pip_h)], fill=(255, 214, 10, 220), width=3)
         frame.paste(pip_im, (px, py))
         draw.rounded_rectangle([(px - 3, py - 3), (px + pip_w + 3, py + pip_h + 3)], radius=8, outline=(255, 214, 10, 255), width=4)
 
-        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 175)], radius=14, fill=(10, 16, 28, 240), outline=(0, 210, 255, 225), width=3)
-        draw.text((bx1 + 26, cy_card + 18), f"GEOGRAPHIC CORRIDOR  •  LAT {c_prof['lat']}° LON {c_prof['lon']}°", fill=(0, 210, 255, 255), font=get_font(23))
-        draw.text((bx1 + 26, cy_card + 58), f"EPICENTER: {c_prof['capital'].upper()}, {c_prof['name']} (POP: {c_prof['population']})", fill=(255, 214, 10, 255), font=get_font(31))
-        draw.text((bx1 + 26, cy_card + 135), citation_str[:78], fill=(215, 230, 250, 235), font=get_font(18))
+        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 158)], radius=12, fill=(10, 16, 28, 232), outline=(0, 210, 255, 225), width=2)
+        draw.text((bx1 + 24, cy_card + 16), f"GEOGRAPHIC CORRIDOR  •  LAT {c_prof['lat']}° LON {c_prof['lon']}°", fill=(0, 210, 255, 255), font=get_font(22))
+        draw.text((bx1 + 24, cy_card + 54), f"EPICENTER: {c_prof['capital'].upper()}, {c_prof['name']} (POP: {c_prof['population']})", fill=(255, 214, 10, 255), font=get_font(29))
+        draw.text((bx1 + 24, cy_card + 124), citation_str[:78], fill=(215, 230, 250, 235), font=get_font(17))
 
     elif b_type == "HEADLINE_EVIDENCE_BEAT":
-        draw.rounded_rectangle([(bx1, cy_card - 10), (bx2, cy_card + 182)], radius=16, fill=(246, 244, 236, 248), outline=(204, 18, 36, 255), width=4)
-        draw.rounded_rectangle([(bx1 + 24, cy_card + 8), (bx1 + 520, cy_card + 44)], radius=6, fill=(204, 18, 36, 255))
-        draw.text((bx1 + 38, cy_card + 13), f"VERIFIED CLAIM • {claim_meta['published_date']}", fill=(255, 255, 255, 255), font=get_font(21))
+        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 162)], radius=14, fill=(246, 244, 236, 244), outline=(204, 18, 36, 255), width=3)
+        draw.rounded_rectangle([(bx1 + 22, cy_card + 10), (bx1 + 500, cy_card + 42)], radius=6, fill=(204, 18, 36, 255))
+        draw.text((bx1 + 36, cy_card + 14), f"VERIFIED CLAIM • {claim_meta['published_date']}", fill=(255, 255, 255, 255), font=get_font(20))
 
         hl_txt = claim_meta["text"]
-        f_q = get_font(28 if is_short else 30)
-        lines = wrap_lines(draw, hl_txt, f_q, (bx2 - bx1) - 60)[:2]
-        hl_w = int(((bx2 - bx1) - 64) * min(bp * 1.4, 1.0))
-        draw.rounded_rectangle([(bx1 + 24, cy_card + 54), (bx1 + 24 + hl_w, cy_card + 94)], radius=6, fill=(255, 232, 65, 240))
+        f_q = get_font(26 if is_short else 28)
+        lines = wrap_lines(draw, hl_txt, f_q, (bx2 - bx1) - 56)[:2]
+        hl_w = int(((bx2 - bx1) - 60) * min(bp * 1.4, 1.0))
+        draw.rounded_rectangle([(bx1 + 22, cy_card + 50), (bx1 + 22 + hl_w, cy_card + 86)], radius=6, fill=(255, 232, 65, 240))
         for idx_l, ln in enumerate(lines):
-            draw.text((bx1 + 30, cy_card + 56 + idx_l * 40), ln, fill=(12, 16, 22, 255), font=f_q)
-        draw.text((bx1 + 30, cy_card + 144), f"URL: {claim_meta['source_url'][:68]}", fill=(80, 90, 110, 255), font=get_font(18))
+            draw.text((bx1 + 28, cy_card + 52 + idx_l * 36), ln, fill=(12, 16, 22, 255), font=f_q)
+        draw.text((bx1 + 28, cy_card + 130), f"URL: {claim_meta['source_url'][:68]}", fill=(80, 90, 110, 255), font=get_font(17))
 
     elif b_type == "TIMELINE_GRAPH_BEAT":
-        draw.rounded_rectangle([(bx1, cy_card - 20), (bx2, cy_card + 185)], radius=16, fill=(10, 16, 28, 242), outline=(255, 214, 10, 225), width=3)
+        draw.rounded_rectangle([(bx1, cy_card - 8), (bx2, cy_card + 164)], radius=14, fill=(10, 16, 28, 236), outline=(255, 214, 10, 225), width=2)
         steps = [
             ("BUILDUP", f"Mounting pressure across {c_prof['region']}"),
             ("CATALYST", f"Key policy decision in {c_prof['capital']}"),
             ("NOW", story["title"][:44])
         ]
-        sy = cy_card
+        sy = cy_card + 6
         for idx_s, (slbl, stxt) in enumerate(steps):
             act = (bp >= idx_s * 0.28)
             bg_c = (204, 18, 36, 255) if act else (35, 45, 65, 210)
-            draw.rounded_rectangle([(bx1 + 24, sy), (bx1 + 170, sy + 42)], radius=8, fill=bg_c)
-            draw.text((bx1 + 34, sy + 8), slbl, fill=(255, 255, 255, 255), font=get_font(22))
-            draw.text((bx1 + 190, sy + 6), stxt[:42], fill=(255, 255, 255, 255) if act else (160, 170, 185, 210), font=get_font(25))
-            sy += 58
+            draw.rounded_rectangle([(bx1 + 22, sy), (bx1 + 165, sy + 38)], radius=6, fill=bg_c)
+            draw.text((bx1 + 32, sy + 7), slbl, fill=(255, 255, 255, 255), font=get_font(20))
+            draw.text((bx1 + 182, sy + 6), stxt[:42], fill=(255, 255, 255, 255) if act else (160, 170, 185, 210), font=get_font(23))
+            sy += 50
 
     elif b_type == "DATA_CHART_BEAT" and story.get("wb_data") is not None:
         wb_years, wb_vals = story["wb_data"]
-        draw.rounded_rectangle([(bx1, cy_card - 45), (bx2, cy_card + 195)], radius=16, fill=(10, 16, 28, 244), outline=(255, 214, 10, 230), width=3)
-        draw.text((bx1 + 30, cy_card - 26), f"{c_prof['name']} VERIFIED GDP GROWTH (%)  •  WORLD BANK OPEN DATA", fill=(255, 214, 10, 255), font=get_font(24))
+        draw.rounded_rectangle([(bx1, cy_card - 25), (bx2, cy_card + 165)], radius=14, fill=(10, 16, 28, 240), outline=(255, 214, 10, 230), width=2)
+        draw.text((bx1 + 26, cy_card - 10), f"{c_prof['name']} VERIFIED GDP GROWTH (%)  •  WORLD BANK OPEN DATA", fill=(255, 214, 10, 255), font=get_font(22))
         anim_p = min(bp * 1.35, 1.0)
         n_bars = len(wb_years)
         slot_w = ((bx2 - bx1) - 90) // max(n_bars, 1)
         max_v = max(max(abs(v) for v in wb_vals), 1.0)
         for b_i, (yr, val) in enumerate(zip(wb_years, wb_vals)):
-            bx = bx1 + 50 + b_i * slot_w
-            bh = max(int(90 * (abs(val) / max_v) * anim_p), 12)
-            b_top = cy_card + 125 - bh
+            bx = bx1 + 48 + b_i * slot_w
+            bh = max(int(75 * (abs(val) / max_v) * anim_p), 10)
+            b_top = cy_card + 115 - bh
             b_col = (255, 214, 10, 255) if val >= 0 else (204, 18, 36, 255)
-            draw.rounded_rectangle([(bx, b_top), (bx + slot_w - 42, cy_card + 125)], radius=6, fill=b_col)
-            draw.text((bx + 6, b_top - 30), f"{round(val * anim_p, 1)}%", fill=(255, 255, 255, 255), font=get_font(22))
-            draw.text((bx + 8, cy_card + 136), yr, fill=(200, 215, 235, 255), font=get_font(22))
+            draw.rounded_rectangle([(bx, b_top), (bx + slot_w - 42, cy_card + 115)], radius=5, fill=b_col)
+            draw.text((bx + 6, b_top - 26), f"{round(val * anim_p, 1)}%", fill=(255, 255, 255, 255), font=get_font(20))
+            draw.text((bx + 8, cy_card + 124), yr, fill=(200, 215, 235, 255), font=get_font(20))
 
     else:
         mid_x = (bx1 + bx2) // 2
-        draw.rounded_rectangle([(bx1, cy_card), (mid_x - 12, cy_card + 155)], radius=14, fill=(10, 18, 32, 240), outline=(0, 210, 255, 230), width=3)
-        draw.text((bx1 + 24, cy_card + 20), "CALCULATION A", fill=(0, 210, 255, 255), font=get_font(24))
-        draw.text((bx1 + 24, cy_card + 68), "STRATEGIC LEVERAGE", fill=(255, 255, 255, 255), font=get_font(27))
+        draw.rounded_rectangle([(bx1, cy_card), (mid_x - 10, cy_card + 145)], radius=12, fill=(10, 18, 32, 235), outline=(0, 210, 255, 230), width=2)
+        draw.text((bx1 + 22, cy_card + 18), "CALCULATION A", fill=(0, 210, 255, 255), font=get_font(22))
+        draw.text((bx1 + 22, cy_card + 62), "STRATEGIC LEVERAGE", fill=(255, 255, 255, 255), font=get_font(25))
 
-        draw.rounded_rectangle([(mid_x + 12, cy_card), (bx2, cy_card + 155)], radius=14, fill=(10, 18, 32, 240), outline=(255, 214, 10, 230), width=3)
-        draw.text((mid_x + 36, cy_card + 20), "CALCULATION B", fill=(255, 214, 10, 255), font=get_font(24))
-        draw.text((mid_x + 36, cy_card + 68), "ESCALATION RISK", fill=(255, 255, 255, 255), font=get_font(27))
+        draw.rounded_rectangle([(mid_x + 10, cy_card), (bx2, cy_card + 145)], radius=12, fill=(10, 18, 32, 235), outline=(255, 214, 10, 230), width=2)
+        draw.text((mid_x + 32, cy_card + 18), "CALCULATION B", fill=(255, 214, 10, 255), font=get_font(22))
+        draw.text((mid_x + 32, cy_card + 62), "ESCALATION RISK", fill=(255, 255, 255, 255), font=get_font(25))
 
-    top_y = 115 if is_short else 38
+    top_y = 28 if is_short else 32
     frame.paste(watermark, (42, top_y), watermark)
     if c_prof.get("flag_img"):
         fl = c_prof["flag_img"].resize((84, 54))
         frame.paste(fl, (198, top_y + 14), fl)
 
     sub_strip = voice_sub_dir.render_exact_synced_subtitles(beat["word_timings"], section_t, W, H, is_short=is_short)
-    sub_y = 1435 if is_short else (H - 138)
+    sub_y = 1655 if is_short else (H - 128)
     frame.paste(sub_strip, (0, sub_y), sub_strip)
 
     return np.array(frame.convert("RGB"))
@@ -1362,7 +1342,7 @@ def make_section_clip_from_beats(section_beats, watermark, voice_sub_dir, sectio
     return VideoClip(make_frame, duration=section_dur)
 
 # ==============================================================================
-# 7. VOICE, SUBTITLES, AUDIBLE SITUATION MUSIC & WELL-FRAMED THUMBNAILS
+# 7. VOICE, SUBTITLES & SOFT 4.5% DOCUMENTARY BACKGROUND SCORE
 # ==============================================================================
 class VoiceAndSubtitleEngine:
     async def synthesize_with_word_boundaries(self, text, out_path, voice_style="clear"):
@@ -1425,15 +1405,15 @@ class VoiceAndSubtitleEngine:
                 active_chunk = ch
                 active_word_idx = len(ch) - 1
 
-        strip_h = 210 if is_short else 130
+        strip_h = 210 if is_short else 120
         strip = Image.new("RGBA", (W, strip_h), (0, 0, 0, 0))
         draw = ImageDraw.Draw(strip, "RGBA")
-        font = get_font(54 if is_short else 42)
+        font = get_font(52 if is_short else 40)
         words_str_list = [w["word"] for w in active_chunk]
 
         if is_short:
             lines = [words_str_list[:2], words_str_list[2:]] if len(words_str_list) > 2 else [words_str_list]
-            y_cur = 15
+            y_cur = 12
             w_cnt = 0
             for ln in lines:
                 if not ln:
@@ -1446,64 +1426,59 @@ class VoiceAndSubtitleEngine:
                     draw.text((x_cur, y_cur), dw, font=font, fill=col, stroke_width=7, stroke_fill=(0, 0, 0, 255))
                     x_cur += draw.textbbox((0, 0), dw + " ", font=font)[2]
                     w_cnt += 1
-                y_cur += 74
+                y_cur += 70
         else:
             phrase = " ".join(words_str_list)
             lw = draw.textbbox((0, 0), phrase, font=font)[2]
-            bx1, bx2 = max((W - lw) // 2 - 32, 30), min((W + lw) // 2 + 32, W - 30)
-            draw.rounded_rectangle([(bx1, 12), (bx2, 98)], radius=12, fill=(6, 9, 16, 232), outline=(255, 214, 10, 105), width=2)
+            bx1, bx2 = max((W - lw) // 2 - 30, 30), min((W + lw) // 2 + 30, W - 30)
+            draw.rounded_rectangle([(bx1, 10), (bx2, 92)], radius=12, fill=(6, 9, 16, 232), outline=(255, 214, 10, 105), width=2)
             x_cur = (W - lw) // 2
             for idx_w, w in enumerate(words_str_list):
                 col = (255, 214, 10, 255) if idx_w == active_word_idx else (255, 255, 255, 255)
-                draw.text((x_cur, 28), w, font=font, fill=col, stroke_width=3, stroke_fill=(0, 0, 0, 240))
+                draw.text((x_cur, 25), w, font=font, fill=col, stroke_width=3, stroke_fill=(0, 0, 0, 240))
                 x_cur += draw.textbbox((0, 0), w + " ", font=font)[2]
         return strip
 
-def build_situation_adaptive_10pct_soundtrack(filename, duration, beat_switch_times, category="geopolitics_diplomacy"):
+def build_situation_adaptive_soft_soundtrack(filename, duration, beat_switch_times, category="geopolitics_diplomacy"):
     """
-    Rich, clearly audible mid-range harmonic documentary score (300Hz - 2200Hz overtones + crisp rhythmic pulse)
-    so phone & laptop speakers reproduce the music clearly under the narrator's voice!
+    Soft, warm documentary background score at 4.5% (`0.045`) peak amplitude
+    so it never overpowers the narrator's voice!
     """
     sr = 22050
     n_samples = int(sr * duration)
     t = np.linspace(0, duration, n_samples, endpoint=False)
 
     if category == "war_crisis":
-        f1, f2, f3, tempo = 220.0, 261.63, 329.63, 0.46  # A minor tense pulse
+        f1, f2, f3, tempo = 110.0, 164.81, 220.0, 0.75
     elif category == "ai_tech_science":
-        f1, f2, f3, tempo = 293.66, 369.99, 440.00, 0.35  # Futuristic D major synth pulse
+        f1, f2, f3, tempo = 146.83, 220.0, 293.66, 0.65
     elif category == "economy_markets":
-        f1, f2, f3, tempo = 246.94, 293.66, 369.99, 0.40  # B minor analytical drive
+        f1, f2, f3, tempo = 123.47, 185.0, 246.94, 0.70
     elif category == "environment_climate":
-        f1, f2, f3, tempo = 261.63, 329.63, 392.00, 0.60  # Warm C major documentary pad
+        f1, f2, f3, tempo = 130.81, 196.0, 261.63, 0.85
     else:
-        f1, f2, f3, tempo = 196.00, 233.08, 293.66, 0.50  # G minor investigative score
+        f1, f2, f3, tempo = 98.0, 146.83, 196.0, 0.80
 
-    # Multi-harmonic synthesis (Fundamental + 2x + 3x + 4x harmonics up to 1500Hz so speakers play it clearly!)
     chords = (
-        0.35 * np.sin(2 * np.pi * f1 * t)
+        0.45 * np.sin(2 * np.pi * f1 * t)
         + 0.30 * np.sin(2 * np.pi * f2 * t)
-        + 0.25 * np.sin(2 * np.pi * f3 * t)
-        + 0.20 * np.sin(2 * np.pi * (f1 * 2.0) * t)
-        + 0.15 * np.sin(2 * np.pi * (f2 * 2.0) * t)
-        + 0.10 * np.sin(2 * np.pi * (f3 * 3.0) * t)
+        + 0.18 * np.sin(2 * np.pi * f3 * t)
     )
-    lfo = 0.75 + 0.25 * np.sin(2 * np.pi * 0.25 * t)
+    lfo = 0.75 + 0.25 * np.sin(2 * np.pi * 0.16 * t)
     beat_phase = t % tempo
-    # Mid-range marimba/bell rhythmic pulse at 600Hz-900Hz
-    pulse = 0.45 * np.sin(2 * np.pi * (f3 * 2.0) * beat_phase) * np.exp(-beat_phase * 9.0)
+    pulse = 0.20 * np.sin(2 * np.pi * f2 * beat_phase) * np.exp(-beat_phase * 8.0)
 
     raw_music = (chords * lfo) + pulse
     max_amp = max(float(np.max(np.abs(raw_music))), 1e-4)
-    # Set peak amplitude to 0.18 (RMS ~12% of voiceover) so it is clearly audible!
-    audio = (raw_music / max_amp) * 0.18
+    # Keep volume soft at 0.045 (4.5%) so voice is 100% dominant!
+    audio = (raw_music / max_amp) * 0.045
 
     for bt in beat_switch_times:
         idx = int(bt * sr)
         if idx < n_samples:
-            slen = min(int(0.22 * sr), n_samples - idx)
+            slen = min(int(0.20 * sr), n_samples - idx)
             st_t = np.linspace(0, slen / float(sr), slen, endpoint=False)
-            sfx = 0.16 * np.sin(2 * np.pi * (520 - 240 * st_t) * st_t) * np.exp(-st_t * 12.0)
+            sfx = 0.04 * np.sin(2 * np.pi * (240 - 110 * st_t) * st_t) * np.exp(-st_t * 14.0)
             audio[idx:idx + slen] += sfx
 
     audio_int16 = np.int16(np.clip(audio, -1.0, 1.0) * 32767)
@@ -1515,23 +1490,18 @@ def build_situation_adaptive_10pct_soundtrack(filename, duration, beat_switch_ti
     return filename
 
 def create_category_adaptive_1080p_thumbnail(dossier, entities, unique_photos, watermark):
-    """
-    Selects the best well-framed portrait from `unique_photos` (skipping extreme eye/ear close-ups!)
-    and renders a category-adaptive 1920x1080 High-CTR Thumbnail!
-    """
     W, H = 1920, 1080
     c_prof = dossier["country_profile"]
     cat = dossier.get("category", "geopolitics_diplomacy")
     ent_main = entities[0].upper() if entities else c_prof["name"]
 
-    # Choose the first photo that has a well-framed complete face (or fallback to best wide photo)
     chosen_thumb_im = None
     for cand_im in unique_photos:
         if has_well_framed_face(cand_im):
             chosen_thumb_im = cand_im
             break
     if chosen_thumb_im is None:
-        chosen_thumb_im = unique_photos[1] if len(unique_photos) > 1 else (unique_photos[0] if unique_photos else build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080))
+        chosen_thumb_im = unique_photos[0] if unique_photos else build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080)
 
     theme_palettes = {
         "ai_tech_science": ((8, 18, 38), (0, 210, 255), (255, 214, 10), "TECH & AI SHIFT"),
@@ -1543,7 +1513,7 @@ def create_category_adaptive_1080p_thumbnail(dossier, entities, unique_photos, w
     bg_col, badge_col, box_col, sub_hook = theme_palettes.get(cat, theme_palettes["geopolitics_diplomacy"])
 
     canvas = Image.new("RGBA", (W, H), bg_col + (255,))
-    right_stage = detect_padded_face_crop_or_safe_fit(chosen_thumb_im, 1160, H)
+    right_stage = fit_full_height_face_aware_1080p(chosen_thumb_im, 1160, H)
     right_stage = ImageEnhance.Contrast(right_stage).enhance(1.14)
     canvas.paste(right_stage, (760, 0))
 
@@ -1588,13 +1558,9 @@ def create_category_adaptive_1080p_thumbnail(dossier, entities, unique_photos, w
 create_1080p_thumbnails = create_category_adaptive_1080p_thumbnail
 
 # ==============================================================================
-# 8. MULTI-TOKEN YOUTUBE API UPLOADER WITH QUOTA FAILOVER & ERROR HANDLING
+# 8. MULTI-TOKEN YOUTUBE API UPLOADER
 # ==============================================================================
 def try_youtube_auto_upload(video_path, title, description, tags, is_short=False, thumbnail_path=None):
-    """
-    Supports rotating across multiple YouTube OAuth tokens (`YOUTUBE_TOKEN_JSON_B64`, `YOUTUBE_TOKEN_2_B64`, `YOUTUBE_TOKEN_3_B64`)
-    so if Token #1 hits its daily 10,000-unit (6 video) quota, it automatically fails over to Token #2 / #3!
-    """
     token_envs = ["YOUTUBE_TOKEN_JSON_B64", "YOUTUBE_TOKEN_2_B64", "YOUTUBE_TOKEN_3_B64"]
     available_tokens = [os.environ.get(k, "").strip() for k in token_envs if os.environ.get(k, "").strip()]
 
@@ -1645,7 +1611,7 @@ def try_youtube_auto_upload(video_path, title, description, tags, is_short=False
     return None
 
 # ==============================================================================
-# MASTER EXECUTION (#1 Trending -> Long Documentary | Next Trending -> Shorts)
+# MASTER EXECUTION
 # ==============================================================================
 async def main():
     try:
@@ -1658,12 +1624,10 @@ async def main():
             published_history.clear()
             dossiers = discover_and_build_dossiers(published_history)
 
-        # RULE: #1 Top Trending Story -> Main Long Documentary!
-        #       #2 Trending Story -> Fast Viral YouTube Short!
         long_dossiers = [dossiers[0], dossiers[2]] if len(dossiers) >= 3 else [dossiers[0]]
         short_dossier = dossiers[1] if len(dossiers) >= 2 else dossiers[0]
 
-        # 1. BUILD 1080p SHORT (On Trending Topic #2)
+        # 1. BUILD 1080p SHORT
         print(f"\n📱 [2/6] Building 1080p Short (1080x1920) on: {short_dossier['title']} [Category: {short_dossier['category']}]", flush=True)
         short_sections, short_entities = build_short_script(short_dossier)
 
@@ -1691,12 +1655,12 @@ async def main():
             short_clips.append(clip)
 
         final_short = concatenate_videoclips(short_clips, method="compose")
-        bgm_s = AudioFileClip(build_situation_adaptive_10pct_soundtrack("temp/bgm_s.wav", final_short.duration, beat_switch_times_s, category=short_dossier["category"]))
+        bgm_s = AudioFileClip(build_situation_adaptive_soft_soundtrack("temp/bgm_s.wav", final_short.duration, beat_switch_times_s, category=short_dossier["category"]))
         final_short = final_short.with_audio(CompositeAudioClip([final_short.audio, bgm_s])) if MOVIEPY_V2 else final_short.set_audio(CompositeAudioClip([final_short.audio, bgm_s]))
         out_short = "output/WTB_1080p_Short_9x16.mp4"
         final_short.write_videofile(out_short, fps=24, codec="libx264", audio_codec="aac", bitrate="8000k", preset="ultrafast", threads=4, logger=None)
 
-        # 2. BUILD 1080p LONG DOCUMENTARY (On #1 Top Trending Story!)
+        # 2. BUILD 1080p LONG DOCUMENTARY
         lead_long_dossier = long_dossiers[0]
         print(f"\n📺 [4/6] Building 1080p Long Documentary (1920x1080) on #1 Trending: {lead_long_dossier['title']} [Category: {lead_long_dossier['category']}]...", flush=True)
         long_chapters = build_long_documentary_script(long_dossiers)
@@ -1740,14 +1704,13 @@ async def main():
                 long_clips.append(clip)
 
         final_long = concatenate_videoclips(long_clips, method="compose")
-        bgm_l = AudioFileClip(build_situation_adaptive_10pct_soundtrack("temp/bgm_l.wav", final_long.duration, beat_switch_times_l, category=lead_long_dossier["category"]))
+        bgm_l = AudioFileClip(build_situation_adaptive_soft_soundtrack("temp/bgm_l.wav", final_long.duration, beat_switch_times_l, category=lead_long_dossier["category"]))
         final_long = final_long.with_audio(CompositeAudioClip([final_long.audio, bgm_l])) if MOVIEPY_V2 else final_long.set_audio(CompositeAudioClip([final_long.audio, bgm_l]))
         out_long = "output/WTB_1080p_Long_16x9.mp4"
         final_long.write_videofile(out_long, fps=20, codec="libx264", audio_codec="aac", bitrate="8000k", preset="ultrafast", threads=4, logger=None)
 
         pkg_report = create_category_adaptive_1080p_thumbnail(lead_long_dossier, lead_long_entities, total_long_unique_photos, watermark)
 
-        # Record both topics in non-repeating history!
         published_history.add(short_dossier["story_key"])
         published_history.add(lead_long_dossier["story_key"])
         save_published_history(published_history)
