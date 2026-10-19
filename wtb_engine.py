@@ -46,7 +46,7 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefCloudFactory/11.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefCloudFactory/11.5 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 # ==============================================================================
@@ -86,7 +86,7 @@ COUNTRY_GEO_DB = {
 BANNED_IMAGE_SOURCES = [
     "alamy", "dreamstime", "freepik", "shutterstock", "gettyimages", "istockphoto",
     "123rf", "depositphotos", "vecteezy", "canstock", "bigstock", "sputnik",
-    "ytimg", "youtube", " cartoon", "clipart", "meme", "watermark"
+    "ytimg", "youtube", "cartoon", "clipart", "meme", "watermark"
 ]
 
 PERSON_WIKI_MAP = {
@@ -134,6 +134,9 @@ VISUAL_PROP_DICTIONARY = {
     "military": ("ARMED FORCES DEPLOYMENT", "Armed forces", "military soldiers armored vehicles"),
     "crews": ("EMERGENCY RESCUE CREWS", "Emergency medical services", "emergency response vehicles"),
     "injured": ("MEDICAL EMERGENCY RESPONSE", "Hospital", "emergency medical hospital transport"),
+    "violence": ("SECURITY CRACKDOWN", "Riot police", "police security forces street patrol"),
+    "protest": ("PUBLIC DEMONSTRATION", "Protest", "crowd street protest police"),
+    "pressure": ("GOVERNMENT UNDER PRESSURE", "National Assembly (France)", "parliament government building"),
     "missile": ("BALLISTIC MISSILE SYSTEM", "Surface-to-air missile", "missile launcher defense system"),
     "oil": ("GLOBAL OIL & ENERGY SUPPLY", "Petroleum industry", "oil refinery tanker ship"),
     "gas": ("NATURAL GAS PIPELINE", "Natural gas", "natural gas pipeline terminal"),
@@ -204,9 +207,7 @@ def build_wtb_watermark(width=140, height=82):
     return logo.resize((width, height), resample_mode)
 
 # ==============================================================================
-# 2. STRICT VERIFIED RESEARCH ENGINE (Requires Source URL + Pub Date Per Claim!)
-#    - Skips any story lacking >=3 verified facts!
-#    - Never uses estimated/hardcoded GDP numbers!
+# 2. STRICT VERIFIED RESEARCH ENGINE (Source URL + Pub Date Per Claim)
 # ==============================================================================
 BANNED_PHRASES = [
     "some readers may find this article distressing",
@@ -250,22 +251,19 @@ def normalize_pub_date(raw_date):
     return cleaned[:25]
 
 def classify_story_mood_and_category(title, claims_text):
+    """Uses strict word-boundary regex (\b) so 'ai' never matches inside 'said' or 'against'!"""
     comb = f"{title} {claims_text}".lower()
-    if any(w in comb for w in ["ai", "artificial intelligence", "chip", "semiconductor", "quantum", "space", "nasa", "satellite", "cyber", "tech", "robot"]):
+    if any(re.search(rf"\b{re.escape(w)}\b", comb) for w in ["ai", "artificial intelligence", "microchip", "semiconductor", "quantum", "spacecraft", "nasa", "cyber", "robotics"]):
         return "ai_tech_science"
-    if any(w in comb for w in ["gdp", "inflation", "market", "stock", "trade", "tariff", "oil", "bank", "interest rate", "economy", "debt"]):
+    if any(re.search(rf"\b{re.escape(w)}\b", comb) for w in ["gdp", "inflation", "stock market", "tariff", "tariffs", "central bank", "interest rate", "economy", "debt"]):
         return "economy_markets"
-    if any(w in comb for w in ["climate", "amazon", "deforestation", "emissions", "wildfire", "flood", "earthquake", "hurricane", "renewable"]):
+    if any(re.search(rf"\b{re.escape(w)}\b", comb) for w in ["climate", "amazon", "deforestation", "emissions", "wildfire", "flood", "earthquake", "hurricane"]):
         return "environment_climate"
-    if any(w in comb for w in ["missile", "strike", "offensive", "sabotage", "troops", "war", "attack", "killed", "military", "drone", "bomber"]):
+    if any(re.search(rf"\b{re.escape(w)}\b", comb) for w in ["missile", "strike", "offensive", "sabotage", "troops", "war", "attack", "killed", "military", "drone", "bomber", "violence", "fire"]):
         return "war_crisis"
     return "geopolitics_diplomacy"
 
 def fetch_verified_world_bank_gdp(iso3):
-    """
-    Fetches REAL World Bank GDP Growth data.
-    If API fails or returns fewer than 3 real data points, returns None so the chart is HIDDEN (Zero estimated values!).
-    """
     try:
         wb_u = f"https://api.worldbank.org/v2/country/{iso3}/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=8"
         wbr = requests.get(wb_u, headers=HEADERS_WEB, timeout=6).json()
@@ -308,7 +306,7 @@ def discover_and_build_dossiers():
             link = getattr(entry, "link", "").strip()
             pub_date = normalize_pub_date(getattr(entry, "published", "") or getattr(entry, "updated", ""))
             if not link or not pub_date:
-                continue  # Must have verifiable source URL & date!
+                continue
 
             seen.add(title.lower())
             raw_sum = BeautifulSoup(getattr(entry, "summary", ""), "html.parser").get_text()
@@ -339,7 +337,6 @@ def discover_and_build_dossiers():
                         "published_date": pub_date
                     })
 
-            # Scrape full article paragraphs from the verified link
             try:
                 r = requests.get(link, headers=HEADERS_WEB, timeout=7)
                 soup = BeautifulSoup(r.text, "html.parser")
@@ -370,7 +367,6 @@ def discover_and_build_dossiers():
             except Exception:
                 pass
 
-            # Cross-verify with secondary RSS outlets (saving each outlet's real URL & pubDate!)
             if len(verified_claims) < 4:
                 try:
                     kw_q = " ".join(re.findall(r"[A-Za-z]{4,}", title)[:4])
@@ -396,9 +392,7 @@ def discover_and_build_dossiers():
                 except Exception:
                     pass
 
-            # STRICT RULE: Skip story if fewer than 3 verified claims with real URLs & dates exist!
             if len(verified_claims) < 3:
-                print(f"   ⏭️ Skipping '{title[:45]}...' (Insufficient verified claims: {len(verified_claims)})", flush=True)
                 continue
 
             raw_facts = [c["text"] for c in verified_claims]
@@ -422,7 +416,6 @@ def discover_and_build_dossiers():
             except Exception:
                 pass
 
-            # Fetch REAL World Bank GDP data (returns None if unavailable—never uses estimated values!)
             wb_data = fetch_verified_world_bank_gdp(iso3)
             category = classify_story_mood_and_category(title, " ".join(raw_facts[:4]))
 
@@ -619,20 +612,14 @@ def build_long_documentary_script(dossiers):
     return chapters
 
 # ==============================================================================
-# 4. CRYSTAL-CLEAR 1080p VISUAL ENGINE + REAL ARCHIVAL VIDEO B-ROLL + BESPOKE GRAPHICS
+# 4. CRYSTAL-CLEAR 1080p VISUAL ENGINE + REAL ARCHIVAL VIDEO B-ROLL
 # ==============================================================================
 def validate_and_enhance_1080p(im, existing_hashes, min_w=500, min_h=320):
-    """
-    1. Rejects small/blurry thumbnails (requires min_w x min_h and Laplacian sharpness >= 38).
-    2. Rejects stock-watermarked or text-banner images.
-    3. Applies Lanczos upscale + UnsharpMask for crisp 1080p clarity.
-    """
     im = im.convert("RGB")
     w, h = im.size
     if w < min_w or h < min_h:
         return None
 
-    # Gentle 4% border trim (never cuts into heads/faces!)
     im = im.crop((int(w * 0.04), int(h * 0.04), int(w * 0.96), int(h * 0.92)))
 
     arr = np.asarray(im.resize((80, 80)), dtype=np.float32)
@@ -645,7 +632,6 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=500, min_h=320):
     if (white_px / float(80 * 80)) > 0.34:
         return None
 
-    # Laplacian sharpness check to reject blurry images
     gray_cv = cv2.cvtColor(np.array(im.resize((320, 200))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
     if blur_score < 38.0 or im.entropy() < 6.2:
@@ -668,42 +654,26 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=500, min_h=320):
     return im
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
-    """
-    PRIORITY 1: Exact Person / Leader mentioned or speaking in `beat_text`!
-    PRIORITY 2: Exact Visual Prop / Object / Action mentioned in `beat_text`!
-    PRIORITY 3: Capitalized Entity in `beat_text`!
-    """
     low = beat_text.lower()
     c_prof = dossier["country_profile"]
 
-    # Priority 1: Check if a specific leader/person is mentioned in this exact beat!
     for p_key, (wiki_page, badge_lbl) in PERSON_WIKI_MAP.items():
         if re.search(rf"\b{re.escape(p_key)}\b", low):
             return badge_lbl, wiki_page, f"{wiki_page} official press conference", True
 
-    # Priority 2: Check if a concrete visual prop/action is spoken in this beat!
     for word_key, (prop_badge, wiki_concept, search_q) in VISUAL_PROP_DICTIONARY.items():
         if re.search(rf"\b{re.escape(word_key)}\b", low):
             return prop_badge, wiki_concept, f"{search_q} {c_prof['name']}", False
 
-    # Priority 3: Check capitalized proper nouns in the beat
     caps = [w for w in re.findall(r"\b[A-Z][a-z]{3,}\b", beat_text) if w not in {"Here", "While", "Behind", "Look", "This", "Step", "Watch", "Whether", "Meanwhile", "Crucially", "Inside", "Prime", "Minister", "President"}]
     if caps:
         entity_phrase = " ".join(caps[:2])
         return f"FOCUS • {entity_phrase.upper()}", entity_phrase, f"{entity_phrase} {c_prof['name']}", False
 
-    # Priority 4: Rotate through verified story entities
     chosen_ent = entities[beat_idx % len(entities)]
     return f"SUBJECT • {chosen_ent.upper()[:24]}", chosen_ent, f"{chosen_ent} {c_prof['name']}", False
 
 def fetch_high_res_visual_for_beat(wiki_target, search_query, existing_hashes, failed_queries, is_person=False, tag_id="beat"):
-    """
-    WATERMARK-FREE 1080p HD FETCHER:
-    1. Wikipedia Official High-Res PageImage (`pithumbsize=1920`) -> Best for exact Leaders, Places & Concepts!
-    2. Wikimedia Commons File Namespace (`gsrnamespace=6`, `iiurlwidth=1920`) -> True 1080p/2K photography, ZERO Alamy/Dreamstime watermarks!
-    3. Bing Large Image Filter (`qft=+filterui:imagesize-large`) with strict Stock-Watermark Blocklist!
-    """
-    # Engine 1: Wikipedia Official 1920px PageImages
     try:
         w_api = "https://en.wikipedia.org/w/api.php"
         params = {
@@ -726,7 +696,6 @@ def fetch_high_res_visual_for_beat(wiki_target, search_query, existing_hashes, f
     except Exception:
         pass
 
-    # Engine 2: Wikimedia Commons File Namespace 6 (1920px Full HD Photography, Zero Stock Watermarks!)
     for comm_q in [search_query, wiki_target]:
         try:
             api = "https://commons.wikimedia.org/w/api.php"
@@ -755,7 +724,6 @@ def fetch_high_res_visual_for_beat(wiki_target, search_query, existing_hashes, f
         except Exception:
             pass
 
-    # Engine 3: Bing Large-Size Image Filter (Strictly blocking Alamy, Dreamstime, Freepik, Shutterstock, Getty!)
     try:
         b_url = f"https://www.bing.com/images/search?q={urllib.parse.quote(search_query + ' -site:alamy.com -site:dreamstime.com -site:freepik.com -site:shutterstock.com')}&qft=+filterui:imagesize-large&form=IRFLTR&first=1"
         r = requests.get(b_url, headers=HEADERS_WEB, timeout=7)
@@ -778,18 +746,19 @@ def fetch_high_res_visual_for_beat(wiki_target, search_query, existing_hashes, f
     failed_queries.append(search_query)
     return None
 
-def fetch_real_stock_or_archival_video_broll(wiki_target, search_query, tag_id="vclip"):
+def fetch_real_stock_or_archival_video_broll(wiki_target, country_name, capital_name, tag_id="vclip"):
     """
-    Fetches real moving stock/archival video footage from Wikimedia Commons (`filetype:video`, `gsrnamespace=6`)
-    when relevant to the beat!
+    Fetches real moving stock/archival video footage from Wikimedia Commons (`filetype:video`, `gsrnamespace=6`),
+    supporting `.webm`, `.mp4`, and `.ogv` via FFmpeg!
     """
-    for vq in [wiki_target, " ".join(search_query.split()[:2])]:
+    queries = [wiki_target, f"{country_name} {capital_name}", f"{country_name} government", "diplomatic summit"]
+    for vq in queries:
         try:
             api = "https://commons.wikimedia.org/w/api.php"
             params = {
                 "action": "query", "generator": "search",
                 "gsrsearch": f"filetype:video {vq}",
-                "gsrnamespace": "6", "gsrlimit": 4,
+                "gsrnamespace": "6", "gsrlimit": 6,
                 "prop": "imageinfo", "iiprop": "url|size", "format": "json"
             }
             r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=7).json()
@@ -797,32 +766,26 @@ def fetch_real_stock_or_archival_video_broll(wiki_target, search_query, tag_id="
                 ii = pg.get("imageinfo", [{}])[0]
                 vu = ii.get("url", "")
                 vsz = ii.get("size", 99999999)
-                if vu.lower().endswith((".webm", ".mp4")) and 120000 < vsz < 14000000:
+                if vu.lower().endswith((".webm", ".mp4", ".ogv")) and 80000 < vsz < 18000000:
                     vr = requests.get(vu, headers=HEADERS_WIKI, timeout=12)
-                    if vr.status_code == 200 and len(vr.content) > 120000:
-                        ext = ".webm" if vu.lower().endswith(".webm") else ".mp4"
+                    if vr.status_code == 200 and len(vr.content) > 80000:
+                        ext = os.path.splitext(vu.lower())[1]
                         out_v = f"temp/{tag_id}_broll{ext}"
                         with open(out_v, "wb") as f:
                             f.write(vr.content)
                         vc = VideoFileClip(out_v)
                         GLOBAL_OPEN_VCLIPS.append(vc)
-                        if vc.duration >= 3.5:
+                        if vc.duration >= 3.0:
                             return {
                                 "vclip": vc,
                                 "start_t": min(1.0, vc.duration * 0.15),
-                                "label": f"FOOTAGE • {wiki_target.upper()[:24]}"
+                                "label": f"FOOTAGE • {vq.upper()[:24]}"
                             }
         except Exception:
             pass
     return None
 
 def generate_bespoke_speech_infographic_1080p(beat_text, prop_badge, claim_meta, dossier):
-    """
-    RULE: "स्पीच के अकॉर्डिंग सब विजुअल मिलेगा और नहीं मिलता तो बनाना पड़ता है।"
-    When external photo APIs fail for a specific beat, dynamically creates a high-resolution
-    1920x1080 Bespoke Speech-Matched Infographic Canvas visualizing the exact words, numbers,
-    entities, and verified source URL/date of that beat!
-    """
     W, H = 1920, 1080
     c_prof = dossier["country_profile"]
     canvas = Image.new("RGB", (W, H), (10, 16, 28))
@@ -833,7 +796,6 @@ def generate_bespoke_speech_infographic_1080p(beat_text, prop_badge, claim_meta,
     for y in range(0, H, 80):
         draw.line([(0, y), (W, y)], fill=(0, 210, 255, 22), width=1)
 
-    # Extract key terms & numbers from the beat speech
     key_nums = re.findall(r"(\$?\d+(?:,\d+)*(?:\.\d+)?\s*(?:%|million|billion|trillion|years|days|hours|km|troops|dead|injured)?)", beat_text, re.I)
     stat_str = key_nums[0].strip().upper() if (key_nums and len(key_nums[0].strip()) >= 2) else c_prof["name"]
 
@@ -852,20 +814,8 @@ def generate_bespoke_speech_infographic_1080p(beat_text, prop_badge, claim_meta,
 
 # ==============================================================================
 # 5. FACE-BOUNDING-BOX SAFE CROPPING & BLURRED BACKDROP FITTER
-#    Rule: "face bounding boxes के आधार पर crop करो और चेहरे के चारों ओर अतिरिक्त जगह रखो।
-#           अगर सुरक्षित crop संभव नहीं है, तो पूरी फोटो को blurred background पर fit करो।
-#           Thumbnail में भी यही नियम लगना चाहिए।"
 # ==============================================================================
 def detect_padded_face_crop_or_safe_fit(im, target_w, target_h):
-    """
-    1. Detects human faces via OpenCV Haar Cascade.
-    2. Computes the union bounding box of detected faces and adds generous margin
-       (65% top headroom, 85% bottom chin/shoulders room, 55% left/right room).
-    3. Checks if a crop of aspect ratio `target_w / target_h` can contain the entire padded face box
-       WITHOUT going outside the image or zooming more than 1.45x.
-    4. If safe crop is NOT possible (or if the image is already a tight portrait/wide shot),
-       fits the ENTIRE un-cropped photo onto a softly blurred 1080p background!
-    """
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
     iw, ih = im.size
     target_ratio = target_w / float(target_h)
@@ -884,7 +834,6 @@ def detect_padded_face_crop_or_safe_fit(im, target_w, target_h):
             faces = []
 
     if len(faces) > 0:
-        # Union of all detected faces
         min_x = min(f[0] for f in faces)
         min_y = min(f[1] for f in faces)
         max_x = max(f[0] + f[2] for f in faces)
@@ -892,7 +841,6 @@ def detect_padded_face_crop_or_safe_fit(im, target_w, target_h):
         box_w = max_x - min_x
         box_h = max_y - min_y
 
-        # Add generous padding around the face(s) so hair, forehead, chin, and shoulders are never cut!
         pad_x1 = min_x - int(box_w * 0.55)
         pad_y1 = min_y - int(box_h * 0.65)
         pad_x2 = max_x + int(box_w * 0.55)
@@ -901,9 +849,7 @@ def detect_padded_face_crop_or_safe_fit(im, target_w, target_h):
         req_w = pad_x2 - pad_x1
         req_h = pad_y2 - pad_y1
 
-        # Check if the padded face box fits safely inside the source image
         if pad_x1 >= 0 and pad_y1 >= 0 and pad_x2 <= iw and pad_y2 <= ih and req_w <= iw * 0.92 and req_h <= ih * 0.92:
-            # Expand crop box to match `target_ratio` while containing `[pad_x1, pad_y1, pad_x2, pad_y2]`
             crop_w = max(req_w, int(req_h * target_ratio))
             crop_h = int(crop_w / target_ratio)
             if crop_w <= iw and crop_h <= ih:
@@ -914,7 +860,6 @@ def detect_padded_face_crop_or_safe_fit(im, target_w, target_h):
                 cropped = im.crop((left, top, left + crop_w, top + crop_h))
                 return cropped.resize((target_w, target_h), resample_mode)
 
-    # SAFE FALLBACK: Fit the ENTIRE un-cropped photo onto a softly blurred 1080p background!
     bg = im.copy().resize((target_w, target_h), resample_mode).filter(ImageFilter.GaussianBlur(radius=32))
     bg = ImageEnhance.Brightness(bg).enhance(0.32)
 
@@ -929,9 +874,6 @@ def detect_padded_face_crop_or_safe_fit(im, target_w, target_h):
     return bg
 
 def build_clean_1080p_stage(im, W, H):
-    """
-    Uses `detect_padded_face_crop_or_safe_fit` so faces are NEVER cut off in either 9:16 Shorts or 16:9 Long videos!
-    """
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
     if W < H:
         bg = im.copy().resize((W, H), resample_mode).filter(ImageFilter.GaussianBlur(radius=30))
@@ -1079,7 +1021,6 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
             prop_badge, wiki_target, search_q, is_person = extract_speaker_or_prop_for_beat(b_txt, dossier, entities, global_beat_idx)
             low_b = b_txt.lower()
 
-            # Check if this beat is the single dedicated Geographic Map beat
             if not map_used_in_video and (sec_role == "GEOGRAPHY" or re.search(r"\b(geography|corridor|neighboring borders|centered around)\b", low_b)):
                 b_type = "MAP_LOCATOR_BEAT"
                 map_used_in_video = True
@@ -1088,10 +1029,9 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
                 vseg = None
                 stage_1 = osm_stage
             else:
-                # 1. Try real moving archival/stock video B-roll for action/event beats (if not a specific person portrait beat)
                 vseg = None
-                if not is_person and global_beat_idx % 4 == 1:
-                    vseg = fetch_real_stock_or_archival_video_broll(wiki_target, search_q, tag_id=f"{tag_prefix}_v{global_beat_idx}")
+                if not is_person and moving_video_beats < 2 and global_beat_idx % 4 == 1:
+                    vseg = fetch_real_stock_or_archival_video_broll(wiki_target, c_prof["name"], c_prof["capital"], tag_id=f"{tag_prefix}_v{global_beat_idx}")
 
                 if vseg is not None:
                     b_type = "VIDEO_BROLL_BEAT"
@@ -1099,18 +1039,15 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
                     beat_im = unique_real_photos[-1] if unique_real_photos else osm_map
                     stage_1 = build_clean_1080p_stage(beat_im, W, H)
                 else:
-                    # 2. Fetch high-res watermark-free photo for this exact speaker/prop!
                     beat_im = fetch_high_res_visual_for_beat(
                         wiki_target, search_q, existing_hashes, failed_queries, is_person=is_person, tag_id=f"{tag_prefix}_b{global_beat_idx}"
                     )
                     if beat_im is not None:
                         unique_real_photos.append(beat_im)
                     else:
-                        # 3. Rule: "स्पीच के अकॉर्डिंग सब विजुअल मिलेगा और नहीं मिलता तो बनाना पड़ता है"
                         beat_im = generate_bespoke_speech_infographic_1080p(b_txt, prop_badge, claim_meta, dossier)
                         generated_infographic_beats += 1
 
-                    # Select semantic overlay mode (Hide GDP chart if wb_data is None!)
                     if has_strict_economic_context(b_txt) and dossier.get("wb_data") is not None and "DATA_CHART_BEAT" not in used_modes_in_sec:
                         b_type = "DATA_CHART_BEAT"
                     elif re.search(r"\b(timeline|overnight|step by step|previously|september|october|days before)\b", low_b) and "TIMELINE_GRAPH_BEAT" not in used_modes_in_sec:
@@ -1149,7 +1086,7 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
             })
             global_beat_idx += 1
 
-    min_expected_photos = 8 if W < H else 14
+    min_expected_photos = min(12, max(3, int(len(planned_beats) * 0.55)))
     run_status = "PASS"
     if len(unique_real_photos) < min_expected_photos or reused_photo_beats > 2:
         run_status = "WARNING: QUALITY_REVIEW_REQUIRED (LOW_UNIQUE_PHOTOS)"
@@ -1189,7 +1126,6 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             frame = extract_animated_frame_from_stage(beat["stage_1"], W, H, bp, pan_dir=beat["pan_dir"])
         draw = ImageDraw.Draw(frame, "RGBA")
     elif b_type == "SPLIT_COMPARE_BEAT":
-        resample_mode = getattr(Image, "Resampling", Image).LANCZOS
         frame = Image.new("RGBA", (W, H), (8, 12, 22, 255))
         if is_short:
             top_im = detect_padded_face_crop_or_safe_fit(beat["primary_im"], W, 450)
@@ -1214,7 +1150,6 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     cy_card = 1145 if is_short else (H - 355)
     bx1, bx2 = (42, W - 42) if is_short else (64, 1340)
 
-    # Source Citation Line (Required: Source URL domain + Publication Date on every claim!)
     src_domain = urllib.parse.urlparse(claim_meta["source_url"]).netloc.replace("www.", "")
     citation_str = f"SOURCE: {claim_meta['source_name'].upper()} ({src_domain}) • PUBLISHED: {claim_meta['published_date']}"
 
@@ -1434,33 +1369,21 @@ class VoiceAndSubtitleEngine:
         return strip
 
 def build_situation_adaptive_10pct_soundtrack(filename, duration, beat_switch_times, category="geopolitics_diplomacy"):
-    """
-    RULE: "10% पे साउंड चलना चाहिए और अलग-अलग साउंड चलना चाहिए हर वीडियो में। जैसे सिचुएशन हो, वैसा साउंड चलना चाहिए।"
-    Generates an audible, mid-range harmonic soundtrack (180Hz - 720Hz) tailored to `category`,
-    normalized to exactly 10% (0.10) amplitude so it is clearly audible on phones & laptops without overpowering voice!
-    """
     sr = 22050
     n_samples = int(sr * duration)
     t = np.linspace(0, duration, n_samples, endpoint=False)
 
-    # Situation-specific chord progressions & rhythmic tempos
     if category == "war_crisis":
-        # Tense rhythmic minor pulse (D minor / A minor: 146.8Hz, 220Hz, 261.6Hz, 329.6Hz)
         f1, f2, f3, tempo = 146.83, 220.0, 261.63, 0.48
     elif category == "ai_tech_science":
-        # Futuristic crystalline synth arpeggio (C major 7 / G: 261.6Hz, 329.6Hz, 392Hz, 493.8Hz)
         f1, f2, f3, tempo = 261.63, 329.63, 392.00, 0.36
     elif category == "economy_markets":
-        # Driving analytical pulse (E minor / B: 164.8Hz, 246.9Hz, 293.6Hz)
         f1, f2, f3, tempo = 164.81, 246.94, 293.66, 0.42
     elif category == "environment_climate":
-        # Warm atmospheric documentary pad (F major / C: 174.6Hz, 261.6Hz, 349.2Hz)
         f1, f2, f3, tempo = 174.61, 261.63, 349.23, 0.65
     else:
-        # Investigative geopolitical score (C minor / G: 130.8Hz, 196.0Hz, 261.6Hz, 311.1Hz)
         f1, f2, f3, tempo = 130.81, 196.00, 311.13, 0.54
 
-    # Rich multi-octave harmonics (audible on all phone/laptop speakers!)
     pad = (
         0.40 * np.sin(2 * np.pi * f1 * t)
         + 0.35 * np.sin(2 * np.pi * f2 * t)
@@ -1472,11 +1395,9 @@ def build_situation_adaptive_10pct_soundtrack(filename, duration, beat_switch_ti
     rhythm = 0.35 * np.sin(2 * np.pi * (f3 * 1.5) * beat_phase) * np.exp(-beat_phase * 7.5)
 
     raw_music = (pad * lfo) + rhythm
-    # Normalize music to exact 10% (0.10) peak amplitude!
     max_amp = max(float(np.max(np.abs(raw_music))), 1e-4)
     audio = (raw_music / max_amp) * 0.10
 
-    # Add subtle transition whoosh/chime on beat switches
     for bt in beat_switch_times:
         idx = int(bt * sr)
         if idx < n_samples:
@@ -1494,16 +1415,10 @@ def build_situation_adaptive_10pct_soundtrack(filename, duration, beat_switch_ti
     return filename
 
 def create_category_adaptive_1080p_thumbnail(dossier, entities, unique_photos, watermark):
-    """
-    Fixes the half-cropped face bug in[cite: 133] AND adapts the thumbnail theme to the story category
-    (AI/Tech, Economy/Data, Environment, War/Crisis, Diplomacy) so every thumbnail doesn't look identical!
-    Places the subject photo safely on the RIGHT side (`x=760..1920`) using `detect_padded_face_crop_or_safe_fit`
-    so the left text panel (`x=0..780`) NEVER covers the person's eye or face!
-    """
     W, H = 1920, 1080
     c_prof = dossier["country_profile"]
     cat = dossier.get("category", "geopolitics_diplomacy")
-    p1 = unique_photos[0]
+    p1 = unique_photos[0] if unique_photos else build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080)
     ent_main = entities[0].upper() if entities else c_prof["name"]
 
     theme_palettes = {
@@ -1516,13 +1431,11 @@ def create_category_adaptive_1080p_thumbnail(dossier, entities, unique_photos, w
     bg_col, badge_col, box_col, sub_hook = theme_palettes.get(cat, theme_palettes["geopolitics_diplomacy"])
 
     canvas = Image.new("RGBA", (W, H), bg_col + (255,))
-    # Fit subject image safely into the right 1160x1080 stage (face-padded or full fit on blurred backdrop!)
     right_stage = detect_padded_face_crop_or_safe_fit(p1, 1160, H)
     right_stage = ImageEnhance.Contrast(right_stage).enhance(1.14)
     canvas.paste(right_stage, (760, 0))
 
     draw = ImageDraw.Draw(canvas, "RGBA")
-    # Smooth gradient blend only across the seam (x=720..960) so the face on x=960..1920 is 100% unobstructed!
     for x in range(0, 960):
         if x < 740:
             alpha = 255
@@ -1559,6 +1472,9 @@ def create_category_adaptive_1080p_thumbnail(dossier, entities, unique_photos, w
         "selected_title": selected_title,
         "hashtags": ["#WorldTalkBrief", f"#{c_prof['name'].replace(' ', '')}", "#Geopolitics", "#WorldNews"]
     }
+
+# Alias so both function names work seamlessly
+create_1080p_thumbnails = create_category_adaptive_1080p_thumbnail
 
 def try_youtube_auto_upload(video_path, title, description, tags, is_short=False, thumbnail_path=None):
     token_b64 = os.environ.get("YOUTUBE_TOKEN_JSON_B64", "").strip()
@@ -1694,7 +1610,7 @@ async def main():
         out_long = "output/WTB_1080p_Long_16x9.mp4"
         final_long.write_videofile(out_long, fps=20, codec="libx264", audio_codec="aac", bitrate="8000k", preset="ultrafast", threads=4, logger=None)
 
-        pkg_report = create_1080p_thumbnails(lead_long_dossier, lead_long_entities, total_long_unique_photos, watermark)
+        pkg_report = create_category_adaptive_1080p_thumbnail(lead_long_dossier, lead_long_entities, total_long_unique_photos, watermark)
 
         agg_long_stats = {
             "run_status": "WARNING: QUALITY_REVIEW_REQUIRED" if any("WARNING" in s["run_status"] for s in long_stats_list) else "PASS",
