@@ -1804,7 +1804,7 @@ async def main():
         long_dossiers = [lead_long_dossier, sec_long_dossier] if sec_long_dossier else [lead_long_dossier]
 
         # 1. BUILD 1080p SHORT (Syntax Fixed!)
-        print(f"\n📱 [2/6] Building 1080p Short (1080x1920) on: {short_dossier['title']}} | Country: {short_dossier['country_profile']['name']}]", flush=True)
+        print(f"\n📱 [2/6] Building 1080p Short (1080x1920) on: {short_dossier['title']} | Country: {short_dossier['country_profile']['name']}]", flush=True)
         short_sections, short_entities = build_short_script(short_dossier, variant_idx=len(hist_obj["published_keys"]))
 
         for idx, sec in enumerate(short_sections):
@@ -1839,7 +1839,7 @@ async def main():
         short_pkg = create_category_adaptive_1080p_thumbnail(short_dossier, short_entities, s_unique_photos, watermark, out_path="output/WTB_1080p_Short_Thumb.jpg")
 
         # 2. BUILD 1080p LONG DOCUMENTARY (Syntax Fixed!)
-        print(f"\n📺 [4/6] Building 1080p Long Documentary (1920x1080) on #1 Trending: {lead_long_dossier['title']}} | Country: {lead_long_dossier['country_profile']['name']}]...", flush=True)
+        print(f"\n📺 [4/6] Building 1080p Long Documentary (1920x1080) on #1 Trending: {lead_long_dossier['title']} | Country: {lead_long_dossier['country_profile']['name']}]...", flush=True)
         long_chapters = build_long_documentary_script(long_dossiers)
         lead_long_entities = extract_story_entities(lead_long_dossier)
 
