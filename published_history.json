@@ -1,8 +1,10 @@
 {
-  "updated_at": "2026-10-20T10:04:15.551237",
+  "updated_at": "2026-10-20T10:36:28.008070",
   "published_keys": [
+    "alberta_voters_reject_a_move_toward",
+    "ukrainians_dying_because_us_restricting_intelligence",
     "us_grants_deportation_reprieve_to_migrants",
-    "ukrainians_dying_because_us_restricting_intelligence"
+    "zelenskyy_to_hold_talks_on_russia"
   ],
   "event_fingerprints": [
     {
@@ -29,10 +31,39 @@
         "adviser",
         "sharing"
       ]
+    },
+    {
+      "title": "Zelenskyy to hold talks on Russia-Ukraine war with Witkoff, Europeans",
+      "tokens": [
+        "russia",
+        "ukraine",
+        "witkoff",
+        "zelenskyy",
+        "hold",
+        "europeans",
+        "talks"
+      ]
+    },
+    {
+      "title": "Alberta voters reject a move toward independence in referendum backing Canadian unity",
+      "tokens": [
+        "canadian",
+        "alberta",
+        "independence",
+        "backing",
+        "reject",
+        "voters",
+        "unity",
+        "referendum",
+        "move",
+        "toward"
+      ]
     }
   ],
   "last_sources": [
     "The Guardian",
-    "BBC World"
+    "BBC World",
+    "Al Jazeera",
+    "NPR World"
   ]
 }
