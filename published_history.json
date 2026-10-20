@@ -1,16 +1,18 @@
 {
-  "updated_at": "2026-10-20T16:08:07.525509",
+  "updated_at": "2026-10-20T21:07:22.913614",
   "published_keys": [
-    "us_grants_deportation_reprieve_to_migrants",
-    "alberta_voters_reject_a_move_toward",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "drone_attack_near_market_kills_80",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
     "tinubu_must_go_nigeria_s_northern",
-    "kenyan_starvation_cult_leader_guilty_of",
     "zelensky_and_us_envoys_holding_oslo",
     "trump_makes_russia_friendly_moves_as",
+    "ukrainians_dying_because_us_restricting_intelligence",
     "seventh_day_of_violent_clashes_between",
-    "zelenskyy_to_hold_talks_on_russia"
+    "kenyan_starvation_cult_leader_guilty_of",
+    "drone_attack_near_market_kills_80",
+    "us_grants_deportation_reprieve_to_migrants",
+    "alberta_voters_reject_a_move_toward",
+    "zelenskyy_to_hold_talks_on_russia",
+    "doj_charges_28_with_voting_crimes"
   ],
   "event_fingerprints": [
     {
@@ -140,6 +142,30 @@
         "oslo",
         "rubio"
       ]
+    },
+    {
+      "title": "DOJ charges 28 with voting crimes. And, Tik. Tok ignored staff's child safety concerns",
+      "tokens": [
+        "child",
+        "staff",
+        "charges",
+        "concerns",
+        "voting",
+        "safety",
+        "ignored",
+        "crimes"
+      ]
+    },
+    {
+      "title": "Lebanon faces uncertainty as UNIFIL mandate nears end",
+      "tokens": [
+        "mandate",
+        "uncertainty",
+        "faces",
+        "unifil",
+        "lebanon",
+        "nears"
+      ]
     }
   ],
   "last_sources": [
@@ -152,6 +178,8 @@
     "DW News",
     "NPR World",
     "The Guardian",
-    "BBC World"
+    "BBC World",
+    "NPR World",
+    "DW News"
   ]
 }
