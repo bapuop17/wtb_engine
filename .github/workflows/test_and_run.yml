@@ -3,7 +3,8 @@ name: World Talk Brief 1080p Cloud Engine (Test + 24x7 Auto)
 on:
   workflow_dispatch:
   schedule:
-    # Runs 24/7 across all global timezones (Every 3 hours = 8 runs/day -> 16 Videos/Day with backup tokens!)
+    # 24 घंटे में हर 3 घंटे पर अपने-आप चलेगा (दिन में 8 बार = 8 Long + 8 Short = 16 Videos रोज़ाना!)
+    # भारतीय समय (IST): सुबह 5:30, 8:30, 11:30, दोपहर 2:30, शाम 5:30, रात 8:30, 11:30, और रात 2:30 बजे
     - cron: '0 0,3,6,9,12,15,18,21 * * *'
 
 permissions:
@@ -12,7 +13,7 @@ permissions:
 jobs:
   build-1080p-videos:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
 
     steps:
       - name: Checkout Repository
@@ -38,6 +39,7 @@ jobs:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_2_B64: ${{ secrets.YOUTUBE_TOKEN_2_B64 }}
           YOUTUBE_TOKEN_3_B64: ${{ secrets.YOUTUBE_TOKEN_3_B64 }}
+          YOUTUBE_TOKEN_4_B64: ${{ secrets.YOUTUBE_TOKEN_4_B64 }}
         run: |
           python3 -u wtb_engine.py
 
@@ -46,9 +48,10 @@ jobs:
           if [ -f published_history.json ]; then
             git config user.name "WorldTalkBrief-Bot"
             git config user.email "bot@worldtalkbrief.org"
+            git pull --rebase origin main || true
             git add published_history.json
             git diff --staged --quiet || git commit -m "Update published_history.json [skip ci]"
-            git push
+            git push || true
           fi
 
       - name: Upload Generated 1080p Videos & Thumbnail to GitHub Artifacts
