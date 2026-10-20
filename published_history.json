@@ -1,0 +1,38 @@
+{
+  "updated_at": "2026-10-20T10:04:15.551237",
+  "published_keys": [
+    "us_grants_deportation_reprieve_to_migrants",
+    "ukrainians_dying_because_us_restricting_intelligence"
+  ],
+  "event_fingerprints": [
+    {
+      "title": "US grants deportation reprieve to migrants from Ukraine and Sudan",
+      "tokens": [
+        "sudan",
+        "migrants",
+        "reprieve",
+        "ukraine",
+        "deportation",
+        "grants"
+      ]
+    },
+    {
+      "title": "Ukrainians dying because US restricting intelligence sharing, Zelensky adviser stated",
+      "tokens": [
+        "restricting",
+        "zelensky",
+        "because",
+        "dying",
+        "ukrainians",
+        "intelligence",
+        "stated",
+        "adviser",
+        "sharing"
+      ]
+    }
+  ],
+  "last_sources": [
+    "The Guardian",
+    "BBC World"
+  ]
+}
