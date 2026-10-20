@@ -47,7 +47,7 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefCloudFactory/15.1 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefCloudFactory/15.2 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
@@ -315,7 +315,7 @@ def fetch_channel_winning_keywords():
                 if w not in stop_w and w not in winning_kws:
                     winning_kws.append(w)
         if winning_kws:
-            print(f"📈 [Channel Analytics Optimizer] Top Audience-Winning Keywords Detected: {winning_kws[:8]}", flush=True)
+            print("📈 [Channel Analytics Optimizer] Top Audience-Winning Keywords Detected:", winning_kws[:8], flush=True)
         return winning_kws[:10]
     except Exception:
         return []
@@ -1000,7 +1000,7 @@ def fetch_and_transcode_real_video_broll(wiki_target, country_name, capital_name
                             vc = VideoFileClip(clean_mp4)
                             GLOBAL_OPEN_VCLIPS.append(vc)
                             if vc.duration >= 2.2:
-                                print(f"   🎬 [VIDEO B-ROLL LOCKED] 1080p MP4 Clip: '{vq}' ({round(vc.duration, 1)}s)", flush=True)
+                                print("   🎬 [VIDEO B-ROLL LOCKED] 1080p MP4 Clip:", vq, flush=True)
                                 return {
                                     "vclip": vc,
                                     "start_t": 0.0,
@@ -1340,7 +1340,7 @@ def build_prop_driven_storyboard_1080p(sections_list, dossier, entities, W, H, t
         "failed_queries_count": len(failed_queries),
         "failed_queries": failed_queries[:15]
     }
-    print(f"📊 [{tag_prefix.upper()} AUDIT] Status={run_status} | Beats={stats['total_beats']} | Unique Real Photos={stats['unique_real_photos']} | Moving Video={stats['moving_video_beats']} | Bespoke Infographics={stats['generated_infographic_beats']} | Maps={stats['map_beats']} | Failed Queries={stats['failed_queries_count']}", flush=True)
+    print("📊 [AUDIT]", tag_prefix.upper(), "| Status:", run_status, "| Beats:", stats["total_beats"], "| Unique Photos:", stats["unique_real_photos"], "| Moving Video:", stats["moving_video_beats"], flush=True)
     return planned_beats, unique_real_photos, stats
 
 def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_short=True):
@@ -1737,7 +1737,7 @@ def try_youtube_auto_upload(video_path, title, description, tags, is_short=False
     available_tokens = [os.environ.get(k, "").strip() for k in token_envs if os.environ.get(k, "").strip()]
 
     if not available_tokens:
-        print(f"ℹ️ [GitHub Cloud Test Mode] No YouTube API token set yet; saved {video_path} to GitHub Artifacts.", flush=True)
+        print("ℹ️ [GitHub Cloud Test Mode] No YouTube API token set yet; saved to GitHub Artifacts:", video_path, flush=True)
         return None
 
     for t_idx, token_b64 in enumerate(available_tokens):
@@ -1771,11 +1771,11 @@ def try_youtube_auto_upload(video_path, title, description, tags, is_short=False
                 try:
                     yt.thumbnails().set(videoId=vid_id, media_body=MediaFileUpload(thumbnail_path)).execute()
                 except Exception as te:
-                    print(f"⚠️ Thumbnail set warning: {te}", flush=True)
+                    print("⚠️ Thumbnail set warning:", te, flush=True)
             return vid_id
         except Exception as e:
             err_str = str(e)
-            print(f"⚠️ Token #{t_idx+1} upload attempt failed: {err_str[:120]}", flush=True)
+            print(f"⚠️ Token #{t_idx+1} upload attempt failed:", err_str[:120], flush=True)
             if "quotaExceeded" in err_str and t_idx + 1 < len(available_tokens):
                 print(f"🔄 Switching to backup YouTube API Token #{t_idx+2}...", flush=True)
                 continue
@@ -1783,7 +1783,7 @@ def try_youtube_auto_upload(video_path, title, description, tags, is_short=False
     return None
 
 # ==============================================================================
-# MASTER EXECUTION
+# MASTER EXECUTION (100% SYNTAX-SAFE PRINT STATEMENTS)
 # ==============================================================================
 async def main():
     try:
@@ -1803,8 +1803,8 @@ async def main():
         sec_long_dossier = next((d for d in dossiers[1:] if d["title"] != short_dossier["title"]), None)
         long_dossiers = [lead_long_dossier, sec_long_dossier] if sec_long_dossier else [lead_long_dossier]
 
-        # 1. BUILD 1080p SHORT (Syntax Fixed!)
-        print(f"\n📱 [2/6] Building 1080p Short (1080x1920) on: {short_dossier['title']}} | Country: {short_dossier['country_profile']['name']}]", flush=True)
+        # 1. BUILD 1080p SHORT
+        print("\n📱 [2/6] Building 1080p Short (1080x1920) on:", short_dossier["title"], "| Country:", short_dossier["country_profile"]["name"], "| Source:", short_dossier["source_name"], flush=True)
         short_sections, short_entities = build_short_script(short_dossier, variant_idx=len(hist_obj["published_keys"]))
 
         for idx, sec in enumerate(short_sections):
@@ -1838,8 +1838,8 @@ async def main():
 
         short_pkg = create_category_adaptive_1080p_thumbnail(short_dossier, short_entities, s_unique_photos, watermark, out_path="output/WTB_1080p_Short_Thumb.jpg")
 
-        # 2. BUILD 1080p LONG DOCUMENTARY (Syntax Fixed!)
-        print(f"\n📺 [4/6] Building 1080p Long Documentary (1920x1080) on #1 Trending: {lead_long_dossier['title']}} | Country: {lead_long_dossier['country_profile']['name']}]...", flush=True)
+        # 2. BUILD 1080p LONG DOCUMENTARY
+        print("\n📺 [4/6] Building 1080p Long Documentary (1920x1080) on #1 Trending:", lead_long_dossier["title"], "| Country:", lead_long_dossier["country_profile"]["name"], "| Source:", lead_long_dossier["source_name"], flush=True)
         long_chapters = build_long_documentary_script(long_dossiers)
         lead_long_entities = extract_story_entities(lead_long_dossier)
 
@@ -1962,7 +1962,7 @@ async def main():
         try_youtube_auto_upload(out_short, short_dossier["title"], short_seo_desc, short_seo_tags, is_short=True, thumbnail_path=short_pkg["selected_thumbnail"])
         try_youtube_auto_upload(out_long, pkg_report["selected_title"], long_seo_desc, long_seo_tags, is_short=False, thumbnail_path=pkg_report["selected_thumbnail"])
 
-        print(f"✅ [6/6] GITHUB CLOUD 1080p FULL HD PRODUCTION & UPLOAD COMPLETE!", flush=True)
+        print("✅ [6/6] GITHUB CLOUD 1080p FULL HD PRODUCTION & UPLOAD COMPLETE!", flush=True)
     finally:
         for vc in GLOBAL_OPEN_VCLIPS:
             try:
