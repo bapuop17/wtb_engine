@@ -47,14 +47,13 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefCloudFactory/15.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefCloudFactory/15.1 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
 
 # ==============================================================================
-# 1. EXPANDED GLOBAL GEOPOLITICAL DATABASE + LIVE REST-COUNTRIES API FALLBACK
-#    Fixes the bug where countries like Albania defaulted to 'UNITED STATES'!
+# 1. EXPANDED GLOBAL GEOPOLITICAL DATABASE + DEMONYM RESOLVER
 # ==============================================================================
 COUNTRY_GEO_DB = {
     "UNITED STATES": ("US", "USA", "Washington, D.C.", "335M", "North America", 38.895, -77.036),
@@ -173,7 +172,6 @@ BANNED_IMAGE_SOURCES = [
     "pond5", "flipkart", "minecraft", "fortnite", "roblox", "pokemon", "anime"
 ]
 
-# STRICT COUNTRY-TAGGED LEADER MAP (So Trump never appears in a France story unless Trump is explicitly spoken!)
 PERSON_WIKI_MAP = {
     "trump": ("Donald Trump", "U.S. PRESIDENT DONALD TRUMP", "UNITED STATES"),
     "putin": ("Vladimir Putin", "RUSSIAN PRESIDENT VLADIMIR PUTIN", "RUSSIA"),
@@ -271,14 +269,8 @@ def build_wtb_watermark(width=140, height=82):
 
 # ==============================================================================
 # 2. DAILY YOUTUBE CHANNEL ANALYTICS SELF-IMPROVEMENT ENGINE
-#    Checks recent video views/likes on your channel and boosts high-performing topics!
 # ==============================================================================
 def fetch_channel_winning_keywords():
-    """
-    Connects to YouTube Data API v3 (`youtube.readonly`) to inspect your channel's recent uploads,
-    finds which videos got the highest views + likes, and extracts winning topic keywords
-    so the engine automatically adapts to what your audience watches most!
-    """
     token_envs = ["YOUTUBE_TOKEN_JSON_B64", "YOUTUBE_TOKEN_2_B64", "YOUTUBE_TOKEN_3_B64"]
     available_tokens = [os.environ.get(k, "").strip() for k in token_envs if os.environ.get(k, "").strip()]
     if not available_tokens:
@@ -329,7 +321,7 @@ def fetch_channel_winning_keywords():
         return []
 
 # ==============================================================================
-# 3. SEMANTIC EVENT FINGERPRINTING, FOLLOW-UP DETECTION & 10-SOURCE ROTATION
+# 3. SEMANTIC EVENT FINGERPRINTING, FOLLOW-UP DETECTION & 8-SOURCE ROTATION
 # ==============================================================================
 def load_published_history():
     if os.path.exists(HISTORY_FILE):
@@ -367,13 +359,6 @@ def extract_event_fingerprint(title):
     return tokens
 
 def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
-    """
-    Prevents making two videos on the same news event from different websites!
-    - If >=60% of headline keywords match an already published story AND there are no new update words,
-      returns ('DUPLICATE', None) so it is skipped!
-    - If it matches an earlier story BUT contains explicit follow-up/update developments,
-      returns ('FOLLOW_UP_UPDATE', old_title) so the script presents it as a fresh Day-2 Update!
-    """
     st_key = make_story_key(title)
     if st_key in hist_obj["published_keys"]:
         return ("DUPLICATE", None)
@@ -388,7 +373,6 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
             continue
         overlap = len(cur_fp.intersection(past_fp)) / float(min(len(cur_fp), len(past_fp)))
         if overlap >= 0.58:
-            # Same underlying event! Check if it's a genuine new development/update
             comb_low = f"{title} {first_fact}".lower()
             update_markers = ["update", "day ", "overnight", "calm", "responds", "retaliates", "new ", "latest", "second", "third", "seventh", "follows", "aftermath"]
             if any(um in comb_low for um in update_markers) and title.lower() != past.get("title", "").lower():
@@ -398,15 +382,9 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
     return ("NEW_STORY", None)
 
 def resolve_country_profile_accurate(title, raw_facts_list):
-    """
-    1. Checks Headline first (highest priority), then body facts.
-    2. Checks explicit country names AND demonyms/capitals (`Ukrainian` -> `UKRAINE`, `French` -> `FRANCE`, `Albanian` -> `ALBANIA`).
-    3. If a country is still not in `COUNTRY_GEO_DB`, queries `restcountries.com` live API!
-    """
     headline_low = title.lower()
     body_low = " ".join(raw_facts_list[:3]).lower()
 
-    # Step 1: Check Headline for Country Name or Demonym
     for c_name in COUNTRY_GEO_DB.keys():
         if re.search(rf"\b{re.escape(c_name.lower())}\b", headline_low):
             return build_country_dict_from_db(c_name)
@@ -414,7 +392,6 @@ def resolve_country_profile_accurate(title, raw_facts_list):
         if dem in headline_low:
             return build_country_dict_from_db(c_mapped)
 
-    # Step 2: Check Body Facts for Country Name or Demonym
     for c_name in COUNTRY_GEO_DB.keys():
         if re.search(rf"\b{re.escape(c_name.lower())}\b", body_low):
             return build_country_dict_from_db(c_name)
@@ -505,9 +482,6 @@ def fetch_verified_world_bank_gdp(iso3):
     return None
 
 def discover_and_build_dossiers(hist_obj, winning_keywords):
-    """
-    Scans 8 Diverse International News Sources & rotates sources so we NEVER rely on only one news site!
-    """
     print("📡 [1/6] Scanning 8 Global News Sources with Source-Rotation & Event Deduplication...", flush=True)
     feeds = [
         ("Al Jazeera", "https://www.aljazeera.com/xml/rss/all.xml"),
@@ -519,7 +493,6 @@ def discover_and_build_dossiers(hist_obj, winning_keywords):
         ("NPR World", "https://feeds.npr.org/1004/rss.xml"),
         ("TOI World", "https://timesofindia.indiatimes.com/rssfeeds/296589292.cms")
     ]
-    # Rotate feed order based on last used source so one source never dominates!
     last_src = hist_obj["last_sources"][-1] if hist_obj["last_sources"] else ""
     feeds.sort(key=lambda x: 1 if x[0] == last_src else 0)
 
@@ -540,7 +513,7 @@ def discover_and_build_dossiers(hist_obj, winning_keywords):
 
         src_count = 0
         for entry in feed.entries[:18]:
-            if src_count >= 2:  # Max 2 stories per news source for true multi-source diversity!
+            if src_count >= 2:
                 break
             raw_t = entry.title.rsplit(" - ", 1)[0]
             if any(skip in raw_t.lower() for skip in ["live", "latest updates", "as it happened", "at a glance", "in pictures", "quiz", "podcast"]):
@@ -557,7 +530,6 @@ def discover_and_build_dossiers(hist_obj, winning_keywords):
             raw_sum = BeautifulSoup(getattr(entry, "summary", ""), "html.parser").get_text()
             summary = clean_fact(raw_sum)
 
-            # Check Semantic Event Deduplication against History AND current batch!
             dup_status, prev_event_title = check_semantic_duplicate_or_update(title, summary, hist_obj)
             if dup_status == "DUPLICATE":
                 continue
@@ -665,7 +637,6 @@ def discover_and_build_dossiers(hist_obj, winning_keywords):
 
             comb = f"{title} {' '.join(raw_facts[:3])}".lower()
             trend_score = sum(4 for kw in high_impact_terms if re.search(rf"\b{re.escape(kw)}\b", comb)) + len(verified_claims) * 3
-            # Boost score if topic matches our Channel Analytics Winning Keywords!
             analytics_boost = sum(6 for w_kw in winning_keywords if w_kw in comb)
             trend_score += analytics_boost
 
@@ -698,13 +669,9 @@ def discover_and_build_dossiers(hist_obj, winning_keywords):
     return dossiers
 
 # ==============================================================================
-# 4. COUNTRY-LOCKED ENTITY & SCRIPT DIRECTOR (With Dynamic Hooks & Update Framing)
+# 4. COUNTRY-LOCKED ENTITY & SCRIPT DIRECTOR
 # ==============================================================================
 def extract_story_entities(dossier):
-    """
-    Strictly extracts entities that actually appear in THIS story or belong to THIS country!
-    Prevents Donald Trump from appearing in a France story unless Trump is mentioned!
-    """
     text = f"{dossier['title']} {' '.join(dossier['raw_facts'][:4])}"
     c_prof = dossier["country_profile"]
     ents = []
@@ -883,7 +850,7 @@ def build_long_documentary_script(dossiers):
     return chapters
 
 # ==============================================================================
-# 5. STRICT COUNTRY-LOCKED VISUAL HARVESTER + INTERNET ARCHIVE / WIKIMEDIA VIDEO B-ROLL
+# 5. STRICT COUNTRY-LOCKED VISUAL HARVESTER + VIDEO B-ROLL
 # ==============================================================================
 def validate_and_enhance_1080p(im, existing_hashes, min_w=420, min_h=260):
     im = im.convert("RGB")
@@ -931,10 +898,6 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=420, min_h=260):
     return im
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
-    """
-    Strictly checks `PERSON_WIKI_MAP` only if the leader's surname is explicitly spoken in `beat_text`!
-    Never injects unrelated foreign leaders into another country's story!
-    """
     low = beat_text.lower()
     c_prof = dossier["country_profile"]
 
@@ -952,7 +915,6 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat"):
     c_prof = dossier["country_profile"]
 
-    # Engine 1: Bing News Journalism XML RSS (Prioritized first for exact current news event photos!)
     for nq in [news_query, dossier["title"], f"{wiki_exact_title} {c_prof['name']}"]:
         try:
             rss_u = f"https://www.bing.com/news/search?q={urllib.parse.quote(nq)}&format=rss"
@@ -972,7 +934,6 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Engine 2: Extra In-Article Photos from the Lead News URL
     for extra_u in dossier.get("extra_article_imgs", []):
         try:
             ir = requests.get(extra_u, headers=HEADERS_WEB, timeout=5)
@@ -986,7 +947,6 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Engine 3: Exact Wikipedia REST Summary PageImage
     try:
         w_rest = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(wiki_exact_title)}"
         wr = requests.get(w_rest, headers=HEADERS_WIKI, timeout=5).json()
@@ -1007,11 +967,6 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     return None
 
 def fetch_and_transcode_real_video_broll(wiki_target, country_name, capital_name, tag_id="vclip"):
-    """
-    Multi-Source Real Video B-Roll Harvester:
-    1. Wikimedia Commons Video Search (using broad single-word/two-word queries & `thumburl` derivative check).
-    2. Direct FFmpeg transcoding into 1920x1080 24fps H.264 `.mp4`.
-    """
     queries = [capital_name, country_name, "parliament", "military", "diplomacy", "city traffic", "police"]
     for vq in queries:
         try:
@@ -1533,7 +1488,6 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         fl = c_prof["flag_img"].resize((84, 54))
         frame.paste(fl, (198, top_y + 14), fl)
 
-    # Embedded Short Cover Poster Banner on the opening 0.35 seconds so Shorts Shelf picks up an eye-catching cover!
     if is_short and beat["section_idx"] == 0 and beat["beat_in_section"] == 0 and local_t < 0.35:
         draw.rounded_rectangle([(42, 740), (W - 42, 915)], radius=16, fill=(204, 18, 36, 242), outline=(255, 214, 10, 255), width=4)
         f_cov = get_font(44)
@@ -1561,7 +1515,7 @@ def make_section_clip_from_beats(section_beats, watermark, voice_sub_dir, sectio
     return VideoClip(make_frame, duration=section_dur)
 
 # ==============================================================================
-# 8. VOICE, SUBTITLES & SOFT 4.5% DOCUMENTARY BACKGROUND SCORE
+# 8. VOICE, SUBTITLES & SOFT 4.2% DOCUMENTARY BACKGROUND SCORE
 # ==============================================================================
 class VoiceAndSubtitleEngine:
     async def synthesize_with_word_boundaries(self, text, out_path, voice_style="clear"):
@@ -1760,7 +1714,6 @@ def create_category_adaptive_1080p_thumbnail(dossier, entities, unique_photos, w
 
     canvas.convert("RGB").save(out_path, quality=96)
 
-    # Clean, non-truncated YouTube Title (<=95 characters!)
     raw_t = dossier["title"]
     if len(raw_t) <= 78:
         selected_title = f"{raw_t} | {c_prof['name'].title()} Briefing"
@@ -1777,7 +1730,7 @@ def create_category_adaptive_1080p_thumbnail(dossier, entities, unique_photos, w
 create_1080p_thumbnails = create_category_adaptive_1080p_thumbnail
 
 # ==============================================================================
-# 9. MULTI-TOKEN YOUTUBE API UPLOADER (Sets Thumbnail on BOTH Long & Short!)
+# 9. MULTI-TOKEN YOUTUBE API UPLOADER
 # ==============================================================================
 def try_youtube_auto_upload(video_path, title, description, tags, is_short=False, thumbnail_path=None):
     token_envs = ["YOUTUBE_TOKEN_JSON_B64", "YOUTUBE_TOKEN_2_B64", "YOUTUBE_TOKEN_3_B64"]
@@ -1830,7 +1783,7 @@ def try_youtube_auto_upload(video_path, title, description, tags, is_short=False
     return None
 
 # ==============================================================================
-# MASTER EXECUTION (Analytics Optimization + Multi-Source Non-Repeating Pipeline)
+# MASTER EXECUTION
 # ==============================================================================
 async def main():
     try:
@@ -1845,13 +1798,12 @@ async def main():
             hist_obj["event_fingerprints"].clear()
             dossiers = discover_and_build_dossiers(hist_obj, winning_keywords)
 
-        # Ensure Short and Long come from DIFFERENT stories AND different news sources whenever possible!
         lead_long_dossier = dossiers[0]
         short_dossier = next((d for d in dossiers[1:] if d["source_name"] != lead_long_dossier["source_name"]), dossiers[1])
         sec_long_dossier = next((d for d in dossiers[1:] if d["title"] != short_dossier["title"]), None)
         long_dossiers = [lead_long_dossier, sec_long_dossier] if sec_long_dossier else [lead_long_dossier]
 
-        # 1. BUILD 1080p SHORT
+        # 1. BUILD 1080p SHORT (Syntax Fixed!)
         print(f"\n📱 [2/6] Building 1080p Short (1080x1920) on: {short_dossier['title']}} | Country: {short_dossier['country_profile']['name']}]", flush=True)
         short_sections, short_entities = build_short_script(short_dossier, variant_idx=len(hist_obj["published_keys"]))
 
@@ -1886,7 +1838,7 @@ async def main():
 
         short_pkg = create_category_adaptive_1080p_thumbnail(short_dossier, short_entities, s_unique_photos, watermark, out_path="output/WTB_1080p_Short_Thumb.jpg")
 
-        # 2. BUILD 1080p LONG DOCUMENTARY
+        # 2. BUILD 1080p LONG DOCUMENTARY (Syntax Fixed!)
         print(f"\n📺 [4/6] Building 1080p Long Documentary (1920x1080) on #1 Trending: {lead_long_dossier['title']}} | Country: {lead_long_dossier['country_profile']['name']}]...", flush=True)
         long_chapters = build_long_documentary_script(long_dossiers)
         lead_long_entities = extract_story_entities(lead_long_dossier)
@@ -1936,7 +1888,6 @@ async def main():
 
         pkg_report = create_category_adaptive_1080p_thumbnail(lead_long_dossier, lead_long_entities, total_long_unique_photos, watermark, out_path="output/WTB_1080p_Thumb_1.jpg")
 
-        # Save Event Fingerprints & Source Rotation History
         for d_used in [short_dossier, lead_long_dossier]:
             hist_obj["published_keys"].add(d_used["story_key"])
             hist_obj["event_fingerprints"].append({"title": d_used["title"], "tokens": d_used["event_tokens"]})
@@ -1969,7 +1920,6 @@ async def main():
                 "packaging": pkg_report
             }, f, indent=2)
 
-        # Build Full YouTube SEO Descriptions, Chapters, Tags & Hashtags
         short_hashtags_str = " ".join(short_pkg["hashtags"] + ["#Shorts", "#BreakingNews"])
         short_seo_desc = (
             f"{short_dossier['title']}\n\n"
