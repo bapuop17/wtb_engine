@@ -1,10 +1,12 @@
 {
-  "updated_at": "2026-10-20T10:36:28.008070",
+  "updated_at": "2026-10-20T11:04:52.958908",
   "published_keys": [
-    "alberta_voters_reject_a_move_toward",
     "ukrainians_dying_because_us_restricting_intelligence",
+    "zelenskyy_to_hold_talks_on_russia",
     "us_grants_deportation_reprieve_to_migrants",
-    "zelenskyy_to_hold_talks_on_russia"
+    "drone_attack_near_market_kills_80",
+    "alberta_voters_reject_a_move_toward",
+    "seventh_day_of_violent_clashes_between"
   ],
   "event_fingerprints": [
     {
@@ -58,12 +60,37 @@
         "move",
         "toward"
       ]
+    },
+    {
+      "title": "Seventh day of violent clashes between Albanian protesters and police",
+      "tokens": [
+        "violent",
+        "protesters",
+        "albanian",
+        "between",
+        "seventh",
+        "clashes",
+        "police"
+      ]
+    },
+    {
+      "title": "Drone attack near market kills 80 in Sudan",
+      "tokens": [
+        "sudan",
+        "market",
+        "kills",
+        "attack",
+        "near",
+        "drone"
+      ]
     }
   ],
   "last_sources": [
     "The Guardian",
     "BBC World",
     "Al Jazeera",
-    "NPR World"
+    "NPR World",
+    "BBC World",
+    "The Guardian"
   ]
 }
