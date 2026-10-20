@@ -1,18 +1,20 @@
 {
-  "updated_at": "2026-10-20T21:07:22.913614",
+  "updated_at": "2026-10-20T23:47:35.841255",
   "published_keys": [
-    "lebanon_faces_uncertainty_as_unifil_mandate",
-    "tinubu_must_go_nigeria_s_northern",
-    "zelensky_and_us_envoys_holding_oslo",
-    "trump_makes_russia_friendly_moves_as",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "seventh_day_of_violent_clashes_between",
-    "kenyan_starvation_cult_leader_guilty_of",
     "drone_attack_near_market_kills_80",
-    "us_grants_deportation_reprieve_to_migrants",
     "alberta_voters_reject_a_move_toward",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "trump_makes_russia_friendly_moves_as",
+    "seventh_day_of_violent_clashes_between",
     "zelenskyy_to_hold_talks_on_russia",
-    "doj_charges_28_with_voting_crimes"
+    "zelensky_and_us_envoys_holding_oslo",
+    "doj_charges_28_with_voting_crimes",
+    "man_charged_with_attack_on_australia",
+    "nato_to_send_additional_patrol_planes",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "us_grants_deportation_reprieve_to_migrants",
+    "tinubu_must_go_nigeria_s_northern"
   ],
   "event_fingerprints": [
     {
@@ -166,6 +168,29 @@
         "lebanon",
         "nears"
       ]
+    },
+    {
+      "title": "Man charged with attack on Australia MP to face court",
+      "tokens": [
+        "australia",
+        "court",
+        "face",
+        "attack",
+        "charged"
+      ]
+    },
+    {
+      "title": "NATO to send additional patrol planes to Black Sea after drone attacks",
+      "tokens": [
+        "patrol",
+        "nato",
+        "send",
+        "planes",
+        "additional",
+        "attacks",
+        "drone",
+        "black"
+      ]
     }
   ],
   "last_sources": [
@@ -180,6 +205,8 @@
     "The Guardian",
     "BBC World",
     "NPR World",
-    "DW News"
+    "DW News",
+    "BBC World",
+    "Al Jazeera"
   ]
 }
