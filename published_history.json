@@ -1,11 +1,13 @@
 {
-  "updated_at": "2026-10-20T11:04:52.958908",
+  "updated_at": "2026-10-20T15:32:01.778956",
   "published_keys": [
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "zelenskyy_to_hold_talks_on_russia",
-    "us_grants_deportation_reprieve_to_migrants",
     "drone_attack_near_market_kills_80",
+    "trump_makes_russia_friendly_moves_as",
+    "zelenskyy_to_hold_talks_on_russia",
     "alberta_voters_reject_a_move_toward",
+    "tinubu_must_go_nigeria_s_northern",
+    "us_grants_deportation_reprieve_to_migrants",
+    "ukrainians_dying_because_us_restricting_intelligence",
     "seventh_day_of_violent_clashes_between"
   ],
   "event_fingerprints": [
@@ -83,6 +85,32 @@
         "near",
         "drone"
       ]
+    },
+    {
+      "title": "'Tinubu Must Go': Nigeria's northern protests test the limits of political dissent",
+      "tokens": [
+        "nigeria",
+        "political",
+        "protests",
+        "limits",
+        "test",
+        "must",
+        "dissent",
+        "tinubu",
+        "northern"
+      ]
+    },
+    {
+      "title": "Trump makes Russia-friendly moves as he looks for a way to end the war with Ukraine",
+      "tokens": [
+        "moves",
+        "looks",
+        "friendly",
+        "makes",
+        "trump",
+        "russia",
+        "ukraine"
+      ]
     }
   ],
   "last_sources": [
@@ -91,6 +119,8 @@
     "Al Jazeera",
     "NPR World",
     "BBC World",
-    "The Guardian"
+    "The Guardian",
+    "DW News",
+    "NPR World"
   ]
 }
