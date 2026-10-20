@@ -1,14 +1,16 @@
 {
-  "updated_at": "2026-10-20T15:32:01.778956",
+  "updated_at": "2026-10-20T16:08:07.525509",
   "published_keys": [
-    "drone_attack_near_market_kills_80",
-    "trump_makes_russia_friendly_moves_as",
-    "zelenskyy_to_hold_talks_on_russia",
-    "alberta_voters_reject_a_move_toward",
-    "tinubu_must_go_nigeria_s_northern",
     "us_grants_deportation_reprieve_to_migrants",
+    "alberta_voters_reject_a_move_toward",
     "ukrainians_dying_because_us_restricting_intelligence",
-    "seventh_day_of_violent_clashes_between"
+    "drone_attack_near_market_kills_80",
+    "tinubu_must_go_nigeria_s_northern",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "zelensky_and_us_envoys_holding_oslo",
+    "trump_makes_russia_friendly_moves_as",
+    "seventh_day_of_violent_clashes_between",
+    "zelenskyy_to_hold_talks_on_russia"
   ],
   "event_fingerprints": [
     {
@@ -111,6 +113,33 @@
         "russia",
         "ukraine"
       ]
+    },
+    {
+      "title": "Kenyan starvation cult leader guilty of murder of 190 children and one adult",
+      "tokens": [
+        "cult",
+        "guilty",
+        "starvation",
+        "children",
+        "leader",
+        "kenyan",
+        "murder",
+        "adult"
+      ]
+    },
+    {
+      "title": "Zelensky and US envoys holding Oslo talks as Rubio denies withholding intelligence",
+      "tokens": [
+        "envoys",
+        "talks",
+        "holding",
+        "withholding",
+        "denies",
+        "intelligence",
+        "zelensky",
+        "oslo",
+        "rubio"
+      ]
     }
   ],
   "last_sources": [
@@ -121,6 +150,8 @@
     "BBC World",
     "The Guardian",
     "DW News",
-    "NPR World"
+    "NPR World",
+    "The Guardian",
+    "BBC World"
   ]
 }
