@@ -1,28 +1,30 @@
 {
-  "updated_at": "2026-10-21T19:08:41.302829",
+  "updated_at": "2026-10-21T23:54:48.954173",
   "published_keys": [
-    "trump_makes_russia_friendly_moves_as",
-    "tinubu_must_go_nigeria_s_northern",
-    "kenyan_starvation_cult_leader_guilty_of",
-    "us_grants_deportation_reprieve_to_migrants",
-    "sudan_conflict_peace_efforts_resume_to",
-    "russia_frees_jailed_american_stephen_hubbard",
-    "macron_visits_riyadh_to_show_solidarity",
-    "alberta_voters_reject_a_move_toward",
-    "zelenskyy_to_hold_talks_on_russia",
+    "man_charged_with_attack_on_australia",
     "lebanon_faces_uncertainty_as_unifil_mandate",
-    "trump_and_zelensky_appear_at_loggerheads",
+    "rosenberg_us_diplomatic_push_offers_little",
+    "zelensky_and_us_envoys_holding_oslo",
+    "us_grants_deportation_reprieve_to_migrants",
+    "drone_attack_near_market_kills_80",
+    "uk_fighter_jets_to_protect_saudi",
+    "kenyan_starvation_cult_leader_guilty_of",
     "israel_detains_dozens_of_americans_including",
     "doj_charges_28_with_voting_crimes",
-    "the_right_to_enforce_civil_rights",
-    "seventh_day_of_violent_clashes_between",
-    "current_u_s_support_for_ukraine",
-    "zelensky_and_us_envoys_holding_oslo",
-    "drone_attack_near_market_kills_80",
     "nato_to_send_additional_patrol_planes",
-    "man_charged_with_attack_on_australia",
+    "the_right_to_enforce_civil_rights",
+    "alberta_voters_reject_a_move_toward",
+    "zelenskyy_to_hold_talks_on_russia",
+    "current_u_s_support_for_ukraine",
     "ukrainians_dying_because_us_restricting_intelligence",
-    "uk_fighter_jets_to_protect_saudi"
+    "macron_visits_riyadh_to_show_solidarity",
+    "sudan_conflict_peace_efforts_resume_to",
+    "trump_putin_and_xi_at_one",
+    "seventh_day_of_violent_clashes_between",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "trump_and_zelensky_appear_at_loggerheads",
+    "tinubu_must_go_nigeria_s_northern",
+    "trump_makes_russia_friendly_moves_as"
   ],
   "event_fingerprints": [
     {
@@ -305,11 +307,39 @@
         "ease",
         "houthi"
       ]
+    },
+    {
+      "title": "Rosenberg: US diplomatic push offers little hope for imminent Ukraine peace",
+      "tokens": [
+        "hope",
+        "rosenberg",
+        "ukraine",
+        "imminent",
+        "offers",
+        "push",
+        "little",
+        "diplomatic",
+        "peace"
+      ]
+    },
+    {
+      "title": "Trump, Putin and Xi at one table, without Ukraine. What Moscow wants from the proposal and why Beijing might agree.",
+      "tokens": [
+        "agree",
+        "beijing",
+        "ukraine",
+        "might",
+        "proposal",
+        "wants",
+        "without",
+        "trump",
+        "moscow",
+        "table",
+        "putin"
+      ]
     }
   ],
   "last_sources": [
-    "Al Jazeera",
-    "NPR World",
     "BBC World",
     "The Guardian",
     "DW News",
@@ -327,6 +357,8 @@
     "DW News",
     "UN News",
     "NPR World",
-    "France24"
+    "France24",
+    "BBC World",
+    "DW News"
   ]
 }
