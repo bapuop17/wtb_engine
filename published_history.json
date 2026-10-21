@@ -1,20 +1,22 @@
 {
-  "updated_at": "2026-10-20T23:47:35.841255",
+  "updated_at": "2026-10-21T02:37:11.602440",
   "published_keys": [
-    "drone_attack_near_market_kills_80",
-    "alberta_voters_reject_a_move_toward",
-    "lebanon_faces_uncertainty_as_unifil_mandate",
-    "trump_makes_russia_friendly_moves_as",
-    "seventh_day_of_violent_clashes_between",
-    "zelenskyy_to_hold_talks_on_russia",
     "zelensky_and_us_envoys_holding_oslo",
-    "doj_charges_28_with_voting_crimes",
-    "man_charged_with_attack_on_australia",
-    "nato_to_send_additional_patrol_planes",
-    "ukrainians_dying_because_us_restricting_intelligence",
     "kenyan_starvation_cult_leader_guilty_of",
+    "doj_charges_28_with_voting_crimes",
+    "drone_attack_near_market_kills_80",
+    "nato_to_send_additional_patrol_planes",
+    "zelenskyy_to_hold_talks_on_russia",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
     "us_grants_deportation_reprieve_to_migrants",
-    "tinubu_must_go_nigeria_s_northern"
+    "alberta_voters_reject_a_move_toward",
+    "uk_fighter_jets_to_protect_saudi",
+    "seventh_day_of_violent_clashes_between",
+    "current_u_s_support_for_ukraine",
+    "trump_makes_russia_friendly_moves_as",
+    "tinubu_must_go_nigeria_s_northern",
+    "man_charged_with_attack_on_australia"
   ],
   "event_fingerprints": [
     {
@@ -191,6 +193,30 @@
         "drone",
         "black"
       ]
+    },
+    {
+      "title": "UK fighter jets to protect Saudi Arabia from Houthi attacks",
+      "tokens": [
+        "saudi",
+        "protect",
+        "arabia",
+        "jets",
+        "attacks",
+        "houthi",
+        "fighter"
+      ]
+    },
+    {
+      "title": "Current U.S. support for Ukraine looks very different than it did",
+      "tokens": [
+        "support",
+        "different",
+        "ukraine",
+        "than",
+        "very",
+        "current",
+        "looks"
+      ]
     }
   ],
   "last_sources": [
@@ -207,6 +233,8 @@
     "NPR World",
     "DW News",
     "BBC World",
-    "Al Jazeera"
+    "Al Jazeera",
+    "DW News",
+    "NPR World"
   ]
 }
