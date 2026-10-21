@@ -1,26 +1,28 @@
 {
-  "updated_at": "2026-10-21T14:29:14.863744",
+  "updated_at": "2026-10-21T19:08:41.302829",
   "published_keys": [
-    "seventh_day_of_violent_clashes_between",
-    "zelenskyy_to_hold_talks_on_russia",
-    "uk_fighter_jets_to_protect_saudi",
-    "drone_attack_near_market_kills_80",
-    "russia_frees_jailed_american_stephen_hubbard",
-    "tinubu_must_go_nigeria_s_northern",
-    "current_u_s_support_for_ukraine",
-    "nato_to_send_additional_patrol_planes",
-    "us_grants_deportation_reprieve_to_migrants",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "the_right_to_enforce_civil_rights",
-    "trump_and_zelensky_appear_at_loggerheads",
-    "sudan_conflict_peace_efforts_resume_to",
-    "alberta_voters_reject_a_move_toward",
-    "kenyan_starvation_cult_leader_guilty_of",
-    "man_charged_with_attack_on_australia",
-    "lebanon_faces_uncertainty_as_unifil_mandate",
     "trump_makes_russia_friendly_moves_as",
+    "tinubu_must_go_nigeria_s_northern",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "us_grants_deportation_reprieve_to_migrants",
+    "sudan_conflict_peace_efforts_resume_to",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "macron_visits_riyadh_to_show_solidarity",
+    "alberta_voters_reject_a_move_toward",
+    "zelenskyy_to_hold_talks_on_russia",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "trump_and_zelensky_appear_at_loggerheads",
+    "israel_detains_dozens_of_americans_including",
     "doj_charges_28_with_voting_crimes",
-    "zelensky_and_us_envoys_holding_oslo"
+    "the_right_to_enforce_civil_rights",
+    "seventh_day_of_violent_clashes_between",
+    "current_u_s_support_for_ukraine",
+    "zelensky_and_us_envoys_holding_oslo",
+    "drone_attack_near_market_kills_80",
+    "nato_to_send_additional_patrol_planes",
+    "man_charged_with_attack_on_australia",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "uk_fighter_jets_to_protect_saudi"
   ],
   "event_fingerprints": [
     {
@@ -272,11 +274,40 @@
         "peace",
         "fuelling"
       ]
+    },
+    {
+      "title": "Israel detains dozens of Americans, including a congressional candidate, in West Bank",
+      "tokens": [
+        "including",
+        "congressional",
+        "dozens",
+        "israel",
+        "west",
+        "bank",
+        "americans",
+        "candidate",
+        "detains"
+      ]
+    },
+    {
+      "title": "Macron visits Riyadh to show solidarity amid Houthi attacks, ease tensions at home via fuel deal",
+      "tokens": [
+        "fuel",
+        "tensions",
+        "visits",
+        "riyadh",
+        "solidarity",
+        "show",
+        "attacks",
+        "home",
+        "macron",
+        "deal",
+        "ease",
+        "houthi"
+      ]
     }
   ],
   "last_sources": [
-    "The Guardian",
-    "BBC World",
     "Al Jazeera",
     "NPR World",
     "BBC World",
@@ -294,6 +325,8 @@
     "BBC World",
     "Al Jazeera",
     "DW News",
-    "UN News"
+    "UN News",
+    "NPR World",
+    "France24"
   ]
 }
