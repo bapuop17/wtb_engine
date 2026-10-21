@@ -1,24 +1,26 @@
 {
-  "updated_at": "2026-10-21T08:14:16.688729",
+  "updated_at": "2026-10-21T14:29:14.863744",
   "published_keys": [
-    "doj_charges_28_with_voting_crimes",
-    "alberta_voters_reject_a_move_toward",
-    "zelensky_and_us_envoys_holding_oslo",
-    "kenyan_starvation_cult_leader_guilty_of",
-    "nato_to_send_additional_patrol_planes",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "tinubu_must_go_nigeria_s_northern",
-    "us_grants_deportation_reprieve_to_migrants",
-    "current_u_s_support_for_ukraine",
+    "seventh_day_of_violent_clashes_between",
     "zelenskyy_to_hold_talks_on_russia",
-    "man_charged_with_attack_on_australia",
-    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "uk_fighter_jets_to_protect_saudi",
+    "drone_attack_near_market_kills_80",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "tinubu_must_go_nigeria_s_northern",
+    "current_u_s_support_for_ukraine",
+    "nato_to_send_additional_patrol_planes",
+    "us_grants_deportation_reprieve_to_migrants",
+    "ukrainians_dying_because_us_restricting_intelligence",
     "the_right_to_enforce_civil_rights",
     "trump_and_zelensky_appear_at_loggerheads",
-    "drone_attack_near_market_kills_80",
-    "uk_fighter_jets_to_protect_saudi",
+    "sudan_conflict_peace_efforts_resume_to",
+    "alberta_voters_reject_a_move_toward",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "man_charged_with_attack_on_australia",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
     "trump_makes_russia_friendly_moves_as",
-    "seventh_day_of_violent_clashes_between"
+    "doj_charges_28_with_voting_crimes",
+    "zelensky_and_us_envoys_holding_oslo"
   ],
   "event_fingerprints": [
     {
@@ -242,6 +244,34 @@
         "civil",
         "enforce"
       ]
+    },
+    {
+      "title": "Russia frees jailed American Stephen Hubbard during Witkoff talks",
+      "tokens": [
+        "jailed",
+        "witkoff",
+        "during",
+        "hubbard",
+        "american",
+        "russia",
+        "talks",
+        "frees",
+        "stephen"
+      ]
+    },
+    {
+      "title": "Sudan conflict: Peace efforts resume to end 'drone war' fuelling humanitarian crisis",
+      "tokens": [
+        "resume",
+        "crisis",
+        "humanitarian",
+        "conflict",
+        "efforts",
+        "drone",
+        "sudan",
+        "peace",
+        "fuelling"
+      ]
     }
   ],
   "last_sources": [
@@ -262,6 +292,8 @@
     "DW News",
     "NPR World",
     "BBC World",
-    "Al Jazeera"
+    "Al Jazeera",
+    "DW News",
+    "UN News"
   ]
 }
