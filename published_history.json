@@ -1,22 +1,24 @@
 {
-  "updated_at": "2026-10-21T02:37:11.602440",
+  "updated_at": "2026-10-21T08:14:16.688729",
   "published_keys": [
+    "doj_charges_28_with_voting_crimes",
+    "alberta_voters_reject_a_move_toward",
     "zelensky_and_us_envoys_holding_oslo",
     "kenyan_starvation_cult_leader_guilty_of",
-    "doj_charges_28_with_voting_crimes",
-    "drone_attack_near_market_kills_80",
     "nato_to_send_additional_patrol_planes",
-    "zelenskyy_to_hold_talks_on_russia",
     "ukrainians_dying_because_us_restricting_intelligence",
-    "lebanon_faces_uncertainty_as_unifil_mandate",
-    "us_grants_deportation_reprieve_to_migrants",
-    "alberta_voters_reject_a_move_toward",
-    "uk_fighter_jets_to_protect_saudi",
-    "seventh_day_of_violent_clashes_between",
-    "current_u_s_support_for_ukraine",
-    "trump_makes_russia_friendly_moves_as",
     "tinubu_must_go_nigeria_s_northern",
-    "man_charged_with_attack_on_australia"
+    "us_grants_deportation_reprieve_to_migrants",
+    "current_u_s_support_for_ukraine",
+    "zelenskyy_to_hold_talks_on_russia",
+    "man_charged_with_attack_on_australia",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "the_right_to_enforce_civil_rights",
+    "trump_and_zelensky_appear_at_loggerheads",
+    "drone_attack_near_market_kills_80",
+    "uk_fighter_jets_to_protect_saudi",
+    "trump_makes_russia_friendly_moves_as",
+    "seventh_day_of_violent_clashes_between"
   ],
   "event_fingerprints": [
     {
@@ -217,6 +219,29 @@
         "current",
         "looks"
       ]
+    },
+    {
+      "title": "Trump and Zelensky appear at loggerheads despite Oslo optimism",
+      "tokens": [
+        "despite",
+        "optimism",
+        "trump",
+        "zelensky",
+        "loggerheads",
+        "appear",
+        "oslo"
+      ]
+    },
+    {
+      "title": "The right to enforce civil rights is under attack in the US",
+      "tokens": [
+        "attack",
+        "rights",
+        "under",
+        "right",
+        "civil",
+        "enforce"
+      ]
     }
   ],
   "last_sources": [
@@ -235,6 +260,8 @@
     "BBC World",
     "Al Jazeera",
     "DW News",
-    "NPR World"
+    "NPR World",
+    "BBC World",
+    "Al Jazeera"
   ]
 }
