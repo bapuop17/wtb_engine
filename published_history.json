@@ -1,50 +1,54 @@
 {
-  "updated_at": "2026-10-22T20:28:38.470310",
+  "updated_at": "2026-10-22T21:42:10.340514",
   "published_keys": [
+    "first_human_case_of_shamonda_virus",
+    "cabin_leak_suspected_artemis_ii_astronaut",
+    "tinubu_must_go_nigeria_s_northern",
+    "sudan_conflict_peace_efforts_resume_to",
     "seventh_day_of_violent_clashes_between",
-    "what_nasa_s_voyager_1_just",
+    "trump_and_zelensky_appear_at_loggerheads",
+    "the_right_to_enforce_civil_rights",
+    "ukraine_and_russia_exchange_strikes_after",
+    "fate_unknown_of_many_returned_to",
     "lebanon_faces_uncertainty_as_unifil_mandate",
-    "trump_putin_and_xi_at_one",
+    "uk_fighter_jets_to_protect_saudi",
+    "israel_detains_dozens_of_americans_including",
+    "nato_to_send_additional_patrol_planes",
+    "what_nasa_s_voyager_1_just",
+    "russia_arrests_german_man_calls_him",
     "current_u_s_support_for_ukraine",
     "newborn_twins_fight_for_survival_as",
-    "wildwood_s_director_says_ai_is",
-    "russia_frees_jailed_american_stephen_hubbard",
-    "zelenskyy_to_hold_talks_on_russia",
-    "sudan_conflict_peace_efforts_resume_to",
+    "nigeria_confirms_ebola_case_as_outbreak",
     "rosenberg_us_diplomatic_push_offers_little",
-    "bulgaria_concerns_about_security_in_the",
+    "macron_visits_riyadh_to_show_solidarity",
+    "barclays_cutting_5_000_jobs_as",
     "i_wasn_t_thinking_straight_says",
     "trump_makes_russia_friendly_moves_as",
-    "man_charged_with_attack_on_australia",
-    "summit_in_samarkand_a_boon_for",
-    "alberta_voters_reject_a_move_toward",
-    "zelensky_and_us_envoys_holding_oslo",
-    "uk_fighter_jets_to_protect_saudi",
-    "cabin_leak_suspected_artemis_ii_astronaut",
-    "drone_attack_near_market_kills_80",
-    "teenage_engineering_launched_an_instrument_amp",
-    "ukraine_and_russia_exchange_strikes_after",
-    "doj_charges_28_with_voting_crimes",
-    "first_human_case_of_shamonda_virus",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "nato_to_send_additional_patrol_planes",
-    "the_secret_ocean_graveyard_where_nasa",
-    "tinubu_must_go_nigeria_s_northern",
-    "israel_detains_dozens_of_americans_including",
-    "russia_agrees_to_resume_trilateral_peace",
-    "fighting_rages_in_yemen_s_taiz",
-    "severely_ill_ice_detainees_face_imminent",
-    "fate_unknown_of_many_returned_to",
-    "macron_accuses_foreign_leaders_of_exploiting",
     "kenyan_starvation_cult_leader_guilty_of",
-    "agencies_and_producers_back_u_s",
-    "israeli_attacks_in_gaza_kill_four",
     "us_grants_deportation_reprieve_to_migrants",
-    "the_right_to_enforce_civil_rights",
-    "russia_arrests_german_man_calls_him",
-    "trump_and_zelensky_appear_at_loggerheads",
+    "agencies_and_producers_back_u_s",
+    "trump_putin_and_xi_at_one",
+    "fighting_rages_in_yemen_s_taiz",
+    "israeli_attacks_in_gaza_kill_four",
+    "on_this_day_in_space_oct",
+    "summit_in_samarkand_a_boon_for",
+    "drone_attack_near_market_kills_80",
+    "bulgaria_concerns_about_security_in_the",
+    "man_charged_with_attack_on_australia",
+    "the_secret_ocean_graveyard_where_nasa",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "inside_the_27_kilometer_machine_recreating",
+    "wildwood_s_director_says_ai_is",
+    "russia_agrees_to_resume_trilateral_peace",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "teenage_engineering_launched_an_instrument_amp",
     "putin_releases_american_stephen_hubbard_from",
-    "macron_visits_riyadh_to_show_solidarity"
+    "alberta_voters_reject_a_move_toward",
+    "severely_ill_ice_detainees_face_imminent",
+    "doj_charges_28_with_voting_crimes",
+    "zelensky_and_us_envoys_holding_oslo",
+    "zelenskyy_to_hold_talks_on_russia",
+    "macron_accuses_foreign_leaders_of_exploiting"
   ],
   "event_fingerprints": [
     {
@@ -611,6 +615,56 @@
         "back",
         "step"
       ]
+    },
+    {
+      "title": "Nigeria confirms Ebola case as outbreak spreads into western Africa",
+      "tokens": [
+        "western",
+        "nigeria",
+        "africa",
+        "spreads",
+        "ebola",
+        "outbreak",
+        "case",
+        "confirms"
+      ]
+    },
+    {
+      "title": "Barclays cutting 5,000 jobs as it increases reliance on AI",
+      "tokens": [
+        "jobs",
+        "cutting",
+        "barclays",
+        "reliance",
+        "increases"
+      ]
+    },
+    {
+      "title": "Inside the 27-Kilometer Machine Recreating the First Second of the Universe",
+      "tokens": [
+        "first",
+        "inside",
+        "kilometer",
+        "machine",
+        "recreating",
+        "second",
+        "universe"
+      ]
+    },
+    {
+      "title": "On this day in space! Oct. 22, 1992: Ashes of 'Star Trek' creator Gene Roddenberry launch into space on NASA shuttle",
+      "tokens": [
+        "gene",
+        "creator",
+        "space",
+        "nasa",
+        "launch",
+        "shuttle",
+        "trek",
+        "ashes",
+        "star",
+        "roddenberry"
+      ]
     }
   ],
   "last_categories": [
@@ -625,13 +679,13 @@
     "WORLD",
     "TECHNOLOGY",
     "MIND_BLOWING_FACTS",
-    "ENTERTAINMENT"
+    "ENTERTAINMENT",
+    "WORLD",
+    "BUSINESS",
+    "MIND_BLOWING_FACTS",
+    "SCIENCE"
   ],
   "last_sources": [
-    "DW News",
-    "NPR World",
-    "BBC World",
-    "Al Jazeera",
     "DW News",
     "UN News",
     "NPR World",
@@ -657,6 +711,10 @@
     "The Guardian World",
     "The Verge Tech & Gaming",
     "Verified Science & History",
-    "Variety Entertainment"
+    "Variety Entertainment",
+    "The Guardian World",
+    "BBC Business",
+    "Verified Science & History",
+    "Space.com"
   ]
 }
