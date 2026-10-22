@@ -1,34 +1,36 @@
 {
-  "updated_at": "2026-10-22T04:13:00.636974",
+  "updated_at": "2026-10-22T09:33:51.268992",
   "published_keys": [
-    "zelenskyy_to_hold_talks_on_russia",
-    "tinubu_must_go_nigeria_s_northern",
-    "seventh_day_of_violent_clashes_between",
-    "doj_charges_28_with_voting_crimes",
-    "trump_and_zelensky_appear_at_loggerheads",
-    "russia_arrests_german_man_calls_him",
-    "nato_to_send_additional_patrol_planes",
-    "russia_frees_jailed_american_stephen_hubbard",
-    "drone_attack_near_market_kills_80",
-    "lebanon_faces_uncertainty_as_unifil_mandate",
-    "putin_releases_american_stephen_hubbard_from",
-    "kenyan_starvation_cult_leader_guilty_of",
+    "uk_fighter_jets_to_protect_saudi",
+    "macron_visits_riyadh_to_show_solidarity",
+    "summit_in_samarkand_a_boon_for",
+    "trump_putin_and_xi_at_one",
+    "fighting_rages_in_yemen_s_taiz",
+    "zelensky_and_us_envoys_holding_oslo",
     "fate_unknown_of_many_returned_to",
-    "israel_detains_dozens_of_americans_including",
     "alberta_voters_reject_a_move_toward",
     "sudan_conflict_peace_efforts_resume_to",
-    "trump_makes_russia_friendly_moves_as",
-    "zelensky_and_us_envoys_holding_oslo",
-    "rosenberg_us_diplomatic_push_offers_little",
-    "uk_fighter_jets_to_protect_saudi",
-    "macron_accuses_foreign_leaders_of_exploiting",
-    "the_right_to_enforce_civil_rights",
-    "us_grants_deportation_reprieve_to_migrants",
-    "man_charged_with_attack_on_australia",
-    "trump_putin_and_xi_at_one",
+    "current_u_s_support_for_ukraine",
+    "trump_and_zelensky_appear_at_loggerheads",
+    "israel_detains_dozens_of_americans_including",
     "ukrainians_dying_because_us_restricting_intelligence",
-    "macron_visits_riyadh_to_show_solidarity",
-    "current_u_s_support_for_ukraine"
+    "the_right_to_enforce_civil_rights",
+    "tinubu_must_go_nigeria_s_northern",
+    "zelenskyy_to_hold_talks_on_russia",
+    "nato_to_send_additional_patrol_planes",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "us_grants_deportation_reprieve_to_migrants",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "trump_makes_russia_friendly_moves_as",
+    "drone_attack_near_market_kills_80",
+    "rosenberg_us_diplomatic_push_offers_little",
+    "seventh_day_of_violent_clashes_between",
+    "man_charged_with_attack_on_australia",
+    "russia_arrests_german_man_calls_him",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "macron_accuses_foreign_leaders_of_exploiting",
+    "doj_charges_28_with_voting_crimes",
+    "putin_releases_american_stephen_hubbard_from"
   ],
   "event_fingerprints": [
     {
@@ -389,11 +391,32 @@
         "calls",
         "german"
       ]
+    },
+    {
+      "title": "Summit in Samarkand, a boon for child wellbeing and health",
+      "tokens": [
+        "health",
+        "boon",
+        "child",
+        "wellbeing",
+        "summit",
+        "samarkand"
+      ]
+    },
+    {
+      "title": "Fighting rages in Yemen's Taiz as UN warns nearly 260,000 now displaced",
+      "tokens": [
+        "taiz",
+        "nearly",
+        "fighting",
+        "rages",
+        "yemen",
+        "displaced",
+        "warns"
+      ]
     }
   ],
   "last_sources": [
-    "The Guardian",
-    "BBC World",
     "NPR World",
     "DW News",
     "BBC World",
@@ -411,6 +434,8 @@
     "UN News",
     "NPR World",
     "BBC World",
-    "DW News"
+    "DW News",
+    "UN News",
+    "Al Jazeera"
   ]
 }
