@@ -1,42 +1,46 @@
 {
-  "updated_at": "2026-10-22T16:43:26.007204",
+  "updated_at": "2026-10-22T17:30:18.572101",
   "published_keys": [
-    "lebanon_faces_uncertainty_as_unifil_mandate",
-    "summit_in_samarkand_a_boon_for",
-    "the_right_to_enforce_civil_rights",
-    "russia_arrests_german_man_calls_him",
-    "us_grants_deportation_reprieve_to_migrants",
-    "kenyan_starvation_cult_leader_guilty_of",
-    "macron_accuses_foreign_leaders_of_exploiting",
-    "fate_unknown_of_many_returned_to",
-    "seventh_day_of_violent_clashes_between",
-    "israeli_attacks_in_gaza_kill_four",
     "trump_putin_and_xi_at_one",
+    "trump_makes_russia_friendly_moves_as",
+    "cabin_leak_suspected_artemis_ii_astronaut",
+    "first_human_case_of_shamonda_virus",
+    "macron_accuses_foreign_leaders_of_exploiting",
+    "bulgaria_concerns_about_security_in_the",
+    "seventh_day_of_violent_clashes_between",
+    "putin_releases_american_stephen_hubbard_from",
+    "i_wasn_t_thinking_straight_says",
     "fighting_rages_in_yemen_s_taiz",
-    "rosenberg_us_diplomatic_push_offers_little",
-    "uk_fighter_jets_to_protect_saudi",
-    "israel_detains_dozens_of_americans_including",
-    "russia_agrees_to_resume_trilateral_peace",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "ukraine_and_russia_exchange_strikes_after",
+    "sudan_conflict_peace_efforts_resume_to",
+    "israeli_attacks_in_gaza_kill_four",
+    "zelenskyy_to_hold_talks_on_russia",
+    "nato_to_send_additional_patrol_planes",
+    "tinubu_must_go_nigeria_s_northern",
     "macron_visits_riyadh_to_show_solidarity",
     "alberta_voters_reject_a_move_toward",
-    "tinubu_must_go_nigeria_s_northern",
-    "sudan_conflict_peace_efforts_resume_to",
-    "trump_and_zelensky_appear_at_loggerheads",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "newborn_twins_fight_for_survival_as",
-    "russia_frees_jailed_american_stephen_hubbard",
-    "trump_makes_russia_friendly_moves_as",
-    "zelenskyy_to_hold_talks_on_russia",
     "doj_charges_28_with_voting_crimes",
-    "wildwood_s_director_says_ai_is",
-    "putin_releases_american_stephen_hubbard_from",
-    "ukraine_and_russia_exchange_strikes_after",
-    "zelensky_and_us_envoys_holding_oslo",
-    "bulgaria_concerns_about_security_in_the",
-    "nato_to_send_additional_patrol_planes",
-    "current_u_s_support_for_ukraine",
     "man_charged_with_attack_on_australia",
-    "drone_attack_near_market_kills_80"
+    "summit_in_samarkand_a_boon_for",
+    "zelensky_and_us_envoys_holding_oslo",
+    "trump_and_zelensky_appear_at_loggerheads",
+    "the_secret_ocean_graveyard_where_nasa",
+    "us_grants_deportation_reprieve_to_migrants",
+    "the_right_to_enforce_civil_rights",
+    "fate_unknown_of_many_returned_to",
+    "russia_arrests_german_man_calls_him",
+    "newborn_twins_fight_for_survival_as",
+    "wildwood_s_director_says_ai_is",
+    "drone_attack_near_market_kills_80",
+    "current_u_s_support_for_ukraine",
+    "russia_agrees_to_resume_trilateral_peace",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "israel_detains_dozens_of_americans_including",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "rosenberg_us_diplomatic_push_offers_little",
+    "uk_fighter_jets_to_protect_saudi"
   ],
   "event_fingerprints": [
     {
@@ -495,13 +499,73 @@
         "visit",
         "envoy"
       ]
+    },
+    {
+      "title": "'I wasn't thinking straight' says five jobs civil servant",
+      "tokens": [
+        "five",
+        "servant",
+        "straight",
+        "wasn",
+        "civil",
+        "jobs",
+        "thinking"
+      ]
+    },
+    {
+      "title": "'Cabin leak suspected': Artemis II astronaut reveals how a warning nearly derailed NASA's epic moon mission",
+      "tokens": [
+        "cabin",
+        "leak",
+        "astronaut",
+        "artemis",
+        "nearly",
+        "warning",
+        "derailed",
+        "mission",
+        "moon",
+        "suspected",
+        "nasa",
+        "reveals",
+        "epic"
+      ]
+    },
+    {
+      "title": "The Secret Ocean Graveyard Where NASA Crashes Dying Spacecraft",
+      "tokens": [
+        "crashes",
+        "dying",
+        "graveyard",
+        "nasa",
+        "ocean",
+        "secret",
+        "spacecraft",
+        "where"
+      ]
+    },
+    {
+      "title": "First human case of Shamonda virus detected in France, officials say",
+      "tokens": [
+        "human",
+        "shamonda",
+        "case",
+        "officials",
+        "virus",
+        "france",
+        "detected",
+        "first"
+      ]
     }
   ],
   "last_categories": [
     "WORLD",
     "WORLD",
     "TECHNOLOGY",
-    "WORLD"
+    "WORLD",
+    "BUSINESS",
+    "SCIENCE",
+    "MIND_BLOWING_FACTS",
+    "HEALTH"
   ],
   "last_sources": [
     "BBC World",
@@ -527,6 +591,10 @@
     "Al Jazeera World",
     "BBC World",
     "The Verge Tech & AI",
-    "France24 World"
+    "France24 World",
+    "BBC Business",
+    "Space.com",
+    "Verified Science & History",
+    "BBC Health"
   ]
 }
