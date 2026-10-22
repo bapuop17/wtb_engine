@@ -1,46 +1,50 @@
 {
-  "updated_at": "2026-10-22T17:30:18.572101",
+  "updated_at": "2026-10-22T20:28:38.470310",
   "published_keys": [
-    "trump_putin_and_xi_at_one",
-    "trump_makes_russia_friendly_moves_as",
-    "cabin_leak_suspected_artemis_ii_astronaut",
-    "first_human_case_of_shamonda_virus",
-    "macron_accuses_foreign_leaders_of_exploiting",
-    "bulgaria_concerns_about_security_in_the",
     "seventh_day_of_violent_clashes_between",
-    "putin_releases_american_stephen_hubbard_from",
-    "i_wasn_t_thinking_straight_says",
-    "fighting_rages_in_yemen_s_taiz",
+    "what_nasa_s_voyager_1_just",
     "lebanon_faces_uncertainty_as_unifil_mandate",
-    "russia_frees_jailed_american_stephen_hubbard",
-    "ukraine_and_russia_exchange_strikes_after",
-    "sudan_conflict_peace_efforts_resume_to",
-    "israeli_attacks_in_gaza_kill_four",
-    "zelenskyy_to_hold_talks_on_russia",
-    "nato_to_send_additional_patrol_planes",
-    "tinubu_must_go_nigeria_s_northern",
-    "macron_visits_riyadh_to_show_solidarity",
-    "alberta_voters_reject_a_move_toward",
-    "doj_charges_28_with_voting_crimes",
-    "man_charged_with_attack_on_australia",
-    "summit_in_samarkand_a_boon_for",
-    "zelensky_and_us_envoys_holding_oslo",
-    "trump_and_zelensky_appear_at_loggerheads",
-    "the_secret_ocean_graveyard_where_nasa",
-    "us_grants_deportation_reprieve_to_migrants",
-    "the_right_to_enforce_civil_rights",
-    "fate_unknown_of_many_returned_to",
-    "russia_arrests_german_man_calls_him",
+    "trump_putin_and_xi_at_one",
+    "current_u_s_support_for_ukraine",
     "newborn_twins_fight_for_survival_as",
     "wildwood_s_director_says_ai_is",
-    "drone_attack_near_market_kills_80",
-    "current_u_s_support_for_ukraine",
-    "russia_agrees_to_resume_trilateral_peace",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "israel_detains_dozens_of_americans_including",
-    "kenyan_starvation_cult_leader_guilty_of",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "zelenskyy_to_hold_talks_on_russia",
+    "sudan_conflict_peace_efforts_resume_to",
     "rosenberg_us_diplomatic_push_offers_little",
-    "uk_fighter_jets_to_protect_saudi"
+    "bulgaria_concerns_about_security_in_the",
+    "i_wasn_t_thinking_straight_says",
+    "trump_makes_russia_friendly_moves_as",
+    "man_charged_with_attack_on_australia",
+    "summit_in_samarkand_a_boon_for",
+    "alberta_voters_reject_a_move_toward",
+    "zelensky_and_us_envoys_holding_oslo",
+    "uk_fighter_jets_to_protect_saudi",
+    "cabin_leak_suspected_artemis_ii_astronaut",
+    "drone_attack_near_market_kills_80",
+    "teenage_engineering_launched_an_instrument_amp",
+    "ukraine_and_russia_exchange_strikes_after",
+    "doj_charges_28_with_voting_crimes",
+    "first_human_case_of_shamonda_virus",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "nato_to_send_additional_patrol_planes",
+    "the_secret_ocean_graveyard_where_nasa",
+    "tinubu_must_go_nigeria_s_northern",
+    "israel_detains_dozens_of_americans_including",
+    "russia_agrees_to_resume_trilateral_peace",
+    "fighting_rages_in_yemen_s_taiz",
+    "severely_ill_ice_detainees_face_imminent",
+    "fate_unknown_of_many_returned_to",
+    "macron_accuses_foreign_leaders_of_exploiting",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "agencies_and_producers_back_u_s",
+    "israeli_attacks_in_gaza_kill_four",
+    "us_grants_deportation_reprieve_to_migrants",
+    "the_right_to_enforce_civil_rights",
+    "russia_arrests_german_man_calls_him",
+    "trump_and_zelensky_appear_at_loggerheads",
+    "putin_releases_american_stephen_hubbard_from",
+    "macron_visits_riyadh_to_show_solidarity"
   ],
   "event_fingerprints": [
     {
@@ -555,6 +559,58 @@
         "detected",
         "first"
       ]
+    },
+    {
+      "title": "Severely ill ICE detainees face imminent deportation to unknown African states, advocates say",
+      "tokens": [
+        "deportation",
+        "face",
+        "states",
+        "detainees",
+        "advocates",
+        "imminent",
+        "african",
+        "severely",
+        "unknown"
+      ]
+    },
+    {
+      "title": "Teenage Engineering launched an instrument amp with a ton of built-in effects",
+      "tokens": [
+        "teenage",
+        "instrument",
+        "engineering",
+        "built",
+        "launched",
+        "effects"
+      ]
+    },
+    {
+      "title": "What NASA's Voyager 1 Just Detected Beyond the Edge of Our Solar System",
+      "tokens": [
+        "beyond",
+        "detected",
+        "edge",
+        "just",
+        "nasa",
+        "solar",
+        "system",
+        "voyager"
+      ]
+    },
+    {
+      "title": "Agencies and Producers Back U.S. Tax Incentive as 'First Step' Toward Hollywood Recovery",
+      "tokens": [
+        "hollywood",
+        "producers",
+        "first",
+        "recovery",
+        "incentive",
+        "agencies",
+        "toward",
+        "back",
+        "step"
+      ]
     }
   ],
   "last_categories": [
@@ -565,11 +621,13 @@
     "BUSINESS",
     "SCIENCE",
     "MIND_BLOWING_FACTS",
-    "HEALTH"
+    "HEALTH",
+    "WORLD",
+    "TECHNOLOGY",
+    "MIND_BLOWING_FACTS",
+    "ENTERTAINMENT"
   ],
   "last_sources": [
-    "BBC World",
-    "Al Jazeera",
     "DW News",
     "NPR World",
     "BBC World",
@@ -595,6 +653,10 @@
     "BBC Business",
     "Space.com",
     "Verified Science & History",
-    "BBC Health"
+    "BBC Health",
+    "The Guardian World",
+    "The Verge Tech & Gaming",
+    "Verified Science & History",
+    "Variety Entertainment"
   ]
 }
