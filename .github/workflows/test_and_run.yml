@@ -3,12 +3,15 @@ name: World Talk Brief 1080p Cloud Engine (Test + 24x7 Auto)
 on:
   workflow_dispatch:
   schedule:
-    # 24 घंटे में हर 3 घंटे पर अपने-आप चलेगा (दिन में 8 बार = 8 Long + 8 Short = 16 Videos रोज़ाना!)
-    # भारतीय समय (IST): सुबह 5:30, 8:30, 11:30, दोपहर 2:30, शाम 5:30, रात 8:30, 11:30, और रात 2:30 बजे
-    - cron: '0 0,3,6,9,12,15,18,21 * * *'
+    # हर 1 घंटे में चलेगा (GitHub के लोड के हिसाब से 24 घंटे में 16 से 20+ बार पक्का रन होगा = 16-20 Shorts + 16-20 Long Videos!)
+    - cron: '10 * * * *'
 
 permissions:
   contents: write
+
+concurrency:
+  group: wtb-production-group
+  cancel-in-progress: false
 
 jobs:
   build-1080p-videos:
@@ -34,12 +37,9 @@ jobs:
           pip install --upgrade pip
           pip install edge-tts gTTS feedparser requests pillow "moviepy<2.0" numpy beautifulsoup4 opencv-python-headless google-api-python-client google-auth-oauthlib
 
-      - name: Run World Talk Brief 1080p Broadcast Engine & Auto-Upload to YouTube
+      - name: Run World Talk Brief 1080p Broadcast Engine (1 Short + 1 Long + Full YouTube API Analytics)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
-          YOUTUBE_TOKEN_2_B64: ${{ secrets.YOUTUBE_TOKEN_2_B64 }}
-          YOUTUBE_TOKEN_3_B64: ${{ secrets.YOUTUBE_TOKEN_3_B64 }}
-          YOUTUBE_TOKEN_4_B64: ${{ secrets.YOUTUBE_TOKEN_4_B64 }}
         run: |
           python3 -u wtb_engine.py
 
@@ -64,4 +64,4 @@ jobs:
             output/WTB_1080p_Thumb_1.jpg
             output/WTB_1080p_Short_Thumb.jpg
             output/wtb_1080p_report.json
-          retention-days: 7
+          retention-days: 5
