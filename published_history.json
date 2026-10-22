@@ -1,36 +1,38 @@
 {
-  "updated_at": "2026-10-22T09:33:51.268992",
+  "updated_at": "2026-10-22T15:16:05.502375",
   "published_keys": [
-    "uk_fighter_jets_to_protect_saudi",
-    "macron_visits_riyadh_to_show_solidarity",
-    "summit_in_samarkand_a_boon_for",
-    "trump_putin_and_xi_at_one",
-    "fighting_rages_in_yemen_s_taiz",
-    "zelensky_and_us_envoys_holding_oslo",
-    "fate_unknown_of_many_returned_to",
-    "alberta_voters_reject_a_move_toward",
+    "doj_charges_28_with_voting_crimes",
+    "drone_attack_near_market_kills_80",
+    "bulgaria_concerns_about_security_in_the",
+    "tinubu_must_go_nigeria_s_northern",
+    "trump_makes_russia_friendly_moves_as",
+    "russia_agrees_to_resume_trilateral_peace",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "the_right_to_enforce_civil_rights",
+    "russia_arrests_german_man_calls_him",
+    "macron_accuses_foreign_leaders_of_exploiting",
     "sudan_conflict_peace_efforts_resume_to",
-    "current_u_s_support_for_ukraine",
+    "us_grants_deportation_reprieve_to_migrants",
+    "alberta_voters_reject_a_move_toward",
     "trump_and_zelensky_appear_at_loggerheads",
     "israel_detains_dozens_of_americans_including",
     "ukrainians_dying_because_us_restricting_intelligence",
-    "the_right_to_enforce_civil_rights",
-    "tinubu_must_go_nigeria_s_northern",
     "zelenskyy_to_hold_talks_on_russia",
-    "nato_to_send_additional_patrol_planes",
-    "lebanon_faces_uncertainty_as_unifil_mandate",
-    "us_grants_deportation_reprieve_to_migrants",
-    "kenyan_starvation_cult_leader_guilty_of",
-    "trump_makes_russia_friendly_moves_as",
-    "drone_attack_near_market_kills_80",
+    "fighting_rages_in_yemen_s_taiz",
+    "uk_fighter_jets_to_protect_saudi",
     "rosenberg_us_diplomatic_push_offers_little",
+    "macron_visits_riyadh_to_show_solidarity",
+    "nato_to_send_additional_patrol_planes",
     "seventh_day_of_violent_clashes_between",
     "man_charged_with_attack_on_australia",
-    "russia_arrests_german_man_calls_him",
-    "russia_frees_jailed_american_stephen_hubbard",
-    "macron_accuses_foreign_leaders_of_exploiting",
-    "doj_charges_28_with_voting_crimes",
-    "putin_releases_american_stephen_hubbard_from"
+    "putin_releases_american_stephen_hubbard_from",
+    "zelensky_and_us_envoys_holding_oslo",
+    "fate_unknown_of_many_returned_to",
+    "summit_in_samarkand_a_boon_for",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "current_u_s_support_for_ukraine",
+    "trump_putin_and_xi_at_one"
   ],
   "event_fingerprints": [
     {
@@ -414,11 +416,35 @@
         "displaced",
         "warns"
       ]
+    },
+    {
+      "title": "Russia agrees to resume trilateral peace talks on Ukraine war",
+      "tokens": [
+        "trilateral",
+        "talks",
+        "agrees",
+        "peace",
+        "russia",
+        "ukraine",
+        "resume"
+      ]
+    },
+    {
+      "title": "Bulgaria: Concerns about security in the Black Sea dominate presidential election campaign",
+      "tokens": [
+        "election",
+        "about",
+        "black",
+        "presidential",
+        "security",
+        "campaign",
+        "bulgaria",
+        "concerns",
+        "dominate"
+      ]
     }
   ],
   "last_sources": [
-    "NPR World",
-    "DW News",
     "BBC World",
     "Al Jazeera",
     "DW News",
@@ -436,6 +462,8 @@
     "BBC World",
     "DW News",
     "UN News",
-    "Al Jazeera"
+    "Al Jazeera",
+    "France24",
+    "DW News"
   ]
 }
