@@ -1,38 +1,42 @@
 {
-  "updated_at": "2026-10-22T15:16:05.502375",
+  "updated_at": "2026-10-22T16:43:26.007204",
   "published_keys": [
-    "doj_charges_28_with_voting_crimes",
-    "drone_attack_near_market_kills_80",
-    "bulgaria_concerns_about_security_in_the",
-    "tinubu_must_go_nigeria_s_northern",
-    "trump_makes_russia_friendly_moves_as",
-    "russia_agrees_to_resume_trilateral_peace",
-    "russia_frees_jailed_american_stephen_hubbard",
     "lebanon_faces_uncertainty_as_unifil_mandate",
+    "summit_in_samarkand_a_boon_for",
     "the_right_to_enforce_civil_rights",
     "russia_arrests_german_man_calls_him",
-    "macron_accuses_foreign_leaders_of_exploiting",
-    "sudan_conflict_peace_efforts_resume_to",
     "us_grants_deportation_reprieve_to_migrants",
-    "alberta_voters_reject_a_move_toward",
-    "trump_and_zelensky_appear_at_loggerheads",
-    "israel_detains_dozens_of_americans_including",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "zelenskyy_to_hold_talks_on_russia",
-    "fighting_rages_in_yemen_s_taiz",
-    "uk_fighter_jets_to_protect_saudi",
-    "rosenberg_us_diplomatic_push_offers_little",
-    "macron_visits_riyadh_to_show_solidarity",
-    "nato_to_send_additional_patrol_planes",
-    "seventh_day_of_violent_clashes_between",
-    "man_charged_with_attack_on_australia",
-    "putin_releases_american_stephen_hubbard_from",
-    "zelensky_and_us_envoys_holding_oslo",
-    "fate_unknown_of_many_returned_to",
-    "summit_in_samarkand_a_boon_for",
     "kenyan_starvation_cult_leader_guilty_of",
+    "macron_accuses_foreign_leaders_of_exploiting",
+    "fate_unknown_of_many_returned_to",
+    "seventh_day_of_violent_clashes_between",
+    "israeli_attacks_in_gaza_kill_four",
+    "trump_putin_and_xi_at_one",
+    "fighting_rages_in_yemen_s_taiz",
+    "rosenberg_us_diplomatic_push_offers_little",
+    "uk_fighter_jets_to_protect_saudi",
+    "israel_detains_dozens_of_americans_including",
+    "russia_agrees_to_resume_trilateral_peace",
+    "macron_visits_riyadh_to_show_solidarity",
+    "alberta_voters_reject_a_move_toward",
+    "tinubu_must_go_nigeria_s_northern",
+    "sudan_conflict_peace_efforts_resume_to",
+    "trump_and_zelensky_appear_at_loggerheads",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "newborn_twins_fight_for_survival_as",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "trump_makes_russia_friendly_moves_as",
+    "zelenskyy_to_hold_talks_on_russia",
+    "doj_charges_28_with_voting_crimes",
+    "wildwood_s_director_says_ai_is",
+    "putin_releases_american_stephen_hubbard_from",
+    "ukraine_and_russia_exchange_strikes_after",
+    "zelensky_and_us_envoys_holding_oslo",
+    "bulgaria_concerns_about_security_in_the",
+    "nato_to_send_additional_patrol_planes",
     "current_u_s_support_for_ukraine",
-    "trump_putin_and_xi_at_one"
+    "man_charged_with_attack_on_australia",
+    "drone_attack_near_market_kills_80"
   ],
   "event_fingerprints": [
     {
@@ -442,7 +446,62 @@
         "concerns",
         "dominate"
       ]
+    },
+    {
+      "title": "Israeli attacks in Gaza kill four, including a young girl",
+      "tokens": [
+        "young",
+        "girl",
+        "attacks",
+        "four",
+        "including",
+        "kill",
+        "gaza",
+        "israeli"
+      ]
+    },
+    {
+      "title": "Newborn twins fight for survival as conflict fuels Yemen's hunger crisis",
+      "tokens": [
+        "twins",
+        "crisis",
+        "newborn",
+        "fight",
+        "hunger",
+        "survival",
+        "conflict",
+        "yemen",
+        "fuels"
+      ]
+    },
+    {
+      "title": "Wildwood's director says AI is 'antithetical to everything that we are at this studio'",
+      "tokens": [
+        "antithetical",
+        "studio",
+        "director",
+        "wildwood",
+        "everything"
+      ]
+    },
+    {
+      "title": "Ukraine and Russia exchange strikes after US envoy visit to the Kremlin",
+      "tokens": [
+        "russia",
+        "kremlin",
+        "ukraine",
+        "exchange",
+        "strikes",
+        "visit",
+        "envoy"
+      ]
     }
+  ],
+  "last_categories": [
+    "WORLD",
+    "WORLD",
+    "TECHNOLOGY",
+    "WORLD"
   ],
   "last_sources": [
     "BBC World",
@@ -464,6 +523,10 @@
     "UN News",
     "Al Jazeera",
     "France24",
-    "DW News"
+    "DW News",
+    "Al Jazeera World",
+    "BBC World",
+    "The Verge Tech & AI",
+    "France24 World"
   ]
 }
