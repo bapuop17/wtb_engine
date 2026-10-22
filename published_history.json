@@ -1,30 +1,32 @@
 {
-  "updated_at": "2026-10-21T23:54:48.954173",
+  "updated_at": "2026-10-22T02:32:07.457408",
   "published_keys": [
-    "man_charged_with_attack_on_australia",
-    "lebanon_faces_uncertainty_as_unifil_mandate",
-    "rosenberg_us_diplomatic_push_offers_little",
-    "zelensky_and_us_envoys_holding_oslo",
-    "us_grants_deportation_reprieve_to_migrants",
-    "drone_attack_near_market_kills_80",
-    "uk_fighter_jets_to_protect_saudi",
-    "kenyan_starvation_cult_leader_guilty_of",
-    "israel_detains_dozens_of_americans_including",
-    "doj_charges_28_with_voting_crimes",
+    "trump_makes_russia_friendly_moves_as",
     "nato_to_send_additional_patrol_planes",
-    "the_right_to_enforce_civil_rights",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "drone_attack_near_market_kills_80",
+    "putin_releases_american_stephen_hubbard_from",
+    "sudan_conflict_peace_efforts_resume_to",
+    "doj_charges_28_with_voting_crimes",
     "alberta_voters_reject_a_move_toward",
+    "man_charged_with_attack_on_australia",
+    "fate_unknown_of_many_returned_to",
+    "seventh_day_of_violent_clashes_between",
     "zelenskyy_to_hold_talks_on_russia",
     "current_u_s_support_for_ukraine",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "macron_visits_riyadh_to_show_solidarity",
-    "sudan_conflict_peace_efforts_resume_to",
-    "trump_putin_and_xi_at_one",
-    "seventh_day_of_violent_clashes_between",
-    "russia_frees_jailed_american_stephen_hubbard",
+    "the_right_to_enforce_civil_rights",
+    "us_grants_deportation_reprieve_to_migrants",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "zelensky_and_us_envoys_holding_oslo",
+    "rosenberg_us_diplomatic_push_offers_little",
     "trump_and_zelensky_appear_at_loggerheads",
+    "trump_putin_and_xi_at_one",
+    "macron_visits_riyadh_to_show_solidarity",
+    "russia_frees_jailed_american_stephen_hubbard",
     "tinubu_must_go_nigeria_s_northern",
-    "trump_makes_russia_friendly_moves_as"
+    "israel_detains_dozens_of_americans_including",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "uk_fighter_jets_to_protect_saudi"
   ],
   "event_fingerprints": [
     {
@@ -337,11 +339,34 @@
         "table",
         "putin"
       ]
+    },
+    {
+      "title": "Fate unknown of many returned to DPR Korea from China: UN independent experts",
+      "tokens": [
+        "returned",
+        "fate",
+        "unknown",
+        "korea",
+        "independent",
+        "experts",
+        "china",
+        "many"
+      ]
+    },
+    {
+      "title": "Putin releases American Stephen Hubbard from Russian prison",
+      "tokens": [
+        "stephen",
+        "putin",
+        "american",
+        "prison",
+        "releases",
+        "russian",
+        "hubbard"
+      ]
     }
   ],
   "last_sources": [
-    "BBC World",
-    "The Guardian",
     "DW News",
     "NPR World",
     "The Guardian",
@@ -359,6 +384,8 @@
     "NPR World",
     "France24",
     "BBC World",
-    "DW News"
+    "DW News",
+    "UN News",
+    "NPR World"
   ]
 }
