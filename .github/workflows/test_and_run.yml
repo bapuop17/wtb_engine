@@ -3,8 +3,10 @@ name: World Talk Brief 1080p Cloud Engine (Test + 24x7 Auto)
 on:
   workflow_dispatch:
   schedule:
-    # हर 1 घंटे में चलेगा (GitHub के लोड के हिसाब से 24 घंटे में 16 से 20+ बार पक्का रन होगा = 16-20 Shorts + 16-20 Long Videos!)
-    - cron: '10 * * * *'
+    # Multiple cron triggers across the 24-hour clock so GitHub runs 5 to 8 times daily
+    # Each run produces & uploads 4 Videos (2 Shorts + 2 Longs) = 20 to 32 Videos/Day!
+    - cron: '10 0,3,6,9,12,15,18,21 * * *'
+    - cron: '40 1,4,7,10,13,16,19,22 * * *'
 
 permissions:
   contents: write
@@ -16,7 +18,7 @@ concurrency:
 jobs:
   build-1080p-videos:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
 
     steps:
       - name: Checkout Repository
@@ -37,13 +39,13 @@ jobs:
           pip install --upgrade pip
           pip install edge-tts gTTS feedparser requests pillow "moviepy<2.0" numpy beautifulsoup4 opencv-python-headless google-api-python-client google-auth-oauthlib
 
-      - name: Run World Talk Brief 1080p Broadcast Engine (1 Short + 1 Long + Full YouTube API Analytics)
+      - name: Run World Talk Brief 7-Category Broadcast Factory (4 Videos Per Run)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
         run: |
           python3 -u wtb_engine.py
 
-      - name: Save Non-Repeating Topic & Source History to GitHub
+      - name: Save Non-Repeating Topic & Category History to GitHub
         run: |
           if [ -f published_history.json ]; then
             git config user.name "WorldTalkBrief-Bot"
@@ -54,14 +56,12 @@ jobs:
             git push || true
           fi
 
-      - name: Upload Generated 1080p Videos & Thumbnail to GitHub Artifacts
+      - name: Upload Generated 1080p Videos & Thumbnails to GitHub Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: World-Talk-Brief-1080p-Output
           path: |
-            output/WTB_1080p_Short_9x16.mp4
-            output/WTB_1080p_Long_16x9.mp4
-            output/WTB_1080p_Thumb_1.jpg
-            output/WTB_1080p_Short_Thumb.jpg
+            output/*.mp4
+            output/*.jpg
             output/wtb_1080p_report.json
-          retention-days: 5
+          retention-days: 3
