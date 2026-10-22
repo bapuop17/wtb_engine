@@ -12,7 +12,7 @@ import hashlib
 import traceback
 import subprocess
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 import feedparser
 import numpy as np
@@ -47,7 +47,7 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefCloudFactory/17.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefBroadcastStudio/19.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
@@ -139,6 +139,8 @@ COUNTRY_GEO_DB = {
 }
 
 DEMONYM_TO_COUNTRY = {
+    "saudi": "SAUDI ARABIA", "riyadh": "SAUDI ARABIA",
+    "houthi": "YEMEN", "yemen": "YEMEN", "sanaa": "YEMEN",
     "zelensky": "UKRAINE", "zelenskyy": "UKRAINE", "ukrainian": "UKRAINE", "ukrainians": "UKRAINE", "kyiv": "UKRAINE", "kiev": "UKRAINE",
     "alberta": "CANADA", "canadian": "CANADA", "ottawa": "CANADA", "carney": "CANADA",
     "oslo": "NORWAY", "norwegian": "NORWAY",
@@ -151,7 +153,7 @@ DEMONYM_TO_COUNTRY = {
     "iranian": "IRAN", "tehran": "IRAN",
     "indian": "INDIA", "new delhi": "INDIA", "modi": "INDIA",
     "pakistani": "PAKISTAN", "islamabad": "PAKISTAN",
-    "british": "UNITED KINGDOM", "london": "UNITED KINGDOM", "starmer": "UNITED KINGDOM",
+    "british": "UNITED KINGDOM", "london": "UNITED KINGDOM", "starmer": "UNITED KINGDOM", "uk ": "UNITED KINGDOM",
     "german": "GERMANY", "berlin": "GERMANY",
     "italian": "ITALY", "rome": "ITALY",
     "brazilian": "BRAZIL", "brasilia": "BRAZIL", "lula": "BRAZIL",
@@ -193,37 +195,44 @@ PERSON_WIKI_MAP = {
     "bolsonaro": ("Jair Bolsonaro", "FORMER PRESIDENT JAIR BOLSONARO", "BRAZIL"),
     "carney": ("Mark Carney", "CANADIAN PM MARK CARNEY", "CANADA"),
     "erdogan": ("Recep Tayyip Erdoğan", "TURKISH PRESIDENT ERDOGAN", "TURKEY"),
-    "khamenei": ("Ali Khamenei", "IRANIAN SUPREME LEADER KHAMENEI", "IRAN")
+    "khamenei": ("Ali Khamenei", "IRANIAN SUPREME LEADER KHAMENEI", "IRAN"),
+    "salman": ("Mohammed bin Salman", "SAUDI CROWN PRINCE MBS", "SAUDI ARABIA")
 }
 
 CONCRETE_WIKI_PROPS = {
-    "drone": ("MILITARY DRONE / UAV", "Bayraktar TB2", "military drone attack"),
-    "drones": ("MILITARY DRONE FLEET", "Shahed 136", "military drone fleet"),
+    "fighter": ("FIGHTER JET DEPLOYMENT", "Eurofighter Typhoon", "Eurofighter Typhoon fighter jet military aircraft"),
+    "jets": ("AIR FORCE STRIKE JETS", "Eurofighter Typhoon", "Royal Air Force Typhoon fighter jet runway"),
+    "typhoon": ("RAF TYPHOON FIGHTER JET", "Eurofighter Typhoon", "RAF Eurofighter Typhoon jet"),
+    "houthi": ("RED SEA MISSILE THREAT", "Houthi movement", "Yemen Houthi military missile Red Sea"),
+    "drone": ("MILITARY DRONE / UAV", "Bayraktar TB2", "military combat drone UAV aircraft"),
+    "drones": ("MILITARY DRONE FLEET", "Shahed 136", "military drone UAV launch"),
     "bomber": ("STRATEGIC BOMBER AIRCRAFT", "Tupolev Tu-95", "strategic bomber aircraft"),
     "bombers": ("STRATEGIC BOMBER FLEET", "Tupolev Tu-160", "strategic bomber airfield"),
     "munitions": ("MUNITIONS & ARTILLERY", "155 mm caliber", "artillery shells munitions"),
     "sabotage": ("COVERT SABOTAGE OPERATION", "Rail transport", "railway tracks security"),
     "intelligence": ("MILITARY INTELLIGENCE", "Military intelligence", "military radar command center"),
-    "sanctions": ("ECONOMIC SANCTIONS ORDER", "United States Department of the Treasury", "economic sanctions port"),
+    "sanctions": ("ECONOMIC SANCTIONS ORDER", "United States Department of the Treasury", "economic sanctions cargo ship port"),
     "curfew": ("NIGHT CURFEW ENFORCEMENT", "National Police (France)", "police patrol night street curfew"),
     "curfews": ("SECURITY CURFEW PATROL", "Riot police", "police security forces night street"),
     "riots": ("URBAN RIOT RESPONSE", "Riot control", "riot police shields street"),
-    "looting": ("URBAN SECURITY CORDON", "Gendarmerie", "police security cordon city"),
     "clashes": ("PROTEST CLASHES", "Riot control", "protesters riot police clashes"),
     "protesters": ("MASS STREET PROTESTS", "Demonstration", "protesters rally police"),
     "referendum": ("NATIONAL REFERENDUM VOTE", "Referendum", "voters polling station ballot box"),
     "voters": ("ELECTION POLLING STATION", "Voting", "voters casting ballots election"),
     "migrants": ("IMMIGRATION & BORDER POLICY", "United States Department of Homeland Security", "US immigration border policy"),
     "deportation": ("IMMIGRATION ENFORCEMENT", "United States Citizenship and Immigration Services", "immigration policy court"),
+    "jailed": ("HIGH-SECURITY DETENTION", "Prison", "courtroom prisoner security"),
+    "captive": ("PRISONER RELEASE", "Prisoner exchange", "prisoner release diplomacy"),
     "negotiating": ("DIPLOMATIC NEGOTIATING TABLE", "Palais des Nations", "peace negotiations diplomatic table"),
     "negotiations": ("HIGH-STAKES PEACE TALKS", "United Nations Security Council", "peace talks summit"),
     "talks": ("DIPLOMATIC SUMMIT TALKS", "Diplomacy", "international leaders diplomatic talks"),
+    "ceasefire": ("CEASEFIRE NEGOTIATIONS", "Palais des Nations", "Geneva UN peace talks"),
     "fire": ("EMERGENCY FIRE RESPONSE", "Firefighting", "firefighters battling blaze"),
     "flames": ("FIREFIGHTING OPERATION", "Fire engine", "firefighters emergency fire"),
     "base": ("MILITARY BASE INSTALLATION", "Military base", "military base soldiers"),
     "military": ("ARMED FORCES DEPLOYMENT", "Armed forces", "military troops deployment"),
-    "violence": ("SECURITY CRACKDOWN", "Riot police", "police security forces patrol"),
-    "missile": ("BALLISTIC MISSILE SYSTEM", "MIM-104 Patriot", "missile defense launcher"),
+    "missile": ("BALLISTIC MISSILE SYSTEM", "MIM-104 Patriot", "Patriot missile defense launcher"),
+    "missiles": ("MISSILE DEFENSE BATTERY", "MIM-104 Patriot", "surface to air missile launch"),
     "oil": ("GLOBAL OIL & ENERGY", "Oil refinery", "oil refinery energy production"),
     "tariff": ("GLOBAL TRADE & TARIFFS", "Container ship", "container ship port trade"),
     "kremlin": ("MOSCOW KREMLIN", "Moscow Kremlin", "Moscow Kremlin Russia"),
@@ -278,13 +287,20 @@ def build_wtb_watermark(width=140, height=82):
     return logo.resize((width, height), resample_mode)
 
 # ==============================================================================
-# 2. DAILY YOUTUBE CHANNEL ANALYTICS SELF-IMPROVEMENT ENGINE
+# 2. FULL YOUTUBE DATA API v3 INTELLIGENCE ENGINE
+#    Actively utilizes:
+#    - `Search Queries per day` (`youtube.search().list`) to find live viral geopolitical topics on YouTube!
+#    - `Video Batch Get Stats Queries per day` (`youtube.videos().list`) to analyze competitor & own channel stats!
 # ==============================================================================
-def fetch_channel_winning_keywords():
-    token_envs = ["YOUTUBE_TOKEN_JSON_B64", "YOUTUBE_TOKEN_2_B64", "YOUTUBE_TOKEN_3_B64", "YOUTUBE_TOKEN_4_B64"]
-    available_tokens = [os.environ.get(k, "").strip() for k in token_envs if os.environ.get(k, "").strip()]
-    if not available_tokens:
-        return []
+def run_youtube_api_full_intelligence():
+    """
+    Uses your unused YouTube Data API v3 quotas (`Search Queries per day` & `Video Batch Get Stats Queries per day`)
+    to discover what is going viral on YouTube right now AND which videos on your channel are performing best!
+    """
+    default_viral_kws = ["fighter", "jets", "missile", "drone", "military", "saudi", "russia", "ukraine", "trump", "putin", "israel", "iran", "china", "nato"]
+    token_b64 = os.environ.get("YOUTUBE_TOKEN_JSON_B64", "").strip()
+    if not token_b64:
+        return default_viral_kws, []
 
     try:
         from google.oauth2.credentials import Credentials
@@ -293,45 +309,82 @@ def fetch_channel_winning_keywords():
 
         t_file = "temp/analytics_token.json"
         with open(t_file, "wb") as tf:
-            tf.write(base64.b64decode(available_tokens[0]))
-        creds = Credentials.from_authorized_user_file(t_file, ["https://www.googleapis.com/auth/youtube.readonly"])
+            tf.write(base64.b64decode(token_b64))
+        creds = Credentials.from_authorized_user_file(t_file, [
+            "https://www.googleapis.com/auth/youtube.readonly",
+            "https://www.googleapis.com/auth/youtube.upload"
+        ])
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         yt = build("youtube", "v3", credentials=creds)
 
-        ch_resp = yt.channels().list(part="contentDetails", mine=True).execute()
-        items = ch_resp.get("items", [])
-        if not items:
-            return []
-        uploads_pl = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
-        pl_items = yt.playlistItems().list(part="contentDetails", playlistId=uploads_pl, maxResults=15).execute().get("items", [])
-        vid_ids = [it["contentDetails"]["videoId"] for it in pl_items]
-        if not vid_ids:
-            return []
-
-        v_stats = yt.videos().list(part="snippet,statistics", id=",".join(vid_ids)).execute().get("items", [])
-        scored_vids = []
-        for v in v_stats:
-            views = int(v.get("statistics", {}).get("viewCount", 0))
-            likes = int(v.get("statistics", {}).get("likeCount", 0))
-            title = v.get("snippet", {}).get("title", "")
-            scored_vids.append((views + likes * 5, title))
-
-        scored_vids.sort(reverse=True)
-        stop_w = {"why", "how", "the", "and", "for", "with", "from", "changes", "next", "move", "shorts", "says", "stated", "after"}
         winning_kws = []
-        for _, t_str in scored_vids[:5]:
-            for w in re.findall(r"[a-z]{4,}", t_str.lower()):
-                if w not in stop_w and w not in winning_kws:
-                    winning_kws.append(w)
-        if winning_kws:
-            print("📈 [Channel Analytics Optimizer] Top Audience-Winning Keywords Detected:", winning_kws[:8], flush=True)
-        return winning_kws[:10]
+        viral_yt_tags = []
+        stop_w = {"why", "how", "the", "and", "for", "with", "from", "changes", "next", "move", "shorts", "says", "stated", "after", "briefing", "news", "video", "live", "today"}
+
+        # 1. Analyze Our Own Channel's Top Performing Videos (`Video Batch Get Stats Queries`)
+        ch_resp = yt.channels().list(part="contentDetails,statistics", mine=True).execute()
+        items = ch_resp.get("items", [])
+        if items:
+            ch_stats = items[0].get("statistics", {})
+            print(f"📊 [YouTube Channel API] Total Channel Views: {ch_stats.get('viewCount', 0)} | Subscribers: {ch_stats.get('subscriberCount', 0)} | Videos: {ch_stats.get('videoCount', 0)}", flush=True)
+            uploads_pl = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
+            pl_items = yt.playlistItems().list(part="contentDetails", playlistId=uploads_pl, maxResults=25).execute().get("items", [])
+            vid_ids = [it["contentDetails"]["videoId"] for it in pl_items]
+            if vid_ids:
+                v_stats = yt.videos().list(part="snippet,statistics", id=",".join(vid_ids)).execute().get("items", [])
+                scored_vids = []
+                for v in v_stats:
+                    views = int(v.get("statistics", {}).get("viewCount", 0))
+                    likes = int(v.get("statistics", {}).get("likeCount", 0))
+                    comments = int(v.get("statistics", {}).get("commentCount", 0))
+                    title = v.get("snippet", {}).get("title", "")
+                    scored_vids.append((views + likes * 12 + comments * 20, views, likes, title))
+                scored_vids.sort(reverse=True)
+                if scored_vids:
+                    print(f"🏆 [Our #1 Performing Video] '{scored_vids[0][3][:60]}' ({scored_vids[0][1]} Views, {scored_vids[0][2]} Likes)", flush=True)
+                for _, _, _, t_str in scored_vids[:8]:
+                    for w in re.findall(r"[a-z]{4,}", t_str.lower()):
+                        if w not in stop_w and w not in winning_kws:
+                            winning_kws.append(w)
+
+        # 2. Utilize `Search Queries per day` + `Video Batch Get Stats` to scan global viral geopolitics on YouTube (Last 24h)
+        try:
+            pub_after = (datetime.utcnow() - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            s_resp = yt.search().list(
+                part="id,snippet",
+                q="world news geopolitics military strike summit",
+                type="video",
+                order="viewCount",
+                publishedAfter=pub_after,
+                relevanceLanguage="en",
+                maxResults=12
+            ).execute()
+            trend_vids = [it["id"]["videoId"] for it in s_resp.get("items", []) if it.get("id", {}).get("videoId")]
+            if trend_vids:
+                tr_stats = yt.videos().list(part="snippet,statistics", id=",".join(trend_vids)).execute().get("items", [])
+                for tv in tr_stats:
+                    t_title = tv.get("snippet", {}).get("title", "")
+                    t_tags = tv.get("snippet", {}).get("tags", [])
+                    for tg in t_tags[:6]:
+                        if 3 <= len(tg) <= 28 and tg not in viral_yt_tags:
+                            viral_yt_tags.append(tg)
+                    for w in re.findall(r"[a-z]{4,}", t_title.lower()):
+                        if w not in stop_w and w not in winning_kws:
+                            winning_kws.append(w)
+                print(f"🔥 [YouTube Live Search API] Extracted {len(winning_kws)} Trending Keywords & {len(viral_yt_tags)} Viral Tags!", flush=True)
+        except Exception as se:
+            print("⚠️ YouTube Search API note:", str(se)[:90], flush=True)
+
+        for dkw in default_viral_kws:
+            if dkw not in winning_kws:
+                winning_kws.append(dkw)
+        return winning_kws[:20], viral_yt_tags[:12]
     except Exception:
-        return []
+        return default_viral_kws, []
 
 # ==============================================================================
-# 3. SEMANTIC EVENT FINGERPRINTING, CAPTION FILTERING & 8-SOURCE ROTATION
+# 3. SEMANTIC EVENT FINGERPRINTING, SPORTS/RADIO BLOCKER & 7-SOURCE ROTATION
 # ==============================================================================
 def load_published_history():
     if os.path.exists(HISTORY_FILE):
@@ -392,11 +445,9 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
     return ("NEW_STORY", None)
 
 def resolve_country_profile_accurate(title, raw_facts_list):
-    """Checks the FIRST subject of the headline so 'Zelenskyy to hold talks...' maps to UKRAINE, not Russia!"""
     headline_low = title.lower()
     body_low = " ".join(raw_facts_list[:3]).lower()
 
-    # Find whichever demonym or country name appears EARLIEST in the headline!
     best_match = None
     best_pos = 9999
     for dem, c_mapped in DEMONYM_TO_COUNTRY.items():
@@ -436,7 +487,6 @@ def build_country_dict_from_db(c_name):
         pass
     return c_prof
 
-# Blocks photo captions ("is seen on Monday, Oct.") and radio transcript tags ("JUANA SUMMERS, HOST:")!
 BANNED_PHRASES = [
     "some readers may find this article distressing",
     "warning: this article contains",
@@ -467,7 +517,24 @@ BANNED_PHRASES = [
     "is seen on sunday",
     "is seen in this",
     "pictured in this",
-    "in this file photo"
+    "in this file photo",
+    "lecturer in",
+    "professor of",
+    "associate professor",
+    "fellow at the",
+    "sound bite of",
+    "archived recording",
+    "npr's ",
+    "talks with ",
+    "speaks with "
+]
+
+BANNED_SPORTS_ENTERTAINMENT_TOPICS = [
+    "man united", "manchester united", "champions league", "premier league", "arsenal",
+    "liverpool", "real madrid", "barcelona", "chelsea", "tottenham", "fifa", "world cup",
+    "cricket", "ipl", "tennis", "wimbledon", "nba", "nfl", "baseball", "formula 1",
+    "grand prix", "box office", "hollywood", "bollywood", "oscars", "grammy", "fashion week",
+    "horoscope", "crossword", "sudoku", "recipe"
 ]
 
 def clean_fact(text):
@@ -476,8 +543,9 @@ def clean_fact(text):
     repl = {"\u2011": "-", "\u2013": "-", "\u2014": " - ", "\u2018": "'", "\u2019": "'", "\u201c": '"', "\u201d": '"', "\u00a0": " "}
     for k, v in repl.items():
         text = text.replace(k, v)
-    # Strip NPR/Radio speaker prefixes like "JUANA SUMMERS, HOST:" or "JOHN SMITH, BYLINE:"
     text = re.sub(r"[A-Z][A-Z\s\.\-]{3,},\s*(HOST|BYLINE|CORRESPONDENT|ANCHOR|REPORTER)\s*:\s*", "", text)
+    text = re.sub(r",\s*writes\s+[A-Z][a-z]+\s+[A-Z][a-z]+\.?$", ".", text)
+    text = re.sub(r"\bKhartoum\b", "Khar-toom", text)
     text = re.sub(r"([a-z])([A-Z])", r"\1. \2", text)
     text = re.sub(r"(?i)\bthe bbc joins\b", "Correspondents join", text)
     text = re.sub(r"(?i)\btold the bbc\b", "stated on the record", text)
@@ -487,7 +555,7 @@ def clean_fact(text):
     text = re.sub(r"(?i)\btold the guardian\b", "stated", text)
     text = re.sub(r"(?i)\btold reuters\b", "confirmed", text)
     text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC)\b", "international dispatches", text)
-    text = re.sub(r"(?i)\(\s*(centre|center|left|right|pictured|file|ap|reuters|afp|getty)[^)]*\)", "", text)
+    text = re.sub(r"(?i)\(\s*(centre|center|left|right|pictured|file|ap|reuters|afp|getty|saf|rsf|unep)[^)]*\)", "", text)
     text = re.sub(r"\[([^\]]+)\]", r"\1", text)
     text = re.sub(r"[^\x20-\x7E]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
@@ -498,7 +566,6 @@ def clean_fact(text):
     return text
 
 def is_semantically_similar_claim(new_claim, existing_claims):
-    """Prevents two nearly identical sentences (like 'will attend in Oslo' and 'will be present in Oslo') in the same video!"""
     new_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", new_claim)}
     if len(new_words) < 4:
         return True
@@ -507,7 +574,7 @@ def is_semantically_similar_claim(new_claim, existing_claims):
         if not old_words:
             continue
         overlap = len(new_words.intersection(old_words)) / float(min(len(new_words), len(old_words)))
-        if overlap >= 0.55:
+        if overlap >= 0.52:
             return True
     return False
 
@@ -525,7 +592,7 @@ def classify_story_mood_and_category(title, claims_text):
         return "economy_markets"
     if any(re.search(rf"\b{re.escape(w)}\b", comb) for w in ["climate", "amazon", "deforestation", "emissions", "wildfire", "flood", "earthquake", "hurricane"]):
         return "environment_climate"
-    if any(re.search(rf"\b{re.escape(w)}\b", comb) for w in ["missile", "strike", "offensive", "sabotage", "troops", "war", "attack", "killed", "military", "drone", "bomber", "violence", "fire", "clashes", "riots"]):
+    if any(re.search(rf"\b{re.escape(w)}\b", comb) for w in ["missile", "strike", "offensive", "sabotage", "troops", "war", "attack", "killed", "military", "drone", "bomber", "violence", "fire", "clashes", "riots", "fighter", "jets"]):
         return "war_crisis"
     return "geopolitics_diplomacy"
 
@@ -543,24 +610,23 @@ def fetch_verified_world_bank_gdp(iso3):
     return None
 
 def discover_and_build_dossiers(hist_obj, winning_keywords):
-    print("📡 [1/6] Scanning 8 Global News Sources with Source-Rotation & Semantic Deduplication...", flush=True)
+    print("📡 [1/6] Scanning Global News Sources (Blocking Sports/Radio & Boosting Viral Geopolitics)...", flush=True)
     feeds = [
         ("Al Jazeera", "https://www.aljazeera.com/xml/rss/all.xml"),
         ("The Guardian", "https://www.theguardian.com/world/rss"),
         ("DW News", "https://rss.dw.com/rdf/rss-en-world"),
         ("France24", "https://www.france24.com/en/rss"),
         ("UN News", "https://news.un.org/feed/subscribe/en/news/all/rss.xml"),
-        ("NPR World", "https://feeds.npr.org/1004/rss.xml"),
-        ("TOI World", "https://timesofindia.indiatimes.com/rssfeeds/296589292.cms"),
-        ("BBC World", "http://feeds.bbci.co.uk/news/world/rss.xml")
+        ("BBC World", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+        ("TOI World", "https://timesofindia.indiatimes.com/rssfeeds/296589292.cms")
     ]
     recent_used_sources = set(hist_obj["last_sources"][-2:]) if hist_obj["last_sources"] else set()
     feeds.sort(key=lambda x: 1 if x[0] in recent_used_sources else 0)
 
     high_impact_terms = [
-        "president", "prime minister", "china", "iran", "israel", "russia", "ukraine",
-        "military", "summit", "un", "nato", "missile", "sanctions", "oil", "economy",
-        "trade", "tariff", "parliament", "election", "court", "intelligence", "treaty"
+        "fighter", "jets", "missile", "drone", "military", "warship", "navy", "airstrike",
+        "president", "prime minister", "china", "iran", "israel", "russia", "ukraine", "saudi",
+        "summit", "un", "nato", "sanctions", "oil", "economy", "tariff", "intelligence", "nuclear"
     ]
     dossiers = []
     batch_fingerprints = []
@@ -573,22 +639,31 @@ def discover_and_build_dossiers(hist_obj, winning_keywords):
             continue
 
         src_count = 0
-        for entry in feed.entries[:18]:
-            if src_count >= 2:
+        for entry in feed.entries[:20]:
+            if src_count >= 3:
                 break
             raw_t = entry.title.rsplit(" - ", 1)[0]
-            if any(skip in raw_t.lower() for skip in ["live", "latest updates", "as it happened", "at a glance", "in pictures", "quiz", "podcast"]):
+            low_raw_t = raw_t.lower()
+            if any(skip in low_raw_t for skip in ["live", "latest updates", "as it happened", "at a glance", "in pictures", "quiz", "podcast"]):
                 continue
+            if any(sp in low_raw_t for sp in BANNED_SPORTS_ENTERTAINMENT_TOPICS):
+                continue
+
             title = clean_fact(raw_t)
             if len(title) < 22:
                 continue
 
             link = getattr(entry, "link", "").strip()
+            if any(sp in link.lower() for sp in ["/sport/", "/football/", "/cricket/", "/culture/", "/film/", "/music/", "/lifestyle/"]):
+                continue
+
             pub_date = normalize_pub_date(getattr(entry, "published", "") or getattr(entry, "updated", ""))
             if not link or not pub_date:
                 continue
 
             raw_sum = BeautifulSoup(getattr(entry, "summary", ""), "html.parser").get_text()
+            if any(sp in raw_sum.lower() for sp in BANNED_SPORTS_ENTERTAINMENT_TOPICS):
+                continue
             summary = clean_fact(raw_sum)
 
             dup_status, prev_event_title = check_semantic_duplicate_or_update(title, summary, hist_obj)
@@ -689,8 +764,8 @@ def discover_and_build_dossiers(hist_obj, winning_keywords):
             category = classify_story_mood_and_category(title, " ".join(raw_facts[:4]))
 
             comb = f"{title} {' '.join(raw_facts[:3])}".lower()
-            trend_score = sum(4 for kw in high_impact_terms if re.search(rf"\b{re.escape(kw)}\b", comb)) + len(verified_claims) * 3
-            analytics_boost = sum(6 for w_kw in winning_keywords if w_kw in comb)
+            trend_score = sum(5 for kw in high_impact_terms if re.search(rf"\b{re.escape(kw)}\b", comb)) + len(verified_claims) * 3
+            analytics_boost = sum(7 for w_kw in winning_keywords if re.search(rf"\b{re.escape(w_kw)}\b", comb))
             diversity_bonus = 0 if src in recent_used_sources else 5
             trend_score += analytics_boost + diversity_bonus
 
@@ -714,9 +789,9 @@ def discover_and_build_dossiers(hist_obj, winning_keywords):
                 "country_profile": c_prof,
                 "wb_data": wb_data
             })
-            if len(dossiers) >= 12:
+            if len(dossiers) >= 14:
                 break
-        if len(dossiers) >= 12:
+        if len(dossiers) >= 14:
             break
 
     dossiers.sort(key=lambda x: x["score"], reverse=True)
@@ -760,9 +835,6 @@ def make_clean_context_headline(text, max_words=8):
     return " ".join(selected).upper()
 
 def build_short_script(dossier, variant_idx=0):
-    """
-    Written in a smart, sharp, conversational, positive YouTuber analyst style!
-    """
     c_prof = dossier["country_profile"]
     ents = extract_story_entities(dossier)
     claims = dossier["verified_claims"]
@@ -821,9 +893,6 @@ def build_short_script(dossier, variant_idx=0):
     return sections, ents
 
 def build_long_documentary_script(dossiers):
-    """
-    Smart, engaging, conversational documentary storytelling (like a top geopolitical YouTuber).
-    """
     lead = dossiers[0]
     c_prof = lead["country_profile"]
     ents = extract_story_entities(lead)
@@ -910,44 +979,35 @@ def build_long_documentary_script(dossiers):
     return chapters
 
 # ==============================================================================
-# 5. REAL RAW VIDEO ENGINE (FFmpeg HTTP Stream Slicing from Wikimedia & Internet Archive!)
-#    Guarantees real moving video footage of Trump, Zelenskyy, Putin, World Leaders & Events!
+# 5. VERIFIED WIKIMEDIA DOCUMENTARY VIDEO B-ROLL ENGINE
 # ==============================================================================
 def fetch_and_transcode_real_video_broll(search_subject, country_name, capital_name, used_video_urls, tag_id="vclip"):
-    """
-    INSTANT 5-SECOND RAW VIDEO HARVESTER:
-    Uses FFmpeg Direct HTTP Range Slicing (`ffmpeg -y -ss 2 -t 5 -i <REMOTE_URL>`) so even if a speech
-    or event video of Trump, Zelenskyy, Putin, White House, UN, or Military is 80MB long,
-    FFmpeg streams ONLY a 5-second slice in 2 seconds!
-    Sources:
-      1. Wikimedia Commons Video Derivatives & Originals (`filetype:video`)
-      2. Internet Archive (`archive.org/advancedsearch.php`) Open MP4 Newsreels & World Events
-    """
     clean_subj = re.sub(r"[^a-zA-Z0-9\s]", " ", str(search_subject)).strip()
     queries = [
         clean_subj,
         f"{country_name} {capital_name}",
-        country_name,
-        "Donald Trump" if "united states" in country_name.lower() else f"{country_name} president",
-        "Volodymyr Zelenskyy" if "ukraine" in country_name.lower() else "diplomatic summit",
-        "United Nations",
-        "military aircraft"
+        f"{country_name} government",
+        "Donald Trump" if "united states" in country_name.lower() else f"{country_name} military",
+        "Volodymyr Zelenskyy" if "ukraine" in country_name.lower() else "United Nations"
     ]
+    banned_video_words = ["vlog", "webcam", "stream", "gaming", "twitch", "minecraft", "animation", "cartoon", "user", "test", "lecture", "interview"]
 
     for vq in queries:
         if not vq or len(vq) < 3:
             continue
-        # Engine A: Wikimedia Commons Video Search (Preferring fast WebM/MP4 derivatives, or direct HTTP range slicing!)
         try:
             api = "https://commons.wikimedia.org/w/api.php"
             params = {
                 "action": "query", "generator": "search",
                 "gsrsearch": f"filetype:video {vq}",
-                "gsrnamespace": "6", "gsrlimit": 8,
+                "gsrnamespace": "6", "gsrlimit": 6,
                 "prop": "imageinfo", "iiprop": "url|size|derivatives", "format": "json"
             }
             r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=7).json()
             for pg in r.get("query", {}).get("pages", {}).values():
+                v_title = pg.get("title", "").lower()
+                if any(bw in v_title for bw in banned_video_words):
+                    continue
                 ii = pg.get("imageinfo", [{}])[0]
                 derivs = ii.get("derivatives", [])
                 candidate_urls = []
@@ -963,7 +1023,6 @@ def fetch_and_transcode_real_video_broll(search_subject, country_name, capital_n
                     if cand_u in used_video_urls:
                         continue
                     clean_mp4 = f"temp/{tag_id}_{len(used_video_urls)}.mp4"
-                    # FFmpeg streams ONLY 5 seconds directly from the remote URL!
                     cmd = [
                         "ffmpeg", "-y",
                         "-user_agent", HEADERS_WIKI["User-Agent"],
@@ -979,61 +1038,20 @@ def fetch_and_transcode_real_video_broll(search_subject, country_name, capital_n
                         GLOBAL_OPEN_VCLIPS.append(vc)
                         if vc.duration >= 2.5:
                             used_video_urls.add(cand_u)
-                            print("   🎬 [RAW VIDEO FOOTAGE LOCKED] Wikimedia 1080p Clip for:", vq, f"({round(vc.duration, 1)}s)", flush=True)
+                            print("   🎬 [VERIFIED RAW VIDEO LOCKED] Wikimedia 1080p Clip for:", vq, f"({round(vc.duration, 1)}s)", flush=True)
                             return {
                                 "vclip": vc,
                                 "start_t": 0.0,
-                                "label": f"LIVE FOOTAGE • {vq.upper()[:22]}"
+                                "label": f"OFFICIAL FOOTAGE • {vq.upper()[:20]}"
                             }
         except Exception:
             pass
-
-        # Engine B: Internet Archive (`archive.org`) Open MP4 News & World Event Footage
-        try:
-            ia_q = f'title:({vq}) AND mediatype:(movies) AND format:(MPEG4)'
-            ia_url = f"https://archive.org/advancedsearch.php?q={urllib.parse.quote(ia_q)}&fl[]=identifier&rows=4&output=json"
-            ia_r = requests.get(ia_url, headers=HEADERS_WEB, timeout=6).json()
-            docs = ia_r.get("response", {}).get("docs", [])
-            for doc in docs:
-                ident = doc.get("identifier")
-                if not ident:
-                    continue
-                meta_r = requests.get(f"https://archive.org/metadata/{ident}", headers=HEADERS_WEB, timeout=6).json()
-                for f_obj in meta_r.get("files", []):
-                    fn = f_obj.get("name", "")
-                    if fn.lower().endswith(".mp4") and "ia_thumb" not in fn.lower():
-                        mp4_u = f"https://archive.org/download/{ident}/{urllib.parse.quote(fn)}"
-                        if mp4_u in used_video_urls:
-                            continue
-                        clean_mp4 = f"temp/{tag_id}_ia_{len(used_video_urls)}.mp4"
-                        cmd = [
-                            "ffmpeg", "-y", "-ss", "5", "-t", "5.5",
-                            "-i", mp4_u,
-                            "-vf", "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,setsar=1",
-                            "-r", "24", "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
-                            clean_mp4
-                        ]
-                        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=18, check=False)
-                        if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 35000:
-                            vc = VideoFileClip(clean_mp4)
-                            GLOBAL_OPEN_VCLIPS.append(vc)
-                            if vc.duration >= 2.5:
-                                used_video_urls.add(mp4_u)
-                                print("   🎬 [RAW VIDEO FOOTAGE LOCKED] Archive.org MP4 Clip for:", vq, f"({round(vc.duration, 1)}s)", flush=True)
-                                return {
-                                    "vclip": vc,
-                                    "start_t": 0.0,
-                                    "label": f"EVENT FOOTAGE • {vq.upper()[:22]}"
-                                }
-        except Exception:
-            pass
-
     return None
 
 # ==============================================================================
-# 6. STRICT COUNTRY-LOCKED PHOTO HARVESTER (Zero Cross-Chapter Repetition!)
+# 6. CLAUSE-EXACT VISUAL HARVESTER (Zero Blue Placeholder Boxes!)
 # ==============================================================================
-def validate_and_enhance_1080p(im, existing_hashes, min_w=420, min_h=260):
+def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
     im = im.convert("RGB")
     w, h = im.size
     if w < min_w or h < min_h:
@@ -1048,24 +1066,24 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=420, min_h=260):
         return None
 
     white_px = np.sum((arr[:, :, 0] > 235) & (arr[:, :, 1] > 235) & (arr[:, :, 2] > 235))
-    if (white_px / float(80 * 80)) > 0.25:
+    if (white_px / float(80 * 80)) > 0.28:
         return None
 
     quant = (arr // 32).astype(int)
     flat = quant[:, :, 0] * 64 + quant[:, :, 1] * 8 + quant[:, :, 2]
     _, counts = np.unique(flat, return_counts=True)
-    if (counts.max() / float(80 * 80)) > 0.35:
+    if (counts.max() / float(80 * 80)) > 0.38:
         return None
 
     gray_cv = cv2.cvtColor(np.array(im.resize((320, 200))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
-    if blur_score < 32.0 or im.entropy() < 6.4:
+    if blur_score < 28.0 or im.entropy() < 6.2:
         return None
 
     gray = im.convert("L").resize((13, 12))
     dh = (np.asarray(gray, dtype=np.int16)[:, 1:] > np.asarray(gray, dtype=np.int16)[:, :-1]).flatten()
     for old_h in existing_hashes:
-        if int(np.sum(dh != old_h)) < 16:
+        if int(np.sum(dh != old_h)) < 14:
             return None
     existing_hashes.append(dh)
 
@@ -1090,14 +1108,16 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
         if re.search(rf"\b{re.escape(word_key)}\b", low):
             return prop_badge, wiki_exact, f"{news_q} {c_prof['name']}", False
 
-    # Rotate distinct search queries across beats so every beat gets a fresh angle!
+    beat_keywords = [w for w in re.findall(r"[A-Za-z]{4,}", beat_text) if w.lower() not in {"look", "first", "what", "makes", "this", "even", "more", "interesting", "wider", "context", "here", "takeaway", "think", "welcome", "back", "world", "talk", "brief"}]
+    if len(beat_keywords) >= 2:
+        clause_q = " ".join(beat_keywords[:4]) + f" {c_prof['name']}"
+        return f"DISPATCH • {c_prof['name']}", entities[beat_idx % len(entities)], clause_q, False
+
     angle_queries = [
         f"{dossier['title']}",
         f"{entities[0]} {c_prof['name']}",
         f"{c_prof['capital']} {c_prof['name']} government",
-        f"{entities[1] if len(entities)>1 else c_prof['capital']} {c_prof['name']}",
-        f"{c_prof['name']} diplomacy economy",
-        f"{c_prof['name']} security parliament"
+        f"{entities[1] if len(entities)>1 else c_prof['capital']} {c_prof['name']}"
     ]
     chosen_q = angle_queries[beat_idx % len(angle_queries)]
     chosen_ent = entities[beat_idx % len(entities)]
@@ -1106,11 +1126,12 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat"):
     c_prof = dossier["country_profile"]
 
-    for nq in [news_query, dossier["title"], f"{wiki_exact_title} {c_prof['name']}"]:
+    # 1. Multi-Angle Bing News Journalism XML RSS
+    for nq in [news_query, dossier["title"], f"{wiki_exact_title} {c_prof['name']}", f"{c_prof['capital']} {c_prof['name']} news"]:
         try:
             rss_u = f"https://www.bing.com/news/search?q={urllib.parse.quote(nq)}&format=rss"
             r = requests.get(rss_u, headers=HEADERS_WEB, timeout=6)
-            for u in re.findall(r"<News:Image>(https?://[^<]+)</News:Image>", r.text)[:12]:
+            for u in re.findall(r"<News:Image>(https?://[^<]+)</News:Image>", r.text)[:14]:
                 u_clean = u.replace("&amp;", "&")
                 if "bing.com/th" in u_clean:
                     u_clean = u_clean.split("&")[0] + "&w=1920&h=1080&c=7&rs=1"
@@ -1125,6 +1146,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
+    # 2. Extra In-Article Photos from the Lead News URL
     for extra_u in dossier.get("extra_article_imgs", []):
         try:
             ir = requests.get(extra_u, headers=HEADERS_WEB, timeout=5)
@@ -1138,60 +1160,29 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    try:
-        w_rest = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(wiki_exact_title)}"
-        wr = requests.get(w_rest, headers=HEADERS_WIKI, timeout=5).json()
-        img_u = wr.get("originalimage", {}).get("source") or wr.get("thumbnail", {}).get("source")
-        if img_u and img_u.lower().endswith((".jpg", ".jpeg", ".png")) and not any(b in img_u.lower() for b in ["map", "diagram", "chart", "logo", "flag"]):
-            ir = requests.get(img_u, headers=HEADERS_WIKI, timeout=6)
-            if ir.status_code == 200 and len(ir.content) > 14000:
-                p = f"temp/{tag_id}_wrest.jpg"
-                with open(p, "wb") as f:
-                    f.write(ir.content)
-                vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
-                if vim is not None:
-                    return vim
-    except Exception:
-        pass
+    # 3. Exact Wikipedia REST Summary PageImage
+    for wk_t in [wiki_exact_title, c_prof["capital"], c_prof["name"].title()]:
+        try:
+            w_rest = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(wk_t)}"
+            wr = requests.get(w_rest, headers=HEADERS_WIKI, timeout=5).json()
+            img_u = wr.get("originalimage", {}).get("source") or wr.get("thumbnail", {}).get("source")
+            if img_u and img_u.lower().endswith((".jpg", ".jpeg", ".png")) and not any(b in img_u.lower() for b in ["map", "diagram", "chart", "logo", "flag"]):
+                ir = requests.get(img_u, headers=HEADERS_WIKI, timeout=6)
+                if ir.status_code == 200 and len(ir.content) > 14000:
+                    p = f"temp/{tag_id}_wrest.jpg"
+                    with open(p, "wb") as f:
+                        f.write(ir.content)
+                    vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
+                    if vim is not None:
+                        return vim
+        except Exception:
+            pass
 
     failed_queries.append(news_query)
     return None
 
-def generate_bespoke_speech_infographic_1080p(beat_text, prop_badge, claim_meta, dossier, W=1920, H=1080):
-    c_prof = dossier["country_profile"]
-    canvas = Image.new("RGB", (W, H), (10, 16, 28))
-    draw = ImageDraw.Draw(canvas, "RGBA")
-
-    for x in range(0, W, 80):
-        draw.line([(x, 0), (x, H)], fill=(0, 210, 255, 22), width=1)
-    for y in range(0, H, 80):
-        draw.line([(0, y), (W, y)], fill=(0, 210, 255, 22), width=1)
-
-    key_nums = re.findall(r"(\$?\d+(?:,\d+)*(?:\.\d+)?\s*(?:%|million|billion|trillion|years|days|hours|km|troops|dead|injured)?)", beat_text, re.I)
-    stat_str = key_nums[0].strip().upper() if (key_nums and len(key_nums[0].strip()) >= 2) else c_prof["name"]
-
-    if W < H:
-        draw.rounded_rectangle([(60, 260), (W - 60, 1180)], radius=20, fill=(14, 24, 42, 242), outline=(255, 214, 10, 220), width=4)
-        draw.rounded_rectangle([(95, 305), (W - 95, 365)], radius=8, fill=(204, 18, 36, 255))
-        draw.text((115, 318), prop_badge[:30], fill=(255, 255, 255, 255), font=get_font(26))
-        draw.text((95, 405), f"KEY DATA: {stat_str[:18]}", fill=(255, 214, 10, 255), font=get_font(42))
-        f_body = get_font(34)
-        for l_i, ln in enumerate(wrap_lines(draw, f'"{beat_text}"', f_body, W - 200)[:6]):
-            draw.text((95, 495 + l_i * 52), ln, fill=(245, 248, 255, 255), font=f_body)
-        draw.text((95, 1105), f"VERIFIED DISPATCH • {claim_meta['published_date']}", fill=(0, 210, 255, 255), font=get_font(22))
-    else:
-        draw.rounded_rectangle([(160, 150), (1760, 680)], radius=20, fill=(14, 24, 42, 240), outline=(255, 214, 10, 220), width=4)
-        draw.rounded_rectangle([(200, 185), (680, 240)], radius=8, fill=(204, 18, 36, 255))
-        draw.text((224, 198), prop_badge[:32], fill=(255, 255, 255, 255), font=get_font(26))
-        draw.text((200, 270), f"KEY FOCUS: {stat_str}", fill=(255, 214, 10, 255), font=get_font(48))
-        f_body = get_font(38)
-        for l_i, ln in enumerate(wrap_lines(draw, f'"{beat_text}"', f_body, 1480)[:3]):
-            draw.text((200, 355 + l_i * 54), ln, fill=(245, 248, 255, 255), font=f_body)
-        draw.text((200, 615), f"VERIFIED INTERNATIONAL DISPATCH  •  PUBLISHED: {claim_meta['published_date']}", fill=(0, 210, 255, 255), font=get_font(22))
-    return canvas
-
 # ==============================================================================
-# 7. TRUE FULL-HEIGHT 1080p FRAMING
+# 7. DUAL-SUBJECT & FACE-AWARE FULL-HEIGHT 1080p FRAMING + CINEMATIC KEN BURNS ZOOM
 # ==============================================================================
 def has_well_framed_face(im):
     if FACE_CASCADE is None:
@@ -1231,8 +1222,24 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
     if img_ratio >= target_ratio:
         crop_h = ih
         crop_w = int(ih * target_ratio)
+        if len(faces) >= 2 and target_w < target_h:
+            faces_sorted = sorted(faces, key=lambda f: f[0])
+            f_left, f_right = faces_sorted[0], faces_sorted[-1]
+            span_x = (f_right[0] + f_right[2]) - f_left[0]
+            if span_x > crop_w * 0.92:
+                dual_stage = Image.new("RGB", (target_w, target_h), (10, 14, 24))
+                half_h = target_h // 2
+                left_half = im.crop((0, 0, iw // 2, ih)).resize((target_w, half_h), resample_mode)
+                right_half = im.crop((iw // 2, 0, iw, ih)).resize((target_w, target_h - half_h), resample_mode)
+                dual_stage.paste(left_half, (0, 0))
+                dual_stage.paste(right_half, (0, half_h))
+                d_line = ImageDraw.Draw(dual_stage)
+                d_line.line([(0, half_h), (target_w, half_h)], fill=(255, 214, 10), width=6)
+                return dual_stage
+
         if faces:
-            fx_center = sum(f[0] + f[2] // 2 for f in faces) // len(faces)
+            main_f = max(faces, key=lambda f: f[2] * f[3])
+            fx_center = main_f[0] + main_f[2] // 2
             left = max(0, min(iw - crop_w, fx_center - crop_w // 2))
         else:
             left = (iw - crop_w) // 2
@@ -1270,26 +1277,36 @@ def build_clean_1080p_stage(im, W, H):
         bg = ImageEnhance.Brightness(bg).enhance(0.32)
         canvas = bg.convert("RGBA")
 
-        hero_w, hero_h = int(W * 1.05), 1360
+        hero_w, hero_h = int(W * 1.10), int(1340 * 1.10)
         fg = fit_full_height_face_aware_1080p(im, hero_w, hero_h)
         return ("SHORT_STAGE", canvas, fg)
     else:
-        over_w, over_h = int(W * 1.05), int(H * 1.05)
+        over_w, over_h = int(W * 1.10), int(H * 1.10)
         fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
         return ("FULL_BLEED_STAGE", fg, None)
 
 def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
+    """
+    Professional Broadcast Ken Burns Camera Motion (Smooth Zoom-In + Subtle Pan)!
+    """
+    resample_mode = getattr(Image, "Resampling", Image).BILINEAR
     mode_tag, base_a, base_b = stage_tuple
+    # Smooth ease-in-out curve for camera motion
+    smooth_p = 0.5 - 0.5 * math.cos(math.pi * bp)
+
     if mode_tag == "SHORT_STAGE":
         canvas = base_a.copy()
         fg = base_b
         fw, fh = fg.size
         win_w, win_h = W, 1340
-        max_dx = max(fw - win_w, 0)
-        max_dy = max(fh - win_h, 0)
-        ox = int(max_dx * (bp if pan_dir == 1 else (1.0 - bp)))
-        oy = int(max_dy * 0.5)
-        slice_fg = fg.crop((ox, oy, ox + win_w, oy + win_h))
+        # Dynamic zoom window shrinks slightly over the beat for true 3D zoom-in effect
+        cur_w = int(win_w + (fw - win_w) * (1.0 - 0.65 * smooth_p))
+        cur_h = int(win_h + (fh - win_h) * (1.0 - 0.65 * smooth_p))
+        max_dx = max(fw - cur_w, 0)
+        max_dy = max(fh - cur_h, 0)
+        ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
+        oy = int(max_dy * 0.45)
+        slice_fg = fg.crop((ox, oy, ox + cur_w, oy + cur_h)).resize((win_w, win_h), resample_mode)
         canvas.paste(slice_fg, (0, 120))
 
         draw = ImageDraw.Draw(canvas, "RGBA")
@@ -1301,11 +1318,13 @@ def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
     else:
         fg = base_a
         fw, fh = fg.size
-        max_dx = max(fw - W, 0)
-        max_dy = max(fh - H, 0)
-        ox = int(max_dx * (bp if pan_dir == 1 else (1.0 - bp)))
-        oy = int(max_dy * (0.2 + 0.6 * bp))
-        frame = fg.crop((ox, oy, ox + W, oy + H)).convert("RGBA")
+        cur_w = int(W + (fw - W) * (1.0 - 0.70 * smooth_p))
+        cur_h = int(H + (fh - H) * (1.0 - 0.70 * smooth_p))
+        max_dx = max(fw - cur_w, 0)
+        max_dy = max(fh - cur_h, 0)
+        ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
+        oy = int(max_dy * (0.25 + 0.5 * smooth_p))
+        frame = fg.crop((ox, oy, ox + cur_w, oy + cur_h)).resize((W, H), resample_mode).convert("RGBA")
         draw = ImageDraw.Draw(frame, "RGBA")
         for y in range(H - 260, H):
             draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(215 * ((y - (H - 260)) / 260.0) ** 1.2)))
@@ -1346,7 +1365,7 @@ def build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080):
     return map_img
 
 # ==============================================================================
-# 8. SHARED-HASH STORYBOARD BUILDER (Mixes Real Moving Video Clips + Unique Photos!)
+# 8. SHARED-HASH STORYBOARD BUILDER + BROADCAST LIVE HUD & SCROLLING TICKER
 # ==============================================================================
 def has_strict_economic_context(text):
     low = text.lower()
@@ -1361,11 +1380,6 @@ def build_prop_driven_storyboard_1080p(
     sections_list, dossier, entities, W, H, tag_prefix="short",
     shared_hashes=None, shared_video_urls=None, start_beat_offset=0
 ):
-    """
-    Uses `shared_hashes` and `start_beat_offset` across chapters so the Long Video NEVER repeats
-    the same photo in Chapter 1, Chapter 2, Chapter 4, Chapter 5, and Chapter 7!
-    Also weaves in multiple Real Moving Video B-Roll clips (`VIDEO_BROLL_BEAT`)!
-    """
     planned_beats = []
     existing_hashes = shared_hashes if shared_hashes is not None else []
     used_video_urls = shared_video_urls if shared_video_urls is not None else set()
@@ -1380,7 +1394,6 @@ def build_prop_driven_storyboard_1080p(
     osm_map = build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080)
     osm_stage = build_clean_1080p_stage(osm_map, W, H)
 
-    # Only load lead_img if this is the very first chapter/section (`start_beat_offset == 0`)
     if start_beat_offset == 0 and dossier.get("lead_img") and not any(b in dossier["lead_img"].lower() for b in BANNED_IMAGE_SOURCES):
         try:
             r = requests.get(dossier["lead_img"], headers=HEADERS_WEB, timeout=6)
@@ -1406,7 +1419,7 @@ def build_prop_driven_storyboard_1080p(
         sec_headline = sec.get("headline") or sec.get("chapter_title") or make_clean_context_headline(dossier["title"])
         claim_meta = sec.get("claim_meta") or dossier["verified_claims"][0]
 
-        target_beat_len = 4.8 if W < H else 5.4
+        target_beat_len = 4.6 if W < H else 5.2
         num_beats = max(2, int(round(sec_dur / target_beat_len)))
         beat_dur = sec_dur / float(num_beats)
         words = narration.split()
@@ -1426,7 +1439,6 @@ def build_prop_driven_storyboard_1080p(
                 vseg = None
                 stage_1 = osm_stage
             else:
-                # Try fetching a Real Moving Video Clip for Beat #1 of sections so every video has live moving footage!
                 vseg = None
                 if b_i == 1 and moving_video_beats < max_video_clips_for_block:
                     vseg = fetch_and_transcode_real_video_broll(
@@ -1447,9 +1459,12 @@ def build_prop_driven_storyboard_1080p(
                         )
                         if beat_im is not None:
                             unique_real_photos.append(beat_im)
+                        elif unique_real_photos:
+                            # Use a flipped/cropped variation of a real photo rather than an ugly blue text box!
+                            beat_im = unique_real_photos[global_beat_idx % len(unique_real_photos)].transpose(Image.FLIP_LEFT_RIGHT)
+                            reused_photo_beats += 1
                         else:
-                            beat_im = generate_bespoke_speech_infographic_1080p(b_txt, prop_badge, claim_meta, dossier, W=W, H=H)
-                            generated_infographic_beats += 1
+                            beat_im = osm_map
 
                     if has_strict_economic_context(b_txt) and dossier.get("wb_data") is not None and "DATA_CHART_BEAT" not in used_modes_in_sec:
                         b_type = "DATA_CHART_BEAT"
@@ -1466,6 +1481,7 @@ def build_prop_driven_storyboard_1080p(
 
             used_modes_in_sec.add(b_type)
             secondary_im = unique_real_photos[(len(unique_real_photos) - 2) % len(unique_real_photos)] if len(unique_real_photos) >= 2 else beat_im
+            prev_stage = planned_beats[-1]["stage_1"] if planned_beats else None
 
             planned_beats.append({
                 "section_idx": sec_idx,
@@ -1480,6 +1496,7 @@ def build_prop_driven_storyboard_1080p(
                 "section_duration": sec_dur,
                 "section_elapsed_before": round(b_i * beat_dur, 3),
                 "stage_1": stage_1,
+                "prev_stage": prev_stage,
                 "primary_im": beat_im,
                 "primary_lbl": prop_badge,
                 "secondary_im": secondary_im,
@@ -1548,6 +1565,14 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
                 draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(215 * ((y - (H - 260)) / 260.0) ** 1.2)))
     else:
         frame = extract_animated_frame_from_stage(beat["stage_1"], W, H, bp, pan_dir=beat["pan_dir"])
+        # Smooth 0.25s Cross-Dissolve Transition from previous beat so cuts look like a real TV broadcast!
+        if local_t < 0.25 and beat.get("prev_stage") is not None:
+            try:
+                prev_f = extract_animated_frame_from_stage(beat["prev_stage"], W, H, 1.0, pan_dir=1)
+                alpha_blend = local_t / 0.25
+                frame = Image.blend(prev_f, frame, alpha_blend)
+            except Exception:
+                pass
         draw = ImageDraw.Draw(frame, "RGBA")
 
     cy_card = 1475 if is_short else (H - 305)
@@ -1562,7 +1587,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         f_h = get_font(28 if is_short else 30)
         kw = draw.textbbox((0, 0), kicker, font=f_k)[2] + 34
 
-        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 158)], radius=12, fill=(10, 16, 28, 222), outline=(255, 214, 10, 215), width=2)
+        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 158)], radius=12, fill=(10, 16, 28, 226), outline=(255, 214, 10, 215), width=2)
         draw.rounded_rectangle([(bx1 + 18, cy_card + 14), (bx1 + 18 + kw, cy_card + 48)], radius=6, fill=(204, 18, 36, 255))
         draw.text((bx1 + 34, cy_card + 19), kicker, fill=(255, 255, 255, 255), font=f_k)
         for i_l, ln in enumerate(wrap_lines(draw, hl, f_h, (bx2 - bx1) - 48)[:2]):
@@ -1646,11 +1671,27 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         draw.text((mid_x + 32, cy_card + 18), "CALCULATION B", fill=(255, 214, 10, 255), font=get_font(22))
         draw.text((mid_x + 32, cy_card + 62), "ESCALATION RISK", fill=(255, 255, 255, 255), font=get_font(25))
 
+    # Top-Left Watermark & Flag + Top-Right Professional TV Broadcast LIVE Pill
     top_y = 28 if is_short else 32
     frame.paste(watermark, (42, top_y), watermark)
     if c_prof.get("flag_img"):
         fl = c_prof["flag_img"].resize((84, 54))
         frame.paste(fl, (198, top_y + 14), fl)
+
+    live_txt = f"● LIVE DISPATCH • {c_prof['name']}"
+    f_lv = get_font(20)
+    lw_box = draw.textbbox((0, 0), live_txt, font=f_lv)[2] + 36
+    draw.rounded_rectangle([(W - lw_box - 42, top_y + 12), (W - 42, top_y + 56)], radius=8, fill=(14, 20, 34, 225), outline=(204, 18, 36, 255), width=2)
+    draw.text((W - lw_box - 24, top_y + 22), live_txt, fill=(255, 214, 10, 255), font=f_lv)
+
+    # Bottom Scrolling Broadcast Breaking News Ticker (For 16:9 Widescreen Long Videos)
+    if not is_short:
+        draw.rectangle([(0, H - 36), (W, H)], fill=(12, 18, 32, 245))
+        draw.rectangle([(0, H - 36), (235, H)], fill=(204, 18, 36, 255))
+        draw.text((18, H - 29), "WORLD TALK BRIEF", fill=(255, 255, 255, 255), font=get_font(19))
+        ticker_str = f"   •   {story['title'].upper()}   •   EPICENTER: {c_prof['capital'].upper()}, {c_prof['name']}   •   SUBSCRIBE FOR 24/7 VERIFIED GLOBAL INTELLIGENCE   " * 2
+        scroll_x = 250 - int((section_t * 110) % 1400)
+        draw.text((scroll_x, H - 29), ticker_str, fill=(255, 214, 10, 255), font=get_font(18))
 
     if is_short and beat["section_idx"] == 0 and beat["beat_in_section"] == 0 and local_t < 0.35:
         draw.rounded_rectangle([(42, 740), (W - 42, 915)], radius=16, fill=(204, 18, 36, 242), outline=(255, 214, 10, 255), width=4)
@@ -1659,7 +1700,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             draw.text((68, 765 + ci * 58), cln, fill=(255, 255, 255, 255), font=f_cov)
 
     sub_strip = voice_sub_dir.render_exact_synced_subtitles(beat["word_timings"], section_t, W, H, is_short=is_short)
-    sub_y = 1655 if is_short else (H - 128)
+    sub_y = 1655 if is_short else (H - 152)
     frame.paste(sub_strip, (0, sub_y), sub_strip)
 
     return np.array(frame.convert("RGB"))
@@ -1679,14 +1720,10 @@ def make_section_clip_from_beats(section_beats, watermark, voice_sub_dir, sectio
     return VideoClip(make_frame, duration=section_dur)
 
 # ==============================================================================
-# 9. STUDIO HD SMART YOUTUBER VOICE ENGINE (48kHz Broadcast EQ + Warmth Mastering)
+# 9. STUDIO HD SMART YOUTUBER VOICE ENGINE
 # ==============================================================================
 class VoiceAndSubtitleEngine:
     async def synthesize_with_word_boundaries(self, text, out_path, voice_style="smart_host"):
-        """
-        Uses Microsoft's most charismatic, smart, conversational YouTuber voices (`BrianMultilingualNeural` & `AndrewMultilingualNeural`)
-        and applies FFmpeg Studio Podcast Mastering (Warm Bass + Crisp Treble + Broadcast Compressor) for HD sound!
-        """
         style_map = {
             "smart_host": ("en-US-BrianMultilingualNeural", "+7%", "+1Hz"),
             "engaging": ("en-US-AndrewMultilingualNeural", "+6%", "+1Hz"),
@@ -1716,7 +1753,6 @@ class VoiceAndSubtitleEngine:
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1000:
             gTTS(text=text, lang="en").save(raw_mp3)
 
-        # Studio HD Podcast Mastering via FFmpeg (48kHz, Warmth + Presence + Dynamic Compression)
         try:
             cmd = [
                 "ffmpeg", "-y", "-i", raw_mp3,
@@ -1759,10 +1795,10 @@ class VoiceAndSubtitleEngine:
                 active_chunk = ch
                 active_word_idx = len(ch) - 1
 
-        strip_h = 210 if is_short else 120
+        strip_h = 210 if is_short else 110
         strip = Image.new("RGBA", (W, strip_h), (0, 0, 0, 0))
         draw = ImageDraw.Draw(strip, "RGBA")
-        font = get_font(52 if is_short else 40)
+        font = get_font(52 if is_short else 38)
         words_str_list = [w["word"] for w in active_chunk]
 
         if is_short:
@@ -1785,11 +1821,11 @@ class VoiceAndSubtitleEngine:
             phrase = " ".join(words_str_list)
             lw = draw.textbbox((0, 0), phrase, font=font)[2]
             bx1, bx2 = max((W - lw) // 2 - 30, 30), min((W + lw) // 2 + 30, W - 30)
-            draw.rounded_rectangle([(bx1, 10), (bx2, 92)], radius=12, fill=(6, 9, 16, 232), outline=(255, 214, 10, 105), width=2)
+            draw.rounded_rectangle([(bx1, 8), (bx2, 86)], radius=12, fill=(6, 9, 16, 232), outline=(255, 214, 10, 105), width=2)
             x_cur = (W - lw) // 2
             for idx_w, w in enumerate(words_str_list):
                 col = (255, 214, 10, 255) if idx_w == active_word_idx else (255, 255, 255, 255)
-                draw.text((x_cur, 25), w, font=font, fill=col, stroke_width=3, stroke_fill=(0, 0, 0, 240))
+                draw.text((x_cur, 22), w, font=font, fill=col, stroke_width=3, stroke_fill=(0, 0, 0, 240))
                 x_cur += draw.textbbox((0, 0), w + " ", font=font)[2]
         return strip
 
@@ -1840,10 +1876,8 @@ def build_situation_adaptive_soft_soundtrack(filename, duration, beat_switch_tim
 
 # ==============================================================================
 # 10. SIGNATURE "WORLD TALK BRIEF" VIRAL BRAND THUMBNAIL ENGINE
-#     Builds an unmistakable, high-CTR documentary brand look (like Nitish Rajput / Vox / WION)!
 # ==============================================================================
 def extract_viral_thumbnail_hook(dossier, entities):
-    """Creates a punchy, curiosity-driving 2-line story-specific hook for the thumbnail!"""
     title_words = [w.upper() for w in re.findall(r"[A-Za-z0-9']+", dossier["title"]) if w.lower() not in {"the", "and", "for", "with", "from", "into", "over", "after", "says", "said", "that", "this"}]
     c_name = dossier["country_profile"]["name"]
     line_1 = " ".join(title_words[:3]) if len(title_words) >= 3 else c_name
@@ -1851,24 +1885,15 @@ def extract_viral_thumbnail_hook(dossier, entities):
     return line_1[:18], line_2[:18]
 
 def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, watermark, out_path="output/WTB_1080p_Thumb_1.jpg"):
-    """
-    SIGNATURE 'WORLD TALK BRIEF' VIRAL THUMBNAIL DESIGN:
-    1. Full-Bleed 1920x1080 High-Contrast Cinema Canvas (Or Dual-Subject Split when 2 strong photos exist!)
-    2. Subtle Red/Gold Radar Rings & Rim-Glow Accent
-    3. Unmistakable Top-Left 'WORLD TALK BRIEF • ORIGINAL BRIEFING' Brand Seal + Gold-Framed Country Flag
-    4. Massive 3D-Shadowed Slanted Impact Banners at the bottom-left so the subject's face is 100% clear!
-    """
     W, H = 1920, 1080
     c_prof = dossier["country_profile"]
     cat = dossier.get("category", "geopolitics_diplomacy")
 
-    # Select best face-framed photo as Hero 1, and a second distinct photo as Hero 2
     face_photos = [im for im in unique_photos if has_well_framed_face(im)]
     hero_1 = face_photos[0] if face_photos else (unique_photos[0] if unique_photos else build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080))
     hero_2 = unique_photos[1] if len(unique_photos) > 1 else None
 
     if hero_2 is not None:
-        # Dynamic Dual-Subject Cinema Composite (Left 45% Secondary Context + Right 60% Main Subject with glowing diagonal divider!)
         canvas = Image.new("RGBA", (W, H), (8, 12, 22, 255))
         left_im = fit_full_height_face_aware_1080p(hero_2, 920, H)
         left_im = ImageEnhance.Brightness(ImageEnhance.Contrast(left_im).enhance(1.15)).enhance(0.65)
@@ -1883,7 +1908,6 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
 
     draw = ImageDraw.Draw(canvas, "RGBA")
 
-    # Cinematic Left-to-Right & Bottom-to-Top Dark Gradient for Pop-Out Typography
     for x in range(0, 1050):
         alpha = int(235 * (1.0 - (x / 1050.0) ** 1.45))
         draw.line([(x, 0), (x, H)], fill=(6, 10, 20, alpha))
@@ -1891,15 +1915,12 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
         alpha = int(230 * (((y - (H - 380)) / 380.0) ** 1.3))
         draw.line([(0, y), (W, y)], fill=(4, 7, 15, alpha))
 
-    # Signature Radar Target Accent Rings in top-right background
     for r_rad in [110, 175, 240]:
         draw.ellipse([(1580 - r_rad, 240 - r_rad), (1580 + r_rad, 240 + r_rad)], outline=(255, 214, 10, 55), width=3)
 
-    # Golden Neon Outer Frame Border (Instant Brand Recognition in YouTube Feed!)
     draw.rectangle([(10, 10), (W - 10, H - 10)], outline=(255, 214, 10, 235), width=8)
     draw.rectangle([(18, 18), (W - 18, H - 18)], outline=(204, 18, 36, 220), width=4)
 
-    # Top-Left Signature Brand Seal: WTB Logo + Flag + 'WORLD TALK BRIEF' Pill
     canvas.paste(watermark, (54, 48), watermark)
     if c_prof.get("flag_img"):
         fl = c_prof["flag_img"].resize((112, 72))
@@ -1912,23 +1933,19 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     draw.rounded_rectangle([(54, 155), (54 + bp_w, 212)], radius=10, fill=(204, 18, 36, 255), outline=(255, 255, 255, 230), width=2)
     draw.text((78, 168), brand_pill, fill=(255, 255, 255, 255), font=f_bp)
 
-    # Story-Specific Giant 2-Line Viral Hook at Bottom-Left
     hook_line_1, hook_line_2 = extract_viral_thumbnail_hook(dossier, entities)
     f_giant = get_font(96)
     f_sub = get_font(86)
 
-    # Line 1: White 3D Text with Heavy Black Stroke
     draw.text((62, 628), hook_line_1, fill=(0, 0, 0, 240), font=f_giant)
     draw.text((54, 620), hook_line_1, fill=(255, 255, 255, 255), font=f_giant, stroke_width=7, stroke_fill=(0, 0, 0, 255))
 
-    # Line 2: Slanted Neon Gold Impact Banner with Deep Black Text
     w_l2 = draw.textbbox((0, 0), hook_line_2, font=f_sub)[2] + 76
     poly_pts = [(54, 755), (54 + w_l2, 755), (38 + w_l2, 885), (38, 885)]
     draw.polygon([(p[0] + 10, p[1] + 10) for p in poly_pts], fill=(0, 0, 0, 220))
     draw.polygon(poly_pts, fill=(255, 214, 10, 255), outline=(255, 255, 255, 255))
     draw.text((82, 774), hook_line_2, fill=(10, 12, 18, 255), font=f_sub)
 
-    # Bottom Subtitle Strip
     sub_teaser = make_clean_context_headline(dossier["title"], max_words=7)
     draw.text((58, 920), f"▶ {sub_teaser}", fill=(0, 210, 255, 255), font=get_font(34), stroke_width=3, stroke_fill=(0, 0, 0, 255))
 
@@ -1951,67 +1968,62 @@ create_1080p_thumbnails = create_signature_wtb_brand_thumbnail
 create_category_adaptive_1080p_thumbnail = create_signature_wtb_brand_thumbnail
 
 # ==============================================================================
-# 11. MULTI-TOKEN YOUTUBE API UPLOADER
+# 11. SINGLE-TOKEN HIGH-CAPACITY YOUTUBE API UPLOADER
 # ==============================================================================
 def try_youtube_auto_upload(video_path, title, description, tags, is_short=False, thumbnail_path=None):
-    token_envs = ["YOUTUBE_TOKEN_JSON_B64", "YOUTUBE_TOKEN_2_B64", "YOUTUBE_TOKEN_3_B64", "YOUTUBE_TOKEN_4_B64"]
-    available_tokens = [os.environ.get(k, "").strip() for k in token_envs if os.environ.get(k, "").strip()]
-
-    if not available_tokens:
+    token_b64 = os.environ.get("YOUTUBE_TOKEN_JSON_B64", "").strip()
+    if not token_b64:
         print("ℹ️ [GitHub Cloud Test Mode] No YouTube API token set yet; saved to GitHub Artifacts:", video_path, flush=True)
         return None
 
-    for t_idx, token_b64 in enumerate(available_tokens):
-        try:
-            from google.oauth2.credentials import Credentials
-            from google.auth.transport.requests import Request
-            from googleapiclient.discovery import build
-            from googleapiclient.http import MediaFileUpload
+    try:
+        from google.oauth2.credentials import Credentials
+        from google.auth.transport.requests import Request
+        from googleapiclient.discovery import build
+        from googleapiclient.http import MediaFileUpload
 
-            t_file = f"temp/token_{t_idx}.json"
-            with open(t_file, "wb") as tf:
-                tf.write(base64.b64decode(token_b64))
-            creds = Credentials.from_authorized_user_file(t_file, ["https://www.googleapis.com/auth/youtube.upload"])
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            yt = build("youtube", "v3", credentials=creds)
+        t_file = "temp/token_upload.json"
+        with open(t_file, "wb") as tf:
+            tf.write(base64.b64decode(token_b64))
+        creds = Credentials.from_authorized_user_file(t_file, [
+            "https://www.googleapis.com/auth/youtube.upload",
+            "https://www.googleapis.com/auth/youtube.readonly"
+        ])
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        yt = build("youtube", "v3", credentials=creds)
 
-            final_title = (title[:90] + " #Shorts") if is_short and "#shorts" not in title.lower() else title[:100]
-            body = {
-                "snippet": {"title": final_title, "description": description, "tags": tags[:25], "categoryId": "25"},
-                "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}
-            }
-            media = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype="video/mp4")
-            req = yt.videos().insert(part="snippet,status", body=body, media_body=media)
-            resp = None
-            while resp is None:
-                _, resp = req.next_chunk()
-            vid_id = resp["id"]
-            print(f"✅ [YOUTUBE LIVE UPLOAD SUCCESS - Token #{t_idx+1}] https://youtu.be/{vid_id}", flush=True)
-            if thumbnail_path and os.path.exists(thumbnail_path):
-                try:
-                    yt.thumbnails().set(videoId=vid_id, media_body=MediaFileUpload(thumbnail_path)).execute()
-                except Exception as te:
-                    print("⚠️ Thumbnail set warning:", te, flush=True)
-            return vid_id
-        except Exception as e:
-            err_str = str(e)
-            print(f"⚠️ Token #{t_idx+1} upload attempt failed:", err_str[:120], flush=True)
-            if "quotaExceeded" in err_str and t_idx + 1 < len(available_tokens):
-                print(f"🔄 Switching to backup YouTube API Token #{t_idx+2}...", flush=True)
-                continue
-            break
-    return None
+        final_title = (title[:90] + " #Shorts") if is_short and "#shorts" not in title.lower() else title[:100]
+        body = {
+            "snippet": {"title": final_title, "description": description, "tags": tags[:25], "categoryId": "25"},
+            "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}
+        }
+        media = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype="video/mp4")
+        req = yt.videos().insert(part="snippet,status", body=body, media_body=media)
+        resp = None
+        while resp is None:
+            _, resp = req.next_chunk()
+        vid_id = resp["id"]
+        print(f"✅ [YOUTUBE LIVE UPLOAD SUCCESS] https://youtu.be/{vid_id}", flush=True)
+        if thumbnail_path and os.path.exists(thumbnail_path):
+            try:
+                yt.thumbnails().set(videoId=vid_id, media_body=MediaFileUpload(thumbnail_path)).execute()
+            except Exception as te:
+                print("⚠️ Thumbnail set warning:", te, flush=True)
+        return vid_id
+    except Exception as e:
+        print("⚠️ YouTube upload attempt failed:", str(e)[:140], flush=True)
+        return None
 
 # ==============================================================================
-# MASTER EXECUTION
+# MASTER EXECUTION: 1 SHORT + 1 LONG PER HOURLY RUN (EQUAL SHORTS & LONGS!)
 # ==============================================================================
 async def main():
     try:
         watermark = build_wtb_watermark(width=140, height=82)
         voice_sub_dir = VoiceAndSubtitleEngine()
         hist_obj = load_published_history()
-        winning_keywords = fetch_channel_winning_keywords()
+        winning_keywords, viral_yt_tags = run_youtube_api_full_intelligence()
 
         dossiers = discover_and_build_dossiers(hist_obj, winning_keywords)
         if len(dossiers) < 3:
@@ -2019,7 +2031,6 @@ async def main():
             hist_obj["event_fingerprints"].clear()
             dossiers = discover_and_build_dossiers(hist_obj, winning_keywords)
 
-        # Ensure Lead Long, Second Long Dispatch, and Short are 3 COMPLETELY DIFFERENT Topics/Countries!
         lead_long_dossier = dossiers[0]
         short_dossier = next(
             (d for d in dossiers[1:] if d["source_name"] != lead_long_dossier["source_name"] and d["story_key"] != lead_long_dossier["story_key"]),
@@ -2066,7 +2077,7 @@ async def main():
 
         short_pkg = create_signature_wtb_brand_thumbnail(short_dossier, short_entities, s_unique_photos, watermark, out_path="output/WTB_1080p_Short_Thumb.jpg")
 
-        # 2. BUILD 1080p LONG DOCUMENTARY (With Shared Hashes & Shared Video Set So Zero Photos/Videos Repeat Across Chapters!)
+        # 2. BUILD 1080p LONG DOCUMENTARY
         print("\n📺 [4/6] Building 1080p Long Documentary (1920x1080) on #1 Trending:", lead_long_dossier["title"], "| Country:", lead_long_dossier["country_profile"]["name"], "| Source:", lead_long_dossier["source_name"], flush=True)
         long_chapters = build_long_documentary_script(long_dossiers)
         lead_long_entities = extract_story_entities(lead_long_dossier)
@@ -2133,6 +2144,7 @@ async def main():
         with open("output/wtb_1080p_report.json", "w") as f:
             json.dump({
                 "analytics_winning_keywords": winning_keywords,
+                "viral_youtube_tags_discovered": viral_yt_tags,
                 "short_topic": short_dossier["title"],
                 "short_source_name": short_dossier["source_name"],
                 "short_country": short_dossier["country_profile"]["name"],
@@ -2156,7 +2168,7 @@ async def main():
         short_seo_tags = [
             "World Talk Brief", "World News", "Geopolitics", "Breaking News", "YouTube Shorts",
             short_dossier["country_profile"]["name"].title(), short_dossier["country_profile"]["capital"]
-        ] + short_entities[:5] + winning_keywords[:4]
+        ] + short_entities[:5] + winning_keywords[:4] + viral_yt_tags[:5]
 
         chap_lines = []
         t_acc = 0
@@ -2180,7 +2192,7 @@ async def main():
             lead_long_dossier["country_profile"]["name"].title(),
             lead_long_dossier["country_profile"]["capital"],
             lead_long_dossier["country_profile"]["region"]
-        ] + lead_long_entities[:6] + winning_keywords[:4]
+        ] + lead_long_entities[:6] + winning_keywords[:4] + viral_yt_tags[:5]
 
         try_youtube_auto_upload(out_short, short_dossier["title"], short_seo_desc, short_seo_tags, is_short=True, thumbnail_path=short_pkg["selected_thumbnail"])
         try_youtube_auto_upload(out_long, pkg_report["selected_title"], long_seo_desc, long_seo_tags, is_short=False, thumbnail_path=pkg_report["selected_thumbnail"])
