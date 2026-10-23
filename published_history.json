@@ -1,54 +1,58 @@
 {
-  "updated_at": "2026-10-22T21:42:10.340514",
+  "updated_at": "2026-10-23T01:16:43.688883",
   "published_keys": [
-    "first_human_case_of_shamonda_virus",
-    "cabin_leak_suspected_artemis_ii_astronaut",
-    "tinubu_must_go_nigeria_s_northern",
+    "what_deep_sea_submarines_discovered_at",
+    "macron_accuses_foreign_leaders_of_exploiting",
+    "alberta_voters_reject_a_move_toward",
+    "putin_releases_american_stephen_hubbard_from",
+    "newborn_twins_fight_for_survival_as",
+    "trump_says_musk_has_restored_access",
+    "fighting_rages_in_yemen_s_taiz",
     "sudan_conflict_peace_efforts_resume_to",
-    "seventh_day_of_violent_clashes_between",
-    "trump_and_zelensky_appear_at_loggerheads",
+    "fate_unknown_of_many_returned_to",
+    "tinubu_must_go_nigeria_s_northern",
+    "zelensky_and_us_envoys_holding_oslo",
+    "man_charged_with_attack_on_australia",
+    "ukrainians_dying_because_us_restricting_intelligence",
+    "kenyan_starvation_cult_leader_guilty_of",
+    "agencies_and_producers_back_u_s",
+    "on_this_day_in_space_oct",
+    "uk_fighter_jets_to_protect_saudi",
+    "doj_charges_28_with_voting_crimes",
     "the_right_to_enforce_civil_rights",
     "ukraine_and_russia_exchange_strikes_after",
-    "fate_unknown_of_many_returned_to",
-    "lebanon_faces_uncertainty_as_unifil_mandate",
-    "uk_fighter_jets_to_protect_saudi",
-    "israel_detains_dozens_of_americans_including",
-    "nato_to_send_additional_patrol_planes",
     "what_nasa_s_voyager_1_just",
-    "russia_arrests_german_man_calls_him",
+    "trump_and_zelensky_appear_at_loggerheads",
     "current_u_s_support_for_ukraine",
-    "newborn_twins_fight_for_survival_as",
-    "nigeria_confirms_ebola_case_as_outbreak",
-    "rosenberg_us_diplomatic_push_offers_little",
-    "macron_visits_riyadh_to_show_solidarity",
-    "barclays_cutting_5_000_jobs_as",
-    "i_wasn_t_thinking_straight_says",
-    "trump_makes_russia_friendly_moves_as",
-    "kenyan_starvation_cult_leader_guilty_of",
-    "us_grants_deportation_reprieve_to_migrants",
-    "agencies_and_producers_back_u_s",
-    "trump_putin_and_xi_at_one",
-    "fighting_rages_in_yemen_s_taiz",
     "israeli_attacks_in_gaza_kill_four",
-    "on_this_day_in_space_oct",
-    "summit_in_samarkand_a_boon_for",
-    "drone_attack_near_market_kills_80",
-    "bulgaria_concerns_about_security_in_the",
-    "man_charged_with_attack_on_australia",
-    "the_secret_ocean_graveyard_where_nasa",
-    "russia_frees_jailed_american_stephen_hubbard",
-    "inside_the_27_kilometer_machine_recreating",
-    "wildwood_s_director_says_ai_is",
     "russia_agrees_to_resume_trilateral_peace",
-    "ukrainians_dying_because_us_restricting_intelligence",
-    "teenage_engineering_launched_an_instrument_amp",
-    "putin_releases_american_stephen_hubbard_from",
-    "alberta_voters_reject_a_move_toward",
+    "trump_makes_russia_friendly_moves_as",
+    "nato_to_send_additional_patrol_planes",
+    "wildwood_s_director_says_ai_is",
     "severely_ill_ice_detainees_face_imminent",
-    "doj_charges_28_with_voting_crimes",
-    "zelensky_and_us_envoys_holding_oslo",
+    "i_wasn_t_thinking_straight_says",
+    "nigeria_confirms_ebola_case_as_outbreak",
+    "teenage_engineering_launched_an_instrument_amp",
+    "cabin_leak_suspected_artemis_ii_astronaut",
+    "rosenberg_us_diplomatic_push_offers_little",
+    "trump_putin_and_xi_at_one",
+    "inside_the_27_kilometer_machine_recreating",
+    "bulgaria_concerns_about_security_in_the",
+    "macron_visits_riyadh_to_show_solidarity",
+    "lebanon_faces_uncertainty_as_unifil_mandate",
+    "first_human_case_of_shamonda_virus",
+    "russia_arrests_german_man_calls_him",
+    "seventh_day_of_violent_clashes_between",
+    "private_care_home_investors_a_risk",
+    "israel_detains_dozens_of_americans_including",
+    "the_secret_ocean_graveyard_where_nasa",
+    "switch_2_security_takes_a_hit",
+    "drone_attack_near_market_kills_80",
     "zelenskyy_to_hold_talks_on_russia",
-    "macron_accuses_foreign_leaders_of_exploiting"
+    "summit_in_samarkand_a_boon_for",
+    "russia_frees_jailed_american_stephen_hubbard",
+    "barclays_cutting_5_000_jobs_as",
+    "us_grants_deportation_reprieve_to_migrants"
   ],
   "event_fingerprints": [
     {
@@ -665,6 +669,54 @@
         "star",
         "roddenberry"
       ]
+    },
+    {
+      "title": "Trump says Musk has restored access to Ukraine's Starlink network",
+      "tokens": [
+        "access",
+        "network",
+        "ukraine",
+        "starlink",
+        "restored",
+        "musk",
+        "trump"
+      ]
+    },
+    {
+      "title": "Switch 2 security takes a hit as hackers unlock homebrew access",
+      "tokens": [
+        "homebrew",
+        "access",
+        "takes",
+        "switch",
+        "security",
+        "hackers",
+        "unlock"
+      ]
+    },
+    {
+      "title": "What Deep-Sea Submarines Discovered at the Bottom of the Mariana Trench",
+      "tokens": [
+        "bottom",
+        "deep",
+        "discovered",
+        "mariana",
+        "submarines",
+        "trench"
+      ]
+    },
+    {
+      "title": "Private care home investors a risk to public sector, regulator says",
+      "tokens": [
+        "private",
+        "care",
+        "risk",
+        "sector",
+        "investors",
+        "regulator",
+        "public",
+        "home"
+      ]
     }
   ],
   "last_categories": [
@@ -683,13 +735,13 @@
     "WORLD",
     "BUSINESS",
     "MIND_BLOWING_FACTS",
-    "SCIENCE"
+    "SCIENCE",
+    "WORLD",
+    "TECHNOLOGY",
+    "MIND_BLOWING_FACTS",
+    "HEALTH"
   ],
   "last_sources": [
-    "DW News",
-    "UN News",
-    "NPR World",
-    "France24",
     "BBC World",
     "DW News",
     "UN News",
@@ -715,6 +767,10 @@
     "The Guardian World",
     "BBC Business",
     "Verified Science & History",
-    "Space.com"
+    "Space.com",
+    "BBC World",
+    "Ars Technica",
+    "Verified Science & History",
+    "BBC Health"
   ]
 }
