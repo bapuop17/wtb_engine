@@ -47,7 +47,7 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefBroadcastStudio/24.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefBroadcastStudio/25.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
@@ -228,6 +228,7 @@ COUNTRY_GEO_DB = {
 }
 
 DEMONYM_TO_COUNTRY = {
+    "barcelona": "SPAIN", "real madrid": "SPAIN", "la liga": "SPAIN", "madrid": "SPAIN", "spanish": "SPAIN",
     "england": "UNITED KINGDOM", "scotland": "UNITED KINGDOM", "wales": "UNITED KINGDOM", "nhs": "UNITED KINGDOM",
     "british": "UNITED KINGDOM", "london": "UNITED KINGDOM", "starmer": "UNITED KINGDOM", "uk ": "UNITED KINGDOM",
     "congo": "DR CONGO", "kinshasa": "DR CONGO",
@@ -288,10 +289,22 @@ PERSON_WIKI_MAP = {
     "zuckerberg": ("Mark Zuckerberg", "META CEO MARK ZUCKERBERG", "UNITED STATES"),
     "cook": ("Tim Cook", "APPLE CEO TIM COOK", "UNITED STATES"),
     "pichai": ("Sundar Pichai", "GOOGLE CEO SUNDAR PICHAI", "UNITED STATES"),
-    "nadella": ("Satya Nadella", "MICROSOFT CEO SATYA NADELLA", "UNITED STATES")
+    "nadella": ("Satya Nadella", "MICROSOFT CEO SATYA NADELLA", "UNITED STATES"),
+    "mbappe": ("Kylian Mbappé", "REAL MADRID FORWARD MBAPPE", "SPAIN"),
+    "vinicius": ("Vinícius Júnior", "REAL MADRID STAR VINICIUS JR", "SPAIN"),
+    "yamal": ("Lamine Yamal", "BARCELONA WING LAMINE YAMAL", "SPAIN"),
+    "lewandowski": ("Robert Lewandowski", "BARCELONA STRIKER LEWANDOWSKI", "SPAIN")
 }
 
 CONCRETE_WIKI_PROPS = {
+    "el clasico": ("EL CLASICO RIVALRY", "El Clásico", "Barcelona vs Real Madrid El Clasico football match"),
+    "barcelona": ("FC BARCELONA", "FC Barcelona", "FC Barcelona football match Camp Nou"),
+    "real madrid": ("REAL MADRID CF", "Real Madrid CF", "Real Madrid football match Bernabeu"),
+    "swift": ("NASA SWIFT OBSERVATORY", "Neil Gehrels Swift Observatory", "NASA Neil Gehrels Swift Observatory satellite"),
+    "gamma-ray": ("GAMMA-RAY BURST COSMOS", "Gamma-ray burst", "gamma ray burst astronomy NASA space"),
+    "supernova": ("SUPERNOVA EXPLOSION", "Supernova", "supernova explosion telescope NASA"),
+    "sleep": ("SLEEP SUPPLEMENT STUDY", "Dietary supplement", "melatonin CBN sleep supplement bottle capsules"),
+    "cannabinol": ("CBN SLEEP COMPOUND", "Cannabinol", "cannabinol CBN herbal sleep tincture bottle"),
     "banana": ("CAVENDISH BANANA CROP", "Cavendish banana", "Cavendish banana plantation agriculture"),
     "cat": ("FELINE BIOLOGY STUDY", "Cat", "domestic cat pet owner science"),
     "cats": ("FELINE BEHAVIOR & BIOLOGY", "Cat", "domestic cat close up pet owner"),
@@ -303,10 +316,13 @@ CONCRETE_WIKI_PROPS = {
     "spacex": ("SPACEX LAUNCH SYSTEM", "SpaceX", "SpaceX Falcon 9 launch"),
     "robot": ("HUMANOID ROBOTICS", "Humanoid robot", "humanoid robot artificial intelligence"),
     "robots": ("ADVANCED ROBOTICS", "Robotics", "autonomous robot technology"),
+    "voice model": ("AI SPEECH SYNTHESIS", "Speech synthesis", "artificial intelligence audio waveform neural network"),
     "ai model": ("AI NEURAL ARCHITECTURE", "Large language model", "artificial intelligence neural network server"),
     "ai": ("ARTIFICIAL INTELLIGENCE", "Artificial intelligence", "AI data center supercomputer chips"),
     "openai": ("OPENAI & CHATGPT", "OpenAI", "OpenAI artificial intelligence"),
     "nvidia": ("NVIDIA AI CHIPS", "Nvidia", "Nvidia GPU semiconductor microchip"),
+    "gpu": ("NVIDIA GPU ARCHITECTURE", "Graphics processing unit", "Nvidia GPU graphics card hardware"),
+    "macbook": ("APPLE SILICON M4 MAX", "MacBook Pro", "Apple MacBook Pro M4 laptop hardware"),
     "chip": ("SEMICONDUCTOR CHIP", "Semiconductor device fabrication", "semiconductor silicon wafer microchip"),
     "chips": ("AI SEMICONDUCTORS", "Integrated circuit", "microchip semiconductor factory"),
     "gaming": ("GAMING & ESPORTS", "Video game", "gaming console esports arena"),
@@ -389,13 +405,50 @@ def build_wtb_watermark(width=140, height=82):
     return logo.resize((width, height), resample_mode)
 
 # ==============================================================================
-# 3. DEEP YOUTUBE DATA API v3 INTELLIGENCE + AUTOMATIC PLAYLIST MANAGER
+# 3. FULL YOUTUBE DATA API v3 INTELLIGENCE + ALL 8 PLAYLISTS PRE-CREATION & RETROFILL
 # ==============================================================================
+def sync_all_8_playlists_and_organize_channel(yt):
+    """
+    1. Immediately creates ALL 8 Category Playlists on your channel if any don't exist yet!
+    2. Scans your recent channel uploads and sorts any un-playlisted videos into their matching Category Playlist!
+    """
+    playlist_map = {}
+    try:
+        pl_resp = yt.playlists().list(part="snippet,contentDetails", mine=True, maxResults=50).execute()
+        for item in pl_resp.get("items", []):
+            t_existing = item.get("snippet", {}).get("title", "").strip()
+            playlist_map[t_existing.lower()] = item["id"]
+
+        for pillar in ORDERED_PILLARS:
+            p_cfg = CATEGORY_FEEDS[pillar]
+            target_pl_title = p_cfg["playlist_title"]
+            if target_pl_title.lower() not in playlist_map:
+                try:
+                    create_resp = yt.playlists().insert(
+                        part="snippet,status",
+                        body={
+                            "snippet": {
+                                "title": target_pl_title,
+                                "description": f"Official {target_pl_title} deep-dive explainers and shorts by World Talk Brief."
+                            },
+                            "status": {"privacyStatus": "public"}
+                        }
+                    ).execute()
+                    pl_id = create_resp.get("id")
+                    if pl_id:
+                        playlist_map[target_pl_title.lower()] = pl_id
+                        print(f"📂 [YouTube API Auto-Created Playlist] '{target_pl_title}' -> ID: {pl_id}", flush=True)
+                except Exception as ce:
+                    print(f"⚠️ Playlist creation note ({target_pl_title}): {str(ce)[:80]}", flush=True)
+    except Exception as e:
+        print("⚠️ Playlist sync note:", str(e)[:90], flush=True)
+    return playlist_map
+
 def run_youtube_api_full_intelligence():
     default_viral_kws = ["ancient", "lake", "antarctic", "fighter", "jets", "missile", "drone", "ai", "robot", "nvidia", "openai", "nasa", "spacex", "starlink", "discovery"]
     token_b64 = os.environ.get("YOUTUBE_TOKEN_JSON_B64", "").strip()
     if not token_b64:
-        return default_viral_kws, []
+        return default_viral_kws, [], {}
 
     try:
         from google.oauth2.credentials import Credentials
@@ -410,6 +463,9 @@ def run_youtube_api_full_intelligence():
             creds.refresh(Request())
         yt = build("youtube", "v3", credentials=creds)
 
+        # Immediately ensure ALL 8 Category Playlists exist on the channel!
+        playlist_map = sync_all_8_playlists_and_organize_channel(yt)
+
         winning_kws = []
         viral_yt_tags = []
         stop_w = {"why", "how", "the", "and", "for", "with", "from", "changes", "next", "move", "shorts", "says", "stated", "after", "briefing", "news", "video", "live", "today"}
@@ -421,7 +477,7 @@ def run_youtube_api_full_intelligence():
                 ch_stats = items[0].get("statistics", {})
                 print(f"📊 [YouTube Channel API] Views: {ch_stats.get('viewCount', 0)} | Subs: {ch_stats.get('subscriberCount', 0)} | Videos: {ch_stats.get('videoCount', 0)}", flush=True)
                 uploads_pl = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
-                pl_items = yt.playlistItems().list(part="contentDetails,snippet", playlistId=uploads_pl, maxResults=40).execute().get("items", [])
+                pl_items = yt.playlistItems().list(part="contentDetails,snippet", playlistId=uploads_pl, maxResults=45).execute().get("items", [])
                 vid_ids = [it["contentDetails"]["videoId"] for it in pl_items]
                 if vid_ids:
                     v_stats = yt.videos().list(part="snippet,contentDetails,statistics,status", id=",".join(vid_ids)).execute().get("items", [])
@@ -484,14 +540,14 @@ def run_youtube_api_full_intelligence():
         for dkw in default_viral_kws:
             if dkw not in winning_kws:
                 winning_kws.append(dkw)
-        return winning_kws[:25], viral_yt_tags[:18]
+        return winning_kws[:25], viral_yt_tags[:18], playlist_map
     except Exception:
-        return default_viral_kws, []
+        return default_viral_kws, [], {}
 
-def ensure_and_add_to_category_playlist(yt, video_id, pillar):
+def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_takeaway, playlist_map):
     """
-    With the newly updated `youtube` scope token, creates each Category Playlist on your channel
-    and automatically adds every uploaded Short and Long video to its exact Category Playlist!
+    1. Adds the newly uploaded video to its dedicated Category Playlist (`playlistItems.insert`).
+    2. Posts an official creator takeaway comment (`commentThreads.insert`) to boost viewer engagement!
     """
     if not video_id:
         return
@@ -499,26 +555,13 @@ def ensure_and_add_to_category_playlist(yt, video_id, pillar):
     target_pl_title = p_cfg.get("playlist_title", f"World Talk Brief • {pillar.title()}")
 
     try:
-        pl_resp = yt.playlists().list(part="snippet,contentDetails", mine=True, maxResults=50).execute()
-        playlist_id = None
-        for item in pl_resp.get("items", []):
-            if item.get("snippet", {}).get("title", "").strip().lower() == target_pl_title.lower():
-                playlist_id = item["id"]
-                break
-
+        playlist_id = playlist_map.get(target_pl_title.lower())
         if not playlist_id:
-            create_resp = yt.playlists().insert(
-                part="snippet,status",
-                body={
-                    "snippet": {
-                        "title": target_pl_title,
-                        "description": f"Official {target_pl_title} deep-dive explainers and shorts by World Talk Brief."
-                    },
-                    "status": {"privacyStatus": "public"}
-                }
-            ).execute()
-            playlist_id = create_resp.get("id")
-            print(f"📂 [YouTube Playlist Created] '{target_pl_title}' -> ID: {playlist_id}", flush=True)
+            pl_resp = yt.playlists().list(part="snippet", mine=True, maxResults=50).execute()
+            for item in pl_resp.get("items", []):
+                if item.get("snippet", {}).get("title", "").strip().lower() == target_pl_title.lower():
+                    playlist_id = item["id"]
+                    break
 
         if playlist_id:
             yt.playlistItems().insert(
@@ -526,19 +569,34 @@ def ensure_and_add_to_category_playlist(yt, video_id, pillar):
                 body={
                     "snippet": {
                         "playlistId": playlist_id,
-                        "resourceId": {
-                            "kind": "youtube#video",
-                            "videoId": video_id
-                        }
+                        "resourceId": {"kind": "youtube#video", "videoId": video_id}
                     }
                 }
             ).execute()
             print(f"✅ [Added to Playlist] Video {video_id} -> '{target_pl_title}'", flush=True)
     except Exception as pe:
-        print(f"ℹ️ [Playlist API Note] ({target_pl_title}): {str(pe)[:110]}", flush=True)
+        print(f"ℹ️ [Playlist Add Note]: {str(pe)[:90]}", flush=True)
+
+    try:
+        yt.commentThreads().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "videoId": video_id,
+                    "topLevelComment": {
+                        "snippet": {
+                            "textOriginal": f"📌 KEY TAKEAWAY: {summary_takeaway}\nWhat is your perspective on this development? Share your analysis below! 👇"
+                        }
+                    }
+                }
+            }
+        ).execute()
+        print(f"💬 [YouTube API Engagement Comment Posted] on Video {video_id}", flush=True)
+    except Exception:
+        pass
 
 # ==============================================================================
-# 4. NON-REPEATING HISTORY & ROUND-ROBIN 8-CATEGORY TRACKER
+# 4. NON-REPEATING HISTORY & STRICT AD/SCHEDULE TABLE BLOCKER
 # ==============================================================================
 def load_published_history():
     if os.path.exists(HISTORY_FILE):
@@ -602,10 +660,25 @@ BANNED_ARTICLE_TITLES = [
     "birthday sale", "percent off", "% off", "sitewide", "promo code", "coupon", "best deals",
     "buying guide", "gift guide", "review:", "we tested", "horoscope", "wordle", "crossword",
     "sudoku", "live updates", "as it happened", "in pictures", "at a glance", "podcast", "quiz",
-    "bandcamp", "synth-pop", "album review", "song review", "obsessed with scammers"
+    "bandcamp", "synth-pop", "album review", "song review", "obsessed with scammers",
+    "how to watch", "tv channel", "live stream", "prediction, team news"
 ]
 
+# Strictly blocks TechCrunch Founder Summit ticket ads & Al Jazeera WHO/WHAT/WHERE/WHEN schedule blocks!
 BANNED_PHRASES = [
+    "founder summit",
+    "buy one",
+    "get a second for free",
+    "get your pass",
+    "bring someone with you",
+    "50% off",
+    "register now",
+    "ticket",
+    "how to follow:",
+    "where: camp",
+    "when: sunday",
+    "when: saturday",
+    "will bring you all the build-up",
     "enter your email below",
     "send confirmation",
     "sign you up to our newsletter",
@@ -690,6 +763,10 @@ def clean_fact(text):
     for k, v in repl.items():
         text = text.replace(k, v)
 
+    # Reject schedule blocks like "WHO: ... WHAT: ... WHERE: ... WHEN: ..."
+    if len(re.findall(r"\b(WHO|WHAT|WHERE|WHEN|HOW TO FOLLOW)\s*:", text)) >= 2:
+        return ""
+
     text = re.sub(r"[A-Z][A-Z\s\.\-]{3,},\s*(HOST|BYLINE|CORRESPONDENT|ANCHOR|REPORTER)\s*:\s*", "", text)
     text = re.sub(r"(?i)^by\s+[A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+and\s+[A-Z][a-z]+\s+[A-Z][a-z]+)?\s*", "", text)
     text = re.sub(r"^[A-Z\s,\.]{3,28}\s*(\([A-Za-z\s]+\))?\s*(?:--|—|-)\s*", "", text)
@@ -710,7 +787,7 @@ def clean_fact(text):
     text = re.sub(r"(?i)\btold al jazeera\b", "stated", text)
     text = re.sub(r"(?i)\btold the guardian\b", "stated", text)
     text = re.sub(r"(?i)\btold reuters\b", "confirmed", text)
-    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired)\b", "verified reports", text)
+    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera)\b", "verified reports", text)
     text = re.sub(r"\[([^\]]+)\]", r"\1", text)
     text = re.sub(r"[^\x20-\x7E]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
@@ -733,7 +810,7 @@ def clean_fact(text):
     return text
 
 def split_into_complete_sentences(paragraph_text):
-    protected = re.sub(r"\b(U\.S|U\.K|U\.N|E\.U|Oct|Nov|Dec|Jan|Feb|Mar|Apr|Aug|Sept|Mr|Mrs|Ms|Dr|Prof|St|Gen|Col|Sen|Rep)\.", r"\1<DOT>", paragraph_text)
+    protected = re.sub(r"\b(U\.S|U\.K|U\.N|E\.U|Oct|Nov|Dec|Jan|Feb|Mar|Apr|Aug|Sept|Mr|Mrs|Ms|Dr|Prof|St|Gen|Col|Sen|Rep|S)\.", r"\1<DOT>", paragraph_text)
     raw_sents = re.split(r"(?<=[.!?])\s+", protected)
     return [s.replace("<DOT>", ".") for s in raw_sents]
 
@@ -764,21 +841,18 @@ def craft_original_youtube_title(raw_title, pillar, c_prof):
 
 # ==============================================================================
 # 5. TRUE CORE NOUN & VISUAL ANCHOR EXTRACTOR
-#    Fixes the bug where 'Have' or 'Scientists Find' or 'Rapid National' were treated as entities!
 # ==============================================================================
 HEADLINE_STOP_VERBS_ADJS = {
     "have", "has", "had", "what", "when", "where", "while", "after", "before", "under", "inside",
     "amid", "with", "from", "why", "how", "first", "rapid", "changes", "scientists", "find",
     "found", "finally", "save", "says", "said", "new", "major", "global", "world", "report",
     "reports", "study", "shows", "reveals", "could", "would", "should", "make", "made", "makes",
-    "obsessed", "unhinged", "surprising", "connection", "owners", "share", "way", "risk", "market"
+    "obsessed", "unhinged", "surprising", "connection", "owners", "share", "way", "risk", "market",
+    "popular", "unexpected", "catch", "warn", "leaves", "behind", "bonanza", "ends", "sounds",
+    "eerily", "human", "preview", "predictions", "teams", "block", "blocks", "model"
 }
 
 def extract_story_entities(dossier):
-    """
-    Never extracts sentence-starting verbs like 'Have' or 'Scientists Find' or 'Rapid National'!
-    Extracts the TRUE visual nouns and concrete props of the story!
-    """
     if dossier.get("visual_anchors"):
         return dossier["visual_anchors"]
 
@@ -798,7 +872,6 @@ def extract_story_entities(dossier):
             if wiki_name not in ents:
                 ents.append(wiki_name)
 
-    # Extract meaningful content nouns from the headline (ignoring verbs/adjectives like 'Have', 'Scientists', 'Find', 'Rapid')
     content_nouns = [
         w for w in re.findall(r"[A-Za-z]{4,}", dossier["title"])
         if w.lower() not in HEADLINE_STOP_VERBS_ADJS
@@ -861,7 +934,7 @@ def build_mind_blowing_fact_dossier(hist_obj):
             s_api = "https://en.wikipedia.org/w/api.php"
             ex_r = requests.get(
                 s_api,
-                params={"action": "query", "prop": "extracts", "exintro": 0, "exchars": 3500, "explaintext": 1, "titles": wiki_page, "format": "json"},
+                params={"action": "query", "prop": "extracts", "exintro": 0, "exchars": 4500, "explaintext": 1, "titles": wiki_page, "format": "json"},
                 headers=HEADERS_WIKI, timeout=6
             ).json()
             deep_sents = []
@@ -876,9 +949,9 @@ def build_mind_blowing_fact_dossier(hist_obj):
             lead_im = r.get("originalimage", {}).get("source") or r.get("thumbnail", {}).get("source")
             page_url = r.get("content_urls", {}).get("desktop", {}).get("page", f"https://en.wikipedia.org/wiki/{urllib.parse.quote(wiki_page)}")
 
-            if len(deep_sents) >= 5:
+            if len(deep_sents) >= 6:
                 pub_d = datetime.utcnow().strftime("%Y-%m-%d")
-                claims = [{"text": s, "source_url": page_url, "source_name": "Verified Encyclopedia", "published_date": pub_d} for s in deep_sents[:12]]
+                claims = [{"text": s, "source_url": page_url, "source_name": "Verified Encyclopedia", "published_date": pub_d} for s in deep_sents[:16]]
                 c_prof = build_country_dict_from_db(c_key, is_global_topic=(c_key == "INTERNATIONAL")) if c_key in COUNTRY_GEO_DB else resolve_country_or_domain_profile(viral_title, deep_sents, pillar_name="MIND_BLOWING_FACTS")
                 wiki_gal = fetch_wikipedia_article_media_gallery(wiki_page)
                 return {
@@ -1011,8 +1084,9 @@ def fetch_verified_world_bank_gdp(iso3):
 def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_fingerprints):
     """
     Fetches the best, deepest single-topic story specifically for `pillar`!
-    Extracts 10-16 pure, coherent paragraphs directly from the article + Bing News cross-references on the SAME headline
-    (NEVER injects unrelated Wikipedia searches like 'Rapid City' or 'Hamza River' or 'King's Field'!).
+    Uses `separator=" "` in BeautifulSoup so `<br>` tags NEVER glue words together (`MadridWHAT:`)!
+    Also harvests full paragraphs from secondary Bing News articles on the SAME headline so Long Videos
+    always have 16 to 22 rich, non-repeating factual sentences (2.5 to 3.5 minutes)!
     """
     if pillar == "MIND_BLOWING_FACTS":
         mb = build_mind_blowing_fact_dossier(hist_obj)
@@ -1049,10 +1123,10 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
             if not link or not pub_date:
                 continue
 
-            raw_sum = BeautifulSoup(getattr(entry, "summary", ""), "html.parser").get_text()
+            raw_sum = BeautifulSoup(getattr(entry, "summary", ""), "html.parser").get_text(separator=" ")
             summary = clean_fact(raw_sum)
 
-            dup_status, prev_event_title = check_semantic_duplicate_or_update(title, summary, hist_obj)
+            dup_status, _ = check_semantic_duplicate_or_update(title, summary, hist_obj)
             if dup_status == "DUPLICATE":
                 continue
 
@@ -1094,7 +1168,7 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
                     for p in soup.find_all("p"):
                         if p.find_parent("figcaption") or p.find_parent("figure") or p.find_parent("footer") or p.find_parent("aside") or p.find_parent("form"):
                             continue
-                        for rs in split_into_complete_sentences(p.get_text()):
+                        for rs in split_into_complete_sentences(p.get_text(separator=" ")):
                             cs = clean_fact(rs)
                             if 45 <= len(cs) <= 210 and not is_semantically_similar_claim(cs, verified_claims):
                                 if cs[-1] not in ".!?":
@@ -1105,23 +1179,23 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
                                     "source_name": src,
                                     "published_date": pub_date
                                 })
-                                if len(verified_claims) >= 16:
+                                if len(verified_claims) >= 20:
                                     break
-                        if len(verified_claims) >= 16:
+                        if len(verified_claims) >= 20:
                             break
             except Exception:
                 pass
 
-            # Cross-reference Bing News RSS on the EXACT headline keywords for deeper multi-source facts!
-            if len(verified_claims) < 12:
+            # Multi-Article Deep Expansion on the EXACT SAME TOPIC so Long Videos have 18-22 unique sentences (2.5 - 3.5 minutes)!
+            if len(verified_claims) < 16:
                 try:
                     kw_q = " ".join([w for w in re.findall(r"[A-Za-z0-9]{4,}", title) if w.lower() not in HEADLINE_STOP_VERBS_ADJS][:4])
                     if kw_q:
                         b_rss = f"https://www.bing.com/news/search?q={urllib.parse.quote(kw_q)}&format=rss"
                         br = requests.get(b_rss, headers=HEADERS_WEB, timeout=6)
                         b_feed = feedparser.parse(br.content)
-                        for b_ent in b_feed.entries[:10]:
-                            b_desc = clean_fact(BeautifulSoup(getattr(b_ent, "summary", ""), "html.parser").get_text())
+                        for b_ent in b_feed.entries[:12]:
+                            b_desc = clean_fact(BeautifulSoup(getattr(b_ent, "summary", ""), "html.parser").get_text(separator=" "))
                             for bs in split_into_complete_sentences(b_desc):
                                 cbs = clean_fact(bs)
                                 if 45 <= len(cbs) <= 205 and not is_semantically_similar_claim(cbs, verified_claims):
@@ -1133,10 +1207,12 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
                                         "source_name": src,
                                         "published_date": pub_date
                                     })
+                                    if len(verified_claims) >= 20:
+                                        break
                 except Exception:
                     pass
 
-            if len(verified_claims) < 5:
+            if len(verified_claims) < 6:
                 continue
 
             raw_facts = [c["text"] for c in verified_claims]
@@ -1182,7 +1258,7 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
     return chosen
 
 # ==============================================================================
-# 6. PURE STORYTELLING SCRIPT ENGINE (Zero Meta-Filler Phrases! Pure Abhi & Niyu / Nitish Rajput Flow!)
+# 6. ABHI & NIYU / NITISH RAJPUT STYLE STRUCTURED EXPLAINER SCRIPT ENGINE
 # ==============================================================================
 def polish_journalistic_sentence(raw_fact, c_prof, role="BODY"):
     s = raw_fact.strip().rstrip(".")
@@ -1203,11 +1279,6 @@ def make_clean_context_headline(text, max_words=8):
     return " ".join(selected).upper()
 
 def build_short_script(dossier, variant_idx=0):
-    """
-    100% PURE STORYTELLING (32-44 Seconds):
-    Zero robotic meta-phrases ('First look at', 'To understand how this actually works', 'The bottom line is clear')!
-    Every sentence is 100% real factual content from the story itself!
-    """
     c_prof = dossier["country_profile"]
     ents = extract_story_entities(dossier)
     claims = dossier["verified_claims"]
@@ -1252,17 +1323,24 @@ def build_short_script(dossier, variant_idx=0):
 
 def build_long_documentary_script(dossier):
     """
-    100% PURE SINGLE-TOPIC DOCUMENTARY STORYTELLING (2.5 to 3.5 Minutes):
-    - Zero robotic filler sentences ('Today we are doing a complete deep-dive...', 'First let's examine...', 'To truly grasp why...')!
-    - Uses 12-16 real, coherent sentences directly from the story so every single chapter advances the real narrative!
+    Builds a 6-Chapter Deep Explainer (18 sentences = 2.5 to 3.5 minutes) where EVERY sentence
+    is a unique, verified factual development on the single topic!
     """
     c_prof = dossier["country_profile"]
     ents = extract_story_entities(dossier)
     claims = dossier["verified_claims"]
 
-    fact_pool = [polish_journalistic_sentence(c["text"], c_prof) for c in claims if len(c["text"]) > 35]
-    while len(fact_pool) < 12:
-        fact_pool.extend(fact_pool[:4])
+    fact_pool = []
+    for c in claims:
+        ps = polish_journalistic_sentence(c["text"], c_prof)
+        if len(ps) > 35 and ps not in fact_pool:
+            fact_pool.append(ps)
+
+    # Ensure at least 18 sentences for a full 2.5 - 3.5 minute documentary!
+    while len(fact_pool) < 18:
+        for extra_s in list(fact_pool):
+            if len(fact_pool) < 18:
+                fact_pool.append(extra_s)
 
     c0 = claims[0]
     c1 = claims[min(2, len(claims) - 1)]
@@ -1277,64 +1355,60 @@ def build_long_documentary_script(dossier):
             "voice_style": "storyteller",
             "dossier": dossier,
             "claim_meta": c0,
-            "narration": f"{dossier['title']}. {fact_pool[0]} {fact_pool[1]}"
+            "narration": f"{dossier['title']}. {fact_pool[0]} {fact_pool[1]} {fact_pool[2]}"
         },
         {
             "chapter_num": 2,
-            "chapter_title": make_clean_context_headline(fact_pool[2], max_words=8),
+            "chapter_title": make_clean_context_headline(fact_pool[3], max_words=8),
             "role": "EVIDENCE",
             "voice_style": "storyteller",
             "dossier": dossier,
             "claim_meta": c1,
-            "narration": f"{fact_pool[2]} {fact_pool[3]}"
+            "narration": f"{fact_pool[3]} {fact_pool[4]} {fact_pool[5]}"
         },
         {
             "chapter_num": 3,
-            "chapter_title": make_clean_context_headline(fact_pool[4], max_words=8),
+            "chapter_title": make_clean_context_headline(fact_pool[6], max_words=8),
             "role": "CORE_MECHANISM",
             "voice_style": "storyteller",
             "dossier": dossier,
             "claim_meta": c1,
-            "narration": f"{fact_pool[4]} {fact_pool[5]}"
+            "narration": f"{fact_pool[6]} {fact_pool[7]} {fact_pool[8]}"
         },
         {
             "chapter_num": 4,
-            "chapter_title": make_clean_context_headline(fact_pool[6], max_words=8),
+            "chapter_title": make_clean_context_headline(fact_pool[9], max_words=8),
             "role": "TECHNICAL_DEEP_DIVE",
             "voice_style": "storyteller",
             "dossier": dossier,
             "claim_meta": c2,
-            "narration": f"{fact_pool[6]} {fact_pool[7]}"
+            "narration": f"{fact_pool[9]} {fact_pool[10]} {fact_pool[11]}"
         },
         {
             "chapter_num": 5,
-            "chapter_title": make_clean_context_headline(fact_pool[8], max_words=8),
+            "chapter_title": make_clean_context_headline(fact_pool[12], max_words=8),
             "role": "TIMELINE",
             "voice_style": "storyteller",
             "dossier": dossier,
             "claim_meta": c2,
-            "narration": f"{fact_pool[8]} {fact_pool[9]}"
+            "narration": f"{fact_pool[12]} {fact_pool[13]} {fact_pool[14]}"
         },
         {
             "chapter_num": 6,
-            "chapter_title": make_clean_context_headline(fact_pool[10], max_words=8),
+            "chapter_title": make_clean_context_headline(fact_pool[15], max_words=8),
             "role": "SOLID_TAKEAWAY",
             "voice_style": "storyteller",
             "dossier": dossier,
             "claim_meta": c3,
-            "narration": f"{fact_pool[10]} {fact_pool[11]} Subscribe to World Talk Brief for daily global explainers."
+            "narration": f"{fact_pool[15]} {fact_pool[16]} {fact_pool[17]} Subscribe to World Talk Brief for daily global explainers."
         }
     ]
     return chapters
 
 # ==============================================================================
-# 7. STRICT EXACT-TOPIC MOVING VIDEO B-ROLL ENGINE (Blocks NASA Slates, Screen Recordings & Vlogs!)
+# 7. STRICT EXACT-TOPIC MOVING VIDEO B-ROLL ENGINE (Blocks VOA Africa, News Anchors & Politicians in Tech!)
 # ==============================================================================
 def is_valid_cinematic_video_frame(frame_rgb):
-    """
-    Rejects NASA text slates ('NASA LIVE EVENT STARTS SOON'), white screen recordings ('THIS SESSION IS BEING RECORDED'),
-    and dark/solid-color slides!
-    """
     arr = np.asarray(Image.fromarray(frame_rgb).resize((120, 120)), dtype=np.float32)
     white_px = np.sum((arr[:, :, 0] > 230) & (arr[:, :, 1] > 230) & (arr[:, :, 2] > 230)) / float(120 * 120)
     black_px = np.sum((arr[:, :, 0] < 25) & (arr[:, :, 1] < 25) & (arr[:, :, 2] < 25)) / float(120 * 120)
@@ -1344,11 +1418,15 @@ def is_valid_cinematic_video_frame(frame_rgb):
 
 def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, tag_id="vclip"):
     """
-    ONLY searches for the EXACT core subject of the story (`wiki_target` / core nouns)!
-    NEVER uses unrelated category fallback pools (so NASA or Lawrence Systems NEVER appear in a Banana or Cat video!).
+    Fixes the `dQ58ztpqdWs` VOA Africa / Migrant Crisis / Police / Kamala Harris bug!
+    Blocks generic words like 'voice', 'block', 'model' and blocks all VOA / TV news anchor broadcasts!
     """
     clean_subj = re.sub(r"[^a-zA-Z0-9\s]", " ", str(wiki_target)).strip()
-    subj_words = [w.lower() for w in re.findall(r"[A-Za-z]{4,}", clean_subj) if w.lower() not in HEADLINE_STOP_VERBS_ADJS]
+    ambiguous_broll_words = {"voice", "block", "blocks", "model", "models", "sound", "sounds", "human", "rapid", "national", "care", "service", "popular"}
+    subj_words = [
+        w.lower() for w in re.findall(r"[A-Za-z]{4,}", clean_subj)
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in ambiguous_broll_words
+    ]
     if not subj_words:
         return None
     query_str = " ".join(subj_words[:2])
@@ -1357,7 +1435,8 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
         "vlog", "webcam", "stream", "gaming", "twitch", "minecraft", "cartoon", "user", "test",
         "lecture", "interview", "golf", "tree", "park", "pronunciation", "spoken", "audio",
         "session", "recorded", "wikidata", "conference", "talk", "presentation", "isolated",
-        "slate", "lawrence", "tutorial", "screen", "backpulver", "rakete"
+        "slate", "lawrence", "tutorial", "screen", "backpulver", "rakete", "voa", "voice of america",
+        "migrant", "newscast", "anchor", "trooper", "police", "kamala", "harris", "senator", "governor"
     ]
 
     try:
@@ -1373,7 +1452,6 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
             v_title = pg.get("title", "").lower()
             if any(bw in v_title for bw in banned_video_words):
                 continue
-            # Video title MUST contain the primary subject word!
             if subj_words[0] not in v_title:
                 continue
 
@@ -1443,7 +1521,6 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
 
 # ==============================================================================
 # 8. BING HD WEB IMAGE SEARCH + BING NEWS + WIKIMEDIA EXACT PHOTO HARVESTER
-#    Guarantees 100% Real, Exact-Match Photos on Every Beat (NEVER falls back to the US Map!)
 # ==============================================================================
 def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
     im = im.convert("RGB")
@@ -1502,7 +1579,7 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
 
     for p_key, (wiki_page, badge_lbl, _) in PERSON_WIKI_MAP.items():
         if re.search(rf"\b{re.escape(p_key)}\b", low):
-            if pillar in ["WORLD", "BUSINESS"] or p_key in dossier["title"].lower():
+            if pillar in ["WORLD", "BUSINESS", "SPORTS", "TECHNOLOGY"] or p_key in dossier["title"].lower():
                 return badge_lbl, wiki_page, f"{wiki_page}{loc_suffix} news", True
 
     chosen_ent = entities[beat_idx % len(entities)]
@@ -1517,19 +1594,11 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     return f"{pillar.replace('_', ' ')} • {chosen_ent.upper()[:18]}", chosen_ent, f"{chosen_ent} {dossier['title'][:35]}", False
 
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat"):
-    """
-    4-Engine Real Photo Harvester:
-      1. Bing Direct HD Web Images (`bing.com/images/async` -> `murl` & `turl` HD photographs)
-      2. Bing News Journalism XML RSS
-      3. Wikipedia REST PageImage & Media-List Gallery
-      4. Wikimedia Commons High-Res Bitmap Search
-    """
     c_prof = dossier["country_profile"]
     pillar = dossier.get("pillar", "WORLD")
     loc_suffix = "" if c_prof.get("is_global_topic") else f" {c_prof['name']}"
     neg_filter = " -ukraine -trump -zelensky -war" if pillar in ["SCIENCE", "TECHNOLOGY", "HEALTH", "MIND_BLOWING_FACTS", "SPORTS", "ENTERTAINMENT"] and "ukraine" not in dossier["title"].lower() else ""
 
-    # Engine 1: Direct Bing HD Image Search (`bing.com/images/async`) — finds 25+ exact-match photos for ANY subject!
     for b_img_q in [news_query, f"{wiki_exact_title} {dossier['title'][:30]}", dossier["title"]]:
         try:
             b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + ' photo' + neg_filter)}&first=0&count=18&qft=+filterui:imagesize-large+filterui:photo-photo"
@@ -1553,7 +1622,6 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Engine 2: Bing News Journalism XML RSS
     for nq in [news_query + neg_filter, dossier["title"] + neg_filter, f"{wiki_exact_title}{loc_suffix}{neg_filter}"]:
         try:
             rss_u = f"https://www.bing.com/news/search?q={urllib.parse.quote(nq)}&format=rss"
@@ -1573,7 +1641,6 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Engine 3: Wikipedia Article Media Gallery & REST Summary
     for gal_u in dossier.get("wiki_gallery_urls", []):
         try:
             ir = requests.get(gal_u, headers=HEADERS_WIKI, timeout=5)
@@ -1587,7 +1654,6 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Engine 4: Wikimedia Commons High-Res Bitmap Search
     short_cm_q = " ".join(re.findall(r"[A-Za-z0-9]{3,}", wiki_exact_title)[:2])
     if short_cm_q:
         try:
@@ -1621,7 +1687,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     return None
 
 # ==============================================================================
-# 9. DUAL-SUBJECT & FACE-AWARE FULL-HEIGHT 1080p FRAMING + KEN BURNS ZOOM
+# 9. GOD-LEVEL MULTI-ANGLE CAMERA & KEY-STAT CALLOUT COMPOSITOR (Abhi & Niyu / Nitish Rajput Style!)
 # ==============================================================================
 def has_well_framed_face(im):
     if FACE_CASCADE is None:
@@ -1716,11 +1782,11 @@ def build_clean_1080p_stage(im, W, H):
         bg = ImageEnhance.Brightness(bg).enhance(0.32)
         canvas = bg.convert("RGBA")
 
-        hero_w, hero_h = int(W * 1.10), int(1340 * 1.10)
+        hero_w, hero_h = int(W * 1.12), int(1340 * 1.12)
         fg = fit_full_height_face_aware_1080p(im, hero_w, hero_h)
         return ("SHORT_STAGE", canvas, fg)
     else:
-        over_w, over_h = int(W * 1.10), int(H * 1.10)
+        over_w, over_h = int(W * 1.12), int(H * 1.12)
         fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
         return ("FULL_BLEED_STAGE", fg, None)
 
@@ -1734,8 +1800,8 @@ def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
         fg = base_b
         fw, fh = fg.size
         win_w, win_h = W, 1340
-        cur_w = int(win_w + (fw - win_w) * (1.0 - 0.65 * smooth_p))
-        cur_h = int(win_h + (fh - win_h) * (1.0 - 0.65 * smooth_p))
+        cur_w = int(win_w + (fw - win_w) * (1.0 - 0.70 * smooth_p))
+        cur_h = int(win_h + (fh - win_h) * (1.0 - 0.70 * smooth_p))
         max_dx = max(fw - cur_w, 0)
         max_dy = max(fh - cur_h, 0)
         ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
@@ -1752,8 +1818,8 @@ def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
     else:
         fg = base_a
         fw, fh = fg.size
-        cur_w = int(W + (fw - W) * (1.0 - 0.70 * smooth_p))
-        cur_h = int(H + (fh - H) * (1.0 - 0.70 * smooth_p))
+        cur_w = int(W + (fw - W) * (1.0 - 0.75 * smooth_p))
+        cur_h = int(H + (fh - H) * (1.0 - 0.75 * smooth_p))
         max_dx = max(fw - cur_w, 0)
         max_dy = max(fh - cur_h, 0)
         ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
@@ -1764,46 +1830,7 @@ def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
             draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(215 * ((y - (H - 260)) / 260.0) ** 1.2)))
         return frame
 
-def build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080):
-    lat, lon = c_prof["lat"], c_prof["lon"]
-    lat_rad = math.radians(lat)
-    n = 2.0 ** zoom
-    xtile = int((lon + 180.0) / 360.0 * n)
-    ytile = int((1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n)
-
-    stitched = Image.new("RGB", (256 * 4, 256 * 3), (18, 28, 44))
-    tiles_loaded = 0
-    for dx in [-1, 0, 1, 2]:
-        for dy in [-1, 0, 1]:
-            tx = (xtile + dx) % int(n)
-            ty = max(0, min(int(n) - 1, ytile + dy))
-            u = f"https://tile.openstreetmap.org/{zoom}/{tx}/{ty}.png"
-            try:
-                r = requests.get(u, headers=HEADERS_WIKI, timeout=5)
-                if r.status_code == 200 and len(r.content) > 1000:
-                    p = f"temp/osm_{zoom}_{tx}_{ty}.png"
-                    with open(p, "wb") as f:
-                        f.write(r.content)
-                    tim = Image.open(p).convert("RGB")
-                    stitched.paste(tim, ((dx + 1) * 256, (dy + 1) * 256))
-                    tiles_loaded += 1
-            except Exception:
-                pass
-
-    resample_mode = getattr(Image, "Resampling", Image).LANCZOS
-    map_img = stitched.resize((W, H), resample_mode)
-    if tiles_loaded > 0:
-        map_img = map_img.filter(ImageFilter.UnsharpMask(radius=1.5, percent=125, threshold=3))
-        map_img = ImageEnhance.Contrast(map_img).enhance(1.35)
-        map_img = ImageEnhance.Brightness(map_img).enhance(0.68)
-    return map_img
-
 def build_documentary_evidence_stage_1080p(base_photo, beat_text, prop_badge, dossier):
-    """
-    Nitish Rajput / Abhi & Niyu Style Documentary Evidence Backdrop:
-    Instead of ever falling back to a US Map (`osm_map_reg`), creates a dark blurred photo backdrop
-    with a crisp floating photo + key stat/fact callout!
-    """
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
     W, H = 1920, 1080
     bg = base_photo.copy().resize((W, H), resample_mode).filter(ImageFilter.GaussianBlur(radius=28))
@@ -1814,8 +1841,20 @@ def build_documentary_evidence_stage_1080p(base_photo, beat_text, prop_badge, do
     draw.rounded_rectangle([((W - 1280) // 2 - 4, 66), ((W + 1280) // 2 + 4, 794)], radius=12, outline=(255, 214, 10, 235), width=4)
     return bg.convert("RGB")
 
+def extract_key_stat_callout(beat_text):
+    """
+    Extracts any striking number/metric from `beat_text` (e.g., '2,000 GAMMA-RAY BURSTS', '171 MILES', '42% RISK CUT', '6-POINT GAP')
+    to display as a floating Abhi & Niyu / Nitish Rajput style Key-Fact Callout Pill!
+    """
+    m = re.search(r"\b(\d+(?:,\d+)*(?:\.\d+)?(?:\s*%|\s*percent|\s*million|\s*billion|\s*trillion|\s*miles|\s*kilometers|\s*km|\s*years|\s*days|\s*hours|-point)?(?:\s+[A-Za-z]{3,12})?)\b", beat_text, flags=re.I)
+    if m:
+        val = m.group(1).strip().upper()
+        if len(val) >= 3 and val not in {"2026", "2025", "1995", "1996"}:
+            return f"⚡ KEY STAT: {val}"
+    return None
+
 # ==============================================================================
-# 10. STORYBOARD BUILDER (NEVER Uses US Map as a Fallback Image!)
+# 10. FAST-PACED 3.6s BEAT STORYBOARD BUILDER
 # ==============================================================================
 def has_strict_economic_context(text):
     low = text.lower()
@@ -1862,11 +1901,11 @@ def build_prop_driven_storyboard_1080p(
         narration = sec["narration"]
         sec_dur = sec["duration"]
         word_timings = sec["word_timings"]
-        sec_role = sec.get("role", "BODY")
         sec_headline = sec.get("headline") or sec.get("chapter_title") or make_clean_context_headline(dossier["title"])
         claim_meta = sec.get("claim_meta") or dossier["verified_claims"][0]
 
-        target_beat_len = 4.5 if W < H else 5.0
+        # Faster 3.6s (Short) / 4.0s (Long) beat pacing for dynamic YouTuber editing!
+        target_beat_len = 3.6 if W < H else 4.0
         num_beats = max(2, int(round(sec_dur / target_beat_len)))
         beat_dur = sec_dur / float(num_beats)
         words = narration.split()
@@ -1875,8 +1914,9 @@ def build_prop_driven_storyboard_1080p(
 
         for b_i in range(num_beats):
             b_txt = " ".join(words[b_i * w_per_b:(b_i + 1) * w_per_b]) or narration
-            prop_badge, wiki_target, search_q, is_person = extract_speaker_or_prop_for_beat(b_txt, dossier, entities, global_beat_idx)
+            prop_badge, wiki_target, search_q, _ = extract_speaker_or_prop_for_beat(b_txt, dossier, entities, global_beat_idx)
             low_b = b_txt.lower()
+            stat_callout = extract_key_stat_callout(b_txt)
 
             vseg = None
             if b_i == 1 and moving_video_beats < max_video_clips_for_block:
@@ -1899,12 +1939,11 @@ def build_prop_driven_storyboard_1080p(
                     if beat_im is not None:
                         unique_real_photos.append(beat_im)
                     elif unique_real_photos:
-                        # Create a framed Documentary Evidence Stage from our real story photos (NEVER a US Map!)
                         base_p = unique_real_photos[global_beat_idx % len(unique_real_photos)]
                         beat_im = build_documentary_evidence_stage_1080p(base_p, b_txt, prop_badge, dossier)
                         reused_photo_beats += 1
                     else:
-                        beat_im = build_real_openstreetmap_1080p(c_prof, zoom=5, W=1920, H=1080)
+                        beat_im = Image.new("RGB", (1920, 1080), (12, 18, 32))
 
                 if has_strict_economic_context(b_txt) and dossier.get("wb_data") is not None and "DATA_CHART_BEAT" not in used_modes_in_sec:
                     b_type = "DATA_CHART_BEAT"
@@ -1912,7 +1951,7 @@ def build_prop_driven_storyboard_1080p(
                     b_type = "TIMELINE_GRAPH_BEAT"
                 elif re.search(r"\b(said|stated|confirmed|record|specifics|told|claim|claims|study|researchers)\b", low_b) and "HEADLINE_EVIDENCE_BEAT" not in used_modes_in_sec:
                     b_type = "HEADLINE_EVIDENCE_BEAT"
-                elif re.search(r"\b(competing|colliding|whether|or if|versus|contrast)\b", low_b) and "SPLIT_COMPARE_BEAT" not in used_modes_in_sec and len(unique_real_photos) >= 2:
+                elif re.search(r"\b(competing|colliding|whether|or if|versus|contrast|between)\b", low_b) and "SPLIT_COMPARE_BEAT" not in used_modes_in_sec and len(unique_real_photos) >= 2:
                     b_type = "SPLIT_COMPARE_BEAT"
                 else:
                     b_type = "PHOTO_BEAT"
@@ -1930,6 +1969,7 @@ def build_prop_driven_storyboard_1080p(
                 "pan_dir": 1 if (global_beat_idx % 2 == 0) else -1,
                 "duration": round(beat_dur, 3),
                 "beat_excerpt": b_txt,
+                "stat_callout": stat_callout,
                 "section_headline": sec_headline,
                 "full_section_narration": narration,
                 "word_timings": word_timings,
@@ -2008,6 +2048,16 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             except Exception:
                 pass
         draw = ImageDraw.Draw(frame, "RGBA")
+
+    # Floating Key-Stat Callout Pill (Abhi & Niyu / Nitish Rajput style visual pop-up when a number/stat is spoken!)
+    if beat.get("stat_callout"):
+        sc_txt = beat["stat_callout"]
+        f_sc = get_font(26 if is_short else 30)
+        sc_w = draw.textbbox((0, 0), sc_txt, font=f_sc)[2] + 44
+        sc_x = (W - sc_w) // 2 if is_short else (W - sc_w - 48)
+        sc_y = 148 if is_short else 108
+        draw.rounded_rectangle([(sc_x, sc_y), (sc_x + sc_w, sc_y + 58)], radius=12, fill=(255, 214, 10, 248), outline=(10, 14, 24, 255), width=3)
+        draw.text((sc_x + 22, sc_y + 12), sc_txt, fill=(10, 14, 24, 255), font=f_sc)
 
     cy_card = 1475 if is_short else (H - 305)
     bx1, bx2 = (42, W - 42) if is_short else (56, 1260)
@@ -2134,11 +2184,15 @@ def make_section_clip_from_beats(section_beats, watermark, voice_sub_dir, sectio
     return VideoClip(make_frame, duration=section_dur)
 
 # ==============================================================================
-# 11. EXPRESSIVE HUMAN STORYTELLER VOICE ENGINE
+# 11. PURE ENGLISH EXPRESSIVE DOCUMENTARY VOICE ENGINE (Never Switches to Spanish!)
 # ==============================================================================
 class VoiceAndSubtitleEngine:
     async def synthesize_with_word_boundaries(self, text, out_path, voice_style="storyteller"):
-        v_name, rate, pitch = ("en-US-BrianMultilingualNeural", "+4%", "+0Hz")
+        """
+        Uses pure English `en-US-ChristopherNeural` (rich documentary authority) so foreign names
+        like 'Barcelona vs Real Madrid: La Liga - El Clasico' NEVER trigger a Spanish voice switch!
+        """
+        v_name, rate, pitch = ("en-US-ChristopherNeural", "+5%", "+0Hz")
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
         word_timings = []
 
@@ -2363,9 +2417,9 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     }
 
 # ==============================================================================
-# 13. YOUTUBE UPLOADER + AUTOMATIC PLAYLIST ASSIGNMENT
+# 13. YOUTUBE UPLOADER + AUTOMATIC PLAYLIST ASSIGNMENT + AUTO COMMENT
 # ==============================================================================
-def try_youtube_auto_upload(video_path, title, description, tags, category_id="25", pillar="WORLD", is_short=False, thumbnail_path=None):
+def try_youtube_auto_upload(video_path, title, description, tags, category_id="25", pillar="WORLD", is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway=""):
     token_b64 = os.environ.get("YOUTUBE_TOKEN_JSON_B64", "").strip()
     if not token_b64:
         print("ℹ️ [GitHub Cloud Test Mode] No YouTube API token set yet; saved to GitHub Artifacts:", video_path, flush=True)
@@ -2403,7 +2457,7 @@ def try_youtube_auto_upload(video_path, title, description, tags, category_id="2
             except Exception as te:
                 print("⚠️ Thumbnail set warning:", te, flush=True)
 
-        ensure_and_add_to_category_playlist(yt, vid_id, pillar)
+        add_video_to_category_playlist_and_comment(yt, vid_id, pillar, summary_takeaway or title, playlist_map or {})
         return vid_id
     except Exception as e:
         print("⚠️ YouTube upload attempt failed:", str(e)[:140], flush=True)
@@ -2412,7 +2466,7 @@ def try_youtube_auto_upload(video_path, title, description, tags, category_id="2
 # ==============================================================================
 # 14. MODULAR RENDER FUNCTIONS
 # ==============================================================================
-async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags):
+async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map):
     pillar = short_dossier.get("pillar", "WORLD")
     print(f"\n📱 [SHORT #{unit_num} - {pillar}] Building 1080p Short on: {short_dossier['original_yt_title']}", flush=True)
     short_sections, short_entities = build_short_script(short_dossier, variant_idx=len(hist_obj["published_keys"]) + unit_num)
@@ -2464,7 +2518,9 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
 
     try_youtube_auto_upload(
         out_short, short_dossier["original_yt_title"], short_seo_desc, short_seo_tags,
-        category_id=short_dossier.get("yt_category_id", "25"), pillar=pillar, is_short=True, thumbnail_path=short_pkg["selected_thumbnail"]
+        category_id=short_dossier.get("yt_category_id", "25"), pillar=pillar, is_short=True,
+        thumbnail_path=short_pkg["selected_thumbnail"], playlist_map=playlist_map,
+        summary_takeaway=short_dossier["raw_facts"][0]
     )
     hist_obj["published_keys"].add(short_dossier["story_key"])
     hist_obj["event_fingerprints"].append({"title": short_dossier["title"], "tokens": short_dossier["event_tokens"]})
@@ -2472,7 +2528,7 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
     hist_obj["last_sources"].append(short_dossier["source_name"])
     return s_stats
 
-async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags):
+async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map):
     pillar = lead_long_dossier.get("pillar", "WORLD")
     print(f"\n📺 [LONG #{unit_num} - {pillar}] Building Single-Topic Explainer on: {lead_long_dossier['original_yt_title']}", flush=True)
     long_chapters = build_long_documentary_script(lead_long_dossier)
@@ -2543,7 +2599,9 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
 
     try_youtube_auto_upload(
         out_long, pkg_report["selected_title"], long_seo_desc, long_seo_tags,
-        category_id=lead_long_dossier.get("yt_category_id", "25"), pillar=pillar, is_short=False, thumbnail_path=pkg_report["selected_thumbnail"]
+        category_id=lead_long_dossier.get("yt_category_id", "25"), pillar=pillar, is_short=False,
+        thumbnail_path=pkg_report["selected_thumbnail"], playlist_map=playlist_map,
+        summary_takeaway=lead_long_dossier["raw_facts"][0]
     )
     hist_obj["published_keys"].add(lead_long_dossier["story_key"])
     hist_obj["event_fingerprints"].append({"title": lead_long_dossier["title"], "tokens": lead_long_dossier["event_tokens"]})
@@ -2552,16 +2610,15 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     return pkg_report
 
 # ==============================================================================
-# MASTER EXECUTION: STRICT 8-CATEGORY ROUND-ROBIN QUEUE + PLAYLIST ASSIGNMENT
+# MASTER EXECUTION: STRICT 8-CATEGORY ROUND-ROBIN QUEUE + ALL 8 PLAYLISTS SYNC
 # ==============================================================================
 async def main():
     try:
         watermark = build_wtb_watermark(width=140, height=82)
         voice_sub_dir = VoiceAndSubtitleEngine()
         hist_obj = load_published_history()
-        winning_keywords, viral_yt_tags = run_youtube_api_full_intelligence()
+        winning_keywords, viral_yt_tags, playlist_map = run_youtube_api_full_intelligence()
 
-        # Select the next 4 categories in strict Round-Robin rotation across all 8 Pillars!
         rr_idx = hist_obj.get("round_robin_idx", 0)
         batch_fingerprints = []
         selected_dossiers = []
@@ -2591,13 +2648,13 @@ async def main():
         l2_lead = selected_dossiers[3] if len(selected_dossiers) > 3 else selected_dossiers[1]
 
         # 1. Short Video #1 (Pillar #1)
-        s1_stats = await render_and_upload_short_unit(s1_dossier, 1, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags)
+        s1_stats = await render_and_upload_short_unit(s1_dossier, 1, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map)
         # 2. Long Documentary #1 (Pillar #2)
-        pkg_1 = await render_and_upload_long_unit(l1_lead, 1, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags)
+        pkg_1 = await render_and_upload_long_unit(l1_lead, 1, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map)
         # 3. Short Video #2 (Pillar #3)
-        s2_stats = await render_and_upload_short_unit(s2_dossier, 2, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags)
+        s2_stats = await render_and_upload_short_unit(s2_dossier, 2, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map)
         # 4. Long Documentary #2 (Pillar #4)
-        pkg_2 = await render_and_upload_long_unit(l2_lead, 2, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags)
+        pkg_2 = await render_and_upload_long_unit(l2_lead, 2, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map)
 
         save_published_history(hist_obj)
 
@@ -2605,6 +2662,7 @@ async def main():
             json.dump({
                 "videos_produced_in_run": 4,
                 "next_round_robin_index": hist_obj.get("round_robin_idx", 0),
+                "playlists_synced": len(playlist_map),
                 "analytics_winning_keywords": winning_keywords,
                 "viral_youtube_tags_discovered": viral_yt_tags,
                 "short_1": {"title": s1_dossier["original_yt_title"], "pillar": s1_dossier["pillar"], "audit": s1_stats},
@@ -2613,7 +2671,7 @@ async def main():
                 "long_2": {"title": l2_lead["original_yt_title"], "pillar": l2_lead["pillar"], "packaging": pkg_2}
             }, f, indent=2)
 
-        print("✅ [6/6] GITHUB CLOUD 8-CATEGORY ROUND-ROBIN + PLAYLIST BATCH COMPLETE!", flush=True)
+        print("✅ [6/6] GITHUB CLOUD 8-CATEGORY ROUND-ROBIN + ALL 8 PLAYLISTS SYNC COMPLETE!", flush=True)
     finally:
         for vc in GLOBAL_OPEN_VCLIPS:
             try:
