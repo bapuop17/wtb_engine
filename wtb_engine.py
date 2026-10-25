@@ -47,13 +47,14 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefBroadcastStudio/26.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefBroadcastStudio/27.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
 
 # ==============================================================================
-# 1. ALL 8 CONTENT PILLARS WITH MULTI-HUMAN VOICE CASTING & DEDICATED PLAYLISTS
+# 1. ALL 8 CONTENT PILLARS WITH GEN-2 NATURAL HUMAN CONVERSATIONAL VOICES
+#    (Zero pitch-warping, zero robotic 1st-gen voices!)
 # ==============================================================================
 ORDERED_PILLARS = [
     "WORLD",
@@ -66,40 +67,16 @@ ORDERED_PILLARS = [
     "ENTERTAINMENT"
 ]
 
-# Every category gets its own distinct, natural human lead narrator + a second human voice for quotes/evidence!
+# ONLY Gen-2 Ultra-Natural Conversational Voices (with natural human breathing & warm timbre)
 CATEGORY_VOICE_CAST = {
-    "WORLD": {
-        "lead_voice": "en-US-AndrewNeural",
-        "quote_voice": "en-US-AvaNeural"
-    },
-    "TECHNOLOGY": {
-        "lead_voice": "en-US-AvaNeural",
-        "quote_voice": "en-US-AndrewNeural"
-    },
-    "MIND_BLOWING_FACTS": {
-        "lead_voice": "en-US-GuyNeural",
-        "quote_voice": "en-US-AriaNeural"
-    },
-    "SCIENCE": {
-        "lead_voice": "en-GB-SoniaNeural",
-        "quote_voice": "en-GB-RyanNeural"
-    },
-    "BUSINESS": {
-        "lead_voice": "en-US-EricNeural",
-        "quote_voice": "en-US-JennyNeural"
-    },
-    "HEALTH": {
-        "lead_voice": "en-US-AriaNeural",
-        "quote_voice": "en-US-AndrewNeural"
-    },
-    "SPORTS": {
-        "lead_voice": "en-US-BrianNeural",
-        "quote_voice": "en-US-GuyNeural"
-    },
-    "ENTERTAINMENT": {
-        "lead_voice": "en-US-EmmaNeural",
-        "quote_voice": "en-US-BrianNeural"
-    }
+    "WORLD": "en-US-AndrewMultilingualNeural",
+    "TECHNOLOGY": "en-US-BrianMultilingualNeural",
+    "MIND_BLOWING_FACTS": "en-US-AndrewMultilingualNeural",
+    "SCIENCE": "en-US-BrianMultilingualNeural",
+    "BUSINESS": "en-US-AndrewMultilingualNeural",
+    "HEALTH": "en-US-AvaMultilingualNeural",
+    "SPORTS": "en-US-BrianMultilingualNeural",
+    "ENTERTAINMENT": "en-US-EmmaMultilingualNeural"
 }
 
 CATEGORY_FEEDS = {
@@ -108,7 +85,7 @@ CATEGORY_FEEDS = {
         "playlist_title": "World Talk Brief • Global Geopolitics & World News",
         "badge_color": (204, 18, 36),
         "accent_color": (255, 214, 10),
-        "hook_tag": "GLOBAL GEOPOLITICS",
+        "hook_tag": "GEOPOLITICAL CASE STUDY",
         "search_query": "world news geopolitics summit military",
         "feeds": [
             ("Al Jazeera World", "https://www.aljazeera.com/xml/rss/all.xml"),
@@ -123,7 +100,7 @@ CATEGORY_FEEDS = {
         "playlist_title": "World Talk Brief • AI, Robotics, Gaming & Future Tech",
         "badge_color": (0, 140, 255),
         "accent_color": (0, 235, 255),
-        "hook_tag": "AI, ROBOTS & TECH",
+        "hook_tag": "TECH & AI EXPLAINED",
         "search_query": "artificial intelligence humanoid robot gaming nvidia technology",
         "feeds": [
             ("TechCrunch AI & Tech", "https://techcrunch.com/feed/"),
@@ -137,12 +114,12 @@ CATEGORY_FEEDS = {
         "playlist_title": "World Talk Brief • Mind-Blowing Facts & World Mysteries",
         "badge_color": (185, 20, 220),
         "accent_color": (255, 225, 0),
-        "hook_tag": "MIND-BLOWING FACT",
+        "hook_tag": "MIND-BLOWING CASE STUDY",
         "search_query": "unbelievable facts scientific mystery mind blowing discovery",
         "feeds": [
+            ("Smithsonian SmartNews", "https://www.smithsonianmag.com/rss/smart-news/"),
             ("SciTechDaily Discoveries", "https://scitechdaily.com/feed/"),
-            ("Phys.org Breakthroughs", "https://phys.org/rss-feed/"),
-            ("Smithsonian SmartNews", "https://www.smithsonianmag.com/rss/smart-news/")
+            ("Phys.org Breakthroughs", "https://phys.org/rss-feed/")
         ]
     },
     "SCIENCE": {
@@ -153,7 +130,6 @@ CATEGORY_FEEDS = {
         "hook_tag": "SPACE & SCIENCE",
         "search_query": "space nasa spacex astronomy quantum discovery",
         "feeds": [
-            ("NASA Breaking News", "https://www.nasa.gov/news-release/feed/"),
             ("Space.com", "https://www.space.com/feeds/all"),
             ("BBC Science & Environment", "http://feeds.bbci.co.uk/news/science_and_environment/rss.xml"),
             ("The Guardian Science", "https://www.theguardian.com/science/rss")
@@ -178,12 +154,12 @@ CATEGORY_FEEDS = {
         "playlist_title": "World Talk Brief • Health, Biotech & Medical Science",
         "badge_color": (14, 155, 145),
         "accent_color": (255, 220, 40),
-        "hook_tag": "HEALTH & BIOTECH",
+        "hook_tag": "BIOTECH BREAKTHROUGH",
         "search_query": "medical breakthrough human brain health longevity",
         "feeds": [
-            ("SciTechDaily Health", "https://scitechdaily.com/news/health/feed/"),
-            ("MedicalXpress", "https://medicalxpress.com/rss-feed/"),
-            ("The Guardian Health", "https://www.theguardian.com/society/health/rss")
+            ("BBC Health", "http://feeds.bbci.co.uk/news/health/rss.xml"),
+            ("The Guardian Health", "https://www.theguardian.com/society/health/rss"),
+            ("SciTechDaily Health", "https://scitechdaily.com/news/health/feed/")
         ]
     },
     "SPORTS": {
@@ -209,7 +185,7 @@ CATEGORY_FEEDS = {
         "feeds": [
             ("BBC Entertainment & Arts", "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"),
             ("The Guardian Film", "https://www.theguardian.com/uk/film/rss"),
-            ("Variety Entertainment", "https://variety.com/feed/")
+            ("Hollywood Reporter", "https://www.hollywoodreporter.com/feed/")
         ]
     }
 }
@@ -338,6 +314,9 @@ PERSON_WIKI_MAP = {
 }
 
 CONCRETE_WIKI_PROPS = {
+    "grok": ("XAI GROK MODEL", "Grok (chatbot)", "Grok xAI Elon Musk artificial intelligence"),
+    "chatgpt": ("OPENAI CHATGPT", "ChatGPT", "ChatGPT OpenAI artificial intelligence"),
+    "openai": ("OPENAI & GPT MODELS", "OpenAI", "OpenAI Sam Altman artificial intelligence"),
     "pole": ("FORMULA 1 POLE POSITION", "Formula One car", "Formula 1 racing car grid pole position"),
     "grand prix": ("FORMULA 1 GRAND PRIX", "United States Grand Prix", "Formula 1 Grand Prix Circuit of the Americas race"),
     "ferrari": ("SCUDERIA FERRARI F1", "Scuderia Ferrari", "Ferrari Formula 1 car race track"),
@@ -361,7 +340,6 @@ CONCRETE_WIKI_PROPS = {
     "voice model": ("AI SPEECH SYNTHESIS", "Speech synthesis", "artificial intelligence audio waveform neural network"),
     "ai model": ("AI NEURAL ARCHITECTURE", "Large language model", "artificial intelligence neural network server"),
     "ai": ("ARTIFICIAL INTELLIGENCE", "Artificial intelligence", "AI data center supercomputer chips"),
-    "openai": ("OPENAI & CHATGPT", "OpenAI", "OpenAI artificial intelligence"),
     "nvidia": ("NVIDIA AI CHIPS", "Nvidia", "Nvidia GPU semiconductor microchip"),
     "gpu": ("NVIDIA GPU ARCHITECTURE", "Graphics processing unit", "Nvidia GPU graphics card hardware"),
     "macbook": ("APPLE SILICON M4 MAX", "MacBook Pro", "Apple MacBook Pro M4 laptop hardware"),
@@ -628,7 +606,7 @@ def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_tak
         pass
 
 # ==============================================================================
-# 4. NON-REPEATING HISTORY & STRICT AWKWARD/GOSSIP/AD BLOCKER
+# 4. NON-REPEATING HISTORY & STRICT URL / PRESS-RELEASE / AWKWARD TOPIC BLOCKER
 # ==============================================================================
 def load_published_history():
     if os.path.exists(HISTORY_FILE):
@@ -688,132 +666,74 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
 
     return ("NEW_STORY", None)
 
-# Blocks awkward medical stories ("UTI", "urinary", "bladder"), indie gossip ("Nathan Fielder", "kill switch"), and shopping deals!
 BANNED_ARTICLE_TITLES = [
     "uti", "utis", "urinary", "bladder", "bowel", "diarrhea", "constipation", "erectile", "sexually transmitted",
-    "nathan fielder", "kill switch", "lance oppenheim", "indiewire", "birthday sale", "percent off", "% off",
-    "sitewide", "promo code", "coupon", "best deals", "buying guide", "gift guide", "review:", "we tested",
-    "horoscope", "wordle", "crossword", "sudoku", "live updates", "as it happened", "in pictures",
-    "at a glance", "podcast", "quiz", "bandcamp", "synth-pop", "album review", "song review",
-    "obsessed with scammers", "how to watch", "tv channel", "live stream", "prediction, team news"
+    "ovaries", "ovary", "menopause", "menstrual", "pregnancy", "fertility", "nathan fielder", "kill switch",
+    "lance oppenheim", "indiewire", "birthday sale", "percent off", "% off", "sitewide", "promo code", "coupon",
+    "best deals", "buying guide", "gift guide", "review:", "we tested", "horoscope", "wordle", "crossword",
+    "sudoku", "live updates", "as it happened", "in pictures", "at a glance", "podcast", "quiz", "bandcamp",
+    "synth-pop", "album review", "song review", "obsessed with scammers", "how to watch", "tv channel",
+    "live stream", "prediction, team news", "power partnership"
 ]
 
 BANNED_PHRASES = [
-    "popular on variety",
-    "popular on ",
-    "related:",
-    "read more:",
-    "also read:",
-    "external ",
-    "weeing lava",
-    "need a wee",
-    "founder summit",
-    "buy one",
-    "get a second for free",
-    "get your pass",
-    "bring someone with you",
-    "50% off",
-    "register now",
-    "ticket",
-    "how to follow:",
-    "where: camp",
-    "when: sunday",
-    "when: saturday",
-    "will bring you all the build-up",
-    "enter your email below",
-    "send confirmation",
-    "sign you up to our newsletter",
-    "by submitting your information",
-    "confirm you are aged 16",
-    "read our privacy policy",
-    "read ourprivacy policy",
-    "agree to the terms",
-    "terms & conditions",
-    "latest space missions, discoveries and exploration updates",
-    "here's a video of",
-    "here is a video of",
-    "watch the video below",
-    "dw asked people on the ground",
-    "asked people on the ground what life is like",
-    "take this one, for example, shared by",
-    "you have got to listen to these",
-    "you've got to listen to these",
-    "percent off sitewide",
-    "wired-staff favorite",
-    "birthday girl is feeling generous",
-    "bandcamp page",
-    "saxophone solos",
-    "you don't have permission to access",
-    "what is this page",
-    "website you are visiting is protected",
-    "for security reasons this page cannot be displayed",
-    "access denied",
-    "403 forbidden",
-    "error 404",
-    "enable javascript",
-    "enable cookies",
-    "cloudflare",
-    "please verify you are a human",
-    "some readers may find this article distressing",
-    "warning: this article contains",
-    "continue reading",
-    "sign up for our newsletter",
-    "all rights reserved",
-    "photograph:",
-    "image source:",
-    "getty images",
-    "tells the bbc",
-    "tells bbc",
-    "the bbc joins",
-    "send us your questions",
-    "share your story",
-    "tell us what you think",
-    "contact us",
-    "have you been affected",
-    "tap here to",
-    "click here to",
-    "listen to our podcast",
-    "is seen on monday",
-    "is seen on tuesday",
-    "is seen on wednesday",
-    "is seen on thursday",
-    "is seen on friday",
-    "is seen on saturday",
-    "is seen on sunday",
-    "is seen in this",
-    "pictured in this",
-    "in this file photo",
-    "lecturer in",
-    "professor of",
-    "associate professor",
-    "fellow at the",
-    "sound bite of",
-    "archived recording",
-    "npr's ",
-    "abc news' ",
-    "cbs news' ",
-    "nbc news' ",
-    "talks with ",
-    "speaks with "
+    "https://", "http://", "https/", "http/", "www.", ".gov", ".org/", ".com/",
+    "for more information on", "visit https", "explore langley", "communications strategist",
+    "turning what if into what will be", "popular on variety", "popular on ", "related:", "read more:",
+    "also read:", "external ", "weeing lava", "need a wee", "founder summit", "buy one",
+    "get a second for free", "get your pass", "bring someone with you", "50% off", "register now",
+    "ticket", "how to follow:", "where: camp", "when: sunday", "when: saturday",
+    "will bring you all the build-up", "enter your email below", "send confirmation",
+    "sign you up to our newsletter", "by submitting your information", "confirm you are aged 16",
+    "read our privacy policy", "read ourprivacy policy", "agree to the terms", "terms & conditions",
+    "latest space missions, discoveries and exploration updates", "here's a video of", "here is a video of",
+    "watch the video below", "dw asked people on the ground", "asked people on the ground what life is like",
+    "take this one, for example, shared by", "you have got to listen to these", "you've got to listen to these",
+    "percent off sitewide", "wired-staff favorite", "birthday girl is feeling generous", "bandcamp page",
+    "saxophone solos", "you don't have permission to access", "what is this page",
+    "website you are visiting is protected", "for security reasons this page cannot be displayed",
+    "access denied", "403 forbidden", "error 404", "enable javascript", "enable cookies", "cloudflare",
+    "please verify you are a human", "some readers may find this article distressing",
+    "warning: this article contains", "continue reading", "sign up for our newsletter", "all rights reserved",
+    "photograph:", "image source:", "getty images", "tells the bbc", "tells bbc", "the bbc joins",
+    "send us your questions", "share your story", "tell us what you think", "contact us",
+    "have you been affected", "tap here to", "click here to", "listen to our podcast",
+    "is seen on monday", "is seen on tuesday", "is seen on wednesday", "is seen on thursday",
+    "is seen on friday", "is seen on saturday", "is seen on sunday", "is seen in this",
+    "pictured in this", "in this file photo", "lecturer in", "professor of", "associate professor",
+    "fellow at the", "sound bite of", "archived recording", "npr's ", "abc news' ", "cbs news' ",
+    "nbc news' ", "talks with ", "speaks with "
 ]
 
 def clean_fact(text):
+    """
+    Transforms raw journalistic/press-release sentences into clean, conversational Nitish Rajput / Abhi & Niyu
+    style spoken English! Strips URLs (`https/www.mnasa.gov`), PR titles (`Communications strategist`),
+    and awkward newspaper attributions!
+    """
     if not text:
         return ""
-    repl = {"\u2011": "-", "\u2013": "-", "\u2014": " - ", "\u2018": "'", "\u2019": "'", "\u201c": '"', "\u201d": '"', "\u00a0": " "}
+    repl = {"\u2011": "-", "\u2013": "-", "\u2014": " - ", "\u2018": "'", "\u2019": "'", "\u201c": "", "\u201d": "", '"': "", "\u00a0": " "}
     for k, v in repl.items():
         text = text.replace(k, v)
 
     if len(re.findall(r"\b(WHO|WHAT|WHERE|WHEN|HOW TO FOLLOW)\s*:", text)) >= 2:
         return ""
 
-    # Strip inline widget headers like "Popular on Variety" or "External"
+    # Strip URLs or domain fragments completely!
+    if re.search(r"(https?:|www\.|\.gov\b|\.org\b|\.com\b)", text, flags=re.I):
+        return ""
+
     text = re.sub(r"(?i)\bPopular on [A-Za-z]+\b", "", text)
     text = re.sub(r"(?i)\bexternal\b", "", text)
     text = re.sub(r"[A-Z][A-Z\s\.\-]{3,},\s*(HOST|BYLINE|CORRESPONDENT|ANCHOR|REPORTER)\s*:\s*", "", text)
     text = re.sub(r"(?i)^by\s+[A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+and\s+[A-Z][a-z]+\s+[A-Z][a-z]+)?\s*", "", text)
     text = re.sub(r"^[A-Z\s,\.]{3,28}\s*(\([A-Za-z\s]+\))?\s*(?:--|—|-)\s*", "", text)
     text = re.sub(r",\s*writes\s+[A-Z][a-z]+\s+[A-Z][a-z]+\.?$", ".", text)
+
+    # Convert dry newspaper attributions (", an OpenAI spokesperson said." / ", said Alan Kilgore...") into natural spoken flow!
+    text = re.sub(r",\s*(?:an?\s+)?[A-Za-z\s]{2,25}\s+(?:spokesperson|director|official|researcher|professor|investigator)\s+(?:said|stated|noted|added|told\s+[A-Za-z]+)\.?", ".", text, flags=re.I)
+    text = re.sub(r",\s*according to\s+[A-Za-z\s]{2,25}\.?", ".", text, flags=re.I)
 
     text = re.sub(r"\s*\([^)]{1,45}\)", "", text)
     text = re.sub(r"(\d+)\s*km/h\b", r"\1 kilometers per hour", text, flags=re.I)
@@ -824,12 +744,9 @@ def clean_fact(text):
     text = re.sub(r"\bSanaa\b", "Sa-naa", text)
 
     text = re.sub(r"(?i)\bthe bbc joins\b", "Correspondents join", text)
-    text = re.sub(r"(?i)\btold the bbc\b", "stated on the record", text)
+    text = re.sub(r"(?i)\btold the bbc\b", "stated", text)
     text = re.sub(r"(?i)\btells the bbc\b", "stated", text)
     text = re.sub(r"(?i)\btells bbc\b", "stated", text)
-    text = re.sub(r"(?i)\btold al jazeera\b", "stated", text)
-    text = re.sub(r"(?i)\btold the guardian\b", "stated", text)
-    text = re.sub(r"(?i)\btold reuters\b", "confirmed", text)
     text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera|IndieWire|Variety)\b", "official reports", text)
     text = re.sub(r"\[([^\]]+)\]", r"\1", text)
     text = re.sub(r"[^\x20-\x7E]", "", text)
@@ -844,7 +761,7 @@ def clean_fact(text):
         return ""
     words_check = [re.sub(r"[^a-zA-Z]", "", w).lower() for w in text.split()]
     words_check = [w for w in words_check if w]
-    if not words_check:
+    if len(words_check) < 6:
         return ""
     dangling_endings = {"a", "an", "the", "to", "in", "on", "of", "for", "with", "and", "or", "by", "at", "from", "that", "which", "as", "into"}
     if words_check[-1] in dangling_endings:
@@ -875,18 +792,18 @@ def craft_original_youtube_title(raw_title, pillar, c_prof):
     t = re.sub(r"^(Watch:|Listen:|Explained:|Opinion:|Analysis:)\s*", "", t, flags=re.I).strip()
     if len(t) <= 68:
         if pillar == "MIND_BLOWING_FACTS":
-            return f"{t} | Science Explained"
+            return f"{t} | Case Study Explained"
         elif pillar in ["TECHNOLOGY", "SCIENCE"]:
             return f"{t} | {pillar.title()} Deep Dive"
         elif pillar == "SPORTS":
             return f"{t} | Sports Breakdown"
         elif not c_prof.get("is_global_topic"):
-            return f"{t} | {c_prof['name'].title()} Briefing"
+            return f"{t} | {c_prof['name'].title()} Case Study"
     return t[:95]
 
 # ==============================================================================
-# 5. TOPIC-LOCKED ENTITY & PRIMARY SUBJECT ANCHOR EXTRACTOR
-#    Fixes `kpuk4dM7Jgk` where Washington D.C. & 1900s Italian Emigrants appeared in an F1 race!
+# 5. STRICT CONCRETE NOUN & ENTITY EXTRACTOR
+#    Fixes `nXqG3hXpRzg` where 'DISCOVER THAT' became an entity and pulled 'Brazil by Brasil'!
 # ==============================================================================
 HEADLINE_STOP_VERBS_ADJS = {
     "have", "has", "had", "what", "when", "where", "while", "after", "before", "under", "inside",
@@ -896,15 +813,12 @@ HEADLINE_STOP_VERBS_ADJS = {
     "obsessed", "unhinged", "surprising", "connection", "owners", "share", "way", "risk", "market",
     "popular", "unexpected", "catch", "warn", "leaves", "behind", "bonanza", "ends", "sounds",
     "eerily", "human", "preview", "predictions", "teams", "block", "blocks", "model", "takes",
-    "weekend", "win", "title", "italian", "dutchman", "affect", "millions"
+    "weekend", "win", "title", "italian", "dutchman", "affect", "millions", "discover", "discovered",
+    "that", "this", "these", "those", "something", "doing", "decades", "forced", "pick", "picks",
+    "chooses", "launch", "power", "partnership", "between", "through", "their", "there", "about"
 }
 
 def extract_primary_topic_anchor(dossier):
-    """
-    Creates a strict 2-to-3 word Topic Anchor from the headline & pillar (e.g. 'Formula 1 Grand Prix',
-    'NASA Swift satellite', 'Barcelona Real Madrid') that stays attached to EVERY image query in the video
-    so no beat ever wanders off to 'Washington D.C.' or 'Italian Emigrants'!
-    """
     low = f"{dossier['title']} {' '.join(dossier['raw_facts'][:2])}".lower()
     for word_key, (_, wiki_exact, _) in CONCRETE_WIKI_PROPS.items():
         if re.search(rf"\b{re.escape(word_key)}\b", low):
@@ -918,12 +832,9 @@ def extract_primary_topic_anchor(dossier):
         w for w in re.findall(r"[A-Za-z0-9]{4,}", dossier["title"])
         if w.lower() not in HEADLINE_STOP_VERBS_ADJS
     ]
-    return " ".join(content_nouns[:3]) if content_nouns else dossier["title"][:30]
+    return " ".join(content_nouns[:2]) if content_nouns else dossier["title"][:28]
 
 def extract_story_entities(dossier):
-    """
-    NEVER adds `Washington, D.C.` or generic country names to `SPORTS`, `SCIENCE`, `TECHNOLOGY`, `HEALTH`, or `ENTERTAINMENT`!
-    """
     if dossier.get("visual_anchors"):
         return dossier["visual_anchors"]
 
@@ -953,13 +864,12 @@ def extract_story_entities(dossier):
         if noun_phrase not in ents:
             ents.append(noun_phrase)
 
-    # ONLY add Capital/Country fallback for geopolitical `WORLD` stories!
     if pillar == "WORLD" and not c_prof.get("is_global_topic"):
         for fb in [c_prof["capital"], c_prof["name"].title()]:
             if fb not in ents:
                 ents.append(fb)
     elif not ents:
-        ents.append(dossier["title"][:35])
+        ents.append(extract_primary_topic_anchor(dossier))
     return ents[:8]
 
 def fetch_wikipedia_article_media_gallery(wiki_page_title):
@@ -1322,8 +1232,7 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
     return chosen
 
 # ==============================================================================
-# 6. EMOTIONAL MULTI-VOICE SCRIPT ENGINE (Hook / Suspense-Whisper / Quote / Climax!)
-#    NEVER duplicates sentences in Long Videos!
+# 6. NITISH RAJPUT / ABHI & NIYU CONVERSATIONAL CASE-STUDY SCRIPT ENGINE
 # ==============================================================================
 def polish_journalistic_sentence(raw_fact, c_prof, role="BODY"):
     s = raw_fact.strip().rstrip(".")
@@ -1344,10 +1253,6 @@ def make_clean_context_headline(text, max_words=8):
     return " ".join(selected).upper()
 
 def build_short_script(dossier, variant_idx=0):
-    """
-    Assigns distinct emotional prosody (`hook_excited`, `suspense_whisper`, `quote_voice`, `climax_punch`)
-    to each section of the Short so the narrator sounds 100% alive, emotional, and human!
-    """
     c_prof = dossier["country_profile"]
     ents = extract_story_entities(dossier)
     claims = dossier["verified_claims"]
@@ -1361,28 +1266,24 @@ def build_short_script(dossier, variant_idx=0):
     sections = [
         {
             "role": "HOOK",
-            "emotion_mode": "hook_excited",
             "headline": make_clean_context_headline(title, max_words=8),
             "narration": f"{title}. {polish_journalistic_sentence(c0['text'], c_prof)}",
             "claim_meta": c0
         },
         {
             "role": "WHAT_HAPPENED",
-            "emotion_mode": "conversational",
             "headline": make_clean_context_headline(c1["text"], max_words=8),
             "narration": polish_journalistic_sentence(c1["text"], c_prof),
             "claim_meta": c1
         },
         {
             "role": "CORE_EXPLANATION",
-            "emotion_mode": "suspense_whisper",
             "headline": make_clean_context_headline(c2["text"], max_words=8),
             "narration": polish_journalistic_sentence(c2["text"], c_prof),
             "claim_meta": c2
         },
         {
             "role": "SOLID_TAKEAWAY",
-            "emotion_mode": "climax_punch",
             "headline": make_clean_context_headline(c3["text"], max_words=8),
             "narration": polish_journalistic_sentence(c3["text"], c_prof),
             "claim_meta": c3
@@ -1391,10 +1292,6 @@ def build_short_script(dossier, variant_idx=0):
     return sections, ents
 
 def build_long_documentary_script(dossier):
-    """
-    NEVER duplicates sentences! Builds chapters strictly from unique verified claims,
-    alternating emotional prosody (`hook_excited` -> `conversational` -> `suspense_whisper` -> `quote_speaker` -> `climax_punch`)!
-    """
     c_prof = dossier["country_profile"]
     claims = dossier["verified_claims"]
 
@@ -1404,11 +1301,8 @@ def build_long_documentary_script(dossier):
         if len(ps) > 35 and ps not in unique_sents:
             unique_sents.append(ps)
 
-    # Group unique sentences into chapters of 2-3 sentences each (ZERO sentence duplication!)
     chunk_size = 2 if len(unique_sents) < 12 else 3
     sent_groups = [unique_sents[i:i + chunk_size] for i in range(0, len(unique_sents), chunk_size)][:6]
-
-    emotion_cycle = ["hook_excited", "conversational", "suspense_whisper", "quote_speaker", "conversational", "climax_punch"]
     role_cycle = ["HOOK", "EVIDENCE", "CORE_MECHANISM", "TECHNICAL_DEEP_DIVE", "TIMELINE", "SOLID_TAKEAWAY"]
 
     chapters = []
@@ -1417,13 +1311,12 @@ def build_long_documentary_script(dossier):
         if idx == 0:
             body_txt = f"{dossier['title']}. {body_txt}"
         if idx == len(sent_groups) - 1:
-            body_txt = f"{body_txt} Subscribe to World Talk Brief for daily global explainers."
+            body_txt = f"{body_txt} Subscribe to World Talk Brief for daily global case studies."
         c_meta = claims[min(idx, len(claims) - 1)]
         chapters.append({
             "chapter_num": idx + 1,
             "chapter_title": make_clean_context_headline(grp[0], max_words=8),
             "role": role_cycle[idx % len(role_cycle)],
-            "emotion_mode": emotion_cycle[idx % len(emotion_cycle)],
             "dossier": dossier,
             "claim_meta": c_meta,
             "narration": body_txt
@@ -1432,7 +1325,7 @@ def build_long_documentary_script(dossier):
     return chapters
 
 # ==============================================================================
-# 7. MULTI-CLIP MOVING VIDEO B-ROLL ENGINE
+# 7. STRICT EXACT-TOPIC MOVING VIDEO B-ROLL ENGINE
 # ==============================================================================
 def is_valid_cinematic_video_frame(frame_rgb):
     arr = np.asarray(Image.fromarray(frame_rgb).resize((120, 120)), dtype=np.float32)
@@ -1445,9 +1338,12 @@ def is_valid_cinematic_video_frame(frame_rgb):
 def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, tag_id="vclip"):
     topic_anchor = extract_primary_topic_anchor(dossier)
     clean_subj = re.sub(r"[^a-zA-Z0-9\s]", " ", f"{wiki_target} {topic_anchor}").strip()
-    ambiguous_broll_words = {"voice", "block", "blocks", "model", "models", "sound", "sounds", "human", "rapid", "national", "care", "service", "popular"}
+    ambiguous_broll_words = {
+        "voice", "block", "blocks", "model", "models", "sound", "sounds", "human", "rapid",
+        "national", "care", "service", "popular", "discover", "discovered", "brasil", "brazil"
+    }
     subj_words = [
-        w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", clean_subj)
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", clean_subj)
         if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in ambiguous_broll_words
     ]
     if not subj_words:
@@ -1459,7 +1355,8 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
         "lecture", "interview", "golf", "tree", "park", "pronunciation", "spoken", "audio",
         "session", "recorded", "wikidata", "conference", "talk", "presentation", "isolated",
         "slate", "lawrence", "tutorial", "screen", "backpulver", "rakete", "voa", "voice of america",
-        "migrant", "newscast", "anchor", "trooper", "police", "kamala", "harris", "senator", "governor"
+        "migrant", "newscast", "anchor", "trooper", "police", "kamala", "harris", "senator", "governor",
+        "brasil", "tourism", "commercial", "promo"
     ]
 
     try:
@@ -1543,14 +1440,13 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
     return None
 
 # ==============================================================================
-# 8. TOPIC-ANCHORED BING HD PHOTO HARVESTER (Blocks Sepia Posters & Off-Topic Images!)
+# 8. TOPIC-ANCHORED BING HD PHOTO HARVESTER
 # ==============================================================================
 def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
     im = im.convert("RGB")
     w, h = im.size
     if w < min_w or h < min_h:
         return None
-    # Reject vertical book covers / posters (like the 'ITALIAN EMIGRANTS' poster in `kpuk4dM7Jgk`!)
     if h > w * 1.15:
         return None
 
@@ -1566,7 +1462,6 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
     if (white_px / float(80 * 80)) > 0.25:
         return None
 
-    # Reject monochrome / sepia old archival posters unless it's a historical fact video
     rg_diff = np.mean(np.abs(arr[:, :, 0] - arr[:, :, 1]))
     gb_diff = np.mean(np.abs(arr[:, :, 1] - arr[:, :, 2]))
     if rg_diff < 6.0 and gb_diff < 6.0:
@@ -1600,11 +1495,6 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
     return im
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
-    """
-    100% TOPIC-LOCKED BEAT SEARCH:
-    Always anchors every beat's visual search with `topic_anchor` (e.g., 'Formula 1 Grand Prix' or 'NASA Swift')
-    so a beat mentioning 'July' or '20-year-old Italian' NEVER searches 'Italian Emigrants' or 'Washington D.C.'!
-    """
     low = beat_text.lower()
     pillar = dossier.get("pillar", "WORLD")
     topic_anchor = extract_primary_topic_anchor(dossier)
@@ -1625,16 +1515,15 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     ]
     if len(beat_keywords) >= 2:
         clause_q = f"{topic_anchor} {beat_keywords[0]} {beat_keywords[1]}"
-        return f"{pillar.replace('_', ' ')} • {chosen_ent.upper()[:18]}", chosen_ent, clause_q, False
+        return f"{pillar.replace('_', ' ')} • {topic_anchor.upper()[:18]}", chosen_ent, clause_q, False
 
-    return f"{pillar.replace('_', ' ')} • {chosen_ent.upper()[:18]}", chosen_ent, f"{topic_anchor} {chosen_ent}", False
+    return f"{pillar.replace('_', ' ')} • {topic_anchor.upper()[:18]}", chosen_ent, f"{topic_anchor} {chosen_ent}", False
 
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat"):
     pillar = dossier.get("pillar", "WORLD")
     topic_anchor = extract_primary_topic_anchor(dossier)
     neg_filter = " -ukraine -trump -zelensky -war -capitol" if pillar in ["SCIENCE", "TECHNOLOGY", "HEALTH", "MIND_BLOWING_FACTS", "SPORTS", "ENTERTAINMENT"] and "ukraine" not in dossier["title"].lower() else ""
 
-    # Engine 1: Bing News Journalism XML RSS (Prioritized for current news/sports/tech events!)
     for nq in [news_query + neg_filter, f"{topic_anchor} {wiki_exact_title}{neg_filter}", dossier["title"] + neg_filter]:
         try:
             rss_u = f"https://www.bing.com/news/search?q={urllib.parse.quote(nq)}&format=rss"
@@ -1654,7 +1543,6 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Engine 2: Direct Bing HD Horizontal Photograph Search (`aspect-wide` + `photo-photo`)
     for b_img_q in [news_query, f"{topic_anchor} {wiki_exact_title}", dossier["title"]]:
         try:
             b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + neg_filter)}&first=0&count=18&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
@@ -1906,7 +1794,6 @@ def build_prop_driven_storyboard_1080p(
         sec_headline = sec.get("headline") or sec.get("chapter_title") or make_clean_context_headline(dossier["title"])
         claim_meta = sec.get("claim_meta") or dossier["verified_claims"][0]
 
-        # God-Level Fast Pacing: 3.1s per visual beat in Shorts, 3.5s in Longs!
         target_beat_len = 3.1 if W < H else 3.5
         num_beats = max(2, int(round(sec_dur / target_beat_len)))
         beat_dur = sec_dur / float(num_beats)
@@ -2064,7 +1951,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     bx1, bx2 = (42, W - 42) if is_short else (56, 1260)
 
     pillar_tag = story.get("pillar", "WORLD").replace("_", " ")
-    citation_str = f"WORLD TALK BRIEF • {pillar_tag} EXPLAINER • {claim_meta['published_date']}"
+    citation_str = f"WORLD TALK BRIEF • {pillar_tag} CASE STUDY • {claim_meta['published_date']}"
 
     if b_type in ["PHOTO_BEAT", "VIDEO_BROLL_BEAT"]:
         kicker = beat["vseg"]["label"] if (b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg")) else beat["primary_lbl"]
@@ -2185,41 +2072,22 @@ def make_section_clip_from_beats(section_beats, watermark, voice_sub_dir, sectio
     return VideoClip(make_frame, duration=section_dur)
 
 # ==============================================================================
-# 11. MULTI-HUMAN EMOTIONAL VOICE & WHISPER/SUSPENSE PROSODY ENGINE
-#     Different Human Voices Per Category + Dynamic Emotional Inflection!
+# 11. 100% CLEAN HUMAN VOICE ENGINE (ZERO Kalpanik Sine-Wave Hum, ZERO Pitch Warping!)
 # ==============================================================================
 class VoiceAndSubtitleEngine:
-    async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD", emotion_mode="conversational"):
+    async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD"):
         """
-        1. Selects the Category's dedicated Natural Human Voice (`en-US-AndrewNeural`, `en-US-AvaNeural`,
-           `en-GB-SoniaNeural`, `en-US-BrianNeural`, `en-US-GuyNeural`, `en-US-EricNeural`, `en-US-EmmaNeural`).
-        2. Modulates rate, pitch, volume, and voice selection per section (`emotion_mode`):
-           - `hook_excited`: High-energy, captivating opening (`rate=+6%`, `pitch=+2Hz`, `volume=+5%`)
-           - `suspense_whisper`: Intimate, lowered-voice / whisper-like mystery inflection (`rate=-4%`, `pitch=-3Hz`, `volume=-8%`)
-           - `quote_speaker`: Switches to the Category's Secondary Human Voice (`quote_voice`) for multi-speaker documentary realism!
-           - `climax_punch`: Strong, authoritative conclusion (`rate=+4%`, `pitch=+2Hz`, `volume=+4%`)
+        Uses Microsoft's Gen-2 Ultra-Realistic Conversational Voices (`AndrewMultilingualNeural`,
+        `BrianMultilingualNeural`, `AvaMultilingualNeural`, `EmmaMultilingualNeural`) at their
+        100% natural human throat pitch (`pitch='+0Hz'`) with zero synthetic background hum!
         """
-        cast = CATEGORY_VOICE_CAST.get(pillar, CATEGORY_VOICE_CAST["WORLD"])
-        lead_v = cast["lead_voice"]
-        quote_v = cast["quote_voice"]
-
-        if emotion_mode == "hook_excited":
-            v_name, rate, pitch, vol = (lead_v, "+6%", "+2Hz", "+5%")
-        elif emotion_mode == "suspense_whisper":
-            v_name, rate, pitch, vol = (lead_v, "-4%", "-3Hz", "-6%")
-        elif emotion_mode == "quote_speaker":
-            v_name, rate, pitch, vol = (quote_v, "+2%", "+0Hz", "+0%")
-        elif emotion_mode == "climax_punch":
-            v_name, rate, pitch, vol = (lead_v, "+4%", "+2Hz", "+4%")
-        else:
-            v_name, rate, pitch, vol = (lead_v, "+2%", "+0Hz", "+0%")
-
+        v_name = CATEGORY_VOICE_CAST.get(pillar, "en-US-AndrewMultilingualNeural")
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
         word_timings = []
 
         for _ in range(2):
             try:
-                comm = edge_tts.Communicate(text, v_name, rate=rate, pitch=pitch, volume=vol)
+                comm = edge_tts.Communicate(text, v_name, rate="+2%", pitch="+0Hz")
                 word_timings = []
                 with open(raw_mp3, "wb") as audio_file:
                     async for chunk in comm.stream():
@@ -2237,11 +2105,11 @@ class VoiceAndSubtitleEngine:
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1000:
             gTTS(text=text, lang="en").save(raw_mp3)
 
-        # Warm studio analog EQ + natural breath pause so the voice sounds rich, warm, and human!
+        # Pure, clean 48kHz broadcast vocal output with a natural 0.22s breath pause between sections (NO distortion filters!)
         try:
             cmd = [
                 "ffmpeg", "-y", "-i", raw_mp3,
-                "-af", "highpass=f=65,bass=g=1.8:f=120,apad=pad_dur=0.20",
+                "-af", "apad=pad_dur=0.22",
                 "-ar", "48000", "-b:a", "192k", out_path
             ]
             subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
@@ -2313,51 +2181,6 @@ class VoiceAndSubtitleEngine:
                 draw.text((x_cur, 22), w, font=font, fill=col, stroke_width=3, stroke_fill=(0, 0, 0, 240))
                 x_cur += draw.textbbox((0, 0), w + " ", font=font)[2]
         return strip
-
-def build_situation_adaptive_soft_soundtrack(filename, duration, beat_switch_times, category="geopolitics_diplomacy"):
-    sr = 22050
-    n_samples = int(sr * duration)
-    t = np.linspace(0, duration, n_samples, endpoint=False)
-
-    if category == "war_crisis":
-        f1, f2, f3, tempo = 110.0, 164.81, 220.0, 0.75
-    elif category == "ai_tech_science":
-        f1, f2, f3, tempo = 146.83, 220.0, 293.66, 0.65
-    elif category == "economy_markets":
-        f1, f2, f3, tempo = 123.47, 185.0, 246.94, 0.70
-    elif category == "environment_climate":
-        f1, f2, f3, tempo = 130.81, 196.0, 261.63, 0.85
-    else:
-        f1, f2, f3, tempo = 98.0, 146.83, 196.0, 0.80
-
-    chords = (
-        0.45 * np.sin(2 * np.pi * f1 * t)
-        + 0.30 * np.sin(2 * np.pi * f2 * t)
-        + 0.18 * np.sin(2 * np.pi * f3 * t)
-    )
-    lfo = 0.75 + 0.25 * np.sin(2 * np.pi * 0.16 * t)
-    beat_phase = t % tempo
-    pulse = 0.20 * np.sin(2 * np.pi * f2 * beat_phase) * np.exp(-beat_phase * 8.0)
-
-    raw_music = (chords * lfo) + pulse
-    max_amp = max(float(np.max(np.abs(raw_music))), 1e-4)
-    audio = (raw_music / max_amp) * 0.036
-
-    for bt in beat_switch_times:
-        idx = int(bt * sr)
-        if idx < n_samples:
-            slen = min(int(0.20 * sr), n_samples - idx)
-            st_t = np.linspace(0, slen / float(sr), slen, endpoint=False)
-            sfx = 0.030 * np.sin(2 * np.pi * (240 - 110 * st_t) * st_t) * np.exp(-st_t * 14.0)
-            audio[idx:idx + slen] += sfx
-
-    audio_int16 = np.int16(np.clip(audio, -1.0, 1.0) * 32767)
-    with wave.open(filename, "w") as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(sr)
-        wf.writeframes(audio_int16.tobytes())
-    return filename
 
 # ==============================================================================
 # 12. FULL-BLEED 1080p THUMBNAIL ENGINE
@@ -2486,7 +2309,7 @@ def try_youtube_auto_upload(video_path, title, description, tags, category_id="2
         return None
 
 # ==============================================================================
-# 14. MODULAR RENDER FUNCTIONS
+# 14. MODULAR RENDER FUNCTIONS (100% Pure Vocal Audio — Zero Kalpanik Sine-Wave Hum!)
 # ==============================================================================
 async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map):
     pillar = short_dossier.get("pillar", "WORLD")
@@ -2495,9 +2318,7 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
 
     for idx, sec in enumerate(short_sections):
         ap = f"temp/s{unit_num}_voice_{idx}.mp3"
-        vc, dur, w_timings = await voice_sub_dir.synthesize_with_word_boundaries(
-            sec["narration"], ap, pillar=pillar, emotion_mode=sec.get("emotion_mode", "conversational")
-        )
+        vc, dur, w_timings = await voice_sub_dir.synthesize_with_word_boundaries(sec["narration"], ap, pillar=pillar)
         sec["audio_clip"] = vc
         sec["duration"] = dur
         sec["word_timings"] = w_timings
@@ -2507,20 +2328,13 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
     )
 
     short_clips = []
-    beat_switch_times_s = []
-    cur_t = 0.0
     for sec_idx, sec in enumerate(short_sections):
         sec_beats = [b for b in s_beats if b["section_idx"] == sec_idx]
-        for b in sec_beats:
-            beat_switch_times_s.append(round(cur_t, 2))
-            cur_t += b["duration"]
         clip = make_section_clip_from_beats(sec_beats, watermark, voice_sub_dir, sec["duration"], 1080, 1920, is_short=True)
         clip = clip.with_audio(sec["audio_clip"]) if MOVIEPY_V2 else clip.set_audio(sec["audio_clip"])
         short_clips.append(clip)
 
     final_short = concatenate_videoclips(short_clips, method="compose")
-    bgm_s = AudioFileClip(build_situation_adaptive_soft_soundtrack(f"temp/bgm_s{unit_num}.wav", final_short.duration, beat_switch_times_s, category=short_dossier["category"]))
-    final_short = final_short.with_audio(CompositeAudioClip([final_short.audio, bgm_s])) if MOVIEPY_V2 else final_short.set_audio(CompositeAudioClip([final_short.audio, bgm_s]))
     out_short = "output/WTB_1080p_Short_9x16.mp4" if unit_num == 1 else f"output/WTB_1080p_Short_{unit_num}_9x16.mp4"
     final_short.write_videofile(out_short, fps=24, codec="libx264", audio_codec="aac", bitrate="8000k", preset="ultrafast", threads=4, logger=None)
 
@@ -2530,7 +2344,7 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
     short_hashtags_str = " ".join(short_pkg["hashtags"] + ["#Shorts", "#Explained"])
     short_seo_desc = (
         f"{short_dossier['original_yt_title']}\n\n"
-        f"World Talk Brief [{pillar.replace('_', ' ')}] #Shorts explainer.\n\n"
+        f"World Talk Brief [{pillar.replace('_', ' ')}] #Shorts case study.\n\n"
         f"🔑 KEY ENTITIES: {', '.join(short_entities[:5])}\n"
         f"📋 Editorial Reference ({short_dossier['published_date']}): {short_dossier['source_url']}\n\n"
         f"{short_hashtags_str}"
@@ -2554,27 +2368,23 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
 
 async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map):
     pillar = lead_long_dossier.get("pillar", "WORLD")
-    print(f"\n📺 [LONG #{unit_num} - {pillar}] Building Single-Topic Explainer on: {lead_long_dossier['original_yt_title']}", flush=True)
+    print(f"\n📺 [LONG #{unit_num} - {pillar}] Building Single-Topic Case Study on: {lead_long_dossier['original_yt_title']}", flush=True)
     long_chapters = build_long_documentary_script(lead_long_dossier)
     lead_long_entities = extract_story_entities(lead_long_dossier)
 
     for idx, ch in enumerate(long_chapters):
         ap = f"temp/l{unit_num}_voice_{idx}.mp3"
-        vc, dur, w_timings = await voice_sub_dir.synthesize_with_word_boundaries(
-            ch["narration"], ap, pillar=pillar, emotion_mode=ch.get("emotion_mode", "conversational")
-        )
+        vc, dur, w_timings = await voice_sub_dir.synthesize_with_word_boundaries(ch["narration"], ap, pillar=pillar)
         ch["audio_clip"] = vc
         ch["duration"] = dur
         ch["word_timings"] = w_timings
 
     long_clips = []
-    beat_switch_times_l = []
     shared_long_photos = []
     long_stats_list = []
     shared_long_hashes = []
     shared_long_video_urls = set()
     running_beat_offset = 0
-    cur_lt = 0.0
 
     for ch_idx, ch in enumerate(long_chapters):
         d_ents = extract_story_entities(ch["dossier"])
@@ -2585,16 +2395,11 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         )
         running_beat_offset += len(ch_beats)
         long_stats_list.append(ch_st)
-        for b in ch_beats:
-            beat_switch_times_l.append(round(cur_lt, 2))
-            cur_lt += b["duration"]
         clip = make_section_clip_from_beats(ch_beats, watermark, voice_sub_dir, ch["duration"], 1920, 1080, is_short=False)
         clip = clip.with_audio(ch["audio_clip"]) if MOVIEPY_V2 else clip.set_audio(ch["audio_clip"])
         long_clips.append(clip)
 
     final_long = concatenate_videoclips(long_clips, method="compose")
-    bgm_l = AudioFileClip(build_situation_adaptive_soft_soundtrack(f"temp/bgm_l{unit_num}.wav", final_long.duration, beat_switch_times_l, category=lead_long_dossier["category"]))
-    final_long = final_long.with_audio(CompositeAudioClip([final_long.audio, bgm_l])) if MOVIEPY_V2 else final_long.set_audio(CompositeAudioClip([final_long.audio, bgm_l]))
     out_long = "output/WTB_1080p_Long_16x9.mp4" if unit_num == 1 else f"output/WTB_1080p_Long_{unit_num}_16x9.mp4"
     final_long.write_videofile(out_long, fps=20, codec="libx264", audio_codec="aac", bitrate="8000k", preset="ultrafast", threads=4, logger=None)
 
@@ -2612,14 +2417,14 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     long_hashtags_str = " ".join(pkg_report["hashtags"] + ["#Documentary", "#DeepDive"])
     long_seo_desc = (
         f"{pkg_report['selected_title']}\n\n"
-        f"World Talk Brief [{pillar.replace('_', ' ')}] presents a complete single-topic deep-dive explainer on: {lead_long_dossier['title']}.\n\n"
+        f"World Talk Brief [{pillar.replace('_', ' ')}] presents a complete single-topic case study on: {lead_long_dossier['title']}.\n\n"
         f"⏱️ CHAPTER TIMESTAMPS:\n" + "\n".join(chap_lines) + "\n\n"
         f"🔑 KEY SUBJECTS & ENTITIES: {', '.join(lead_long_entities[:8])}\n"
         f"📋 Editorial Reference ({lead_long_dossier['published_date']}): {lead_long_dossier['source_url']}\n\n"
         f"{long_hashtags_str}"
     )
     long_seo_tags = [
-        "World Talk Brief", pillar.replace("_", " ").title(), "Documentary Explainer",
+        "World Talk Brief", pillar.replace("_", " ").title(), "Documentary Case Study",
         lead_long_dossier["country_profile"]["name"].title()
     ] + lead_long_entities[:6] + winning_keywords[:4] + viral_yt_tags[:5]
 
@@ -2636,7 +2441,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     return pkg_report
 
 # ==============================================================================
-# MASTER EXECUTION: STRICT 8-CATEGORY ROUND-ROBIN QUEUE + ALL 8 PLAYLISTS SYNC
+# MASTER EXECUTION
 # ==============================================================================
 async def main():
     try:
@@ -2697,7 +2502,7 @@ async def main():
                 "long_2": {"title": l2_lead["original_yt_title"], "pillar": l2_lead["pillar"], "packaging": pkg_2}
             }, f, indent=2)
 
-        print("✅ [6/6] GITHUB CLOUD 8-CATEGORY MULTI-VOICE + TOPIC-LOCKED VISUALS BATCH COMPLETE!", flush=True)
+        print("✅ [6/6] GITHUB CLOUD 100% CLEAN HUMAN VOICE + CASE-STUDY EXPLAINER BATCH COMPLETE!", flush=True)
     finally:
         for vc in GLOBAL_OPEN_VCLIPS:
             try:
