@@ -47,14 +47,13 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefBroadcastStudio/27.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefBroadcastStudio/28.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
 
 # ==============================================================================
-# 1. ALL 8 CONTENT PILLARS WITH GEN-2 NATURAL HUMAN CONVERSATIONAL VOICES
-#    (Zero pitch-warping, zero robotic 1st-gen voices!)
+# 1. ALL 8 CONTENT PILLARS WITH GEN-2 ULTRA-NATURAL CONVERSATIONAL VOICES
 # ==============================================================================
 ORDERED_PILLARS = [
     "WORLD",
@@ -67,7 +66,6 @@ ORDERED_PILLARS = [
     "ENTERTAINMENT"
 ]
 
-# ONLY Gen-2 Ultra-Natural Conversational Voices (with natural human breathing & warm timbre)
 CATEGORY_VOICE_CAST = {
     "WORLD": "en-US-AndrewMultilingualNeural",
     "TECHNOLOGY": "en-US-BrianMultilingualNeural",
@@ -278,11 +276,11 @@ BANNED_IMAGE_SOURCES = [
 ]
 
 PERSON_WIKI_MAP = {
-    "antonelli": ("Andrea Kimi Antonelli", "MERCEDES F1 DRIVER KIMI ANTONELLI", "ITALY"),
-    "verstappen": ("Max Verstappen", "RED BULL CHAMPION MAX VERSTAPPEN", "NETHERLANDS"),
     "hamilton": ("Lewis Hamilton", "FERRARI F1 STAR LEWIS HAMILTON", "UNITED KINGDOM"),
-    "leclerc": ("Charles Leclerc", "FERRARI DRIVER CHARLES LECLERC", "ITALY"),
     "russell": ("George Russell (racing driver)", "MERCEDES DRIVER GEORGE RUSSELL", "UNITED KINGDOM"),
+    "verstappen": ("Max Verstappen", "RED BULL CHAMPION MAX VERSTAPPEN", "NETHERLANDS"),
+    "leclerc": ("Charles Leclerc", "FERRARI DRIVER CHARLES LECLERC", "ITALY"),
+    "antonelli": ("Andrea Kimi Antonelli", "MERCEDES F1 DRIVER KIMI ANTONELLI", "ITALY"),
     "trump": ("Donald Trump", "U.S. PRESIDENT DONALD TRUMP", "UNITED STATES"),
     "putin": ("Vladimir Putin", "RUSSIAN PRESIDENT VLADIMIR PUTIN", "RUSSIA"),
     "zelensky": ("Volodymyr Zelenskyy", "UKRAINIAN PRESIDENT ZELENSKYY", "UKRAINE"),
@@ -314,9 +312,12 @@ PERSON_WIKI_MAP = {
 }
 
 CONCRETE_WIKI_PROPS = {
+    "comcast": ("COMCAST MEDIA & TECH", "Comcast", "Comcast NBCUniversal headquarters building"),
+    "peacock": ("PEACOCK STREAMING", "Peacock (streaming service)", "Peacock NBCUniversal streaming television"),
     "grok": ("XAI GROK MODEL", "Grok (chatbot)", "Grok xAI Elon Musk artificial intelligence"),
     "chatgpt": ("OPENAI CHATGPT", "ChatGPT", "ChatGPT OpenAI artificial intelligence"),
     "openai": ("OPENAI & GPT MODELS", "OpenAI", "OpenAI Sam Altman artificial intelligence"),
+    "mclaren": ("MCLAREN FORMULA 1", "McLaren", "McLaren Formula 1 race car"),
     "pole": ("FORMULA 1 POLE POSITION", "Formula One car", "Formula 1 racing car grid pole position"),
     "grand prix": ("FORMULA 1 GRAND PRIX", "United States Grand Prix", "Formula 1 Grand Prix Circuit of the Americas race"),
     "ferrari": ("SCUDERIA FERRARI F1", "Scuderia Ferrari", "Ferrari Formula 1 car race track"),
@@ -606,7 +607,7 @@ def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_tak
         pass
 
 # ==============================================================================
-# 4. NON-REPEATING HISTORY & STRICT URL / PRESS-RELEASE / AWKWARD TOPIC BLOCKER
+# 4. STRICT ENTITY+EVENT DEDUPLICATION & CONVERSATIONAL HUMAN TEXT REWRITER
 # ==============================================================================
 def load_published_history():
     if os.path.exists(HISTORY_FILE):
@@ -642,17 +643,22 @@ def make_story_key(title):
     words = re.findall(r"[a-z0-9]+", title.lower())
     return "_".join(words[:6])
 
-def extract_event_fingerprint(title):
-    stop_w = {"the", "and", "for", "with", "from", "over", "after", "into", "says", "said", "amid", "new", "how", "why", "what", "that", "this", "are", "was", "were"}
-    tokens = sorted(list({w.lower() for w in re.findall(r"[a-zA-Z]{4,}", title) if w.lower() not in stop_w}))
+def extract_event_fingerprint(title, first_fact=""):
+    stop_w = {"the", "and", "for", "with", "from", "over", "after", "into", "says", "said", "amid", "new", "how", "why", "what", "that", "this", "are", "was", "were", "stands", "brink", "history", "takes", "weekend"}
+    comb = f"{title} {first_fact[:120]}"
+    tokens = sorted(list({w.lower() for w in re.findall(r"[a-zA-Z]{4,}", comb) if w.lower() not in stop_w}))
     return tokens
 
 def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
+    """
+    Checks BOTH headline AND first_fact tokens so two differently-titled articles about the same event
+    (like 'Antonelli takes US pole' and 'Antonelli stands on brink of history in Austin') are caught as DUPLICATES!
+    """
     st_key = make_story_key(title)
     if st_key in hist_obj["published_keys"]:
         return ("DUPLICATE", None)
 
-    cur_fp = set(extract_event_fingerprint(title))
+    cur_fp = set(extract_event_fingerprint(title, first_fact))
     if not cur_fp:
         return ("NEW_STORY", None)
 
@@ -661,17 +667,18 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
         if not past_fp:
             continue
         overlap = len(cur_fp.intersection(past_fp)) / float(min(len(cur_fp), len(past_fp)))
-        if overlap >= 0.50:
+        if overlap >= 0.38:
             return ("DUPLICATE", None)
 
     return ("NEW_STORY", None)
 
 BANNED_ARTICLE_TITLES = [
     "uti", "utis", "urinary", "bladder", "bowel", "diarrhea", "constipation", "erectile", "sexually transmitted",
-    "ovaries", "ovary", "menopause", "menstrual", "pregnancy", "fertility", "nathan fielder", "kill switch",
-    "lance oppenheim", "indiewire", "birthday sale", "percent off", "% off", "sitewide", "promo code", "coupon",
-    "best deals", "buying guide", "gift guide", "review:", "we tested", "horoscope", "wordle", "crossword",
-    "sudoku", "live updates", "as it happened", "in pictures", "at a glance", "podcast", "quiz", "bandcamp",
+    "ovaries", "ovary", "menopause", "menstrual", "pregnancy", "fertility", "cosmetic surgery", "butt lift",
+    "bbl", "botox", "lip filler", "vampire facial", "nathan fielder", "kill switch", "lance oppenheim",
+    "indiewire", "birthday sale", "percent off", "% off", "sitewide", "promo code", "coupon", "best deals",
+    "buying guide", "gift guide", "review:", "we tested", "horoscope", "wordle", "crossword", "sudoku",
+    "live updates", "as it happened", "in pictures", "at a glance", "podcast", "quiz", "bandcamp",
     "synth-pop", "album review", "song review", "obsessed with scammers", "how to watch", "tv channel",
     "live stream", "prediction, team news", "power partnership"
 ]
@@ -680,7 +687,8 @@ BANNED_PHRASES = [
     "https://", "http://", "https/", "http/", "www.", ".gov", ".org/", ".com/",
     "for more information on", "visit https", "explore langley", "communications strategist",
     "turning what if into what will be", "popular on variety", "popular on ", "related:", "read more:",
-    "also read:", "external ", "weeing lava", "need a wee", "founder summit", "buy one",
+    "also read:", "external ", "weeing lava", "need a wee", "vampire facials involve",
+    "dermal micro-coring involves", "chemical peels are", "founder summit", "buy one",
     "get a second for free", "get your pass", "bring someone with you", "50% off", "register now",
     "ticket", "how to follow:", "where: camp", "when: sunday", "when: saturday",
     "will bring you all the build-up", "enter your email below", "send confirmation",
@@ -706,11 +714,6 @@ BANNED_PHRASES = [
 ]
 
 def clean_fact(text):
-    """
-    Transforms raw journalistic/press-release sentences into clean, conversational Nitish Rajput / Abhi & Niyu
-    style spoken English! Strips URLs (`https/www.mnasa.gov`), PR titles (`Communications strategist`),
-    and awkward newspaper attributions!
-    """
     if not text:
         return ""
     repl = {"\u2011": "-", "\u2013": "-", "\u2014": " - ", "\u2018": "'", "\u2019": "'", "\u201c": "", "\u201d": "", '"': "", "\u00a0": " "}
@@ -719,8 +722,6 @@ def clean_fact(text):
 
     if len(re.findall(r"\b(WHO|WHAT|WHERE|WHEN|HOW TO FOLLOW)\s*:", text)) >= 2:
         return ""
-
-    # Strip URLs or domain fragments completely!
     if re.search(r"(https?:|www\.|\.gov\b|\.org\b|\.com\b)", text, flags=re.I):
         return ""
 
@@ -731,7 +732,6 @@ def clean_fact(text):
     text = re.sub(r"^[A-Z\s,\.]{3,28}\s*(\([A-Za-z\s]+\))?\s*(?:--|—|-)\s*", "", text)
     text = re.sub(r",\s*writes\s+[A-Z][a-z]+\s+[A-Z][a-z]+\.?$", ".", text)
 
-    # Convert dry newspaper attributions (", an OpenAI spokesperson said." / ", said Alan Kilgore...") into natural spoken flow!
     text = re.sub(r",\s*(?:an?\s+)?[A-Za-z\s]{2,25}\s+(?:spokesperson|director|official|researcher|professor|investigator)\s+(?:said|stated|noted|added|told\s+[A-Za-z]+)\.?", ".", text, flags=re.I)
     text = re.sub(r",\s*according to\s+[A-Za-z\s]{2,25}\.?", ".", text, flags=re.I)
 
@@ -774,16 +774,30 @@ def split_into_complete_sentences(paragraph_text):
     raw_sents = re.split(r"(?<=[.!?])\s+", protected)
     return [s.replace("<DOT>", ".") for s in raw_sents]
 
-def is_semantically_similar_claim(new_claim, existing_claims):
-    new_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", new_claim)}
+def is_semantically_similar_claim(new_claim, existing_claims, headline_title=""):
+    """
+    Fixes the 'double-double' repetition bug (`eeTxiRpg6GY` Comcast)!
+    Checks `new_claim` against BOTH `headline_title` AND all `existing_claims` with a strict `0.38` overlap threshold
+    so the body sentences NEVER repeat what the headline already said!
+    """
+    stop_c = {"the", "and", "for", "with", "from", "that", "this", "have", "has", "had", "were", "was", "are", "said", "says"}
+    new_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", new_claim) if w.lower() not in stop_c}
     if len(new_words) < 4:
         return True
+
+    if headline_title:
+        title_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", headline_title) if w.lower() not in stop_c}
+        if title_words:
+            t_overlap = len(new_words.intersection(title_words)) / float(min(len(new_words), len(title_words)))
+            if t_overlap >= 0.42:
+                return True
+
     for old_c in existing_claims:
-        old_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", old_c["text"])}
+        old_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", old_c["text"]) if w.lower() not in stop_c}
         if not old_words:
             continue
         overlap = len(new_words.intersection(old_words)) / float(min(len(new_words), len(old_words)))
-        if overlap >= 0.45:
+        if overlap >= 0.38:
             return True
     return False
 
@@ -803,7 +817,6 @@ def craft_original_youtube_title(raw_title, pillar, c_prof):
 
 # ==============================================================================
 # 5. STRICT CONCRETE NOUN & ENTITY EXTRACTOR
-#    Fixes `nXqG3hXpRzg` where 'DISCOVER THAT' became an entity and pulled 'Brazil by Brasil'!
 # ==============================================================================
 HEADLINE_STOP_VERBS_ADJS = {
     "have", "has", "had", "what", "when", "where", "while", "after", "before", "under", "inside",
@@ -815,7 +828,9 @@ HEADLINE_STOP_VERBS_ADJS = {
     "eerily", "human", "preview", "predictions", "teams", "block", "blocks", "model", "takes",
     "weekend", "win", "title", "italian", "dutchman", "affect", "millions", "discover", "discovered",
     "that", "this", "these", "those", "something", "doing", "decades", "forced", "pick", "picks",
-    "chooses", "launch", "power", "partnership", "between", "through", "their", "there", "about"
+    "chooses", "launch", "power", "partnership", "between", "through", "their", "there", "about",
+    "tighter", "rules", "planned", "protect", "people", "goes", "badly", "wrong", "stands", "brink",
+    "history", "beats", "expectations", "offsets", "weakness"
 }
 
 def extract_primary_topic_anchor(dossier):
@@ -939,7 +954,7 @@ def build_mind_blowing_fact_dossier(hist_obj):
                     "pillar": "MIND_BLOWING_FACTS",
                     "yt_category_id": "27",
                     "story_key": st_key,
-                    "event_tokens": extract_event_fingerprint(viral_title),
+                    "event_tokens": extract_event_fingerprint(viral_title, deep_sents[0]),
                     "is_followup_update": False,
                     "previous_event_title": None,
                     "title": viral_title,
@@ -1105,8 +1120,8 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
             if dup_status == "DUPLICATE":
                 continue
 
-            cur_fp_set = set(extract_event_fingerprint(title))
-            if any(len(cur_fp_set.intersection(bfp)) / float(max(1, min(len(cur_fp_set), len(bfp)))) >= 0.45 for bfp in batch_fingerprints):
+            cur_fp_set = set(extract_event_fingerprint(title, summary))
+            if any(len(cur_fp_set.intersection(bfp)) / float(max(1, min(len(cur_fp_set), len(bfp)))) >= 0.38 for bfp in batch_fingerprints):
                 continue
 
             rss_img = None
@@ -1122,7 +1137,7 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
 
             for s in split_into_complete_sentences(summary):
                 cs = clean_fact(s)
-                if 40 <= len(cs) <= 200 and cs.lower() != title.lower() and not is_semantically_similar_claim(cs, verified_claims):
+                if 40 <= len(cs) <= 200 and not is_semantically_similar_claim(cs, verified_claims, headline_title=title):
                     if cs[-1] not in ".!?":
                         cs += "."
                     verified_claims.append({
@@ -1145,7 +1160,7 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
                             continue
                         for rs in split_into_complete_sentences(p.get_text(separator=" ")):
                             cs = clean_fact(rs)
-                            if 45 <= len(cs) <= 210 and not is_semantically_similar_claim(cs, verified_claims):
+                            if 45 <= len(cs) <= 210 and not is_semantically_similar_claim(cs, verified_claims, headline_title=title):
                                 if cs[-1] not in ".!?":
                                     cs += "."
                                 verified_claims.append({
@@ -1172,7 +1187,7 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
                             b_desc = clean_fact(BeautifulSoup(getattr(b_ent, "summary", ""), "html.parser").get_text(separator=" "))
                             for bs in split_into_complete_sentences(b_desc):
                                 cbs = clean_fact(bs)
-                                if 45 <= len(cbs) <= 205 and not is_semantically_similar_claim(cbs, verified_claims):
+                                if 45 <= len(cbs) <= 205 and not is_semantically_similar_claim(cbs, verified_claims, headline_title=title):
                                     if cbs[-1] not in ".!?":
                                         cbs += "."
                                     verified_claims.append({
@@ -1232,12 +1247,30 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
     return chosen
 
 # ==============================================================================
-# 6. NITISH RAJPUT / ABHI & NIYU CONVERSATIONAL CASE-STUDY SCRIPT ENGINE
+# 6. CONVERSATIONAL HUMAN YOUTUBER SCRIPT ENGINE (Contractions + Natural Pacing + Zero Repetition!)
 # ==============================================================================
-def polish_journalistic_sentence(raw_fact, c_prof, role="BODY"):
+def make_conversational_human_sentence(raw_fact):
+    """
+    Converts stiff written newspaper prose into natural, conversational spoken English
+    with human contractions ('it is' -> 'it's', 'has not' -> 'hasn't', 'cannot' -> 'can't')
+    and natural comma breath pauses so the TTS voice sounds 100% like a real human creator!
+    """
     s = raw_fact.strip().rstrip(".")
     s = re.sub(r",\s*(police|officials|ministry|authorities|sources|reports|his office)\s+(say|said|reported|stated)$", "", s, flags=re.I)
     s = re.sub(r"^(police|officials|authorities|reports)\s+(say|said|state|stated)\s+(that\s+)?", "", s, flags=re.I)
+    contractions = [
+        (r"\bit is\b", "it's"), (r"\bIt is\b", "It's"),
+        (r"\bthat is\b", "that's"), (r"\bThat is\b", "That's"),
+        (r"\bthere is\b", "there's"), (r"\bThere is\b", "There's"),
+        (r"\bwhat is\b", "what's"), (r"\bWhat is\b", "What's"),
+        (r"\bdo not\b", "don't"), (r"\bDo not\b", "Don't"),
+        (r"\bdoes not\b", "doesn't"), (r"\bdid not\b", "didn't"),
+        (r"\bwill not\b", "won't"), (r"\bcannot\b", "can't"),
+        (r"\bhas not\b", "hasn't"), (r"\bhave not\b", "haven't"),
+        (r"\bhad not\b", "hadn't"), (r"\bwould not\b", "wouldn't")
+    ]
+    for pat, rep in contractions:
+        s = re.sub(pat, rep, s)
     if not s:
         return ""
     s = s[0].upper() + s[1:]
@@ -1253,10 +1286,14 @@ def make_clean_context_headline(text, max_words=8):
     return " ".join(selected).upper()
 
 def build_short_script(dossier, variant_idx=0):
-    c_prof = dossier["country_profile"]
+    """
+    Writes a tight, engaging 4-part Short script around the Core Idea:
+    - Never repeats the headline in `c0` or `c1` (because `verified_claims` were already deduplicated against `title`!).
+    - Uses natural human contractions and conversational flow.
+    """
     ents = extract_story_entities(dossier)
     claims = dossier["verified_claims"]
-    title = dossier["title"]
+    title = make_conversational_human_sentence(dossier["title"])
 
     c0 = claims[0]
     c1 = claims[1] if len(claims) > 1 else c0
@@ -1266,38 +1303,37 @@ def build_short_script(dossier, variant_idx=0):
     sections = [
         {
             "role": "HOOK",
-            "headline": make_clean_context_headline(title, max_words=8),
-            "narration": f"{title}. {polish_journalistic_sentence(c0['text'], c_prof)}",
+            "headline": make_clean_context_headline(dossier["title"], max_words=8),
+            "narration": f"{title} {make_conversational_human_sentence(c0['text'])}",
             "claim_meta": c0
         },
         {
-            "role": "WHAT_HAPPENED",
+            "role": "THE_CORE_STORY",
             "headline": make_clean_context_headline(c1["text"], max_words=8),
-            "narration": polish_journalistic_sentence(c1["text"], c_prof),
+            "narration": make_conversational_human_sentence(c1["text"]),
             "claim_meta": c1
         },
         {
-            "role": "CORE_EXPLANATION",
+            "role": "KEY_DETAILS",
             "headline": make_clean_context_headline(c2["text"], max_words=8),
-            "narration": polish_journalistic_sentence(c2["text"], c_prof),
+            "narration": make_conversational_human_sentence(c2["text"]),
             "claim_meta": c2
         },
         {
-            "role": "SOLID_TAKEAWAY",
+            "role": "FINAL_TAKEAWAY",
             "headline": make_clean_context_headline(c3["text"], max_words=8),
-            "narration": polish_journalistic_sentence(c3["text"], c_prof),
+            "narration": make_conversational_human_sentence(c3["text"]),
             "claim_meta": c3
         }
     ]
     return sections, ents
 
 def build_long_documentary_script(dossier):
-    c_prof = dossier["country_profile"]
     claims = dossier["verified_claims"]
 
     unique_sents = []
     for c in claims:
-        ps = polish_journalistic_sentence(c["text"], c_prof)
+        ps = make_conversational_human_sentence(c["text"])
         if len(ps) > 35 and ps not in unique_sents:
             unique_sents.append(ps)
 
@@ -1309,7 +1345,7 @@ def build_long_documentary_script(dossier):
     for idx, grp in enumerate(sent_groups):
         body_txt = " ".join(grp)
         if idx == 0:
-            body_txt = f"{dossier['title']}. {body_txt}"
+            body_txt = f"{make_conversational_human_sentence(dossier['title'])} {body_txt}"
         if idx == len(sent_groups) - 1:
             body_txt = f"{body_txt} Subscribe to World Talk Brief for daily global case studies."
         c_meta = claims[min(idx, len(claims) - 1)]
@@ -1325,7 +1361,7 @@ def build_long_documentary_script(dossier):
     return chapters
 
 # ==============================================================================
-# 7. STRICT EXACT-TOPIC MOVING VIDEO B-ROLL ENGINE
+# 7. STRICT EXACT-TOPIC MOVING VIDEO B-ROLL ENGINE (Clean Badge Formatting!)
 # ==============================================================================
 def is_valid_cinematic_video_frame(frame_rgb):
     arr = np.asarray(Image.fromarray(frame_rgb).resize((120, 120)), dtype=np.float32)
@@ -1342,10 +1378,12 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
         "voice", "block", "blocks", "model", "models", "sound", "sounds", "human", "rapid",
         "national", "care", "service", "popular", "discover", "discovered", "brasil", "brazil"
     }
-    subj_words = [
-        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", clean_subj)
-        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in ambiguous_broll_words
-    ]
+    subj_words = []
+    for w in re.findall(r"[A-Za-z0-9]{4,}", clean_subj):
+        wl = w.lower()
+        if wl not in HEADLINE_STOP_VERBS_ADJS and wl not in ambiguous_broll_words and wl not in subj_words:
+            subj_words.append(wl)
+
     if not subj_words:
         return None
     query_str = " ".join(subj_words[:2])
@@ -1495,14 +1533,24 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
     return im
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
+    """
+    Matches the LAST or MOST SPECIFIC person/prop mentioned in the 2.2-second beat slice
+    so when 'Lewis Hamilton' is spoken at the end of a clause, Lewis Hamilton is shown!
+    """
     low = beat_text.lower()
     pillar = dossier.get("pillar", "WORLD")
     topic_anchor = extract_primary_topic_anchor(dossier)
 
+    matched_people = []
     for p_key, (wiki_page, badge_lbl, _) in PERSON_WIKI_MAP.items():
-        if re.search(rf"\b{re.escape(p_key)}\b", low):
-            if pillar in ["WORLD", "BUSINESS", "SPORTS", "TECHNOLOGY"] or p_key in dossier["title"].lower():
-                return badge_lbl, wiki_page, f"{wiki_page} {topic_anchor}", True
+        m = re.search(rf"\b{re.escape(p_key)}\b", low)
+        if m and (pillar in ["WORLD", "BUSINESS", "SPORTS", "TECHNOLOGY"] or p_key in dossier["title"].lower()):
+            matched_people.append((m.start(), badge_lbl, wiki_page))
+    if matched_people:
+        # Pick the person mentioned in this specific beat slice
+        matched_people.sort(reverse=True)
+        _, badge_lbl, wiki_page = matched_people[0]
+        return badge_lbl, wiki_page, f"{wiki_page} {topic_anchor}", True
 
     for word_key, (prop_badge, wiki_exact, news_q) in CONCRETE_WIKI_PROPS.items():
         if re.search(rf"\b{re.escape(word_key)}\b", low):
@@ -1528,7 +1576,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         try:
             rss_u = f"https://www.bing.com/news/search?q={urllib.parse.quote(nq)}&format=rss"
             r = requests.get(rss_u, headers=HEADERS_WEB, timeout=6)
-            for u in re.findall(r"<News:Image>(https?://[^<]+)</News:Image>", r.text)[:15]:
+            for u in re.findall(r"<News:Image>(https?://[^<]+)</News:Image>", r.text)[:16]:
                 u_clean = u.replace("&amp;", "&")
                 if "bing.com/th" in u_clean:
                     u_clean = u_clean.split("&")[0] + "&w=1920&h=1080&c=7&rs=1"
@@ -1545,11 +1593,11 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
 
     for b_img_q in [news_query, f"{topic_anchor} {wiki_exact_title}", dossier["title"]]:
         try:
-            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + neg_filter)}&first=0&count=18&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
+            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + neg_filter)}&first=0&count=22&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
             r = requests.get(b_url, headers=HEADERS_WEB, timeout=6)
             murls = re.findall(r"murl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
             turls = re.findall(r"turl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
-            for u in (turls + murls)[:16]:
+            for u in (turls + murls)[:20]:
                 u_clean = u.replace("&amp;", "&")
                 if any(b in u_clean.lower() for b in BANNED_IMAGE_SOURCES):
                     continue
@@ -1678,11 +1726,11 @@ def build_clean_1080p_stage(im, W, H):
         bg = ImageEnhance.Brightness(bg).enhance(0.32)
         canvas = bg.convert("RGBA")
 
-        hero_w, hero_h = int(W * 1.14), int(1340 * 1.14)
+        hero_w, hero_h = int(W * 1.15), int(1340 * 1.15)
         fg = fit_full_height_face_aware_1080p(im, hero_w, hero_h)
         return ("SHORT_STAGE", canvas, fg)
     else:
-        over_w, over_h = int(W * 1.14), int(H * 1.14)
+        over_w, over_h = int(W * 1.15), int(H * 1.15)
         fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
         return ("FULL_BLEED_STAGE", fg, None)
 
@@ -1696,8 +1744,8 @@ def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
         fg = base_b
         fw, fh = fg.size
         win_w, win_h = W, 1340
-        cur_w = int(win_w + (fw - win_w) * (1.0 - 0.75 * smooth_p))
-        cur_h = int(win_h + (fh - win_h) * (1.0 - 0.75 * smooth_p))
+        cur_w = int(win_w + (fw - win_w) * (1.0 - 0.78 * smooth_p))
+        cur_h = int(win_h + (fh - win_h) * (1.0 - 0.78 * smooth_p))
         max_dx = max(fw - cur_w, 0)
         max_dy = max(fh - cur_h, 0)
         ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
@@ -1714,8 +1762,8 @@ def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
     else:
         fg = base_a
         fw, fh = fg.size
-        cur_w = int(W + (fw - W) * (1.0 - 0.78 * smooth_p))
-        cur_h = int(H + (fh - H) * (1.0 - 0.78 * smooth_p))
+        cur_w = int(W + (fw - W) * (1.0 - 0.80 * smooth_p))
+        cur_h = int(H + (fh - H) * (1.0 - 0.80 * smooth_p))
         max_dx = max(fw - cur_w, 0)
         max_dy = max(fh - cur_h, 0)
         ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
@@ -1741,12 +1789,13 @@ def extract_key_stat_callout(beat_text):
     m = re.search(r"\b(\d+(?:,\d+)*(?:\.\d+)?(?:\s*%|\s*percent|\s*million|\s*billion|\s*trillion|\s*miles|\s*kilometers|\s*km|\s*seconds|\s*years|\s*days|\s*hours|-point)?(?:\s+[A-Za-z]{3,12})?)\b", beat_text, flags=re.I)
     if m:
         val = m.group(1).strip().upper()
-        if len(val) >= 3 and val not in {"2026", "2025", "1995", "1996"}:
+        if len(val) >= 3 and val not in {"2026", "2025", "1995", "1996", "2023", "2022"}:
             return f"⚡ KEY STAT: {val}"
     return None
 
 # ==============================================================================
-# 10. FAST-PACED 3.0s-3.4s BEAT STORYBOARD BUILDER
+# 10. ULTRA-HIGH-DENSITY 2.2s (SHORT) / 2.6s (LONG) STORYBOARD BUILDER
+#     Delivers 16-20 unique visual cuts in Shorts & 45-55+ cuts in Long Videos!
 # ==============================================================================
 def has_strict_economic_context(text):
     low = text.lower()
@@ -1754,7 +1803,7 @@ def has_strict_economic_context(text):
         return False
     if re.search(r"\b(\d+(\.\d+)?%|\$\d+|\d+\s*(billion|trillion))\b", low):
         return True
-    econ_terms = ["gdp", "inflation", "economy", "economic", "market", "trade", "tariff", "cost", "budget", "growth", "debt", "financial", "bank"]
+    econ_terms = ["gdp", "inflation", "economy", "economic", "market", "trade", "tariff", "cost", "budget", "growth", "debt", "financial", "bank", "earnings", "revenue"]
     return any(re.search(rf"\b{re.escape(t)}\b", low) for t in econ_terms)
 
 def build_prop_driven_storyboard_1080p(
@@ -1794,8 +1843,9 @@ def build_prop_driven_storyboard_1080p(
         sec_headline = sec.get("headline") or sec.get("chapter_title") or make_clean_context_headline(dossier["title"])
         claim_meta = sec.get("claim_meta") or dossier["verified_claims"][0]
 
-        target_beat_len = 3.1 if W < H else 3.5
-        num_beats = max(2, int(round(sec_dur / target_beat_len)))
+        # Ultra-Engaging 2.2s visual cut rate for Shorts & 2.6s for Longs!
+        target_beat_len = 2.2 if W < H else 2.6
+        num_beats = max(3, int(round(sec_dur / target_beat_len)))
         beat_dur = sec_dur / float(num_beats)
         words = narration.split()
         w_per_b = max(1, int(math.ceil(len(words) / float(num_beats))))
@@ -1836,7 +1886,7 @@ def build_prop_driven_storyboard_1080p(
 
                 if has_strict_economic_context(b_txt) and dossier.get("wb_data") is not None and "DATA_CHART_BEAT" not in used_modes_in_sec:
                     b_type = "DATA_CHART_BEAT"
-                elif re.search(r"\b(timeline|overnight|step by step|previously|september|october|days before|july)\b", low_b) and "TIMELINE_GRAPH_BEAT" not in used_modes_in_sec:
+                elif re.search(r"\b(timeline|overnight|step by step|previously|september|october|days before|july|august)\b", low_b) and "TIMELINE_GRAPH_BEAT" not in used_modes_in_sec:
                     b_type = "TIMELINE_GRAPH_BEAT"
                 elif re.search(r"\b(said|stated|confirmed|record|specifics|told|claim|claims|study|researchers)\b", low_b) and "HEADLINE_EVIDENCE_BEAT" not in used_modes_in_sec:
                     b_type = "HEADLINE_EVIDENCE_BEAT"
@@ -1929,10 +1979,10 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
                 draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(215 * ((y - (H - 260)) / 260.0) ** 1.2)))
     else:
         frame = extract_animated_frame_from_stage(beat["stage_1"], W, H, bp, pan_dir=beat["pan_dir"])
-        if local_t < 0.25 and beat.get("prev_stage") is not None:
+        if local_t < 0.20 and beat.get("prev_stage") is not None:
             try:
                 prev_f = extract_animated_frame_from_stage(beat["prev_stage"], W, H, 1.0, pan_dir=1)
-                alpha_blend = local_t / 0.25
+                alpha_blend = local_t / 0.20
                 frame = Image.blend(prev_f, frame, alpha_blend)
             except Exception:
                 pass
@@ -2072,14 +2122,14 @@ def make_section_clip_from_beats(section_beats, watermark, voice_sub_dir, sectio
     return VideoClip(make_frame, duration=section_dur)
 
 # ==============================================================================
-# 11. 100% CLEAN HUMAN VOICE ENGINE (ZERO Kalpanik Sine-Wave Hum, ZERO Pitch Warping!)
+# 11. EBU R128 BROADCAST-MASTERED NATURAL HUMAN VOICE ENGINE
 # ==============================================================================
 class VoiceAndSubtitleEngine:
     async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD"):
         """
-        Uses Microsoft's Gen-2 Ultra-Realistic Conversational Voices (`AndrewMultilingualNeural`,
-        `BrianMultilingualNeural`, `AvaMultilingualNeural`, `EmmaMultilingualNeural`) at their
-        100% natural human throat pitch (`pitch='+0Hz'`) with zero synthetic background hum!
+        Uses Gen-2 Conversational Neural Voices at `+3%` natural storytelling cadence,
+        mastered with FFmpeg EBU R128 YouTube Broadcast Loudness Normalization (`loudnorm=I=-14:TP=-1.5:LRA=11`)
+        so every single word has warm, rich, studio-mic human presence!
         """
         v_name = CATEGORY_VOICE_CAST.get(pillar, "en-US-AndrewMultilingualNeural")
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
@@ -2087,7 +2137,7 @@ class VoiceAndSubtitleEngine:
 
         for _ in range(2):
             try:
-                comm = edge_tts.Communicate(text, v_name, rate="+2%", pitch="+0Hz")
+                comm = edge_tts.Communicate(text, v_name, rate="+3%", pitch="+0Hz")
                 word_timings = []
                 with open(raw_mp3, "wb") as audio_file:
                     async for chunk in comm.stream():
@@ -2105,11 +2155,10 @@ class VoiceAndSubtitleEngine:
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1000:
             gTTS(text=text, lang="en").save(raw_mp3)
 
-        # Pure, clean 48kHz broadcast vocal output with a natural 0.22s breath pause between sections (NO distortion filters!)
         try:
             cmd = [
                 "ffmpeg", "-y", "-i", raw_mp3,
-                "-af", "apad=pad_dur=0.22",
+                "-af", "loudnorm=I=-14:TP=-1.5:LRA=11,apad=pad_dur=0.20",
                 "-ar", "48000", "-b:a", "192k", out_path
             ]
             subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
@@ -2309,7 +2358,7 @@ def try_youtube_auto_upload(video_path, title, description, tags, category_id="2
         return None
 
 # ==============================================================================
-# 14. MODULAR RENDER FUNCTIONS (100% Pure Vocal Audio — Zero Kalpanik Sine-Wave Hum!)
+# 14. MODULAR RENDER FUNCTIONS
 # ==============================================================================
 async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map):
     pillar = short_dossier.get("pillar", "WORLD")
@@ -2502,7 +2551,7 @@ async def main():
                 "long_2": {"title": l2_lead["original_yt_title"], "pillar": l2_lead["pillar"], "packaging": pkg_2}
             }, f, indent=2)
 
-        print("✅ [6/6] GITHUB CLOUD 100% CLEAN HUMAN VOICE + CASE-STUDY EXPLAINER BATCH COMPLETE!", flush=True)
+        print("✅ [6/6] GITHUB CLOUD 100% BROADCAST VOICE + 2.2s FAST-CUT VISUALS BATCH COMPLETE!", flush=True)
     finally:
         for vc in GLOBAL_OPEN_VCLIPS:
             try:
