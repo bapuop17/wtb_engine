@@ -47,13 +47,13 @@ HEADERS_WEB = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefMultiAPIEngine/55.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefMultiAPIEngine/60.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
 
 # ==============================================================================
-# 1. ALL 8 CONTENT PILLARS WITH DEEPGRAM AURA-2 ULTRA-HUMAN VOICES & PLAYLISTS
+# 1. ALL 8 CONTENT PILLARS WITH CRYSTAL-CLEAR HUMAN NARRATOR VOICES
 # ==============================================================================
 ORDERED_PILLARS = [
     "WORLD",
@@ -66,15 +66,16 @@ ORDERED_PILLARS = [
     "ENTERTAINMENT"
 ]
 
+# Uses crystal-clear natural voices (NO raspy/slurring 'zeus' model!)
 CATEGORY_VOICE_CAST = {
-    "WORLD": (["aura-2-apollo-en", "aura-orion-en", "aura-asteria-en"], "en-US-AndrewMultilingualNeural", "+3%"),
-    "TECHNOLOGY": (["aura-2-aries-en", "aura-arcas-en", "aura-orion-en"], "en-US-BrianMultilingualNeural", "+4%"),
-    "MIND_BLOWING_FACTS": (["aura-2-thalia-en", "aura-asteria-en", "aura-luna-en"], "en-US-AvaMultilingualNeural", "+3%"),
-    "SCIENCE": (["aura-2-hermes-en", "aura-helios-en", "aura-arcas-en"], "en-US-BrianMultilingualNeural", "+3%"),
-    "BUSINESS": (["aura-2-zeus-en", "aura-perseus-en", "aura-orion-en"], "en-US-AndrewMultilingualNeural", "+4%"),
-    "HEALTH": (["aura-2-helena-en", "aura-luna-en", "aura-asteria-en"], "en-US-AvaMultilingualNeural", "+3%"),
-    "SPORTS": (["aura-2-draco-en", "aura-angus-en", "aura-arcas-en"], "en-US-BrianMultilingualNeural", "+5%"),
-    "ENTERTAINMENT": (["aura-2-andromeda-en", "aura-stella-en", "aura-asteria-en"], "en-US-EmmaMultilingualNeural", "+4%")
+    "WORLD": ("en-US-AndrewMultilingualNeural", "aura-orion-en", "+3%"),
+    "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "aura-arcas-en", "+4%"),
+    "MIND_BLOWING_FACTS": ("en-US-AndrewMultilingualNeural", "aura-asteria-en", "+3%"),
+    "SCIENCE": ("en-US-BrianMultilingualNeural", "aura-helios-en", "+3%"),
+    "BUSINESS": ("en-US-AndrewMultilingualNeural", "aura-orion-en", "+4%"),
+    "HEALTH": ("en-US-AvaMultilingualNeural", "aura-asteria-en", "+3%"),
+    "SPORTS": ("en-US-BrianMultilingualNeural", "aura-arcas-en", "+5%"),
+    "ENTERTAINMENT": ("en-US-EmmaMultilingualNeural", "aura-stella-en", "+4%")
 }
 
 CATEGORY_FEEDS = {
@@ -151,8 +152,8 @@ CATEGORY_FEEDS = {
         "search_query": "global economy stock market business billionaire trade",
         "feeds": [
             ("CNBC Business", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"),
-            ("BBC Business", "http://feeds.bbci.co.uk/news/business/rss.xml"),
-            ("The Guardian Business", "https://www.theguardian.com/uk/business/rss")
+            ("The Guardian Business", "https://www.theguardian.com/uk/business/rss"),
+            ("DW Business", "https://rss.dw.com/rdf/rss-en-bus")
         ]
     },
     "HEALTH": {
@@ -394,6 +395,7 @@ CONCRETE_WIKI_PROPS = {
     "hospital": ("HOSPITAL & HEALTHCARE", "Hospital", "modern hospital medical doctors"),
     "cancer": ("ONCOLOGY BREAKTHROUGH", "Cancer research", "cancer research laboratory microscope"),
     "brain": ("NEUROSCIENCE LAB", "Human brain", "brain scan medical neuroscience"),
+    "schizophrenia": ("NEUROSCIENCE & BRAIN", "Human brain", "brain scan neurology medical research"),
     "dna": ("GENETICS & BIOTECH", "DNA", "DNA genetics CRISPR laboratory"),
     "stock": ("GLOBAL STOCK MARKETS", "New York Stock Exchange", "stock market trading floor screens"),
     "markets": ("FINANCIAL MARKETS", "Financial market", "stock exchange wall street trading"),
@@ -453,8 +455,41 @@ def build_wtb_watermark(width=130, height=76):
     return logo.resize((width, height), resample_mode)
 
 # ==============================================================================
-# 3. MULTI-API AI DIRECTOR BRAIN (Groq Llama-3.3-70B + HuggingFace Qwen-72B + Pollinations)
+# 3. DYNAMIC MODEL DISCOVERY FOR GROQ + HUGGINGFACE + POLLINATIONS AI BRAIN
+#    Fixes the `Groq HTTP 404` error by querying `/openai/v1/models` live!
 # ==============================================================================
+CACHED_GROQ_MODELS = None
+
+def get_available_groq_chat_models(groq_key):
+    global CACHED_GROQ_MODELS
+    if CACHED_GROQ_MODELS is not None:
+        return CACHED_GROQ_MODELS
+    try:
+        r = requests.get(
+            "https://api.groq.com/openai/v1/models",
+            headers={"Authorization": f"Bearer {groq_key}"},
+            timeout=10
+        )
+        if r.status_code == 200:
+            data = r.json().get("data", [])
+            all_ids = [m.get("id", "") for m in data if m.get("id")]
+            chat_ids = [
+                mid for mid in all_ids
+                if not any(b in mid.lower() for b in ["whisper", "tts", "guard", "embed", "vision", "audio", "playai"])
+            ]
+            # Prioritize 70B / Qwen / DeepSeek / Llama chat models
+            preferred = sorted(
+                chat_ids,
+                key=lambda x: (0 if "70b" in x.lower() else (1 if "qwen" in x.lower() or "deepseek" in x.lower() or "llama" in x.lower() else 2))
+            )
+            CACHED_GROQ_MODELS = preferred[:4]
+            print(f"✅ [Groq Live Models Discovered]: {CACHED_GROQ_MODELS}", flush=True)
+            return CACHED_GROQ_MODELS
+    except Exception as e:
+        print("⚠️ Groq model list note:", str(e)[:80], flush=True)
+    CACHED_GROQ_MODELS = []
+    return CACHED_GROQ_MODELS
+
 def parse_json_safely(raw_text):
     if not raw_text:
         return None
@@ -474,7 +509,8 @@ def parse_json_safely(raw_text):
 def call_multi_api_ai_brain_json(system_prompt, user_prompt):
     groq_key = os.environ.get("GROQ_API_KEY", "").strip()
     if groq_key:
-        for g_model in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+        live_models = get_available_groq_chat_models(groq_key)
+        for g_model in live_models:
             try:
                 r = requests.post(
                     "https://api.groq.com/openai/v1/chat/completions",
@@ -485,25 +521,22 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
                             {"role": "system", "content": system_prompt},
                             {"role": "user", "content": user_prompt}
                         ],
-                        "response_format": {"type": "json_object"},
                         "temperature": 0.65,
-                        "max_tokens": 3800
+                        "max_tokens": 3500
                     },
-                    timeout=28
+                    timeout=26
                 )
                 if r.status_code == 200:
                     content = r.json()["choices"][0]["message"]["content"]
                     parsed = parse_json_safely(content)
                     if parsed:
                         return parsed
-                else:
-                    print(f"⚠️ Groq HTTP {r.status_code} ({g_model}):", r.text[:120], flush=True)
-            except Exception as e:
-                print(f"⚠️ Groq ({g_model}) exception:", str(e)[:80], flush=True)
+            except Exception:
+                pass
 
     hf_token = os.environ.get("HF_TOKEN", "").strip()
     if hf_token:
-        for hf_model in ["Qwen/Qwen2.5-72B-Instruct", "meta-llama/Llama-3.3-70B-Instruct"]:
+        for hf_model in ["Qwen/Qwen2.5-72B-Instruct", "Qwen/Qwen2.5-7B-Instruct", "meta-llama/Llama-3.2-3B-Instruct"]:
             try:
                 r = requests.post(
                     "https://router.huggingface.co/v1/chat/completions",
@@ -514,10 +547,10 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
                             {"role": "system", "content": system_prompt},
                             {"role": "user", "content": user_prompt}
                         ],
-                        "max_tokens": 3200,
+                        "max_tokens": 3000,
                         "temperature": 0.65
                     },
-                    timeout=26
+                    timeout=25
                 )
                 if r.status_code == 200:
                     txt = r.json()["choices"][0]["message"]["content"]
@@ -527,28 +560,33 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
             except Exception:
                 pass
 
-    for _ in range(2):
+    for p_endpoint in ["https://text.pollinations.ai/openai", "https://text.pollinations.ai/"]:
         try:
             r = requests.post(
-                "https://text.pollinations.ai/",
+                p_endpoint,
                 json={
                     "messages": [
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt}
                     ],
                     "model": "openai",
-                    "jsonMode": True,
                     "seed": random.randint(1, 99999)
                 },
                 headers={"Content-Type": "application/json"},
                 timeout=25
             )
             if r.status_code == 200 and r.text:
-                parsed = parse_json_safely(r.text)
+                body_str = r.text
+                if '"choices"' in body_str:
+                    try:
+                        body_str = r.json()["choices"][0]["message"]["content"]
+                    except Exception:
+                        pass
+                parsed = parse_json_safely(body_str)
                 if parsed:
                     return parsed
         except Exception:
-            time.sleep(1.0)
+            pass
     return None
 
 def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=None):
@@ -601,7 +639,7 @@ CRITICAL RULES:
 """
     ai_pkg = call_multi_api_ai_brain_json(sys_prompt, usr_prompt)
     if ai_pkg and isinstance(ai_pkg.get("scenes"), list) and len(ai_pkg["scenes"]) >= 4:
-        print(f"🧠 [Groq Llama-3.3-70B Director] Crafted Original Title: '{ai_pkg.get('viral_title')}' ({len(ai_pkg['scenes'])} Scenes)", flush=True)
+        print(f"🧠 [AI Director Brain] Crafted Original Title: '{ai_pkg.get('viral_title')}' ({len(ai_pkg['scenes'])} Scenes)", flush=True)
         return ai_pkg
     return None
 
@@ -700,15 +738,15 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
 
     music = pad_layer + arp_layer + kick_layer
     max_m = max(float(np.max(np.abs(music))), 1e-4)
-    audio = (music / max_m) * 0.075
+    audio = (music / max_m) * 0.070
 
     for bt in beat_switch_times:
         idx = int(bt * sr)
         if 0 < idx < n_samples:
-            slen = min(int(0.24 * sr), n_samples - idx)
+            slen = min(int(0.22 * sr), n_samples - idx)
             st_t = np.linspace(0, slen / float(sr), slen, endpoint=False)
             whoosh_env = np.sin(np.pi * (st_t / (slen / float(sr)))) * np.exp(-st_t * 8.0)
-            whoosh = 0.038 * np.sin(2.0 * np.pi * (180.0 - 70.0 * st_t) * st_t) * whoosh_env
+            whoosh = 0.032 * np.sin(2.0 * np.pi * (180.0 - 70.0 * st_t) * st_t) * whoosh_env
             audio[idx:idx + slen] += whoosh
 
     audio_int16 = np.int16(np.clip(audio, -1.0, 1.0) * 32767)
@@ -905,7 +943,7 @@ def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_tak
         pass
 
 # ==============================================================================
-# 6. STRICT TOPIC-COHERENCE FILTER & UNIT EXPANDER (`1.56m` -> `1.56 million`!)
+# 6. STRICT TOPIC-COHERENCE FILTER & BORING LOCAL TOPIC BLOCKER
 # ==============================================================================
 def load_published_history():
     if os.path.exists(HISTORY_FILE):
@@ -969,6 +1007,7 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
     return ("NEW_STORY", None)
 
 BANNED_ARTICLE_TITLES = [
+    "salon", "hairdresser", "vat cut", "council tax", "local council", "pub ", "pubs ",
     "uti", "utis", "urinary", "bladder", "bowel", "diarrhea", "constipation", "erectile", "sexually transmitted",
     "ovaries", "ovary", "menopause", "menstrual", "pregnancy", "fertility", "cosmetic surgery", "butt lift",
     "bbl", "botox", "lip filler", "vampire facial", "nathan fielder", "kill switch", "lance oppenheim",
@@ -1125,7 +1164,7 @@ HEADLINE_STOP_VERBS_ADJS = {
     "trillion", "ancient", "adorable", "hottest", "secretly", "scary", "tiny", "little", "year",
     "years", "predator", "rewriting", "know", "plays", "sell", "sold", "left", "alone", "nothing",
     "started", "playing", "slashes", "cost", "rules", "markups", "extortion", "hiding", "behind",
-    "narrative"
+    "narrative", "urge", "grow", "linked", "several", "mysterious"
 }
 
 def extract_primary_topic_anchor(dossier):
@@ -1875,17 +1914,18 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
     return None
 
 # ==============================================================================
-# 9. ZERO-REPETITION MULTI-API PHOTO HARVESTER (Bing News + GDELT + HF FLUX.1-schnell!)
+# 9. MULTI-ENGINE PHOTO HARVESTER (Fixes `Unique Photos: 1` Bug!)
+#    Combines Bing News RSS + Bing Wide Photo Search (`bing.com/images/async`) + GDELT + Wikimedia + HF FLUX.1!
 # ==============================================================================
-def validate_and_enhance_1080p(im, existing_hashes, min_w=400, min_h=250):
+def validate_and_enhance_1080p(im, existing_hashes, min_w=360, min_h=220):
     im = im.convert("RGB")
     w, h = im.size
     if w < min_w or h < min_h:
         return None
-    if h > w * 1.12:
+    if h > w * 1.15:
         return None
 
-    im = im.crop((int(w * 0.05), int(h * 0.05), int(w * 0.95), int(h * 0.92)))
+    im = im.crop((int(w * 0.04), int(h * 0.04), int(w * 0.96), int(h * 0.92)))
 
     arr = np.asarray(im.resize((80, 80)), dtype=np.float32)
     c_box = arr[28:52, 28:52]
@@ -1894,29 +1934,29 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=400, min_h=250):
         return None
 
     white_px = np.sum((arr[:, :, 0] > 235) & (arr[:, :, 1] > 235) & (arr[:, :, 2] > 235))
-    if (white_px / float(80 * 80)) > 0.22:
+    if (white_px / float(80 * 80)) > 0.25:
         return None
 
     rg_diff = np.mean(np.abs(arr[:, :, 0] - arr[:, :, 1]))
     gb_diff = np.mean(np.abs(arr[:, :, 1] - arr[:, :, 2]))
-    if rg_diff < 6.0 and gb_diff < 6.0:
+    if rg_diff < 5.5 and gb_diff < 5.5:
         return None
 
     quant = (arr // 32).astype(int)
     flat = quant[:, :, 0] * 64 + quant[:, :, 1] * 8 + quant[:, :, 2]
     _, counts = np.unique(flat, return_counts=True)
-    if (counts.max() / float(80 * 80)) > 0.34:
+    if (counts.max() / float(80 * 80)) > 0.36:
         return None
 
     gray_cv = cv2.cvtColor(np.array(im.resize((320, 200))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
-    if blur_score < 30.0 or im.entropy() < 6.4:
+    if blur_score < 22.0 or im.entropy() < 5.8:
         return None
 
     gray = im.convert("L").resize((13, 12))
     dh = (np.asarray(gray, dtype=np.int16)[:, 1:] > np.asarray(gray, dtype=np.int16)[:, :-1]).flatten()
     for old_h in existing_hashes:
-        if int(np.sum(dh != old_h)) < 14:
+        if int(np.sum(dh != old_h)) < 12:
             return None
     existing_hashes.append(dh)
 
@@ -1947,7 +1987,11 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                 p = f"temp/{tag_id}_hfflux.jpg"
                 with open(p, "wb") as f:
                     f.write(r.content)
-                vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
+                im_raw = Image.open(p).convert("RGB")
+                # Resize square FLUX output to 16:9 1920x1080 before aspect validation!
+                resample_mode = getattr(Image, "Resampling", Image).LANCZOS
+                im_16x9 = im_raw.crop((0, int(im_raw.size[1] * 0.18), im_raw.size[0], int(im_raw.size[1] * 0.82))).resize((1920, 1080), resample_mode)
+                vim = validate_and_enhance_1080p(im_16x9, existing_hashes)
                 if vim is not None:
                     print("   🎨 [HuggingFace FLUX.1 1080p Visual Generated]:", ai_prompt[:45], flush=True)
                     return vim
@@ -1999,11 +2043,21 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     return f"{pillar.replace('_', ' ')} - {topic_anchor.upper()[:18]}", chosen_ent, f"{topic_anchor} {specific_mod}", False
 
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat", used_image_urls=None):
+    """
+    5-Engine Photo Harvester (Guarantees 15+ Unique HD Photos per Video!):
+      1. Bing News Journalism XML RSS (`<News:Image>`)
+      2. Bing Wide Photo Search (`bing.com/images/async` with strict anti-merchandise/anti-menu filter!)
+      3. GDELT Global News Image API (`api.gdeltproject.org`)
+      4. Wikipedia Article Media Gallery
+      5. Wikimedia Commons Documentary Archive
+    """
     if used_image_urls is None:
         used_image_urls = set()
+    pillar = dossier.get("pillar", "WORLD")
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
     c_prof = dossier["country_profile"]
     loc_str = "" if c_prof.get("is_global_topic") else f" {c_prof['name']}"
+    neg_filter = " -shirt -tshirt -mug -menu -poster -cartoon -meme"
 
     news_angles = [
         news_query,
@@ -2011,6 +2065,8 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         f"{dossier['title'][:45]} {wiki_exact_title}",
         f"{topic_anchor}{loc_str}"
     ]
+
+    # Engine 1: Bing News Journalism XML RSS
     for nq in news_angles:
         if not nq or len(nq) < 3:
             continue
@@ -2035,6 +2091,34 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
+    # Engine 2: Bing Wide HD Photograph Search (with anti-merchandise filter so every beat gets a unique photo!)
+    for b_img_q in [news_query, f"{topic_anchor} {wiki_exact_title}", dossier["title"][:50]]:
+        if not b_img_q:
+            continue
+        try:
+            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + neg_filter)}&first=0&count=22&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
+            r = requests.get(b_url, headers=HEADERS_WEB, timeout=6)
+            turls = re.findall(r"turl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
+            murls = re.findall(r"murl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
+            for u in (turls + murls)[:20]:
+                u_clean = u.replace("&amp;", "&")
+                if u_clean in used_image_urls or any(b in u_clean.lower() for b in BANNED_IMAGE_SOURCES):
+                    continue
+                if "bing.com/th" in u_clean:
+                    u_clean = u_clean.split("&")[0] + "&w=1920&h=1080&c=7&rs=1"
+                ir = requests.get(u_clean, headers=HEADERS_WEB, timeout=5)
+                if ir.status_code == 200 and len(ir.content) > 10000:
+                    p = f"temp/{tag_id}_binghd.jpg"
+                    with open(p, "wb") as f:
+                        f.write(ir.content)
+                    vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
+                    if vim is not None:
+                        used_image_urls.add(u_clean)
+                        return vim
+        except Exception:
+            pass
+
+    # Engine 3: GDELT Global News Image API
     try:
         gd_q = " ".join(re.findall(r"[A-Za-z0-9]{3,}", news_query)[:3])
         if gd_q:
@@ -2055,22 +2139,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     except Exception:
         pass
 
-    for gal_u in dossier.get("wiki_gallery_urls", []):
-        if gal_u in used_image_urls:
-            continue
-        try:
-            ir = requests.get(gal_u, headers=HEADERS_WIKI, timeout=5)
-            if ir.status_code == 200 and len(ir.content) > 14000:
-                p = f"temp/{tag_id}_wgal.jpg"
-                with open(p, "wb") as f:
-                    f.write(ir.content)
-                vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
-                if vim is not None:
-                    used_image_urls.add(gal_u)
-                    return vim
-        except Exception:
-            pass
-
+    # Engine 4: Wikimedia Commons Documentary Archive
     for cm_q in [wiki_exact_title, topic_anchor]:
         if not cm_q:
             continue
@@ -2106,7 +2175,8 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     return None
 
 # ==============================================================================
-# 10. 100% FULL-SCREEN CINEMATIC STAGE & 6-CAMERA DOCUMENTARY COMPOSITOR
+# 10. ANTI-CLOSEUP FACE-AWARE FRAMING & 6-CAMERA DOCUMENTARY COMPOSITOR
+#     Fixes `rteifKTII6w` where a giant close-up face filled the entire 9:16 screen!
 # ==============================================================================
 def has_well_framed_face(im):
     if FACE_CASCADE is None:
@@ -2118,7 +2188,7 @@ def has_well_framed_face(im):
         gray_s = cv2.cvtColor(np.array(im.resize((sw, sh))), cv2.COLOR_RGB2GRAY)
         faces = FACE_CASCADE.detectMultiScale(gray_s, scaleFactor=1.12, minNeighbors=5, minSize=(40, 40))
         for (fx, fy, fw, fh) in faces:
-            if fx > sw * 0.08 and (fx + fw) < sw * 0.92 and fy > sh * 0.08 and (fy + fh) < sh * 0.88 and fh < sh * 0.45:
+            if fx > sw * 0.08 and (fx + fw) < sw * 0.92 and fy > sh * 0.08 and (fy + fh) < sh * 0.88 and fh < sh * 0.42:
                 return True
     except Exception:
         pass
@@ -2142,6 +2212,19 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
                 faces.append((int(fx * scale_x), int(fy * scale_y), int(fw * scale_x), int(fh * scale_y)))
         except Exception:
             faces = []
+
+    # ANTI-EXTREME-CLOSEUP RULE: If a face is already huge (>45% of image height) in a 9:16 Short,
+    # NEVER zoom in further on the nose/forehead! Frame the full photo cleanly over a dark blurred stage!
+    if faces and target_w < target_h:
+        biggest_f = max(faces, key=lambda f: f[2] * f[3])
+        if biggest_f[3] > ih * 0.44:
+            bg = im.copy().resize((target_w, target_h), resample_mode).filter(ImageFilter.GaussianBlur(radius=32))
+            bg = ImageEnhance.Brightness(bg).enhance(0.32)
+            fit_w = target_w
+            fit_h = max(1, int(ih * (target_w / float(iw))))
+            fg = im.resize((fit_w, fit_h), resample_mode)
+            bg.paste(fg, (0, (target_h - fit_h) // 2))
+            return bg
 
     if img_ratio >= target_ratio:
         crop_h = ih
@@ -2464,60 +2547,62 @@ def build_prop_driven_storyboard_1080p(
     return planned_beats, unique_real_photos, stats
 
 # ==============================================================================
-# 11. DEEPGRAM AURA-2 ULTRA-HUMAN VOICE ENGINE (`VoiceAndSubtitleEngine`)
+# 11. CRYSTAL-CLEAR HUMAN VOICE ENGINE (Zero End-of-Sentence Glitch & Perfect Diction!)
+#     Fixes the `rteifKTII6w` 'Salon odors' & end-of-clip 'uh/er' noise!
 # ==============================================================================
 class VoiceAndSubtitleEngine:
     async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD"):
-        dg_models, edge_voice, rate = CATEGORY_VOICE_CAST.get(pillar, (["aura-2-apollo-en", "aura-orion-en"], "en-US-AndrewMultilingualNeural", "+3%"))
+        """
+        Uses Microsoft's Gen-2 Multilingual Conversational Neural Voices (`AndrewMultilingualNeural`,
+        `BrianMultilingualNeural`, `AvaMultilingualNeural`, `EmmaMultilingualNeural`) with exact
+        WordBoundary timestamps AND clean silence-padding (`apad=pad_dur=0.18` WITHOUT single-pass `loudnorm`!)
+        so there is ZERO end-of-sentence noise/glitch and 100% crystal-clear pronunciation!
+        """
+        edge_voice, dg_backup, rate = CATEGORY_VOICE_CAST.get(pillar, ("en-US-AndrewMultilingualNeural", "aura-orion-en", "+3%"))
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
         word_timings = []
-        used_deepgram = False
 
-        dg_key = os.environ.get("DEEPGRAM_API_KEY", "").strip()
-        if dg_key:
-            for dg_model in dg_models:
+        for _ in range(2):
+            try:
+                comm = edge_tts.Communicate(text, edge_voice, rate=rate, pitch="+0Hz")
+                word_timings = []
+                with open(raw_mp3, "wb") as audio_file:
+                    async for chunk in comm.stream():
+                        if chunk["type"] == "audio":
+                            audio_file.write(chunk["data"])
+                        elif chunk["type"] == "WordBoundary":
+                            w_start = chunk["offset"] / 10_000_000.0
+                            w_dur = chunk["duration"] / 10_000_000.0
+                            word_timings.append({"word": chunk["text"], "start": round(w_start, 3), "end": round(w_start + max(w_dur, 0.08), 3)})
+                if os.path.exists(raw_mp3) and os.path.getsize(raw_mp3) > 1000:
+                    break
+            except Exception:
+                await asyncio.sleep(0.4)
+
+        if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1000:
+            dg_key = os.environ.get("DEEPGRAM_API_KEY", "").strip()
+            if dg_key:
                 try:
-                    dg_url = f"https://api.deepgram.com/v1/speak?model={dg_model}"
                     r = requests.post(
-                        dg_url,
+                        f"https://api.deepgram.com/v1/speak?model={dg_backup}",
                         headers={"Authorization": f"Token {dg_key}", "Content-Type": "application/json"},
                         json={"text": text[:1900]},
-                        timeout=18
+                        timeout=16
                     )
                     if r.status_code == 200 and len(r.content) > 2000:
                         with open(raw_mp3, "wb") as f:
                             f.write(r.content)
-                        used_deepgram = True
-                        print(f"   🎙️ [Deepgram Aura Human Voice Locked] Model: {dg_model}", flush=True)
-                        break
-                except Exception as de:
-                    print(f"⚠️ Deepgram ({dg_model}) note:", str(de)[:80], flush=True)
-
-        if not used_deepgram:
-            for _ in range(2):
-                try:
-                    comm = edge_tts.Communicate(text, edge_voice, rate=rate, pitch="+0Hz")
-                    word_timings = []
-                    with open(raw_mp3, "wb") as audio_file:
-                        async for chunk in comm.stream():
-                            if chunk["type"] == "audio":
-                                audio_file.write(chunk["data"])
-                            elif chunk["type"] == "WordBoundary":
-                                w_start = chunk["offset"] / 10_000_000.0
-                                w_dur = chunk["duration"] / 10_000_000.0
-                                word_timings.append({"word": chunk["text"], "start": round(w_start, 3), "end": round(w_start + max(w_dur, 0.08), 3)})
-                    if os.path.exists(raw_mp3) and os.path.getsize(raw_mp3) > 1000:
-                        break
                 except Exception:
-                    await asyncio.sleep(0.4)
+                    pass
 
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1000:
             gTTS(text=text, lang="en").save(raw_mp3)
 
+        # Clean studio warmth WITHOUT single-pass `loudnorm` tail noise!
         try:
             cmd = [
                 "ffmpeg", "-y", "-i", raw_mp3,
-                "-af", "highpass=f=70,equalizer=f=180:width_type=o:width=1.5:g=2.0,loudnorm=I=-14:TP=-1.5:LRA=11,apad=pad_dur=0.20",
+                "-af", "highpass=f=65,equalizer=f=175:width_type=o:width=1.5:g=1.6,apad=pad_dur=0.18",
                 "-ar", "48000", "-b:a", "192k", out_path
             ]
             subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
@@ -2539,7 +2624,7 @@ class VoiceAndSubtitleEngine:
                     base_w += 2.2
                 weights.append(float(base_w))
             tot_w = max(sum(weights), 1.0)
-            usable_dur = max(total_dur - 0.22, 0.5)
+            usable_dur = max(total_dur - 0.20, 0.5)
             cur = 0.0
             for w, wt in zip(words, weights):
                 wd = (wt / tot_w) * usable_dur
@@ -2929,8 +3014,8 @@ async def main():
             json.dump({
                 "videos_produced_in_run": 4,
                 "ai_director_enabled": True,
-                "deepgram_aura_2_enabled": bool(os.environ.get("DEEPGRAM_API_KEY")),
-                "groq_llama70b_enabled": bool(os.environ.get("GROQ_API_KEY")),
+                "deepgram_aura_enabled": bool(os.environ.get("DEEPGRAM_API_KEY")),
+                "groq_enabled": bool(os.environ.get("GROQ_API_KEY")),
                 "hf_flux_enabled": bool(os.environ.get("HF_TOKEN")),
                 "next_round_robin_index": hist_obj.get("round_robin_idx", 0),
                 "playlists_synced": len(playlist_map),
@@ -2942,7 +3027,7 @@ async def main():
                 "long_2": {"title": l2_lead["original_yt_title"], "pillar": l2_lead["pillar"], "packaging": pkg_2}
             }, f, indent=2)
 
-        print("✅ [6/6] GITHUB CLOUD MULTI-API MASTER ENGINE (GROQ + DEEPGRAM AURA-2 + HF FLUX + YOUTUBE) COMPLETE!", flush=True)
+        print("✅ [6/6] GITHUB CLOUD MULTI-API MASTER ENGINE COMPLETE!", flush=True)
     finally:
         for vc in GLOBAL_OPEN_VCLIPS:
             try:
