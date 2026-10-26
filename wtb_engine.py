@@ -42,18 +42,18 @@ for fn in os.listdir("temp"):
         pass
 
 HEADERS_WEB = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9"
 }
 HEADERS_WIKI = {
-    "User-Agent": "WorldTalkBriefBroadcastStudio/28.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
+    "User-Agent": "WorldTalkBriefCreatorEngine/31.0 (https://github.com/bapuop17/wtb_engine; editorial@worldtalkbrief.org)"
 }
 
 HISTORY_FILE = "published_history.json"
 
 # ==============================================================================
-# 1. ALL 8 CONTENT PILLARS WITH GEN-2 ULTRA-NATURAL CONVERSATIONAL VOICES
+# 1. ALL 8 CONTENT PILLARS WITH MULTI-CREATOR VOICES & DEDICATED PLAYLISTS
 # ==============================================================================
 ORDERED_PILLARS = [
     "WORLD",
@@ -67,23 +67,24 @@ ORDERED_PILLARS = [
 ]
 
 CATEGORY_VOICE_CAST = {
-    "WORLD": "en-US-AndrewMultilingualNeural",
-    "TECHNOLOGY": "en-US-BrianMultilingualNeural",
-    "MIND_BLOWING_FACTS": "en-US-AndrewMultilingualNeural",
-    "SCIENCE": "en-US-BrianMultilingualNeural",
-    "BUSINESS": "en-US-AndrewMultilingualNeural",
-    "HEALTH": "en-US-AvaMultilingualNeural",
-    "SPORTS": "en-US-BrianMultilingualNeural",
-    "ENTERTAINMENT": "en-US-EmmaMultilingualNeural"
+    "WORLD": ("en-US-AndrewMultilingualNeural", "+3%"),
+    "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "+4%"),
+    "MIND_BLOWING_FACTS": ("en-US-AndrewMultilingualNeural", "+2%"),
+    "SCIENCE": ("en-US-BrianMultilingualNeural", "+3%"),
+    "BUSINESS": ("en-US-AndrewMultilingualNeural", "+4%"),
+    "HEALTH": ("en-US-AvaMultilingualNeural", "+3%"),
+    "SPORTS": ("en-US-BrianMultilingualNeural", "+5%"),
+    "ENTERTAINMENT": ("en-US-EmmaMultilingualNeural", "+4%")
 }
 
 CATEGORY_FEEDS = {
     "WORLD": {
         "yt_category_id": "25",
         "playlist_title": "World Talk Brief • Global Geopolitics & World News",
-        "badge_color": (204, 18, 36),
-        "accent_color": (255, 214, 10),
-        "hook_tag": "GEOPOLITICAL CASE STUDY",
+        "badge_color": (220, 20, 45),
+        "accent_color": (255, 220, 0),
+        "hook_tag": "GEOPOLITICAL DEEP DIVE",
+        "bgm_mood": "dark_geopolitics",
         "search_query": "world news geopolitics summit military",
         "feeds": [
             ("Al Jazeera World", "https://www.aljazeera.com/xml/rss/all.xml"),
@@ -96,13 +97,13 @@ CATEGORY_FEEDS = {
     "TECHNOLOGY": {
         "yt_category_id": "28",
         "playlist_title": "World Talk Brief • AI, Robotics, Gaming & Future Tech",
-        "badge_color": (0, 140, 255),
-        "accent_color": (0, 235, 255),
-        "hook_tag": "TECH & AI EXPLAINED",
+        "badge_color": (0, 130, 255),
+        "accent_color": (0, 240, 255),
+        "hook_tag": "FUTURE TECH & AI",
+        "bgm_mood": "cyberpunk_tech",
         "search_query": "artificial intelligence humanoid robot gaming nvidia technology",
         "feeds": [
-            ("TechCrunch AI & Tech", "https://techcrunch.com/feed/"),
-            ("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index"),
+            ("TechCrunch AI", "https://techcrunch.com/category/artificial-intelligence/feed/"),
             ("BBC Technology", "http://feeds.bbci.co.uk/news/technology/rss.xml"),
             ("The Guardian Tech", "https://www.theguardian.com/uk/technology/rss")
         ]
@@ -110,12 +111,12 @@ CATEGORY_FEEDS = {
     "MIND_BLOWING_FACTS": {
         "yt_category_id": "27",
         "playlist_title": "World Talk Brief • Mind-Blowing Facts & World Mysteries",
-        "badge_color": (185, 20, 220),
+        "badge_color": (175, 20, 220),
         "accent_color": (255, 225, 0),
-        "hook_tag": "MIND-BLOWING CASE STUDY",
+        "hook_tag": "UNBELIEVABLE REALITY",
+        "bgm_mood": "cosmic_mystery",
         "search_query": "unbelievable facts scientific mystery mind blowing discovery",
         "feeds": [
-            ("Smithsonian SmartNews", "https://www.smithsonianmag.com/rss/smart-news/"),
             ("SciTechDaily Discoveries", "https://scitechdaily.com/feed/"),
             ("Phys.org Breakthroughs", "https://phys.org/rss-feed/")
         ]
@@ -123,49 +124,51 @@ CATEGORY_FEEDS = {
     "SCIENCE": {
         "yt_category_id": "28",
         "playlist_title": "World Talk Brief • Space, NASA & Future Science",
-        "badge_color": (110, 45, 225),
-        "accent_color": (0, 230, 255),
+        "badge_color": (105, 40, 225),
+        "accent_color": (0, 235, 255),
         "hook_tag": "SPACE & SCIENCE",
+        "bgm_mood": "cosmic_mystery",
         "search_query": "space nasa spacex astronomy quantum discovery",
         "feeds": [
             ("Space.com", "https://www.space.com/feeds/all"),
-            ("BBC Science & Environment", "http://feeds.bbci.co.uk/news/science_and_environment/rss.xml"),
+            ("NASA Breaking News", "https://www.nasa.gov/news-release/feed/"),
             ("The Guardian Science", "https://www.theguardian.com/science/rss")
         ]
     },
     "BUSINESS": {
         "yt_category_id": "25",
         "playlist_title": "World Talk Brief • Business, Markets & Global Economy",
-        "badge_color": (16, 165, 110),
-        "accent_color": (255, 214, 10),
-        "hook_tag": "MARKETS & ECONOMY",
+        "badge_color": (12, 160, 105),
+        "accent_color": (255, 220, 0),
+        "hook_tag": "MONEY & MARKETS",
+        "bgm_mood": "high_stakes_finance",
         "search_query": "global economy stock market business billionaire trade",
         "feeds": [
             ("CNBC Business", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"),
             ("BBC Business", "http://feeds.bbci.co.uk/news/business/rss.xml"),
-            ("The Guardian Business", "https://www.theguardian.com/uk/business/rss"),
-            ("DW Business", "https://rss.dw.com/rdf/rss-en-bus")
+            ("The Guardian Business", "https://www.theguardian.com/uk/business/rss")
         ]
     },
     "HEALTH": {
         "yt_category_id": "28",
         "playlist_title": "World Talk Brief • Health, Biotech & Medical Science",
-        "badge_color": (14, 155, 145),
-        "accent_color": (255, 220, 40),
-        "hook_tag": "BIOTECH BREAKTHROUGH",
+        "badge_color": (10, 155, 145),
+        "accent_color": (255, 225, 0),
+        "hook_tag": "MEDICAL BREAKTHROUGH",
+        "bgm_mood": "inspiring_science",
         "search_query": "medical breakthrough human brain health longevity",
         "feeds": [
-            ("BBC Health", "http://feeds.bbci.co.uk/news/health/rss.xml"),
-            ("The Guardian Health", "https://www.theguardian.com/society/health/rss"),
-            ("SciTechDaily Health", "https://scitechdaily.com/news/health/feed/")
+            ("SciTechDaily Health", "https://scitechdaily.com/news/health/feed/"),
+            ("MedicalXpress", "https://medicalxpress.com/rss-feed/")
         ]
     },
     "SPORTS": {
         "yt_category_id": "17",
         "playlist_title": "World Talk Brief • Global Sports Arena",
-        "badge_color": (230, 85, 15),
-        "accent_color": (255, 214, 10),
-        "hook_tag": "GLOBAL SPORTS ARENA",
+        "badge_color": (230, 80, 10),
+        "accent_color": (255, 220, 0),
+        "hook_tag": "SPORTS SHOWDOWN",
+        "bgm_mood": "stadium_action",
         "search_query": "cricket football champions league formula 1 sports",
         "feeds": [
             ("BBC Sport", "http://feeds.bbci.co.uk/sport/rss.xml"),
@@ -177,8 +180,9 @@ CATEGORY_FEEDS = {
         "yt_category_id": "24",
         "playlist_title": "World Talk Brief • Cinema, Gaming & Pop Culture",
         "badge_color": (210, 25, 115),
-        "accent_color": (255, 214, 10),
-        "hook_tag": "CINEMA & CULTURE",
+        "accent_color": (255, 220, 0),
+        "hook_tag": "CINEMA & GAMING",
+        "bgm_mood": "stadium_action",
         "search_query": "movies box office gaming marvel gta entertainment",
         "feeds": [
             ("BBC Entertainment & Arts", "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"),
@@ -189,7 +193,137 @@ CATEGORY_FEEDS = {
 }
 
 # ==============================================================================
-# 2. COMPLETE WORLD GEOPOLITICAL DATABASE
+# 2. 30-TRACK MOOD-ADAPTIVE STUDIO INSTRUMENTAL ALBUM ENGINE (5% - 9% Volume!)
+#    30 Distinct Polyphonic Tracks (Chord Progressions + Plucked Piano/Harp Arpeggios + Sub-Bass + Beat Pulse)
+# ==============================================================================
+STUDIO_ALBUM_30_TRACKS = {
+    "dark_geopolitics": [
+        ("Track 01 • Kremlin Shadow", [110.0, 130.81, 146.83, 164.81], 92, [0, 2, 1, 3]),
+        ("Track 02 • Red Sea Radar", [98.0, 116.54, 130.81, 146.83], 96, [0, 1, 3, 2]),
+        ("Track 03 • Diplomatic Standoff", [123.47, 146.83, 164.81, 185.0], 88, [0, 3, 1, 2]),
+        ("Track 04 • Iron Corridor", [87.31, 103.83, 116.54, 130.81], 100, [0, 2, 3, 1]),
+        ("Track 05 • Brink of History", [110.0, 123.47, 146.83, 164.81], 94, [0, 1, 2, 3])
+    ],
+    "cyberpunk_tech": [
+        ("Track 06 • Neural Horizon", [146.83, 174.61, 220.0, 196.0], 112, [0, 2, 3, 1]),
+        ("Track 07 • Silicon Pulse", [130.81, 164.81, 196.0, 220.0], 118, [0, 1, 2, 3]),
+        ("Track 08 • Quantum Grid", [164.81, 196.0, 246.94, 220.0], 115, [0, 3, 2, 1]),
+        ("Track 09 • Deep Algorithm", [138.59, 164.81, 207.65, 185.0], 110, [0, 2, 1, 3]),
+        ("Track 10 • Autonomous Future", [146.83, 185.0, 220.0, 246.94], 120, [0, 1, 3, 2])
+    ],
+    "cosmic_mystery": [
+        ("Track 11 • Mariana Abyss", [110.0, 164.81, 130.81, 196.0], 82, [0, 3, 1, 2]),
+        ("Track 12 • Voyager Interstellar", [130.81, 196.0, 164.81, 220.0], 86, [0, 2, 3, 1]),
+        ("Track 13 • Subglacial Secret", [98.0, 146.83, 130.81, 174.61], 80, [0, 1, 2, 3]),
+        ("Track 14 • Event Horizon", [116.54, 174.61, 146.83, 220.0], 84, [0, 2, 1, 3]),
+        ("Track 15 • Ancient Mechanism", [123.47, 185.0, 146.83, 220.0], 88, [0, 3, 2, 1])
+    ],
+    "high_stakes_finance": [
+        ("Track 16 • Wall Street Bell", [130.81, 164.81, 146.83, 196.0], 104, [0, 1, 2, 3]),
+        ("Track 17 • Trillion Dollar Pivot", [146.83, 185.0, 164.81, 220.0], 108, [0, 2, 1, 3]),
+        ("Track 18 • Global Supply Chain", [123.47, 146.83, 185.0, 164.81], 102, [0, 3, 1, 2]),
+        ("Track 19 • Central Bank Calculus", [110.0, 146.83, 164.81, 196.0], 100, [0, 1, 3, 2]),
+        ("Track 20 • Market Shockwave", [138.59, 164.81, 185.0, 207.65], 106, [0, 2, 3, 1])
+    ],
+    "inspiring_science": [
+        ("Track 21 • Biotech Dawn", [130.81, 164.81, 196.0, 261.63], 96, [0, 1, 2, 3]),
+        ("Track 22 • Cellular Breakthrough", [146.83, 185.0, 220.0, 293.66], 98, [0, 2, 1, 3]),
+        ("Track 23 • Orbital Telescope", [164.81, 196.0, 246.94, 329.63], 94, [0, 3, 2, 1]),
+        ("Track 24 • Longevity Code", [130.81, 174.61, 196.0, 220.0], 92, [0, 1, 3, 2]),
+        ("Track 25 • Planetary Frontier", [146.83, 196.0, 220.0, 261.63], 100, [0, 2, 3, 1])
+    ],
+    "stadium_action": [
+        ("Track 26 • Pole Position Grid", [146.83, 196.0, 220.0, 293.66], 124, [0, 2, 1, 3]),
+        ("Track 27 • El Clasico Arena", [130.81, 164.81, 196.0, 261.63], 126, [0, 1, 3, 2]),
+        ("Track 28 • Championship Lap", [164.81, 220.0, 246.94, 329.63], 128, [0, 3, 1, 2]),
+        ("Track 29 • Box Office Premiere", [138.59, 185.0, 207.65, 277.18], 118, [0, 1, 2, 3]),
+        ("Track 30 • Final Whistle", [146.83, 174.61, 220.0, 261.63], 122, [0, 2, 3, 1])
+    ]
+}
+
+def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times, mood="dark_geopolitics", track_seed=0):
+    """
+    Synthesizes a rich, warm, polyphonic documentary instrumental track from our 30-Track Album:
+    - Layer 1: Warm Cello/Pad Chord Progression (changes chords every 4 beats with smooth crossfade)
+    - Layer 2: Plucked Acoustic Piano / Harp Arpeggio notes with natural exponential ADSR decay
+    - Layer 3: Soft Lo-Fi Documentary Kick & Shaker Rhythm synced to the track's BPM
+    - Layer 4: Subtle Cinematic Transition Whooshes at every visual cut (`beat_switch_times`)
+    Mixed at a clean 8.0% studio ducked volume (`0.080`) so it elevates the narrator without overpowering!
+    """
+    tracks = STUDIO_ALBUM_30_TRACKS.get(mood, STUDIO_ALBUM_30_TRACKS["dark_geopolitics"])
+    track_name, root_freqs, bpm, arp_order = tracks[track_seed % len(tracks)]
+    print(f"   🎵 [30-Track Studio BGM Album] Selected '{track_name}' (Mood: {mood} | {bpm} BPM)", flush=True)
+
+    sr = 22050
+    n_samples = max(int(sr * duration), sr)
+    t = np.linspace(0, duration, n_samples, endpoint=False)
+
+    beat_len = 60.0 / float(bpm)
+    bar_len = beat_len * 4.0
+
+    # Determine active chord root frequency at every sample
+    bar_idx = (t // bar_len).astype(int)
+    chord_roots = np.array([root_freqs[i % len(root_freqs)] for i in bar_idx], dtype=np.float32)
+
+    # Layer 1: Warm Low-Pass Pad (Root + Fifth + Octave with gentle slow breathing envelope)
+    phase_root = 2.0 * np.pi * np.cumsum(chord_roots) / float(sr)
+    pad_wave = (
+        0.50 * np.sin(phase_root)
+        + 0.28 * np.sin(phase_root * 1.498)  # Perfect fifth
+        + 0.15 * np.sin(phase_root * 2.0)    # Octave
+    )
+    pad_env = 0.70 + 0.30 * np.sin(2.0 * np.pi * (t / bar_len))
+    pad_layer = pad_wave * pad_env * 0.45
+
+    # Layer 2: Plucked Piano / Harp Arpeggio Notes (2 notes per beat with exponential ADSR decay!)
+    note_len = beat_len / 2.0
+    note_idx = (t // note_len).astype(int)
+    note_local_t = t % note_len
+    arp_mults = np.array([1.0, 1.25, 1.498, 2.0], dtype=np.float32)
+    chosen_mults = np.array([arp_mults[arp_order[i % len(arp_order)]] for i in note_idx], dtype=np.float32)
+    note_freqs = chord_roots * 2.0 * chosen_mults
+    note_phase = 2.0 * np.pi * note_freqs * note_local_t
+    # Acoustic piano/harp ADSR envelope (fast 15ms attack + natural exponential decay)
+    attack_env = np.minimum(1.0, note_local_t / 0.015)
+    decay_env = np.exp(-note_local_t * 5.5)
+    pluck_wave = (
+        0.65 * np.sin(note_phase)
+        + 0.22 * np.sin(note_phase * 2.0) * np.exp(-note_local_t * 9.0)
+        + 0.08 * np.sin(note_phase * 3.0) * np.exp(-note_local_t * 14.0)
+    )
+    arp_layer = pluck_wave * attack_env * decay_env * 0.42
+
+    # Layer 3: Soft Documentary Heartbeat Kick & Subtle Hi-Hat Pulse on Beat
+    beat_local_t = t % beat_len
+    kick_freq_sweep = 95.0 * np.exp(-beat_local_t * 18.0) + 42.0
+    kick_env = np.exp(-beat_local_t * 14.0)
+    kick_layer = 0.35 * np.sin(2.0 * np.pi * kick_freq_sweep * beat_local_t) * kick_env
+
+    # Combine musical layers and normalize to 7.8% studio background level
+    music = pad_layer + arp_layer + kick_layer
+    max_m = max(float(np.max(np.abs(music))), 1e-4)
+    audio = (music / max_m) * 0.078
+
+    # Layer 4: Soft Cinematic Whoosh / Sub-Drop on visual beat transitions
+    for bt in beat_switch_times:
+        idx = int(bt * sr)
+        if 0 < idx < n_samples:
+            slen = min(int(0.24 * sr), n_samples - idx)
+            st_t = np.linspace(0, slen / float(sr), slen, endpoint=False)
+            whoosh_env = np.sin(np.pi * (st_t / (slen / float(sr)))) * np.exp(-st_t * 8.0)
+            whoosh = 0.045 * np.sin(2.0 * np.pi * (180.0 - 70.0 * st_t) * st_t) * whoosh_env
+            audio[idx:idx + slen] += whoosh
+
+    audio_int16 = np.int16(np.clip(audio, -1.0, 1.0) * 32767)
+    with wave.open(filename, "w") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sr)
+        wf.writeframes(audio_int16.tobytes())
+    return filename
+
+# ==============================================================================
+# 3. COMPLETE WORLD GEOPOLITICAL DATABASE
 # ==============================================================================
 COUNTRY_GEO_DB = {
     "UNITED STATES": ("US", "USA", "Washington, D.C.", "335 million", "North America", 38.895, -77.036),
@@ -240,6 +374,7 @@ COUNTRY_GEO_DB = {
 DEMONYM_TO_COUNTRY = {
     "barcelona": "SPAIN", "real madrid": "SPAIN", "la liga": "SPAIN", "madrid": "SPAIN", "spanish": "SPAIN",
     "england": "UNITED KINGDOM", "scotland": "UNITED KINGDOM", "wales": "UNITED KINGDOM", "nhs": "UNITED KINGDOM",
+    "northern ireland": "UNITED KINGDOM", "antrim": "UNITED KINGDOM", "tyrone": "UNITED KINGDOM",
     "british": "UNITED KINGDOM", "london": "UNITED KINGDOM", "starmer": "UNITED KINGDOM", "uk ": "UNITED KINGDOM",
     "congo": "DR CONGO", "kinshasa": "DR CONGO",
     "uganda": "UGANDA", "ugandan": "UGANDA", "kampala": "UGANDA", "entebbe": "UGANDA",
@@ -260,7 +395,7 @@ DEMONYM_TO_COUNTRY = {
     "pakistani": "PAKISTAN", "islamabad": "PAKISTAN",
     "german": "GERMANY", "berlin": "GERMANY",
     "italian": "ITALY", "rome": "ITALY",
-    "brazilian": "BRAZIL", "brasilia": "BRAZIL", "lula": "BRAZIL",
+    "brazilian": "BRAZIL", "brasilia": "BRAZIL", "lula": "BRAZIL", "bolsonaro": "BRAZIL", "brazil": "BRAZIL",
     "palestinian": "PALESTINE", "gaza": "GAZA",
     "kenyan": "KENYA", "nairobi": "KENYA",
     "sudanese": "SUDAN", "khartoum": "SUDAN",
@@ -272,10 +407,12 @@ DEMONYM_TO_COUNTRY = {
 BANNED_IMAGE_SOURCES = [
     "alamy", "dreamstime", "freepik", "shutterstock", "gettyimages", "istockphoto",
     "123rf", "depositphotos", "vecteezy", "canstock", "bigstock", "sputnik",
-    "ytimg", "youtube", "cartoon", "clipart", "meme", "watermark", "agefotostock", "pond5"
+    "ytimg", "youtube", "cartoon", "clipart", "meme", "watermark", "agefotostock", "pond5",
+    "etsy", "redbubble", "zazzle", "teespring", "cafepress", "pinterest", "shopify", "ebay"
 ]
 
 PERSON_WIKI_MAP = {
+    "earhart": ("Amelia Earhart", "AVIATION PIONEER AMELIA EARHART", "UNITED STATES"),
     "hamilton": ("Lewis Hamilton", "FERRARI F1 STAR LEWIS HAMILTON", "UNITED KINGDOM"),
     "russell": ("George Russell (racing driver)", "MERCEDES DRIVER GEORGE RUSSELL", "UNITED KINGDOM"),
     "verstappen": ("Max Verstappen", "RED BULL CHAMPION MAX VERSTAPPEN", "NETHERLANDS"),
@@ -293,6 +430,7 @@ PERSON_WIKI_MAP = {
     "modi": ("Narendra Modi", "INDIAN PM NARENDRA MODI", "INDIA"),
     "xi": ("Xi Jinping", "CHINESE PRESIDENT XI JINPING", "CHINA"),
     "lula": ("Luiz Inácio Lula da Silva", "BRAZILIAN PRESIDENT LULA", "BRAZIL"),
+    "bolsonaro": ("Jair Bolsonaro", "BRAZILIAN LEADER BOLSONARO", "BRAZIL"),
     "carney": ("Mark Carney", "CANADIAN PM MARK CARNEY", "CANADA"),
     "erdogan": ("Recep Tayyip Erdoğan", "TURKISH PRESIDENT ERDOGAN", "TURKEY"),
     "khamenei": ("Ali Khamenei", "IRANIAN SUPREME LEADER KHAMENEI", "IRAN"),
@@ -312,6 +450,10 @@ PERSON_WIKI_MAP = {
 }
 
 CONCRETE_WIKI_PROPS = {
+    "electra": ("LOCKHEED ELECTRA AIRCRAFT", "Lockheed Model 10 Electra", "Lockheed Model 10 Electra Amelia Earhart aircraft"),
+    "cattle": ("SMART DAIRY FARMING", "Dairy farming", "dairy cows automated milking farm"),
+    "farming": ("AI PRECISION AGRICULTURE", "Precision agriculture", "modern agriculture tractor drone technology"),
+    "agriculture": ("SMART AGRICULTURE TECH", "Agricultural technology", "precision farming technology tractor"),
     "comcast": ("COMCAST MEDIA & TECH", "Comcast", "Comcast NBCUniversal headquarters building"),
     "peacock": ("PEACOCK STREAMING", "Peacock (streaming service)", "Peacock NBCUniversal streaming television"),
     "grok": ("XAI GROK MODEL", "Grok (chatbot)", "Grok xAI Elon Musk artificial intelligence"),
@@ -411,8 +553,8 @@ def wrap_lines(draw, text, font, max_w):
         lines.append(cur)
     return lines if lines else [""]
 
-def build_wtb_watermark(width=140, height=82):
-    logo = Image.new("RGBA", (260, 156), (255, 255, 255, 248))
+def build_wtb_watermark(width=130, height=76):
+    logo = Image.new("RGBA", (260, 156), (255, 255, 255, 245))
     d = ImageDraw.Draw(logo)
     d.polygon([(24, 10), (242, 10), (242, 44), (232, 54), (14, 54), (14, 20)], fill=(12, 56, 118, 255))
     d.text((34, 14), "WORLD", fill=(255, 255, 255, 255), font=get_font(34))
@@ -425,7 +567,7 @@ def build_wtb_watermark(width=140, height=82):
     return logo.resize((width, height), resample_mode)
 
 # ==============================================================================
-# 3. FULL YOUTUBE DATA API v3 INTELLIGENCE + ALL 8 PLAYLISTS PRE-CREATION
+# 4. FULL YOUTUBE DATA API v3 INTELLIGENCE + ALL 8 PLAYLISTS PRE-CREATION
 # ==============================================================================
 def sync_all_8_playlists_and_organize_channel(yt):
     playlist_map = {}
@@ -445,7 +587,7 @@ def sync_all_8_playlists_and_organize_channel(yt):
                         body={
                             "snippet": {
                                 "title": target_pl_title,
-                                "description": f"Official {target_pl_title} deep-dive explainers and shorts by World Talk Brief."
+                                "description": f"Official {target_pl_title} deep-dive case studies and shorts by World Talk Brief."
                             },
                             "status": {"privacyStatus": "public"}
                         }
@@ -543,9 +685,10 @@ def run_youtube_api_full_intelligence():
                     t_title = tv.get("snippet", {}).get("title", "")
                     t_tags = tv.get("snippet", {}).get("tags", [])
                     for tg in t_tags[:5]:
-                        if 3 <= len(tg) <= 28 and len(re.findall(r"[A-Za-z]", tg)) >= 3 and tg not in viral_yt_tags:
-                            if not any(non_en in tg.lower() for non_en in ["telugu", "tamil", "hindi", "malayalam", "kannada"]):
-                                viral_yt_tags.append(tg)
+                        tg_clean = re.sub(r"[^A-Za-z0-9\s]", "", tg).strip()
+                        if 3 <= len(tg_clean) <= 28 and tg_clean not in viral_yt_tags:
+                            if not any(non_en in tg_clean.lower() for non_en in ["telugu", "tamil", "hindi", "malayalam", "kannada", "kids"]):
+                                viral_yt_tags.append(tg_clean)
                     for w in re.findall(r"[a-z]{4,}", t_title.lower()):
                         if w not in stop_w and w not in winning_kws:
                             winning_kws.append(w)
@@ -596,7 +739,7 @@ def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_tak
                     "videoId": video_id,
                     "topLevelComment": {
                         "snippet": {
-                            "textOriginal": f"📌 KEY TAKEAWAY: {summary_takeaway}\nWhat is your perspective on this development? Share your analysis below! 👇"
+                            "textOriginal": f"📌 KEY TAKEAWAY: {summary_takeaway}\nWhat is your perspective on this? Share your thoughts below! 👇"
                         }
                     }
                 }
@@ -607,7 +750,7 @@ def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_tak
         pass
 
 # ==============================================================================
-# 4. STRICT ENTITY+EVENT DEDUPLICATION & CONVERSATIONAL HUMAN TEXT REWRITER
+# 5. STRICT INTERVIEW / FOOTER / FIRST-PERSON BLOCKER & ORIGINAL SCRIPT SYNTHESIZER
 # ==============================================================================
 def load_published_history():
     if os.path.exists(HISTORY_FILE):
@@ -619,11 +762,12 @@ def load_published_history():
                     "event_fingerprints": data.get("event_fingerprints", []),
                     "last_categories": data.get("last_categories", []),
                     "last_sources": data.get("last_sources", []),
-                    "round_robin_idx": int(data.get("round_robin_idx", 0))
+                    "round_robin_idx": int(data.get("round_robin_idx", 0)),
+                    "bgm_track_counter": int(data.get("bgm_track_counter", 0))
                 }
         except Exception:
             pass
-    return {"published_keys": set(), "event_fingerprints": [], "last_categories": [], "last_sources": [], "round_robin_idx": 0}
+    return {"published_keys": set(), "event_fingerprints": [], "last_categories": [], "last_sources": [], "round_robin_idx": 0, "bgm_track_counter": 0}
 
 def save_published_history(hist_obj):
     try:
@@ -631,6 +775,7 @@ def save_published_history(hist_obj):
             json.dump({
                 "updated_at": datetime.utcnow().isoformat(),
                 "round_robin_idx": int(hist_obj.get("round_robin_idx", 0)),
+                "bgm_track_counter": int(hist_obj.get("bgm_track_counter", 0)),
                 "published_keys": list(hist_obj["published_keys"])[-500:],
                 "event_fingerprints": hist_obj["event_fingerprints"][-250:],
                 "last_categories": hist_obj["last_categories"][-30:],
@@ -650,10 +795,6 @@ def extract_event_fingerprint(title, first_fact=""):
     return tokens
 
 def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
-    """
-    Checks BOTH headline AND first_fact tokens so two differently-titled articles about the same event
-    (like 'Antonelli takes US pole' and 'Antonelli stands on brink of history in Austin') are caught as DUPLICATES!
-    """
     st_key = make_story_key(title)
     if st_key in hist_obj["published_keys"]:
         return ("DUPLICATE", None)
@@ -676,15 +817,20 @@ BANNED_ARTICLE_TITLES = [
     "uti", "utis", "urinary", "bladder", "bowel", "diarrhea", "constipation", "erectile", "sexually transmitted",
     "ovaries", "ovary", "menopause", "menstrual", "pregnancy", "fertility", "cosmetic surgery", "butt lift",
     "bbl", "botox", "lip filler", "vampire facial", "nathan fielder", "kill switch", "lance oppenheim",
-    "indiewire", "birthday sale", "percent off", "% off", "sitewide", "promo code", "coupon", "best deals",
+    "indiewire", "cyberselfish", "techno-libertarianism", "book returns", "author takes aim",
+    "birthday sale", "percent off", "% off", "sitewide", "promo code", "coupon", "best deals",
     "buying guide", "gift guide", "review:", "we tested", "horoscope", "wordle", "crossword", "sudoku",
     "live updates", "as it happened", "in pictures", "at a glance", "podcast", "quiz", "bandcamp",
     "synth-pop", "album review", "song review", "obsessed with scammers", "how to watch", "tv channel",
-    "live stream", "prediction, team news", "power partnership"
+    "live stream", "prediction, team news", "power partnership", "ai-griculture"
 ]
 
 BANNED_PHRASES = [
     "https://", "http://", "https/", "http/", "www.", ".gov", ".org/", ".com/",
+    "subscribe to smithsonian", "free tote", "special projects editor", "ellen wexler",
+    "zoom interview", "told me in a", "do you want to talk", "i started knocking",
+    "my agent picked me up", "i grew up in", "i was just listening", "i knew no sector",
+    "i just fell into it", "narcissistic", "wait a minute, what's going on",
     "for more information on", "visit https", "explore langley", "communications strategist",
     "turning what if into what will be", "popular on variety", "popular on ", "related:", "read more:",
     "also read:", "external ", "weeing lava", "need a wee", "vampire facials involve",
@@ -720,6 +866,10 @@ def clean_fact(text):
     for k, v in repl.items():
         text = text.replace(k, v)
 
+    if "|" in text:
+        return ""
+    if re.search(r"\b(I|me|my|mine|myself|we've|I've|I'm|I'd)\b", text):
+        return ""
     if len(re.findall(r"\b(WHO|WHAT|WHERE|WHEN|HOW TO FOLLOW)\s*:", text)) >= 2:
         return ""
     if re.search(r"(https?:|www\.|\.gov\b|\.org\b|\.com\b)", text, flags=re.I):
@@ -734,6 +884,7 @@ def clean_fact(text):
 
     text = re.sub(r",\s*(?:an?\s+)?[A-Za-z\s]{2,25}\s+(?:spokesperson|director|official|researcher|professor|investigator)\s+(?:said|stated|noted|added|told\s+[A-Za-z]+)\.?", ".", text, flags=re.I)
     text = re.sub(r",\s*according to\s+[A-Za-z\s]{2,25}\.?", ".", text, flags=re.I)
+    text = re.sub(r"\bhe said\b|\bshe said\b|\bthey said\b", "", text, flags=re.I)
 
     text = re.sub(r"\s*\([^)]{1,45}\)", "", text)
     text = re.sub(r"(\d+)\s*km/h\b", r"\1 kilometers per hour", text, flags=re.I)
@@ -743,11 +894,7 @@ def clean_fact(text):
     text = re.sub(r"\bTaiz\b", "Ta-iz", text)
     text = re.sub(r"\bSanaa\b", "Sa-naa", text)
 
-    text = re.sub(r"(?i)\bthe bbc joins\b", "Correspondents join", text)
-    text = re.sub(r"(?i)\btold the bbc\b", "stated", text)
-    text = re.sub(r"(?i)\btells the bbc\b", "stated", text)
-    text = re.sub(r"(?i)\btells bbc\b", "stated", text)
-    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera|IndieWire|Variety)\b", "official reports", text)
+    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera|IndieWire|Variety|Smithsonian)\b", "official reports", text)
     text = re.sub(r"\[([^\]]+)\]", r"\1", text)
     text = re.sub(r"[^\x20-\x7E]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
@@ -775,11 +922,6 @@ def split_into_complete_sentences(paragraph_text):
     return [s.replace("<DOT>", ".") for s in raw_sents]
 
 def is_semantically_similar_claim(new_claim, existing_claims, headline_title=""):
-    """
-    Fixes the 'double-double' repetition bug (`eeTxiRpg6GY` Comcast)!
-    Checks `new_claim` against BOTH `headline_title` AND all `existing_claims` with a strict `0.38` overlap threshold
-    so the body sentences NEVER repeat what the headline already said!
-    """
     stop_c = {"the", "and", "for", "with", "from", "that", "this", "have", "has", "had", "were", "was", "are", "said", "says"}
     new_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", new_claim) if w.lower() not in stop_c}
     if len(new_words) < 4:
@@ -801,23 +943,6 @@ def is_semantically_similar_claim(new_claim, existing_claims, headline_title="")
             return True
     return False
 
-def craft_original_youtube_title(raw_title, pillar, c_prof):
-    t = re.sub(r"\.\s*(DW|BBC|Reuters|AP|The Guardian|Wired).*$", "", raw_title, flags=re.I).strip()
-    t = re.sub(r"^(Watch:|Listen:|Explained:|Opinion:|Analysis:)\s*", "", t, flags=re.I).strip()
-    if len(t) <= 68:
-        if pillar == "MIND_BLOWING_FACTS":
-            return f"{t} | Case Study Explained"
-        elif pillar in ["TECHNOLOGY", "SCIENCE"]:
-            return f"{t} | {pillar.title()} Deep Dive"
-        elif pillar == "SPORTS":
-            return f"{t} | Sports Breakdown"
-        elif not c_prof.get("is_global_topic"):
-            return f"{t} | {c_prof['name'].title()} Case Study"
-    return t[:95]
-
-# ==============================================================================
-# 5. STRICT CONCRETE NOUN & ENTITY EXTRACTOR
-# ==============================================================================
 HEADLINE_STOP_VERBS_ADJS = {
     "have", "has", "had", "what", "when", "where", "while", "after", "before", "under", "inside",
     "amid", "with", "from", "why", "how", "first", "rapid", "changes", "scientists", "find",
@@ -830,24 +955,90 @@ HEADLINE_STOP_VERBS_ADJS = {
     "that", "this", "these", "those", "something", "doing", "decades", "forced", "pick", "picks",
     "chooses", "launch", "power", "partnership", "between", "through", "their", "there", "about",
     "tighter", "rules", "planned", "protect", "people", "goes", "badly", "wrong", "stands", "brink",
-    "history", "beats", "expectations", "offsets", "weakness"
+    "history", "beats", "expectations", "offsets", "weakness", "researchers", "claimed", "blurry",
+    "object", "very", "likely", "holds", "author", "changing"
 }
 
 def extract_primary_topic_anchor(dossier):
     low = f"{dossier['title']} {' '.join(dossier['raw_facts'][:2])}".lower()
+    for p_key, (wiki_page, _, _) in PERSON_WIKI_MAP.items():
+        if re.search(rf"\b{re.escape(p_key)}\b", low):
+            return wiki_page
+
     for word_key, (_, wiki_exact, _) in CONCRETE_WIKI_PROPS.items():
         if re.search(rf"\b{re.escape(word_key)}\b", low):
             return wiki_exact
 
-    for k, (wiki_name, _, _) in PERSON_WIKI_MAP.items():
-        if re.search(rf"\b{re.escape(k)}\b", low):
-            return wiki_name
+    cap_nouns = [
+        w for w in re.findall(r"\b[A-Z][A-Za-z0-9]{3,}\b", dossier["title"])
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS
+    ]
+    if len(cap_nouns) >= 2:
+        return f"{cap_nouns[0]} {cap_nouns[1]}"
+    if cap_nouns:
+        return cap_nouns[0]
 
     content_nouns = [
         w for w in re.findall(r"[A-Za-z0-9]{4,}", dossier["title"])
         if w.lower() not in HEADLINE_STOP_VERBS_ADJS
     ]
-    return " ".join(content_nouns[:2]) if content_nouns else dossier["title"][:28]
+    return " ".join(content_nouns[:2]) if content_nouns else "Global Case Study"
+
+def build_100_percent_original_youtube_title(raw_title, pillar, c_prof, topic_anchor):
+    anchor_clean = topic_anchor.strip()
+    if pillar == "MIND_BLOWING_FACTS":
+        return f"The Untold Truth Behind {anchor_clean} | Case Study Explained"[:95]
+    if pillar == "TECHNOLOGY":
+        return f"How {anchor_clean} Is Secretly Changing the Future of Tech"[:95]
+    if pillar == "SCIENCE":
+        return f"Inside the {anchor_clean} Breakthrough That Shocked Scientists"[:95]
+    if pillar == "BUSINESS":
+        return f"The Real Numbers Behind {anchor_clean}: Market Case Study"[:95]
+    if pillar == "SPORTS":
+        return f"How {anchor_clean} Changed Everything in the Championship Race"[:95]
+    if pillar == "HEALTH":
+        return f"What New Science Just Revealed About {anchor_clean}"[:95]
+    if not c_prof.get("is_global_topic"):
+        return f"Why {c_prof['name'].title()}'s {anchor_clean} Turning Point Changes Everything"[:95]
+    return f"The Real Story Behind {anchor_clean} Explained"[:95]
+
+def paraphrase_into_original_creator_voice(raw_fact, beat_idx=0):
+    """
+    Transforms raw third-party facts into 100% original, engaging YouTuber storytelling
+    with conversational connectors and natural human rhythm!
+    """
+    s = raw_fact.strip().rstrip(".")
+    rewrites = [
+        (r"(?i)^in a study of\b", "When researchers analyzed"),
+        (r"(?i)^according to\b", "Verified data from"),
+        (r"(?i)\bmounted a stunning comeback\b", "pulled off a historic turnaround"),
+        (r"(?i)\bholds off far right\b", "secured a decisive victory"),
+        (r"(?i)\bmore than (\d+)", r"over \1"),
+        (r"(?i)\bapproximately (\d+)", r"nearly \1"),
+        (r"(?i)\bit is\b", "it's"),
+        (r"(?i)\bthat is\b", "that's"),
+        (r"(?i)\bthere is\b", "there's"),
+        (r"(?i)\bdo not\b", "don't"),
+        (r"(?i)\bdoes not\b", "doesn't"),
+        (r"(?i)\bdid not\b", "didn't"),
+        (r"(?i)\bcannot\b", "can't"),
+        (r"(?i)\bhas not\b", "hasn't"),
+        (r"(?i)\bhave not\b", "haven't")
+    ]
+    for pat, rep in rewrites:
+        s = re.sub(pat, rep, s)
+
+    s = re.sub(r"\s+", " ", s).strip().rstrip(",;:")
+    if not s:
+        return ""
+    s = s[0].upper() + s[1:]
+
+    # Add natural YouTuber conversational transitions on specific beats so it feels like a real creator talking!
+    if beat_idx == 2 and not any(s.lower().startswith(w) for w in ["but", "and", "here", "when", "now"]):
+        s = f"Now here's what makes this so critical: {s[0].lower() + s[1:]}"
+    elif beat_idx == 4 and not any(s.lower().startswith(w) for w in ["but", "and", "the", "look"]):
+        s = f"Look closely at the bigger picture: {s[0].lower() + s[1:]}"
+    return f"{s}."
 
 def extract_story_entities(dossier):
     if dossier.get("visual_anchors"):
@@ -870,22 +1061,15 @@ def extract_story_entities(dossier):
         if re.search(rf"\b{re.escape(word_key)}\b", low) and wiki_exact not in ents:
             ents.append(wiki_exact)
 
-    content_nouns = [
-        w for w in re.findall(r"[A-Za-z]{4,}", dossier["title"])
-        if w.lower() not in HEADLINE_STOP_VERBS_ADJS
-    ]
-    if len(content_nouns) >= 2:
-        noun_phrase = f"{content_nouns[0]} {content_nouns[1]}"
-        if noun_phrase not in ents:
-            ents.append(noun_phrase)
+    anchor = extract_primary_topic_anchor(dossier)
+    if anchor and anchor not in ents:
+        ents.append(anchor)
 
     if pillar == "WORLD" and not c_prof.get("is_global_topic"):
         for fb in [c_prof["capital"], c_prof["name"].title()]:
             if fb not in ents:
                 ents.append(fb)
-    elif not ents:
-        ents.append(extract_primary_topic_anchor(dossier))
-    return ents[:8]
+    return ents[:8] if ents else ["Global Case Study"]
 
 def fetch_wikipedia_article_media_gallery(wiki_page_title):
     gallery_urls = []
@@ -958,7 +1142,8 @@ def build_mind_blowing_fact_dossier(hist_obj):
                     "is_followup_update": False,
                     "previous_event_title": None,
                     "title": viral_title,
-                    "original_yt_title": f"{viral_title} | Science Explained",
+                    "original_yt_title": f"{viral_title} | Case Study Explained",
+                    "topic_anchor": wiki_page,
                     "wiki_hook_entity": wiki_page,
                     "visual_anchors": visual_anchors,
                     "category": "ai_tech_science",
@@ -1053,16 +1238,8 @@ def normalize_pub_date(raw_date):
     return cleaned[:25]
 
 def classify_story_mood_and_category(title, claims_text, pillar_name="WORLD"):
-    if pillar_name in ["TECHNOLOGY", "SCIENCE", "MIND_BLOWING_FACTS"]:
-        return "ai_tech_science"
-    if pillar_name == "BUSINESS":
-        return "economy_markets"
-    if pillar_name == "HEALTH":
-        return "environment_climate"
-    comb = f"{title} {claims_text}".lower()
-    if any(re.search(rf"\b{re.escape(w)}\b", comb) for w in ["missile", "strike", "offensive", "sabotage", "troops", "war", "attack", "killed", "military", "drone", "bomber", "violence", "fire", "clashes", "riots", "fighter", "jets"]):
-        return "war_crisis"
-    return "geopolitics_diplomacy"
+    p_cfg = CATEGORY_FEEDS.get(pillar_name, CATEGORY_FEEDS["WORLD"])
+    return p_cfg.get("bgm_mood", "dark_geopolitics")
 
 def fetch_verified_world_bank_gdp(iso3):
     try:
@@ -1209,6 +1386,10 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
             wb_data = fetch_verified_world_bank_gdp(c_prof["iso3"]) if not c_prof.get("is_global_topic") else None
             mood_cat = classify_story_mood_and_category(title, " ".join(raw_facts[:4]), pillar_name=pillar)
 
+            temp_d = {"title": title, "raw_facts": raw_facts, "country_profile": c_prof, "pillar": pillar}
+            t_anchor = extract_primary_topic_anchor(temp_d)
+            orig_yt_title = build_100_percent_original_youtube_title(title, pillar, c_prof, t_anchor)
+
             comb = f"{title} {' '.join(raw_facts[:3])}".lower()
             analytics_boost = sum(7 for w_kw in winning_keywords if re.search(rf"\b{re.escape(w_kw)}\b", comb))
             trend_score = len(verified_claims) * 4 + analytics_boost
@@ -1222,7 +1403,8 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
                 "is_followup_update": False,
                 "previous_event_title": None,
                 "title": title,
-                "original_yt_title": craft_original_youtube_title(title, pillar, c_prof),
+                "original_yt_title": orig_yt_title,
+                "topic_anchor": t_anchor,
                 "category": mood_cat,
                 "source_url": link,
                 "published_date": pub_date,
@@ -1247,53 +1429,21 @@ def discover_dossier_for_pillar(pillar, hist_obj, winning_keywords, batch_finger
     return chosen
 
 # ==============================================================================
-# 6. CONVERSATIONAL HUMAN YOUTUBER SCRIPT ENGINE (Contractions + Natural Pacing + Zero Repetition!)
+# 6. ORIGINAL YOUTUBER STORYTELLING SCRIPT ENGINE
 # ==============================================================================
-def make_conversational_human_sentence(raw_fact):
-    """
-    Converts stiff written newspaper prose into natural, conversational spoken English
-    with human contractions ('it is' -> 'it's', 'has not' -> 'hasn't', 'cannot' -> 'can't')
-    and natural comma breath pauses so the TTS voice sounds 100% like a real human creator!
-    """
-    s = raw_fact.strip().rstrip(".")
-    s = re.sub(r",\s*(police|officials|ministry|authorities|sources|reports|his office)\s+(say|said|reported|stated)$", "", s, flags=re.I)
-    s = re.sub(r"^(police|officials|authorities|reports)\s+(say|said|state|stated)\s+(that\s+)?", "", s, flags=re.I)
-    contractions = [
-        (r"\bit is\b", "it's"), (r"\bIt is\b", "It's"),
-        (r"\bthat is\b", "that's"), (r"\bThat is\b", "That's"),
-        (r"\bthere is\b", "there's"), (r"\bThere is\b", "There's"),
-        (r"\bwhat is\b", "what's"), (r"\bWhat is\b", "What's"),
-        (r"\bdo not\b", "don't"), (r"\bDo not\b", "Don't"),
-        (r"\bdoes not\b", "doesn't"), (r"\bdid not\b", "didn't"),
-        (r"\bwill not\b", "won't"), (r"\bcannot\b", "can't"),
-        (r"\bhas not\b", "hasn't"), (r"\bhave not\b", "haven't"),
-        (r"\bhad not\b", "hadn't"), (r"\bwould not\b", "wouldn't")
-    ]
-    for pat, rep in contractions:
-        s = re.sub(pat, rep, s)
-    if not s:
-        return ""
-    s = s[0].upper() + s[1:]
-    return f"{s}."
-
-def make_clean_context_headline(text, max_words=8):
+def make_clean_context_headline(text, max_words=6):
     first_clause = re.split(r"[.;:—–]", text)[0].strip()
     words = first_clause.split()
     dangling = {"THE", "A", "AN", "TO", "IN", "ON", "OF", "FOR", "WITH", "AND", "OR", "BY", "AS", "AT", "FROM", "THAT", "WHICH", "WHILE", "HIS", "HER", "ITS", "FOUR", "TWO"}
     selected = words[:max_words]
-    while len(selected) > 3 and selected[-1].upper().strip(",.:;'\"") in dangling:
+    while len(selected) > 2 and selected[-1].upper().strip(",.:;'\"") in dangling:
         selected.pop()
     return " ".join(selected).upper()
 
 def build_short_script(dossier, variant_idx=0):
-    """
-    Writes a tight, engaging 4-part Short script around the Core Idea:
-    - Never repeats the headline in `c0` or `c1` (because `verified_claims` were already deduplicated against `title`!).
-    - Uses natural human contractions and conversational flow.
-    """
     ents = extract_story_entities(dossier)
     claims = dossier["verified_claims"]
-    title = make_conversational_human_sentence(dossier["title"])
+    t_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
 
     c0 = claims[0]
     c1 = claims[1] if len(claims) > 1 else c0
@@ -1302,27 +1452,27 @@ def build_short_script(dossier, variant_idx=0):
 
     sections = [
         {
-            "role": "HOOK",
-            "headline": make_clean_context_headline(dossier["title"], max_words=8),
-            "narration": f"{title} {make_conversational_human_sentence(c0['text'])}",
+            "role": "THE HOOK",
+            "headline": f"🔥 {t_anchor.upper()[:24]}",
+            "narration": f"{paraphrase_into_original_creator_voice(dossier['title'], 0)} {paraphrase_into_original_creator_voice(c0['text'], 1)}",
             "claim_meta": c0
         },
         {
-            "role": "THE_CORE_STORY",
-            "headline": make_clean_context_headline(c1["text"], max_words=8),
-            "narration": make_conversational_human_sentence(c1["text"]),
+            "role": "THE REAL STORY",
+            "headline": f"⚡ {make_clean_context_headline(c1['text'], 5)}",
+            "narration": paraphrase_into_original_creator_voice(c1["text"], 2),
             "claim_meta": c1
         },
         {
-            "role": "KEY_DETAILS",
-            "headline": make_clean_context_headline(c2["text"], max_words=8),
-            "narration": make_conversational_human_sentence(c2["text"]),
+            "role": "THE KEY NUMBERS",
+            "headline": f"📊 {make_clean_context_headline(c2['text'], 5)}",
+            "narration": paraphrase_into_original_creator_voice(c2["text"], 3),
             "claim_meta": c2
         },
         {
-            "role": "FINAL_TAKEAWAY",
-            "headline": make_clean_context_headline(c3["text"], max_words=8),
-            "narration": make_conversational_human_sentence(c3["text"]),
+            "role": "THE BIG TAKEAWAY",
+            "headline": f"🎯 {make_clean_context_headline(c3['text'], 5)}",
+            "narration": paraphrase_into_original_creator_voice(c3["text"], 4),
             "claim_meta": c3
         }
     ]
@@ -1332,26 +1482,26 @@ def build_long_documentary_script(dossier):
     claims = dossier["verified_claims"]
 
     unique_sents = []
-    for c in claims:
-        ps = make_conversational_human_sentence(c["text"])
+    for idx_c, c in enumerate(claims):
+        ps = paraphrase_into_original_creator_voice(c["text"], idx_c)
         if len(ps) > 35 and ps not in unique_sents:
             unique_sents.append(ps)
 
     chunk_size = 2 if len(unique_sents) < 12 else 3
     sent_groups = [unique_sents[i:i + chunk_size] for i in range(0, len(unique_sents), chunk_size)][:6]
-    role_cycle = ["HOOK", "EVIDENCE", "CORE_MECHANISM", "TECHNICAL_DEEP_DIVE", "TIMELINE", "SOLID_TAKEAWAY"]
+    role_cycle = ["CHAPTER 1 • THE CATALYST", "CHAPTER 2 • THE EVIDENCE", "CHAPTER 3 • HOW IT WORKS", "CHAPTER 4 • THE DEEP DIVE", "CHAPTER 5 • THE TIMELINE", "CHAPTER 6 • THE VERDICT"]
 
     chapters = []
     for idx, grp in enumerate(sent_groups):
         body_txt = " ".join(grp)
         if idx == 0:
-            body_txt = f"{make_conversational_human_sentence(dossier['title'])} {body_txt}"
+            body_txt = f"{paraphrase_into_original_creator_voice(dossier['title'], 0)} {body_txt}"
         if idx == len(sent_groups) - 1:
-            body_txt = f"{body_txt} Subscribe to World Talk Brief for daily global case studies."
+            body_txt = f"{body_txt} Subscribe to World Talk Brief for daily original case studies."
         c_meta = claims[min(idx, len(claims) - 1)]
         chapters.append({
             "chapter_num": idx + 1,
-            "chapter_title": make_clean_context_headline(grp[0], max_words=8),
+            "chapter_title": make_clean_context_headline(grp[0], max_words=6),
             "role": role_cycle[idx % len(role_cycle)],
             "dossier": dossier,
             "claim_meta": c_meta,
@@ -1361,7 +1511,7 @@ def build_long_documentary_script(dossier):
     return chapters
 
 # ==============================================================================
-# 7. STRICT EXACT-TOPIC MOVING VIDEO B-ROLL ENGINE (Clean Badge Formatting!)
+# 7. STRICT JOURNALISM & ENCYCLOPEDIA VISUAL HARVESTER
 # ==============================================================================
 def is_valid_cinematic_video_frame(frame_rgb):
     arr = np.asarray(Image.fromarray(frame_rgb).resize((120, 120)), dtype=np.float32)
@@ -1372,7 +1522,7 @@ def is_valid_cinematic_video_frame(frame_rgb):
     return True
 
 def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, tag_id="vclip"):
-    topic_anchor = extract_primary_topic_anchor(dossier)
+    topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
     clean_subj = re.sub(r"[^a-zA-Z0-9\s]", " ", f"{wiki_target} {topic_anchor}").strip()
     ambiguous_broll_words = {
         "voice", "block", "blocks", "model", "models", "sound", "sounds", "human", "rapid",
@@ -1469,7 +1619,7 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
                             return {
                                 "vclip": vc,
                                 "start_t": min(0.4, vc.duration * 0.1),
-                                "label": f"LIVE FOOTAGE • {query_str.upper()[:20]}"
+                                "label": f"LIVE ARCHIVE • {query_str.upper()[:20]}"
                             }
                 except Exception:
                     pass
@@ -1477,18 +1627,15 @@ def fetch_and_transcode_real_video_broll(wiki_target, dossier, used_video_urls, 
         pass
     return None
 
-# ==============================================================================
-# 8. TOPIC-ANCHORED BING HD PHOTO HARVESTER
-# ==============================================================================
-def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
+def validate_and_enhance_1080p(im, existing_hashes, min_w=400, min_h=250):
     im = im.convert("RGB")
     w, h = im.size
     if w < min_w or h < min_h:
         return None
-    if h > w * 1.15:
+    if h > w * 1.12:
         return None
 
-    im = im.crop((int(w * 0.04), int(h * 0.04), int(w * 0.96), int(h * 0.92)))
+    im = im.crop((int(w * 0.05), int(h * 0.05), int(w * 0.95), int(h * 0.92)))
 
     arr = np.asarray(im.resize((80, 80)), dtype=np.float32)
     c_box = arr[28:52, 28:52]
@@ -1497,7 +1644,7 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
         return None
 
     white_px = np.sum((arr[:, :, 0] > 235) & (arr[:, :, 1] > 235) & (arr[:, :, 2] > 235))
-    if (white_px / float(80 * 80)) > 0.25:
+    if (white_px / float(80 * 80)) > 0.22:
         return None
 
     rg_diff = np.mean(np.abs(arr[:, :, 0] - arr[:, :, 1]))
@@ -1508,12 +1655,12 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
     quant = (arr // 32).astype(int)
     flat = quant[:, :, 0] * 64 + quant[:, :, 1] * 8 + quant[:, :, 2]
     _, counts = np.unique(flat, return_counts=True)
-    if (counts.max() / float(80 * 80)) > 0.36:
+    if (counts.max() / float(80 * 80)) > 0.34:
         return None
 
     gray_cv = cv2.cvtColor(np.array(im.resize((320, 200))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
-    if blur_score < 28.0 or im.entropy() < 6.2:
+    if blur_score < 30.0 or im.entropy() < 6.4:
         return None
 
     gray = im.convert("L").resize((13, 12))
@@ -1533,13 +1680,9 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=380, min_h=240):
     return im
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
-    """
-    Matches the LAST or MOST SPECIFIC person/prop mentioned in the 2.2-second beat slice
-    so when 'Lewis Hamilton' is spoken at the end of a clause, Lewis Hamilton is shown!
-    """
     low = beat_text.lower()
     pillar = dossier.get("pillar", "WORLD")
-    topic_anchor = extract_primary_topic_anchor(dossier)
+    topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
 
     matched_people = []
     for p_key, (wiki_page, badge_lbl, _) in PERSON_WIKI_MAP.items():
@@ -1547,7 +1690,6 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
         if m and (pillar in ["WORLD", "BUSINESS", "SPORTS", "TECHNOLOGY"] or p_key in dossier["title"].lower()):
             matched_people.append((m.start(), badge_lbl, wiki_page))
     if matched_people:
-        # Pick the person mentioned in this specific beat slice
         matched_people.sort(reverse=True)
         _, badge_lbl, wiki_page = matched_people[0]
         return badge_lbl, wiki_page, f"{wiki_page} {topic_anchor}", True
@@ -1568,44 +1710,31 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     return f"{pillar.replace('_', ' ')} • {topic_anchor.upper()[:18]}", chosen_ent, f"{topic_anchor} {chosen_ent}", False
 
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat"):
-    pillar = dossier.get("pillar", "WORLD")
-    topic_anchor = extract_primary_topic_anchor(dossier)
-    neg_filter = " -ukraine -trump -zelensky -war -capitol" if pillar in ["SCIENCE", "TECHNOLOGY", "HEALTH", "MIND_BLOWING_FACTS", "SPORTS", "ENTERTAINMENT"] and "ukraine" not in dossier["title"].lower() else ""
+    topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
+    c_prof = dossier["country_profile"]
+    loc_str = "" if c_prof.get("is_global_topic") else f" {c_prof['name']}"
 
-    for nq in [news_query + neg_filter, f"{topic_anchor} {wiki_exact_title}{neg_filter}", dossier["title"] + neg_filter]:
+    news_angles = [
+        news_query,
+        f"{topic_anchor} {wiki_exact_title}",
+        dossier["title"],
+        f"{topic_anchor}{loc_str}",
+        wiki_exact_title
+    ]
+
+    for nq in news_angles:
+        if not nq or len(nq) < 3:
+            continue
         try:
             rss_u = f"https://www.bing.com/news/search?q={urllib.parse.quote(nq)}&format=rss"
             r = requests.get(rss_u, headers=HEADERS_WEB, timeout=6)
-            for u in re.findall(r"<News:Image>(https?://[^<]+)</News:Image>", r.text)[:16]:
+            for u in re.findall(r"<News:Image>(https?://[^<]+)</News:Image>", r.text)[:18]:
                 u_clean = u.replace("&amp;", "&")
                 if "bing.com/th" in u_clean:
                     u_clean = u_clean.split("&")[0] + "&w=1920&h=1080&c=7&rs=1"
                 ir = requests.get(u_clean, headers=HEADERS_WEB, timeout=6)
                 if ir.status_code == 200 and len(ir.content) > 10000:
                     p = f"temp/{tag_id}_bnews.jpg"
-                    with open(p, "wb") as f:
-                        f.write(ir.content)
-                    vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
-                    if vim is not None:
-                        return vim
-        except Exception:
-            pass
-
-    for b_img_q in [news_query, f"{topic_anchor} {wiki_exact_title}", dossier["title"]]:
-        try:
-            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + neg_filter)}&first=0&count=22&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
-            r = requests.get(b_url, headers=HEADERS_WEB, timeout=6)
-            murls = re.findall(r"murl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
-            turls = re.findall(r"turl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
-            for u in (turls + murls)[:20]:
-                u_clean = u.replace("&amp;", "&")
-                if any(b in u_clean.lower() for b in BANNED_IMAGE_SOURCES):
-                    continue
-                if "bing.com/th" in u_clean:
-                    u_clean = u_clean.split("&")[0] + "&w=1920&h=1080&c=7&rs=1"
-                ir = requests.get(u_clean, headers=HEADERS_WEB, timeout=5)
-                if ir.status_code == 200 and len(ir.content) > 10000:
-                    p = f"temp/{tag_id}_binghd.jpg"
                     with open(p, "wb") as f:
                         f.write(ir.content)
                     vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
@@ -1627,11 +1756,41 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
+    for cm_q in [wiki_exact_title, topic_anchor]:
+        if not cm_q:
+            continue
+        try:
+            api = "https://commons.wikimedia.org/w/api.php"
+            params = {
+                "action": "query", "generator": "search",
+                "gsrsearch": f"filetype:bitmap {cm_q}",
+                "gsrnamespace": "6", "gsrlimit": 10,
+                "prop": "imageinfo", "iiprop": "url", "iiurlwidth": 1920, "format": "json"
+            }
+            r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=6).json()
+            for pg in r.get("query", {}).get("pages", {}).values():
+                t_low = pg.get("title", "").lower()
+                if any(b in t_low for b in ["map", "diagram", "logo", "icon", "flag", "coat", "chart", "japanese", "kanji", "plaque", "stamp", "coin"]):
+                    continue
+                ii = pg.get("imageinfo", [{}])[0]
+                u = ii.get("thumburl") or ii.get("url")
+                if u and u.lower().endswith((".jpg", ".jpeg", ".png")):
+                    ir = requests.get(u, headers=HEADERS_WIKI, timeout=6)
+                    if ir.status_code == 200 and len(ir.content) > 14000:
+                        p = f"temp/{tag_id}_comm.jpg"
+                        with open(p, "wb") as f:
+                            f.write(ir.content)
+                        vim = validate_and_enhance_1080p(Image.open(p), existing_hashes)
+                        if vim is not None:
+                            return vim
+        except Exception:
+            pass
+
     failed_queries.append(news_query)
     return None
 
 # ==============================================================================
-# 9. GOD-LEVEL MULTI-ANGLE CAMERA & KEY-STAT CALLOUT COMPOSITOR
+# 8. 2026 GOD-LEVEL 6-MODE VISUAL STAGE & MOTION GRAPHICS COMPOSITOR
 # ==============================================================================
 def has_well_framed_face(im):
     if FACE_CASCADE is None:
@@ -1643,7 +1802,7 @@ def has_well_framed_face(im):
         gray_s = cv2.cvtColor(np.array(im.resize((sw, sh))), cv2.COLOR_RGB2GRAY)
         faces = FACE_CASCADE.detectMultiScale(gray_s, scaleFactor=1.12, minNeighbors=5, minSize=(40, 40))
         for (fx, fy, fw, fh) in faces:
-            if fx > sw * 0.05 and (fx + fw) < sw * 0.95 and fy > sh * 0.05 and (fy + fh) < sh * 0.92 and fh < sh * 0.60:
+            if fx > sw * 0.08 and (fx + fw) < sw * 0.92 and fy > sh * 0.08 and (fy + fh) < sh * 0.88 and fh < sh * 0.45:
                 return True
     except Exception:
         pass
@@ -1683,7 +1842,7 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
                 dual_stage.paste(left_half, (0, 0))
                 dual_stage.paste(right_half, (0, half_h))
                 d_line = ImageDraw.Draw(dual_stage)
-                d_line.line([(0, half_h), (target_w, half_h)], fill=(255, 214, 10), width=6)
+                d_line.line([(0, half_h), (target_w, half_h)], fill=(255, 220, 0), width=6)
                 return dual_stage
 
         if faces:
@@ -1702,12 +1861,12 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
         max_y = max(f[1] + f[3] for f in faces)
         face_span_h = max_y - min_y
         if face_span_h * 1.85 <= crop_h:
-            desired_top = min_y - int(face_span_h * 0.45)
+            desired_top = min_y - int(face_span_h * 0.65)
             top = max(0, min(ih - crop_h, desired_top))
             cropped = im.crop((0, top, crop_w, top + crop_h))
             return cropped.resize((target_w, target_h), resample_mode)
     else:
-        top = int((ih - crop_h) * 0.22)
+        top = int((ih - crop_h) * 0.15)
         cropped = im.crop((0, top, crop_w, top + crop_h))
         return cropped.resize((target_w, target_h), resample_mode)
 
@@ -1720,69 +1879,50 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
     return bg
 
 def build_clean_1080p_stage(im, W, H):
-    resample_mode = getattr(Image, "Resampling", Image).LANCZOS
-    if W < H:
-        bg = im.copy().resize((W, H), resample_mode).filter(ImageFilter.GaussianBlur(radius=30))
-        bg = ImageEnhance.Brightness(bg).enhance(0.32)
-        canvas = bg.convert("RGBA")
-
-        hero_w, hero_h = int(W * 1.15), int(1340 * 1.15)
-        fg = fit_full_height_face_aware_1080p(im, hero_w, hero_h)
-        return ("SHORT_STAGE", canvas, fg)
-    else:
-        over_w, over_h = int(W * 1.15), int(H * 1.15)
-        fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
-        return ("FULL_BLEED_STAGE", fg, None)
+    over_w, over_h = int(W * 1.15), int(H * 1.15)
+    fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
+    return ("FULL_BLEED_CREATOR_STAGE", fg, None)
 
 def extract_animated_frame_from_stage(stage_tuple, W, H, bp, pan_dir=1):
     resample_mode = getattr(Image, "Resampling", Image).BILINEAR
-    mode_tag, base_a, base_b = stage_tuple
+    _, fg, _ = stage_tuple
     smooth_p = 0.5 - 0.5 * math.cos(math.pi * bp)
 
-    if mode_tag == "SHORT_STAGE":
-        canvas = base_a.copy()
-        fg = base_b
-        fw, fh = fg.size
-        win_w, win_h = W, 1340
-        cur_w = int(win_w + (fw - win_w) * (1.0 - 0.78 * smooth_p))
-        cur_h = int(win_h + (fh - win_h) * (1.0 - 0.78 * smooth_p))
-        max_dx = max(fw - cur_w, 0)
-        max_dy = max(fh - cur_h, 0)
-        ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
-        oy = int(max_dy * 0.45)
-        slice_fg = fg.crop((ox, oy, ox + cur_w, oy + cur_h)).resize((win_w, win_h), resample_mode)
-        canvas.paste(slice_fg, (0, 120))
+    fw, fh = fg.size
+    cur_w = int(W + (fw - W) * (1.0 - 0.80 * smooth_p))
+    cur_h = int(H + (fh - H) * (1.0 - 0.80 * smooth_p))
+    max_dx = max(fw - cur_w, 0)
+    max_dy = max(fh - cur_h, 0)
+    ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
+    oy = int(max_dy * (0.20 + 0.5 * smooth_p))
+    frame = fg.crop((ox, oy, ox + cur_w, oy + cur_h)).resize((W, H), resample_mode).convert("RGBA")
 
-        draw = ImageDraw.Draw(canvas, "RGBA")
-        for y in range(1460, H):
-            draw.line([(0, y), (W, y)], fill=(6, 9, 18, int(235 * min(1.0, (y - 1460) / 180.0))))
-        draw.line([(0, 120), (W, 120)], fill=(255, 214, 10, 220), width=3)
-        draw.line([(0, 1460), (W, 1460)], fill=(255, 214, 10, 220), width=3)
-        return canvas
-    else:
-        fg = base_a
-        fw, fh = fg.size
-        cur_w = int(W + (fw - W) * (1.0 - 0.80 * smooth_p))
-        cur_h = int(H + (fh - H) * (1.0 - 0.80 * smooth_p))
-        max_dx = max(fw - cur_w, 0)
-        max_dy = max(fh - cur_h, 0)
-        ox = int(max_dx * (smooth_p if pan_dir == 1 else (1.0 - smooth_p)))
-        oy = int(max_dy * (0.25 + 0.5 * smooth_p))
-        frame = fg.crop((ox, oy, ox + cur_w, oy + cur_h)).resize((W, H), resample_mode).convert("RGBA")
-        draw = ImageDraw.Draw(frame, "RGBA")
-        for y in range(H - 260, H):
-            draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(215 * ((y - (H - 260)) / 260.0) ** 1.2)))
-        return frame
+    draw = ImageDraw.Draw(frame, "RGBA")
+    top_grad_h = 160 if W < H else 120
+    for y in range(0, top_grad_h):
+        alpha = int(165 * (1.0 - (y / float(top_grad_h))))
+        draw.line([(0, y), (W, y)], fill=(4, 7, 14, alpha))
+
+    bot_grad_h = 520 if W < H else 280
+    for y in range(H - bot_grad_h, H):
+        alpha = int(225 * (((y - (H - bot_grad_h)) / float(bot_grad_h)) ** 1.25))
+        draw.line([(0, y), (W, y)], fill=(4, 7, 14, alpha))
+    return frame
 
 def build_documentary_evidence_stage_1080p(base_photo, beat_text, prop_badge, dossier):
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
     W, H = 1920, 1080
     bg = base_photo.copy().resize((W, H), resample_mode).filter(ImageFilter.GaussianBlur(radius=28))
-    bg = ImageEnhance.Brightness(bg).enhance(0.32).convert("RGBA")
-    fg = fit_full_height_face_aware_1080p(base_photo, 1280, 720)
-    bg.paste(fg, ((W - 1280) // 2, 70))
-    draw = ImageDraw.Draw(bg, "RGBA")
-    draw.rounded_rectangle([((W - 1280) // 2 - 4, 66), ((W + 1280) // 2 + 4, 794)], radius=12, outline=(255, 214, 10, 235), width=4)
+    bg = ImageEnhance.Brightness(bg).enhance(0.28).convert("RGBA")
+    draw_bg = ImageDraw.Draw(bg, "RGBA")
+    for x in range(0, W, 90):
+        draw_bg.line([(x, 0), (x, H)], fill=(0, 220, 255, 18), width=1)
+    for y in range(0, H, 90):
+        draw_bg.line([(0, y), (W, y)], fill=(0, 220, 255, 18), width=1)
+
+    fg = fit_full_height_face_aware_1080p(base_photo, 1340, 760)
+    bg.paste(fg, ((W - 1340) // 2, 80))
+    draw_bg.rounded_rectangle([((W - 1340) // 2 - 4, 76), ((W + 1340) // 2 + 4, 844)], radius=14, outline=(255, 220, 0, 235), width=4)
     return bg.convert("RGB")
 
 def extract_key_stat_callout(beat_text):
@@ -1790,21 +1930,8 @@ def extract_key_stat_callout(beat_text):
     if m:
         val = m.group(1).strip().upper()
         if len(val) >= 3 and val not in {"2026", "2025", "1995", "1996", "2023", "2022"}:
-            return f"⚡ KEY STAT: {val}"
+            return f"📊 {val}"
     return None
-
-# ==============================================================================
-# 10. ULTRA-HIGH-DENSITY 2.2s (SHORT) / 2.6s (LONG) STORYBOARD BUILDER
-#     Delivers 16-20 unique visual cuts in Shorts & 45-55+ cuts in Long Videos!
-# ==============================================================================
-def has_strict_economic_context(text):
-    low = text.lower()
-    if any(prison_w in low for prison_w in ["jailed", "prison", "sentenced", "murder", "killed", "court", "police"]):
-        return False
-    if re.search(r"\b(\d+(\.\d+)?%|\$\d+|\d+\s*(billion|trillion))\b", low):
-        return True
-    econ_terms = ["gdp", "inflation", "economy", "economic", "market", "trade", "tariff", "cost", "budget", "growth", "debt", "financial", "bank", "earnings", "revenue"]
-    return any(re.search(rf"\b{re.escape(t)}\b", low) for t in econ_terms)
 
 def build_prop_driven_storyboard_1080p(
     sections_list, dossier, entities, W, H, tag_prefix="short",
@@ -1816,9 +1943,7 @@ def build_prop_driven_storyboard_1080p(
     unique_real_photos = shared_photo_pool if shared_photo_pool is not None else []
     failed_queries = []
     reused_photo_beats = 0
-    map_beats = 0
     moving_video_beats = 0
-    generated_infographic_beats = 0
 
     if start_beat_offset == 0 and dossier.get("lead_img") and not any(b in dossier["lead_img"].lower() for b in BANNED_IMAGE_SOURCES):
         try:
@@ -1835,21 +1960,21 @@ def build_prop_driven_storyboard_1080p(
 
     global_beat_idx = start_beat_offset
     max_video_clips_for_block = 2 if W < H else 1
+    layout_modes = ["CINEMA_HERO_ZOOM", "DOSSIER_3D_CARD", "CINEMA_HERO_ZOOM", "INVESTIGATIVE_HIGHLIGHT"]
 
     for sec_idx, sec in enumerate(sections_list):
         narration = sec["narration"]
         sec_dur = sec["duration"]
         word_timings = sec["word_timings"]
         sec_headline = sec.get("headline") or sec.get("chapter_title") or make_clean_context_headline(dossier["title"])
+        sec_role = sec.get("role", "THE REAL STORY")
         claim_meta = sec.get("claim_meta") or dossier["verified_claims"][0]
 
-        # Ultra-Engaging 2.2s visual cut rate for Shorts & 2.6s for Longs!
-        target_beat_len = 2.2 if W < H else 2.6
+        target_beat_len = 2.1 if W < H else 2.5
         num_beats = max(3, int(round(sec_dur / target_beat_len)))
         beat_dur = sec_dur / float(num_beats)
         words = narration.split()
         w_per_b = max(1, int(math.ceil(len(words) / float(num_beats))))
-        used_modes_in_sec = set()
 
         for b_i in range(num_beats):
             b_txt = " ".join(words[b_i * w_per_b:(b_i + 1) * w_per_b]) or narration
@@ -1884,20 +2009,13 @@ def build_prop_driven_storyboard_1080p(
                     else:
                         beat_im = Image.new("RGB", (1920, 1080), (12, 18, 32))
 
-                if has_strict_economic_context(b_txt) and dossier.get("wb_data") is not None and "DATA_CHART_BEAT" not in used_modes_in_sec:
-                    b_type = "DATA_CHART_BEAT"
-                elif re.search(r"\b(timeline|overnight|step by step|previously|september|october|days before|july|august)\b", low_b) and "TIMELINE_GRAPH_BEAT" not in used_modes_in_sec:
-                    b_type = "TIMELINE_GRAPH_BEAT"
-                elif re.search(r"\b(said|stated|confirmed|record|specifics|told|claim|claims|study|researchers)\b", low_b) and "HEADLINE_EVIDENCE_BEAT" not in used_modes_in_sec:
-                    b_type = "HEADLINE_EVIDENCE_BEAT"
-                elif re.search(r"\b(competing|colliding|whether|or if|versus|contrast|between|ahead of|beat)\b", low_b) and "SPLIT_COMPARE_BEAT" not in used_modes_in_sec and len(unique_real_photos) >= 2:
+                if re.search(r"\b(versus|contrast|between|ahead of|beat|rival)\b", low_b) and len(unique_real_photos) >= 2 and b_i == 1:
                     b_type = "SPLIT_COMPARE_BEAT"
                 else:
-                    b_type = "PHOTO_BEAT"
+                    b_type = layout_modes[global_beat_idx % len(layout_modes)]
 
                 stage_1 = build_clean_1080p_stage(beat_im, W, H)
 
-            used_modes_in_sec.add(b_type)
             secondary_im = unique_real_photos[(len(unique_real_photos) - 2) % len(unique_real_photos)] if len(unique_real_photos) >= 2 else beat_im
             prev_stage = planned_beats[-1]["stage_1"] if planned_beats else None
 
@@ -1909,6 +2027,7 @@ def build_prop_driven_storyboard_1080p(
                 "duration": round(beat_dur, 3),
                 "beat_excerpt": b_txt,
                 "stat_callout": stat_callout,
+                "section_role": sec_role,
                 "section_headline": sec_headline,
                 "full_section_narration": narration,
                 "word_timings": word_timings,
@@ -1930,13 +2049,11 @@ def build_prop_driven_storyboard_1080p(
         "total_beats": len(planned_beats),
         "unique_real_photos": len(unique_real_photos),
         "moving_video_beats": moving_video_beats,
-        "generated_infographic_beats": generated_infographic_beats,
         "reused_photo_beats": reused_photo_beats,
-        "map_beats": map_beats,
         "failed_queries_count": len(failed_queries),
-        "failed_queries": failed_queries[:10]
+        "failed_queries": failed_queries[:8]
     }
-    print("📊 [AUDIT]", tag_prefix.upper(), "| Beats:", stats["total_beats"], "| Total Unique Photos:", stats["unique_real_photos"], "| Moving Videos:", stats["moving_video_beats"], flush=True)
+    print("📊 [AUDIT]", tag_prefix.upper(), "| Beats:", stats["total_beats"], "| Unique Photos:", stats["unique_real_photos"], "| Moving Videos:", stats["moving_video_beats"], flush=True)
     return planned_beats, unique_real_photos, stats
 
 def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_short=True):
@@ -1945,7 +2062,6 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     b_type = beat["beat_type"]
     story = beat["story"]
     c_prof = story["country_profile"]
-    claim_meta = beat["claim_meta"]
     section_t = beat["section_elapsed_before"] + local_t
 
     if b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg") is not None:
@@ -1962,148 +2078,90 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     elif b_type == "SPLIT_COMPARE_BEAT":
         frame = Image.new("RGBA", (W, H), (8, 12, 22, 255))
         if is_short:
-            top_im = fit_full_height_face_aware_1080p(beat["primary_im"], W, 665)
-            bot_im = fit_full_height_face_aware_1080p(beat["secondary_im"], W, 665)
-            frame.paste(top_im, (0, 120))
-            frame.paste(bot_im, (0, 790))
+            top_im = fit_full_height_face_aware_1080p(beat["primary_im"], W, H // 2)
+            bot_im = fit_full_height_face_aware_1080p(beat["secondary_im"], W, H - (H // 2))
+            frame.paste(top_im, (0, 0))
+            frame.paste(bot_im, (0, H // 2))
             draw = ImageDraw.Draw(frame, "RGBA")
-            draw.line([(0, 787), (W, 787)], fill=(255, 214, 10, 255), width=6)
+            draw.line([(0, H // 2), (W, H // 2)], fill=(255, 220, 0, 255), width=6)
         else:
             left_im = fit_full_height_face_aware_1080p(beat["primary_im"], W // 2, H)
             right_im = fit_full_height_face_aware_1080p(beat["secondary_im"], W // 2, H)
             frame.paste(left_im, (0, 0))
             frame.paste(right_im, (W // 2, 0))
             draw = ImageDraw.Draw(frame, "RGBA")
-            draw.line([(W // 2, 0), (W // 2, H)], fill=(255, 214, 10, 255), width=6)
-            for y in range(H - 260, H):
-                draw.line([(0, y), (W, y)], fill=(4, 7, 14, int(215 * ((y - (H - 260)) / 260.0) ** 1.2)))
+            draw.line([(W // 2, 0), (W // 2, H)], fill=(255, 220, 0, 255), width=6)
+    elif b_type == "DOSSIER_3D_CARD":
+        # Nitish Rajput / Vox 3D Floating Evidence Card over dark blurred grid stage!
+        base_f = extract_animated_frame_from_stage(beat["stage_1"], W, H, bp, pan_dir=beat["pan_dir"])
+        bg = base_f.filter(ImageFilter.GaussianBlur(radius=22))
+        frame = ImageEnhance.Brightness(bg).enhance(0.38)
+        draw = ImageDraw.Draw(frame, "RGBA")
+        for gx in range(0, W, 90):
+            draw.line([(gx, 0), (gx, H)], fill=(0, 230, 255, 20), width=1)
+        card_w, card_h = (int(W * 0.86), int(H * 0.56)) if is_short else (int(W * 0.74), int(H * 0.68))
+        cx1, cy1 = (W - card_w) // 2, (220 if is_short else 110)
+        fg_card = fit_full_height_face_aware_1080p(beat["primary_im"], card_w, card_h)
+        draw.rounded_rectangle([(cx1 + 12, cy1 + 14), (cx1 + card_w + 12, cy1 + card_h + 14)], radius=18, fill=(0, 0, 0, 180))
+        frame.paste(fg_card, (cx1, cy1))
+        draw.rounded_rectangle([(cx1 - 3, cy1 - 3), (cx1 + card_w + 3, cy1 + card_h + 3)], radius=16, outline=(255, 220, 0, 245), width=4)
     else:
         frame = extract_animated_frame_from_stage(beat["stage_1"], W, H, bp, pan_dir=beat["pan_dir"])
-        if local_t < 0.20 and beat.get("prev_stage") is not None:
+        if local_t < 0.18 and beat.get("prev_stage") is not None:
             try:
                 prev_f = extract_animated_frame_from_stage(beat["prev_stage"], W, H, 1.0, pan_dir=1)
-                alpha_blend = local_t / 0.20
+                alpha_blend = local_t / 0.18
                 frame = Image.blend(prev_f, frame, alpha_blend)
             except Exception:
                 pass
         draw = ImageDraw.Draw(frame, "RGBA")
 
+    # Investigative Yellow Highlighter Overlay on `INVESTIGATIVE_HIGHLIGHT` beats!
+    if b_type == "INVESTIGATIVE_HIGHLIGHT":
+        hl_y = 1360 if is_short else (H - 255)
+        hl_x1, hl_x2 = (54, W - 54) if is_short else (220, W - 220)
+        draw.rounded_rectangle([(hl_x1, hl_y), (hl_x2, hl_y + 78)], radius=12, fill=(12, 16, 28, 235), outline=(255, 220, 0, 220), width=2)
+        sweep_w = int(((hl_x2 - hl_x1) - 24) * min(1.0, bp * 1.45))
+        draw.rounded_rectangle([(hl_x1 + 12, hl_y + 12), (hl_x1 + 12 + sweep_w, hl_y + 66)], radius=8, fill=(255, 225, 0, 245))
+        excerpt_short = " ".join(beat["beat_excerpt"].split()[:7]).upper()
+        draw.text((hl_x1 + 26, hl_y + 22), f"🔍 {excerpt_short}", fill=(10, 12, 18, 255), font=get_font(26 if is_short else 28))
+
+    # Top-Left Compact Creator Brand Logo + Flag
+    top_y = 34 if is_short else 30
+    frame.paste(watermark, (38, top_y), watermark)
+    if c_prof.get("flag_img"):
+        fl = c_prof["flag_img"].resize((76, 48))
+        frame.paste(fl, (182, top_y + 14), fl)
+
+    # Top-Right Sleek Glassmorphism Context Pill
+    kicker_lbl = beat["vseg"]["label"] if (b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg")) else beat["primary_lbl"]
+    f_lv = get_font(21 if is_short else 22)
+    lw_box = draw.textbbox((0, 0), kicker_lbl, font=f_lv)[2] + 38
+    draw.rounded_rectangle([(W - lw_box - 38, top_y + 12), (W - 38, top_y + 58)], radius=22, fill=(10, 14, 24, 215), outline=(255, 220, 0, 240), width=2)
+    draw.text((W - lw_box - 19, top_y + 22), kicker_lbl, fill=(255, 220, 0, 255), font=f_lv)
+
+    # Animated Key-Stat HUD Counter Card (with live progress bar!)
     if beat.get("stat_callout"):
         sc_txt = beat["stat_callout"]
-        f_sc = get_font(26 if is_short else 30)
-        sc_w = draw.textbbox((0, 0), sc_txt, font=f_sc)[2] + 44
-        sc_x = (W - sc_w) // 2 if is_short else (W - sc_w - 48)
-        sc_y = 148 if is_short else 108
-        draw.rounded_rectangle([(sc_x, sc_y), (sc_x + sc_w, sc_y + 58)], radius=12, fill=(255, 214, 10, 248), outline=(10, 14, 24, 255), width=3)
-        draw.text((sc_x + 22, sc_y + 12), sc_txt, fill=(10, 14, 24, 255), font=f_sc)
+        f_sc = get_font(30 if is_short else 32)
+        sc_w = max(draw.textbbox((0, 0), sc_txt, font=f_sc)[2] + 56, 260)
+        sc_x = (W - sc_w) // 2 if is_short else (W - sc_w - 38)
+        sc_y = 132 if is_short else 104
+        draw.rounded_rectangle([(sc_x, sc_y), (sc_x + sc_w, sc_y + 72)], radius=14, fill=(10, 14, 24, 240), outline=(255, 220, 0, 255), width=3)
+        draw.text((sc_x + 24, sc_y + 10), sc_txt, fill=(255, 225, 0, 255), font=f_sc)
+        prog_w = int((sc_w - 48) * min(1.0, bp * 1.35))
+        draw.rounded_rectangle([(sc_x + 24, sc_y + 54), (sc_x + 24 + prog_w, sc_y + 62)], radius=4, fill=(0, 235, 255, 255))
 
-    cy_card = 1475 if is_short else (H - 305)
-    bx1, bx2 = (42, W - 42) if is_short else (56, 1260)
-
-    pillar_tag = story.get("pillar", "WORLD").replace("_", " ")
-    citation_str = f"WORLD TALK BRIEF • {pillar_tag} CASE STUDY • {claim_meta['published_date']}"
-
-    if b_type in ["PHOTO_BEAT", "VIDEO_BROLL_BEAT"]:
-        kicker = beat["vseg"]["label"] if (b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg")) else beat["primary_lbl"]
-        hl = str(beat["section_headline"]).upper()
-        f_k = get_font(21)
-        f_h = get_font(28 if is_short else 30)
-        kw = draw.textbbox((0, 0), kicker, font=f_k)[2] + 34
-
-        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 158)], radius=12, fill=(10, 16, 28, 226), outline=(255, 214, 10, 215), width=2)
-        draw.rounded_rectangle([(bx1 + 18, cy_card + 14), (bx1 + 18 + kw, cy_card + 48)], radius=6, fill=(204, 18, 36, 255))
-        draw.text((bx1 + 34, cy_card + 19), kicker, fill=(255, 255, 255, 255), font=f_k)
-        for i_l, ln in enumerate(wrap_lines(draw, hl, f_h, (bx2 - bx1) - 48)[:2]):
-            draw.text((bx1 + 22, cy_card + 56 + i_l * 34), ln, fill=(255, 255, 255, 255), font=f_h)
-        draw.text((bx1 + 22, cy_card + 128), citation_str[:78], fill=(0, 210, 255, 235), font=get_font(17))
-
-    elif b_type == "HEADLINE_EVIDENCE_BEAT":
-        draw.rounded_rectangle([(bx1, cy_card), (bx2, cy_card + 162)], radius=14, fill=(246, 244, 236, 244), outline=(204, 18, 36, 255), width=3)
-        draw.rounded_rectangle([(bx1 + 22, cy_card + 10), (bx1 + 520, cy_card + 42)], radius=6, fill=(204, 18, 36, 255))
-        draw.text((bx1 + 36, cy_card + 14), f"VERIFIED EVIDENCE • {claim_meta['published_date']}", fill=(255, 255, 255, 255), font=get_font(20))
-
-        hl_txt = beat["beat_excerpt"]
-        f_q = get_font(26 if is_short else 28)
-        lines = wrap_lines(draw, hl_txt, f_q, (bx2 - bx1) - 56)[:2]
-        hl_w = int(((bx2 - bx1) - 60) * min(bp * 1.4, 1.0))
-        draw.rounded_rectangle([(bx1 + 22, cy_card + 50), (bx1 + 22 + hl_w, cy_card + 86)], radius=6, fill=(255, 232, 65, 240))
-        for idx_l, ln in enumerate(lines):
-            draw.text((bx1 + 28, cy_card + 52 + idx_l * 36), ln, fill=(12, 16, 22, 255), font=f_q)
-        draw.text((bx1 + 28, cy_card + 130), citation_str[:74], fill=(80, 90, 110, 255), font=get_font(17))
-
-    elif b_type == "TIMELINE_GRAPH_BEAT":
-        draw.rounded_rectangle([(bx1, cy_card - 8), (bx2, cy_card + 164)], radius=14, fill=(10, 16, 28, 236), outline=(255, 214, 10, 225), width=2)
-        steps = [
-            ("CATALYST", story["title"][:44]),
-            ("MECHANISM", beat["section_headline"][:44]),
-            ("IMPACT", f"Reshaping {c_prof['region']}")
-        ]
-        sy = cy_card + 6
-        for idx_s, (slbl, stxt) in enumerate(steps):
-            act = (bp >= idx_s * 0.28)
-            bg_c = (204, 18, 36, 255) if act else (35, 45, 65, 210)
-            draw.rounded_rectangle([(bx1 + 22, sy), (bx1 + 175, sy + 38)], radius=6, fill=bg_c)
-            draw.text((bx1 + 30, sy + 7), slbl, fill=(255, 255, 255, 255), font=get_font(19))
-            draw.text((bx1 + 190, sy + 6), stxt[:42], fill=(255, 255, 255, 255) if act else (160, 170, 185, 210), font=get_font(23))
-            sy += 50
-
-    elif b_type == "DATA_CHART_BEAT" and story.get("wb_data") is not None:
-        wb_years, wb_vals = story["wb_data"]
-        draw.rounded_rectangle([(bx1, cy_card - 25), (bx2, cy_card + 165)], radius=14, fill=(10, 16, 28, 240), outline=(255, 214, 10, 230), width=2)
-        draw.text((bx1 + 26, cy_card - 10), f"{c_prof['name']} VERIFIED GDP GROWTH (%)  •  WORLD BANK OPEN DATA", fill=(255, 214, 10, 255), font=get_font(22))
-        anim_p = min(bp * 1.35, 1.0)
-        n_bars = len(wb_years)
-        slot_w = ((bx2 - bx1) - 90) // max(n_bars, 1)
-        max_v = max(max(abs(v) for v in wb_vals), 1.0)
-        for b_i, (yr, val) in enumerate(zip(wb_years, wb_vals)):
-            bx = bx1 + 48 + b_i * slot_w
-            bh = max(int(75 * (abs(val) / max_v) * anim_p), 10)
-            b_top = cy_card + 115 - bh
-            b_col = (255, 214, 10, 255) if val >= 0 else (204, 18, 36, 255)
-            draw.rounded_rectangle([(bx, b_top), (bx + slot_w - 42, cy_card + 115)], radius=5, fill=b_col)
-            draw.text((bx + 6, b_top - 26), f"{round(val * anim_p, 1)}%", fill=(255, 255, 255, 255), font=get_font(20))
-            draw.text((bx + 8, cy_card + 124), yr, fill=(200, 215, 235, 255), font=get_font(20))
-
-    else:
-        mid_x = (bx1 + bx2) // 2
-        draw.rounded_rectangle([(bx1, cy_card), (mid_x - 10, cy_card + 145)], radius=12, fill=(10, 18, 32, 235), outline=(0, 210, 255, 230), width=2)
-        draw.text((bx1 + 22, cy_card + 18), "CORE FACTOR A", fill=(0, 210, 255, 255), font=get_font(22))
-        draw.text((bx1 + 22, cy_card + 62), "STRATEGIC ADVANTAGE", fill=(255, 255, 255, 255), font=get_font(24))
-
-        draw.rounded_rectangle([(mid_x + 10, cy_card), (bx2, cy_card + 145)], radius=12, fill=(10, 18, 32, 235), outline=(255, 214, 10, 230), width=2)
-        draw.text((mid_x + 32, cy_card + 18), "CORE FACTOR B", fill=(255, 214, 10, 255), font=get_font(22))
-        draw.text((mid_x + 32, cy_card + 62), "OPERATIONAL SCALE", fill=(255, 255, 255, 255), font=get_font(24))
-
-    top_y = 28 if is_short else 32
-    frame.paste(watermark, (42, top_y), watermark)
-    if c_prof.get("flag_img"):
-        fl = c_prof["flag_img"].resize((84, 54))
-        frame.paste(fl, (198, top_y + 14), fl)
-
-    live_txt = f"● {pillar_tag} • {c_prof['name']}"
-    f_lv = get_font(20)
-    lw_box = draw.textbbox((0, 0), live_txt, font=f_lv)[2] + 36
-    draw.rounded_rectangle([(W - lw_box - 42, top_y + 12), (W - 42, top_y + 56)], radius=8, fill=(14, 20, 34, 225), outline=(204, 18, 36, 255), width=2)
-    draw.text((W - lw_box - 24, top_y + 22), live_txt, fill=(255, 214, 10, 255), font=f_lv)
-
-    if not is_short:
-        draw.rectangle([(0, H - 38), (W, H)], fill=(10, 15, 28, 248))
-        ticker_str = f"   •   [{pillar_tag}] {story['original_yt_title'].upper()}   •   SUBSCRIBE FOR DEEP EXPLAINERS ON WORLD, TECH, AI, MYSTERIES, SCIENCE & BUSINESS   " * 2
-        scroll_x = 255 - int((section_t * 105) % 1400)
-        draw.text((scroll_x, H - 30), ticker_str, fill=(255, 214, 10, 255), font=get_font(18))
-        draw.rectangle([(0, H - 38), (242, H)], fill=(204, 18, 36, 255))
-        draw.line([(242, H - 38), (242, H)], fill=(255, 214, 10, 255), width=3)
-        draw.text((18, H - 30), "WORLD TALK BRIEF", fill=(255, 255, 255, 255), font=get_font(19))
-
-    if is_short and beat["section_idx"] == 0 and beat["beat_in_section"] == 0 and local_t < 0.35:
-        draw.rounded_rectangle([(42, 740), (W - 42, 915)], radius=16, fill=(204, 18, 36, 242), outline=(255, 214, 10, 255), width=4)
-        f_cov = get_font(44)
-        for ci, cln in enumerate(wrap_lines(draw, story["title"].upper(), f_cov, W - 120)[:2]):
-            draw.text((68, 765 + ci * 58), cln, fill=(255, 255, 255, 255), font=f_cov)
-
+    # Center-Bottom Pop-Up Creator Subtitles
     sub_strip = voice_sub_dir.render_exact_synced_subtitles(beat["word_timings"], section_t, W, H, is_short=is_short)
-    sub_y = 1655 if is_short else (H - 154)
+    sub_y = 1520 if is_short else (H - 155)
     frame.paste(sub_strip, (0, sub_y), sub_strip)
+
+    # Bottom-Edge Golden Progress Bar
+    sec_prog = min(1.0, max(0.0, section_t / max(beat["section_duration"], 0.1)))
+    bar_w = int(W * sec_prog)
+    draw.rectangle([(0, H - 8), (W, H)], fill=(20, 26, 40, 220))
+    draw.rectangle([(0, H - 8), (bar_w, H)], fill=(255, 220, 0, 255))
 
     return np.array(frame.convert("RGB"))
 
@@ -2122,22 +2180,17 @@ def make_section_clip_from_beats(section_beats, watermark, voice_sub_dir, sectio
     return VideoClip(make_frame, duration=section_dur)
 
 # ==============================================================================
-# 11. EBU R128 BROADCAST-MASTERED NATURAL HUMAN VOICE ENGINE
+# 9. WARM STUDIO MIC HUMAN VOICE ENGINE (180Hz Chest Warmth + EBU R128 -14 LUFS)
 # ==============================================================================
 class VoiceAndSubtitleEngine:
     async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD"):
-        """
-        Uses Gen-2 Conversational Neural Voices at `+3%` natural storytelling cadence,
-        mastered with FFmpeg EBU R128 YouTube Broadcast Loudness Normalization (`loudnorm=I=-14:TP=-1.5:LRA=11`)
-        so every single word has warm, rich, studio-mic human presence!
-        """
-        v_name = CATEGORY_VOICE_CAST.get(pillar, "en-US-AndrewMultilingualNeural")
+        v_name, rate = CATEGORY_VOICE_CAST.get(pillar, ("en-US-AndrewMultilingualNeural", "+3%"))
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
         word_timings = []
 
         for _ in range(2):
             try:
-                comm = edge_tts.Communicate(text, v_name, rate="+3%", pitch="+0Hz")
+                comm = edge_tts.Communicate(text, v_name, rate=rate, pitch="+0Hz")
                 word_timings = []
                 with open(raw_mp3, "wb") as audio_file:
                     async for chunk in comm.stream():
@@ -2155,10 +2208,11 @@ class VoiceAndSubtitleEngine:
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1000:
             gTTS(text=text, lang="en").save(raw_mp3)
 
+        # Warm Shure SM7B Studio Mic EQ: 180Hz chest warmth + 3.5kHz clarity + EBU R128 -14 LUFS loudness normalization!
         try:
             cmd = [
                 "ffmpeg", "-y", "-i", raw_mp3,
-                "-af", "loudnorm=I=-14:TP=-1.5:LRA=11,apad=pad_dur=0.20",
+                "-af", "highpass=f=70,equalizer=f=180:width_type=o:width=1.5:g=2.2,equalizer=f=3400:width_type=o:width=1.2:g=1.4,loudnorm=I=-14:TP=-1.5:LRA=11,apad=pad_dur=0.20",
                 "-ar", "48000", "-b:a", "192k", out_path
             ]
             subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
@@ -2174,15 +2228,15 @@ class VoiceAndSubtitleEngine:
             tot_chars = max(sum(len(w) for w in words), 1)
             cur = 0.0
             for w in words:
-                wd = (len(w) / float(tot_chars)) * (total_dur - 0.2)
+                wd = (len(w) / float(tot_chars)) * (total_dur - 0.18)
                 word_timings.append({"word": w, "start": round(cur, 3), "end": round(cur + wd, 3)})
                 cur += wd
         return vc, total_dur, word_timings
 
     def render_exact_synced_subtitles(self, word_timings, section_t, W, H, is_short=True):
         if not word_timings:
-            return Image.new("RGBA", (W, 200), (0, 0, 0, 0))
-        chunk_sz = 4 if is_short else 7
+            return Image.new("RGBA", (W, 240), (0, 0, 0, 0))
+        chunk_sz = 4 if is_short else 6
         chunks = [word_timings[i:i + chunk_sz] for i in range(0, len(word_timings), chunk_sz)]
         active_chunk = chunks[0]
         active_word_idx = 0
@@ -2197,15 +2251,15 @@ class VoiceAndSubtitleEngine:
                 active_chunk = ch
                 active_word_idx = len(ch) - 1
 
-        strip_h = 210 if is_short else 110
+        strip_h = 240 if is_short else 130
         strip = Image.new("RGBA", (W, strip_h), (0, 0, 0, 0))
         draw = ImageDraw.Draw(strip, "RGBA")
-        font = get_font(52 if is_short else 38)
+        font = get_font(58 if is_short else 44)
         words_str_list = [w["word"] for w in active_chunk]
 
         if is_short:
             lines = [words_str_list[:2], words_str_list[2:]] if len(words_str_list) > 2 else [words_str_list]
-            y_cur = 12
+            y_cur = 16
             w_cnt = 0
             for ln in lines:
                 if not ln:
@@ -2214,41 +2268,42 @@ class VoiceAndSubtitleEngine:
                 lw = draw.textbbox((0, 0), " ".join(disp), font=font)[2]
                 x_cur = (W - lw) // 2
                 for dw in disp:
-                    col = (255, 220, 0, 255) if w_cnt == active_word_idx else (255, 255, 255, 255)
-                    draw.text((x_cur, y_cur), dw, font=font, fill=col, stroke_width=7, stroke_fill=(0, 0, 0, 255))
+                    col = (255, 225, 0, 255) if w_cnt == active_word_idx else (255, 255, 255, 255)
+                    draw.text((x_cur + 4, y_cur + 4), dw, font=font, fill=(0, 0, 0, 230))
+                    draw.text((x_cur, y_cur), dw, font=font, fill=col, stroke_width=8, stroke_fill=(0, 0, 0, 255))
                     x_cur += draw.textbbox((0, 0), dw + " ", font=font)[2]
                     w_cnt += 1
-                y_cur += 70
+                y_cur += 76
         else:
             phrase = " ".join(words_str_list)
             lw = draw.textbbox((0, 0), phrase, font=font)[2]
-            bx1, bx2 = max((W - lw) // 2 - 30, 30), min((W + lw) // 2 + 30, W - 30)
-            draw.rounded_rectangle([(bx1, 8), (bx2, 86)], radius=12, fill=(6, 9, 16, 232), outline=(255, 214, 10, 105), width=2)
             x_cur = (W - lw) // 2
             for idx_w, w in enumerate(words_str_list):
-                col = (255, 214, 10, 255) if idx_w == active_word_idx else (255, 255, 255, 255)
-                draw.text((x_cur, 22), w, font=font, fill=col, stroke_width=3, stroke_fill=(0, 0, 0, 240))
+                col = (255, 225, 0, 255) if idx_w == active_word_idx else (255, 255, 255, 255)
+                draw.text((x_cur + 3, 28), w, font=font, fill=(0, 0, 0, 230))
+                draw.text((x_cur, 25), w, font=font, fill=col, stroke_width=6, stroke_fill=(0, 0, 0, 255))
                 x_cur += draw.textbbox((0, 0), w + " ", font=font)[2]
         return strip
 
 # ==============================================================================
-# 12. FULL-BLEED 1080p THUMBNAIL ENGINE
+# 10. 2026 VIRAL YOUTUBER THUMBNAIL ENGINE (With Red Focus Circle/Arrow + Neon Hook!)
 # ==============================================================================
-def extract_complete_viral_thumbnail_hook(dossier):
-    words = [
-        w.upper() for w in re.findall(r"[A-Za-z0-9']+", dossier["title"])
-        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in {"the", "and", "for", "with", "from", "into", "over", "after", "that", "this", "their", "they"} and len(w) <= 12
-    ]
-    if len(words) >= 4:
-        l1 = f"{words[0]} {words[1]}"
-        l2 = f"{words[2]} {words[3]}"
-    elif len(words) >= 2:
-        l1 = words[0]
-        l2 = words[1]
-    else:
-        l1 = dossier.get("pillar", "WORLD").replace("_", " ")
-        l2 = "EXPLAINED"
-    return l1, l2
+def build_meaningful_thumbnail_hook(dossier):
+    t_anchor = (dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)).upper()
+    pillar = dossier.get("pillar", "WORLD")
+    impact_lines = {
+        "WORLD": "THE REAL TRUTH",
+        "TECHNOLOGY": "GAME CHANGER",
+        "MIND_BLOWING_FACTS": "HOW IT WORKS",
+        "SCIENCE": "NEW DISCOVERY",
+        "BUSINESS": "MARKET SHOCK",
+        "HEALTH": "NEW BREAKTHROUGH",
+        "SPORTS": "HISTORIC WIN",
+        "ENTERTAINMENT": "INSIDE STORY"
+    }
+    line_1 = t_anchor[:18]
+    line_2 = impact_lines.get(pillar, "EXPLAINED")
+    return line_1, line_2
 
 def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, watermark, out_path="output/WTB_1080p_Thumb_1.jpg"):
     W, H = 1920, 1080
@@ -2262,44 +2317,43 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     hero_1 = face_photos[0] if face_photos else (unique_photos[0] if unique_photos else Image.new("RGB", (1920, 1080), (14, 22, 38)))
 
     full_im = fit_full_height_face_aware_1080p(hero_1, W, H)
-    full_im = ImageEnhance.Color(ImageEnhance.Contrast(full_im).enhance(1.22)).enhance(1.18)
+    full_im = ImageEnhance.Color(ImageEnhance.Contrast(full_im).enhance(1.25)).enhance(1.22)
     canvas = full_im.convert("RGBA")
     draw = ImageDraw.Draw(canvas, "RGBA")
 
-    for y in range(640, H):
-        alpha = int(225 * (((y - 640) / 440.0) ** 1.35))
-        draw.line([(0, y), (W, y)], fill=(6, 10, 20, alpha))
+    for y in range(660, H):
+        alpha = int(235 * (((y - 660) / 420.0) ** 1.25))
+        draw.line([(0, y), (W, y)], fill=(5, 8, 18, alpha))
 
-    draw.rectangle([(10, 10), (W - 10, H - 10)], outline=accent_col + (240,), width=8)
-    draw.rectangle([(18, 18), (W - 18, H - 18)], outline=badge_col + (225,), width=4)
+    # 2026 YouTuber Red/Gold Focus Circle & Directional Pointer on the upper-right focal zone!
+    cx_f, cy_f = 1420, 340
+    draw.ellipse([(cx_f - 170, cy_f - 170), (cx_f + 170, cy_f + 170)], outline=(255, 30, 50, 235), width=10)
+    draw.ellipse([(cx_f - 182, cy_f - 182), (cx_f + 182, cy_f + 182)], outline=(255, 220, 0, 180), width=4)
+
+    draw.rectangle([(10, 10), (W - 10, H - 10)], outline=accent_col + (245,), width=8)
+    draw.rectangle([(18, 18), (W - 18, H - 18)], outline=badge_col + (230,), width=4)
 
     canvas.paste(watermark, (54, 48), watermark)
     if c_prof.get("flag_img"):
-        fl = c_prof["flag_img"].resize((112, 72))
-        draw.rounded_rectangle([(208, 52), (328, 132)], radius=8, fill=accent_col + (255,))
-        canvas.paste(fl, (212, 56), fl)
+        fl = c_prof["flag_img"].resize((104, 66))
+        draw.rounded_rectangle([(198, 52), (310, 126)], radius=8, fill=accent_col + (255,))
+        canvas.paste(fl, (202, 56), fl)
 
-    brand_pill = f"WORLD TALK BRIEF  •  {pillar.replace('_', ' ')}"
-    f_bp = get_font(28)
-    bp_w = draw.textbbox((0, 0), brand_pill, font=f_bp)[2] + 48
-    draw.rounded_rectangle([(54, 152), (54 + bp_w, 208)], radius=10, fill=badge_col + (245,), outline=(255, 255, 255, 240), width=2)
-    draw.text((78, 165), brand_pill, fill=(255, 255, 255, 255), font=f_bp)
+    hook_line_1, hook_line_2 = build_meaningful_thumbnail_hook(dossier)
+    f_giant = get_font(96)
+    f_sub = get_font(86)
 
-    hook_line_1, hook_line_2 = extract_complete_viral_thumbnail_hook(dossier)
-    f_giant = get_font(92)
-    f_sub = get_font(84)
-
-    draw.text((62, 658), hook_line_1, fill=(0, 0, 0, 240), font=f_giant)
-    draw.text((54, 650), hook_line_1, fill=(255, 255, 255, 255), font=f_giant, stroke_width=7, stroke_fill=(0, 0, 0, 255))
+    draw.text((62, 668), hook_line_1, fill=(0, 0, 0, 245), font=f_giant)
+    draw.text((54, 660), hook_line_1, fill=(255, 255, 255, 255), font=f_giant, stroke_width=8, stroke_fill=(0, 0, 0, 255))
 
     w_l2 = draw.textbbox((0, 0), hook_line_2, font=f_sub)[2] + 76
-    poly_pts = [(54, 775), (54 + w_l2, 775), (38 + w_l2, 898), (38, 898)]
-    draw.polygon([(p[0] + 10, p[1] + 10) for p in poly_pts], fill=(0, 0, 0, 220))
+    poly_pts = [(54, 785), (54 + w_l2, 785), (38 + w_l2, 912), (38, 912)]
+    draw.polygon([(p[0] + 10, p[1] + 10) for p in poly_pts], fill=(0, 0, 0, 225))
     draw.polygon(poly_pts, fill=accent_col + (255,), outline=(255, 255, 255, 255))
-    draw.text((82, 792), hook_line_2, fill=(10, 12, 18, 255), font=f_sub)
+    draw.text((82, 804), hook_line_2, fill=(10, 12, 18, 255), font=f_sub)
 
-    sub_teaser = make_clean_context_headline(dossier["original_yt_title"], max_words=8)
-    draw.text((58, 932), f"▶ {sub_teaser}", fill=(0, 230, 255, 255), font=get_font(34), stroke_width=3, stroke_fill=(0, 0, 0, 255))
+    sub_teaser = make_clean_context_headline(dossier["original_yt_title"], max_words=7)
+    draw.text((58, 942), f"▶ {sub_teaser}", fill=(0, 235, 255, 255), font=get_font(34), stroke_width=3, stroke_fill=(0, 0, 0, 255))
 
     canvas.convert("RGB").save(out_path, quality=96)
 
@@ -2311,7 +2365,7 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     }
 
 # ==============================================================================
-# 13. YOUTUBE UPLOADER + AUTOMATIC PLAYLIST ASSIGNMENT + AUTO COMMENT
+# 11. YOUTUBE UPLOADER + AUTOMATIC PLAYLIST ASSIGNMENT + AUTO COMMENT
 # ==============================================================================
 def try_youtube_auto_upload(video_path, title, description, tags, category_id="25", pillar="WORLD", is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway=""):
     token_b64 = os.environ.get("YOUTUBE_TOKEN_JSON_B64", "").strip()
@@ -2358,11 +2412,11 @@ def try_youtube_auto_upload(video_path, title, description, tags, category_id="2
         return None
 
 # ==============================================================================
-# 14. MODULAR RENDER FUNCTIONS
+# 12. MODULAR RENDER FUNCTIONS (With 30-Track Mood-Adaptive Studio BGM Mixed at 8%!)
 # ==============================================================================
 async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map):
     pillar = short_dossier.get("pillar", "WORLD")
-    print(f"\n📱 [SHORT #{unit_num} - {pillar}] Building 1080p Short on: {short_dossier['original_yt_title']}", flush=True)
+    print(f"\n📱 [SHORT #{unit_num} - {pillar}] Building Full-Screen 1080p Short on: {short_dossier['original_yt_title']}", flush=True)
     short_sections, short_entities = build_short_script(short_dossier, variant_idx=len(hist_obj["published_keys"]) + unit_num)
 
     for idx, sec in enumerate(short_sections):
@@ -2377,13 +2431,25 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
     )
 
     short_clips = []
+    beat_switch_times_s = []
+    cur_t = 0.0
     for sec_idx, sec in enumerate(short_sections):
         sec_beats = [b for b in s_beats if b["section_idx"] == sec_idx]
+        for b in sec_beats:
+            beat_switch_times_s.append(round(cur_t, 2))
+            cur_t += b["duration"]
         clip = make_section_clip_from_beats(sec_beats, watermark, voice_sub_dir, sec["duration"], 1080, 1920, is_short=True)
         clip = clip.with_audio(sec["audio_clip"]) if MOVIEPY_V2 else clip.set_audio(sec["audio_clip"])
         short_clips.append(clip)
 
     final_short = concatenate_videoclips(short_clips, method="compose")
+    track_seed = hist_obj.get("bgm_track_counter", 0) + unit_num
+    hist_obj["bgm_track_counter"] = track_seed
+    bgm_s = AudioFileClip(build_30_track_mood_adaptive_album_bgm(
+        f"temp/bgm_s{unit_num}.wav", final_short.duration, beat_switch_times_s,
+        mood=short_dossier["category"], track_seed=track_seed
+    ))
+    final_short = final_short.with_audio(CompositeAudioClip([final_short.audio, bgm_s])) if MOVIEPY_V2 else final_short.set_audio(CompositeAudioClip([final_short.audio, bgm_s]))
     out_short = "output/WTB_1080p_Short_9x16.mp4" if unit_num == 1 else f"output/WTB_1080p_Short_{unit_num}_9x16.mp4"
     final_short.write_videofile(out_short, fps=24, codec="libx264", audio_codec="aac", bitrate="8000k", preset="ultrafast", threads=4, logger=None)
 
@@ -2393,13 +2459,12 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
     short_hashtags_str = " ".join(short_pkg["hashtags"] + ["#Shorts", "#Explained"])
     short_seo_desc = (
         f"{short_dossier['original_yt_title']}\n\n"
-        f"World Talk Brief [{pillar.replace('_', ' ')}] #Shorts case study.\n\n"
-        f"🔑 KEY ENTITIES: {', '.join(short_entities[:5])}\n"
-        f"📋 Editorial Reference ({short_dossier['published_date']}): {short_dossier['source_url']}\n\n"
+        f"World Talk Brief [{pillar.replace('_', ' ')}] original #Shorts case study.\n\n"
+        f"🔑 KEY ENTITIES: {', '.join(short_entities[:5])}\n\n"
         f"{short_hashtags_str}"
     )
     short_seo_tags = [
-        "World Talk Brief", pillar.replace("_", " ").title(), "Explained", "YouTube Shorts",
+        "World Talk Brief", pillar.replace("_", " ").title(), "Case Study Explained", "YouTube Shorts",
         short_dossier["country_profile"]["name"].title()
     ] + short_entities[:5] + winning_keywords[:4] + viral_yt_tags[:5]
 
@@ -2407,7 +2472,7 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
         out_short, short_dossier["original_yt_title"], short_seo_desc, short_seo_tags,
         category_id=short_dossier.get("yt_category_id", "25"), pillar=pillar, is_short=True,
         thumbnail_path=short_pkg["selected_thumbnail"], playlist_map=playlist_map,
-        summary_takeaway=short_dossier["raw_facts"][0]
+        summary_takeaway=short_sections[-1]["narration"]
     )
     hist_obj["published_keys"].add(short_dossier["story_key"])
     hist_obj["event_fingerprints"].append({"title": short_dossier["title"], "tokens": short_dossier["event_tokens"]})
@@ -2417,7 +2482,7 @@ async def render_and_upload_short_unit(short_dossier, unit_num, watermark, voice
 
 async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map):
     pillar = lead_long_dossier.get("pillar", "WORLD")
-    print(f"\n📺 [LONG #{unit_num} - {pillar}] Building Single-Topic Case Study on: {lead_long_dossier['original_yt_title']}", flush=True)
+    print(f"\n📺 [LONG #{unit_num} - {pillar}] Building Original Case Study on: {lead_long_dossier['original_yt_title']}", flush=True)
     long_chapters = build_long_documentary_script(lead_long_dossier)
     lead_long_entities = extract_story_entities(lead_long_dossier)
 
@@ -2429,11 +2494,13 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         ch["word_timings"] = w_timings
 
     long_clips = []
+    beat_switch_times_l = []
     shared_long_photos = []
     long_stats_list = []
     shared_long_hashes = []
     shared_long_video_urls = set()
     running_beat_offset = 0
+    cur_lt = 0.0
 
     for ch_idx, ch in enumerate(long_chapters):
         d_ents = extract_story_entities(ch["dossier"])
@@ -2444,11 +2511,21 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         )
         running_beat_offset += len(ch_beats)
         long_stats_list.append(ch_st)
+        for b in ch_beats:
+            beat_switch_times_l.append(round(cur_lt, 2))
+            cur_lt += b["duration"]
         clip = make_section_clip_from_beats(ch_beats, watermark, voice_sub_dir, ch["duration"], 1920, 1080, is_short=False)
         clip = clip.with_audio(ch["audio_clip"]) if MOVIEPY_V2 else clip.set_audio(ch["audio_clip"])
         long_clips.append(clip)
 
     final_long = concatenate_videoclips(long_clips, method="compose")
+    track_seed = hist_obj.get("bgm_track_counter", 0) + unit_num + 10
+    hist_obj["bgm_track_counter"] = track_seed
+    bgm_l = AudioFileClip(build_30_track_mood_adaptive_album_bgm(
+        f"temp/bgm_l{unit_num}.wav", final_long.duration, beat_switch_times_l,
+        mood=lead_long_dossier["category"], track_seed=track_seed
+    ))
+    final_long = final_long.with_audio(CompositeAudioClip([final_long.audio, bgm_l])) if MOVIEPY_V2 else final_long.set_audio(CompositeAudioClip([final_long.audio, bgm_l]))
     out_long = "output/WTB_1080p_Long_16x9.mp4" if unit_num == 1 else f"output/WTB_1080p_Long_{unit_num}_16x9.mp4"
     final_long.write_videofile(out_long, fps=20, codec="libx264", audio_codec="aac", bitrate="8000k", preset="ultrafast", threads=4, logger=None)
 
@@ -2463,13 +2540,12 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         chap_lines.append(f"{mm:02d}:{ss:02d} - {ch['chapter_title']}")
         t_acc += ch.get("duration", 16)
 
-    long_hashtags_str = " ".join(pkg_report["hashtags"] + ["#Documentary", "#DeepDive"])
+    long_hashtags_str = " ".join(pkg_report["hashtags"] + ["#CaseStudy", "#DeepDive"])
     long_seo_desc = (
         f"{pkg_report['selected_title']}\n\n"
-        f"World Talk Brief [{pillar.replace('_', ' ')}] presents a complete single-topic case study on: {lead_long_dossier['title']}.\n\n"
+        f"World Talk Brief [{pillar.replace('_', ' ')}] presents an original deep-dive case study.\n\n"
         f"⏱️ CHAPTER TIMESTAMPS:\n" + "\n".join(chap_lines) + "\n\n"
-        f"🔑 KEY SUBJECTS & ENTITIES: {', '.join(lead_long_entities[:8])}\n"
-        f"📋 Editorial Reference ({lead_long_dossier['published_date']}): {lead_long_dossier['source_url']}\n\n"
+        f"🔑 KEY SUBJECTS & ENTITIES: {', '.join(lead_long_entities[:8])}\n\n"
         f"{long_hashtags_str}"
     )
     long_seo_tags = [
@@ -2481,7 +2557,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         out_long, pkg_report["selected_title"], long_seo_desc, long_seo_tags,
         category_id=lead_long_dossier.get("yt_category_id", "25"), pillar=pillar, is_short=False,
         thumbnail_path=pkg_report["selected_thumbnail"], playlist_map=playlist_map,
-        summary_takeaway=lead_long_dossier["raw_facts"][0]
+        summary_takeaway=long_chapters[-1]["narration"]
     )
     hist_obj["published_keys"].add(lead_long_dossier["story_key"])
     hist_obj["event_fingerprints"].append({"title": lead_long_dossier["title"], "tokens": lead_long_dossier["event_tokens"]})
@@ -2494,7 +2570,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
 # ==============================================================================
 async def main():
     try:
-        watermark = build_wtb_watermark(width=140, height=82)
+        watermark = build_wtb_watermark(width=130, height=76)
         voice_sub_dir = VoiceAndSubtitleEngine()
         hist_obj = load_published_history()
         winning_keywords, viral_yt_tags, playlist_map = run_youtube_api_full_intelligence()
@@ -2551,7 +2627,7 @@ async def main():
                 "long_2": {"title": l2_lead["original_yt_title"], "pillar": l2_lead["pillar"], "packaging": pkg_2}
             }, f, indent=2)
 
-        print("✅ [6/6] GITHUB CLOUD 100% BROADCAST VOICE + 2.2s FAST-CUT VISUALS BATCH COMPLETE!", flush=True)
+        print("✅ [6/6] GITHUB CLOUD 2026 CREATOR EDITION + 30-TRACK STUDIO ALBUM COMPLETE!", flush=True)
     finally:
         for vc in GLOBAL_OPEN_VCLIPS:
             try:
