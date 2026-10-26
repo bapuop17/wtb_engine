@@ -3,8 +3,7 @@ name: World Talk Brief 1080p Cloud Engine (Test + 24x7 Auto)
 on:
   workflow_dispatch:
   schedule:
-    # Multiple cron triggers across the 24-hour clock so GitHub runs 5 to 8 times daily
-    # Each run produces & uploads 4 Videos (2 Shorts + 2 Longs) = 20 to 32 Videos/Day!
+    # Runs 5 to 8 times daily across the 24h clock (4 Videos per run = 20+ Videos/Day!)
     - cron: '10 0,3,6,9,12,15,18,21 * * *'
     - cron: '40 1,4,7,10,13,16,19,22 * * *'
 
@@ -39,9 +38,13 @@ jobs:
           pip install --upgrade pip
           pip install edge-tts gTTS feedparser requests pillow "moviepy<2.0" numpy beautifulsoup4 opencv-python-headless google-api-python-client google-auth-oauthlib
 
-      - name: Run World Talk Brief 7-Category Broadcast Factory (4 Videos Per Run)
+      - name: Run World Talk Brief Multi-API AI Factory (Groq + Deepgram Aura + HuggingFace + YouTube API)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          DEEPGRAM_API_KEY: ${{ secrets.DEEPGRAM_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python3 -u wtb_engine.py
 
