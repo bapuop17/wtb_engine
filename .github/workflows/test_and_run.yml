@@ -55,6 +55,14 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FORCE_MEGA_NEWS: ${{ github.event.inputs.force_mega_news || 'false' }}
         run: |
+          (
+            while true; do
+              echo "[heartbeat] wtb_engine.py is still running..."
+              sleep 240
+            done
+          ) &
+          HEARTBEAT_PID=$!
+          trap 'kill "$HEARTBEAT_PID" 2>/dev/null || true' EXIT
           python3 -u wtb_engine.py
 
       - name: Save Non-Repeating Topic & Category History to GitHub
