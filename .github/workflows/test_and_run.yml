@@ -8,7 +8,7 @@ on:
         required: false
         default: 'false'
   schedule:
-    # Runs every 3 hours across the 24h clock (Paired Long + Linked Short = 16 to 20+ Videos/Day without queue jam!)
+    # Runs every 3 hours across the 24h clock (Paired Long + Linked Short = 16 to 20+ Videos/Day)
     - cron: '15 0,3,6,9,12,15,18 * * *'
     # Dedicated 6:00 PM USA Eastern Time (22:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
     - cron: '0 22 * * *'
@@ -29,15 +29,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.11 (With Fast Pip Cache)
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
-      - name: Install System FFmpeg & Fonts
+      - name: Fast Install System FFmpeg (No-Hang + No-Bloat Mode)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y fonts-dejavu-core ffmpeg
+          if ! command -v ffmpeg &> /dev/null; then
+            sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" update
+            sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" install -y --no-install-recommends ffmpeg fonts-dejavu-core
+          else
+            echo "✅ FFmpeg is already installed!"
+          fi
 
       - name: Install Python Dependencies
         run: |
