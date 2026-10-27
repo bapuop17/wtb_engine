@@ -1,4 +1,4 @@
-name: World Talk Brief 1080p Cloud Engine (Test + 24x7 Auto + USA 6PM Mega News)
+name: World Talk Brief 1080p Cloud Engine (God-Level Edit + 24x7 Auto + USA 6PM Mega News)
 
 on:
   workflow_dispatch:
@@ -8,12 +8,10 @@ on:
         required: false
         default: 'false'
   schedule:
-    # Runs across the 24h clock (Produces Paired Long + Linked Short Videos = 20+ Videos/Day)
-    - cron: '10 0,3,6,9,12,15,18 * * *'
-    - cron: '40 1,4,7,10,13,16,19 * * *'
-    # Dedicated 6:00 PM USA Eastern Time (22:00 UTC / 23:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
+    # Runs every 3 hours across the 24h clock (Paired Long + Linked Short = 16 to 20+ Videos/Day without queue jam!)
+    - cron: '15 0,3,6,9,12,15,18 * * *'
+    # Dedicated 6:00 PM USA Eastern Time (22:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
     - cron: '0 22 * * *'
-    - cron: '0 23 * * *'
 
 permissions:
   contents: write
@@ -25,7 +23,7 @@ concurrency:
 jobs:
   build-1080p-videos:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 90
 
     steps:
       - name: Checkout Repository
@@ -46,7 +44,7 @@ jobs:
           pip install --upgrade pip
           pip install edge-tts gTTS feedparser requests pillow "moviepy<2.0" numpy beautifulsoup4 opencv-python-headless google-api-python-client google-auth-oauthlib
 
-      - name: Run World Talk Brief Multi-API AI Factory (Paired Long+Short + USA 6PM Mega News)
+      - name: Run World Talk Brief God-Level AI Documentary Factory
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -58,6 +56,7 @@ jobs:
           python3 -u wtb_engine.py
 
       - name: Save Non-Repeating Topic & Category History to GitHub
+        if: always()
         run: |
           if [ -f published_history.json ]; then
             git config user.name "WorldTalkBrief-Bot"
@@ -69,6 +68,7 @@ jobs:
           fi
 
       - name: Upload Generated 1080p Videos & Thumbnails to GitHub Artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: World-Talk-Brief-1080p-Output
