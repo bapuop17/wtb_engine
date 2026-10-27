@@ -1,11 +1,19 @@
-name: World Talk Brief 1080p Cloud Engine (Test + 24x7 Auto)
+name: World Talk Brief 1080p Cloud Engine (Test + 24x7 Auto + USA 6PM Mega News)
 
 on:
   workflow_dispatch:
+    inputs:
+      force_mega_news:
+        description: 'Force 9-10 Min 24h Global News Mega Video (true/false)'
+        required: false
+        default: 'false'
   schedule:
-    # Runs 5 to 8 times daily across the 24h clock (4 Videos per run = 20+ Videos/Day!)
-    - cron: '10 0,3,6,9,12,15,18,21 * * *'
-    - cron: '40 1,4,7,10,13,16,19,22 * * *'
+    # Runs across the 24h clock (Produces Paired Long + Linked Short Videos = 20+ Videos/Day)
+    - cron: '10 0,3,6,9,12,15,18 * * *'
+    - cron: '40 1,4,7,10,13,16,19 * * *'
+    # Dedicated 6:00 PM USA Eastern Time (22:00 UTC / 23:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
+    - cron: '0 22 * * *'
+    - cron: '0 23 * * *'
 
 permissions:
   contents: write
@@ -17,7 +25,7 @@ concurrency:
 jobs:
   build-1080p-videos:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 55
 
     steps:
       - name: Checkout Repository
@@ -38,13 +46,14 @@ jobs:
           pip install --upgrade pip
           pip install edge-tts gTTS feedparser requests pillow "moviepy<2.0" numpy beautifulsoup4 opencv-python-headless google-api-python-client google-auth-oauthlib
 
-      - name: Run World Talk Brief Multi-API AI Factory (Groq + Deepgram Aura + HuggingFace + YouTube API)
+      - name: Run World Talk Brief Multi-API AI Factory (Paired Long+Short + USA 6PM Mega News)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           DEEPGRAM_API_KEY: ${{ secrets.DEEPGRAM_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FORCE_MEGA_NEWS: ${{ github.event.inputs.force_mega_news || 'false' }}
         run: |
           python3 -u wtb_engine.py
 
