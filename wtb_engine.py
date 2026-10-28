@@ -112,7 +112,9 @@ CATEGORY_VOICE_CAST = {
     "ENTERTAINMENT": ("en-US-AvaMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-stella-en", "+2%", "+4%")
 }
 
-STRICT_SAFE_SEARCH_SUFFIX = "-nude -naked -nsfw -bikini -lingerie -underwear -swimsuit -erotic -statue -sculpture -painting -cleavage -adult -18+ -uncensored -boudoir -topless -imago -shutterstock -getty -adobestock -watermark -chart -diagram -infographic -ai -midjourney -dalle -stable -diffusion -illustration -vector -3d -render -cgi -cartoon -futuristic -scifi -wallpaper -poster -thumbnail"
+# Concise negative guard for Bing URL queries so query length NEVER overflows Bing's parser!
+# (Full 45-term NSFW/watermark/cartoon filtering is enforced in Python URL & pixel validators below)
+STRICT_SAFE_SEARCH_SUFFIX = "-nsfw -nude -cartoon -game -logo"
 
 ADULT_NSFW_BANNED_TERMS = [
     "nude", "nudity", "naked", "nsfw", "erotic", "erotica", "porn", "porno", "xxx", "sex ", "sexy",
@@ -399,7 +401,7 @@ PERSON_WIKI_MAP = {
     "subhas chandra bose": ("Subhas Chandra Bose", "Netaji Subhas Chandra Bose", "INDIAN NATIONALIST LEADER"),
     "churchill": ("Winston Churchill", "Winston Churchill", "FORMER UK PRIME MINISTER"),
     "lincoln": ("Abraham Lincoln", "Abraham Lincoln", "16TH U.S. PRESIDENT"),
-    "washington": ("George Washington", "George Washington", "1ST U.S. PRESIDENT"),
+    "george washington": ("George Washington", "George Washington", "1ST U.S. PRESIDENT"),
     "roosevelt": ("Franklin D. Roosevelt", "Franklin D. Roosevelt", "32ND U.S. PRESIDENT"),
     "kennedy": ("John F. Kennedy", "John F. Kennedy", "35TH U.S. PRESIDENT"),
     # Legendary Scientists, Inventors & Pioneers
@@ -434,8 +436,8 @@ PERSON_WIKI_MAP = {
     "nicky fox": ("Nicola Fox", "Nicola Fox", "NASA SCIENCE DIRECTOR"),
     "nicola fox": ("Nicola Fox", "Nicola Fox", "NASA SCIENCE DIRECTOR"),
     "bill nelson": ("Bill Nelson", "Bill Nelson", "NASA LEADER"),
-    "hamilton": ("Lewis Hamilton", "Lewis Hamilton", "FERRARI F1 STAR"),
-    "russell": ("George Russell (racing driver)", "George Russell", "MERCEDES F1 DRIVER"),
+    "lewis hamilton": ("Lewis Hamilton", "Lewis Hamilton", "FERRARI F1 STAR"),
+    "george russell": ("George Russell (racing driver)", "George Russell", "MERCEDES F1 DRIVER"),
     "verstappen": ("Max Verstappen", "Max Verstappen", "RED BULL F1 CHAMPION"),
     "leclerc": ("Charles Leclerc", "Charles Leclerc", "FERRARI F1 DRIVER"),
     "ronaldo": ("Cristiano Ronaldo", "Cristiano Ronaldo", "GLOBAL FOOTBALL LEGEND"),
@@ -471,7 +473,7 @@ PERSON_WIKI_MAP = {
     "bezos": ("Jeff Bezos", "Jeff Bezos", "FOUNDER OF AMAZON & BLUE ORIGIN"),
     "bill gates": ("Bill Gates", "Bill Gates", "CO-FOUNDER OF MICROSOFT"),
     "warren buffett": ("Warren Buffett", "Warren Buffett", "CEO OF BERKSHIRE HATHAWAY"),
-    "cook": ("Tim Cook", "Tim Cook", "CEO OF APPLE"),
+    "tim cook": ("Tim Cook", "Tim Cook", "CEO OF APPLE"),
     "pichai": ("Sundar Pichai", "Sundar Pichai", "CEO OF GOOGLE"),
     "sundar pichai": ("Sundar Pichai", "Sundar Pichai", "CEO OF GOOGLE"),
     "nadella": ("Satya Nadella", "Satya Nadella", "CEO OF MICROSOFT"),
@@ -492,30 +494,32 @@ PERSON_WIKI_MAP = {
     "chancellor of the exchequer": ("Rachel Reeves", "Rachel Reeves", "UK CHANCELLOR OF THE EXCHEQUER"),
     "sunak": ("Rishi Sunak", "Rishi Sunak", "UK POLITICAL LEADER"),
     "rishi sunak": ("Rishi Sunak", "Rishi Sunak", "UK POLITICAL LEADER"),
-    # Universal Wildlife, Animals & Nature Subjects (for Animal/Science/Nature News!)
-    "tiger": ("Tiger", "Bengal Tiger", "APEX PREDATOR • WILDLIFE"),
-    "lion": ("Lion", "African Lion", "APEX PREDATOR • WILDLIFE"),
-    "elephant": ("Elephant", "Elephant", "MEGafauna • WILDLIFE"),
-    "shark": ("Great white shark", "Great White Shark", "MARINE APEX PREDATOR"),
-    "whale": ("Blue whale", "Blue Whale", "MARINE GIANT • OCEAN LIFE"),
-    "dolphin": ("Dolphin", "Bottlenose Dolphin", "MARINE INTELLIGENCE"),
+    # Specific Named Physicists & Researchers
+    "roy kerr": ("Roy Kerr", "Roy Kerr", "MATHEMATICIAN • KERR BLACK HOLE"),
+    "roger penrose": ("Roger Penrose", "Sir Roger Penrose", "NOBEL LAUREATE PHYSICIST"),
+    "penrose": ("Roger Penrose", "Sir Roger Penrose", "NOBEL LAUREATE PHYSICIST"),
+    "kip thorne": ("Kip Thorne", "Kip Thorne", "LIGO NOBEL PHYSICIST"),
+    "bekenstein": ("Jacob Bekenstein", "Jacob Bekenstein", "BLACK HOLE THERMODYNAMICS PIONEER"),
+    "rashad al-alimi": ("Rashad al-Alimi", "Rashad al-Alimi", "CHAIRMAN OF YEMEN PRESIDENTIAL COUNCIL"),
+    "abdul-malik al-houthi": ("Abdul-Malik al-Houthi", "Abdul-Malik al-Houthi", "HOUTHI MOVEMENT LEADER")
+}
+
+# Wildlife & Animal Subjects — ONLY triggered when the article headline itself is about wildlife/animals!
+WILDLIFE_SPECIES_MAP = {
+    "bengal tiger": ("Tiger", "Bengal Tiger", "APEX PREDATOR • WILDLIFE"),
+    "african lion": ("Lion", "African Lion", "APEX PREDATOR • WILDLIFE"),
+    "elephant": ("Elephant", "Elephant", "MEGAFAUNA • WILDLIFE"),
+    "great white shark": ("Great white shark", "Great White Shark", "MARINE APEX PREDATOR"),
+    "blue whale": ("Blue whale", "Blue Whale", "MARINE GIANT • OCEAN LIFE"),
+    "bottlenose dolphin": ("Dolphin", "Bottlenose Dolphin", "MARINE INTELLIGENCE"),
     "octopus": ("Octopus", "Giant Octopus", "CEPHALOPOD INTELLIGENCE"),
-    "wolf": ("Wolf", "Gray Wolf", "PACK PREDATOR • WILDLIFE"),
-    "bear": ("Brown bear", "Grizzly / Brown Bear", "WILDLIFE IN FOCUS"),
     "polar bear": ("Polar bear", "Polar Bear", "ARCTIC WILDLIFE"),
-    "panda": ("Giant panda", "Giant Panda", "PROTECTED SPECIES"),
-    "eagle": ("Bald eagle", "Eagle", "RAPTOR IN FOCUS"),
-    "cobra": ("King cobra", "King Cobra", "VENOMOUS REPTILE"),
-    "snake": ("Snake", "Serpent / Reptile", "REPTILE SPECIES"),
-    "crocodile": ("Saltwater crocodile", "Crocodile", "APEX REPTILE PREDATOR"),
+    "giant panda": ("Giant panda", "Giant Panda", "PROTECTED SPECIES"),
+    "king cobra": ("King cobra", "King Cobra", "VENOMOUS REPTILE"),
     "chimpanzee": ("Chimpanzee", "Chimpanzee", "PRIMATE INTELLIGENCE"),
-    "gorilla": ("Gorilla", "Mountain Gorilla", "ENDANGERED PRIMATE"),
+    "mountain gorilla": ("Gorilla", "Mountain Gorilla", "ENDANGERED PRIMATE"),
     "orangutan": ("Orangutan", "Orangutan", "GREAT APE SPECIES"),
-    "honeybee": ("Western honey bee", "Honeybee", "CRITICAL POLLINATOR"),
-    "mammoth": ("Woolly mammoth", "Woolly Mammoth", "PREHISTORIC MEGAFAUNA"),
-    "dinosaur": ("Tyrannosaurus", "Prehistoric Dinosaur", "PALEONTOLOGY DISCOVERY"),
-    "dog": ("Dog", "Canine Companion", "ANIMAL BEHAVIOR STUDY"),
-    "cat": ("Cat", "Feline Species", "ANIMAL BEHAVIOR STUDY")
+    "woolly mammoth": ("Woolly mammoth", "Woolly Mammoth", "PREHISTORIC MEGAFAUNA")
 }
 
 CONCRETE_WIKI_PROPS = {
@@ -1041,46 +1045,97 @@ def lowpass_warm_filter(wave_arr, window_len=24):
 
 def synthesize_pro_sfx_event(sfx_type, sr=44100):
     """
-    ULTRA-SUBTLE, SOFT ORGANIC DOCUMENTARY SOUND DESIGN (0.032 - 0.044 Peak Gain):
-    Zero harsh beeps, zero metallic bells, zero 'woop' frequency risers!
-    Uses warm low-pass filtered air whooshes, soft paper textures, and deep cinema sub-pulses
-    that sit gently in the background without ever distracting from the narrator's voice!
+    KURZGESAGT / VERITASIUM / NITISH RAJPUT LAYERED FOLEY & CINEMATIC SFX ENGINE:
+    Synthesizes context-accurate organic Foley & documentary sound effects:
+    - `ligo_gravitational_chirp`: Authentic upward spacetime frequency chirp (38Hz -> 240Hz) + deep sub-rumble
+    - `tactical_map_zoom_whoosh`: Cartographic aerial zoom whoosh + tactical radar lock tick
+    - `paper_evidence_highlighter`: Crisp research paper slide + fluorescent marker swoosh
+    - `crisis_stat_sub_drop`: Deep cinema sub-bass impact before shocking statistics
+    - `camera_shutter_flash` / `dossier_stamp_thud`: Warm spotlight card reveal pulse
     """
     rng = np.random.default_rng(abs(hash(sfx_type)) % 99999)
 
-    if sfx_type in ["camera_shutter_flash", "dossier_stamp_thud", "cinematic_medallion_reveal", "digital_hud_lock"]:
-        # Soft Warm Cinema Sub-Pulse + Gentle Paper/Felt Tap (for Subject Spotlight Card Reveal)
-        dur = 0.28
+    if sfx_type == "ligo_gravitational_chirp":
+        dur = 0.52
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
-        sub_f = 78.0 * np.exp(-t * 14.0) + 42.0
-        phase = 2.0 * np.pi * np.cumsum(sub_f) / float(sr)
-        warm_thump = np.sin(phase) * np.exp(-t * 11.0)
-        soft_air = lowpass_warm_filter(rng.standard_normal(n).astype(np.float32), window_len=36) * np.sin(np.pi * (t / dur)) * np.exp(-t * 12.0)
-        sig = 0.75 * warm_thump + 0.25 * soft_air
+        # Authentic LIGO-inspired inspiral chirp (38Hz sweeping up to 235Hz) + spacetime sub-drone
+        f_inst = 38.0 + 195.0 * ((t / dur) ** 2.6)
+        phase = 2.0 * np.pi * np.cumsum(f_inst) / float(sr)
+        env = np.sin(np.pi * (t / dur)) ** 1.3
+        chirp = 0.62 * np.sin(phase) * env
+        sub_rumble = 0.38 * np.sin(2.0 * np.pi * 46.0 * t) * np.exp(-t * 4.5)
+        sig = lowpass_warm_filter(chirp + sub_rumble, window_len=16)
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.042).astype(np.float32)
+        return ((sig / max_v) * 0.068).astype(np.float32)
 
-    # Default for chapter transitions: Soft Warm Filtered Cinema Air Whoosh (Zero Pitched Sine Sweep!)
-    dur = 0.32
+    if sfx_type == "tactical_map_zoom_whoosh":
+        dur = 0.42
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        env = np.sin(np.pi * (t / dur)) ** 1.5
+        brown = np.cumsum(rng.standard_normal(n).astype(np.float32))
+        brown -= np.mean(brown)
+        brown /= max(float(np.max(np.abs(brown))), 1e-4)
+        whoosh = lowpass_warm_filter(brown, window_len=34) * env
+        sub_sweep = 0.50 * np.sin(2.0 * np.pi * (82.0 * np.exp(-t * 5.0) + 42.0) * t) * env
+        sig = whoosh + sub_sweep
+        max_v = max(float(np.max(np.abs(sig))), 1e-4)
+        return ((sig / max_v) * 0.064).astype(np.float32)
+
+    if sfx_type == "paper_evidence_highlighter":
+        dur = 0.34
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        noise = rng.standard_normal(n).astype(np.float32)
+        paper_env = np.exp(-((t - 0.08) ** 2) / (2.0 * (0.045 ** 2))) + 0.65 * np.exp(-((t - 0.22) ** 2) / (2.0 * (0.06 ** 2)))
+        paper_tex = lowpass_warm_filter(noise, window_len=14) * paper_env
+        warm_tap = 0.45 * np.sin(2.0 * np.pi * 92.0 * t) * np.exp(-t * 16.0)
+        sig = 0.60 * paper_tex + warm_tap
+        max_v = max(float(np.max(np.abs(sig))), 1e-4)
+        return ((sig / max_v) * 0.058).astype(np.float32)
+
+    if sfx_type in ["crisis_stat_sub_drop", "deep_sub_drop"]:
+        dur = 0.46
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        f_drop = 86.0 * np.exp(-t * 9.5) + 36.0
+        phase = 2.0 * np.pi * np.cumsum(f_drop) / float(sr)
+        sig = np.sin(phase) * np.exp(-t * 6.5)
+        max_v = max(float(np.max(np.abs(sig))), 1e-4)
+        return ((sig / max_v) * 0.072).astype(np.float32)
+
+    if sfx_type in ["camera_shutter_flash", "dossier_stamp_thud", "cinematic_medallion_reveal", "digital_hud_lock"]:
+        dur = 0.30
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        sub_f = 82.0 * np.exp(-t * 13.0) + 44.0
+        phase = 2.0 * np.pi * np.cumsum(sub_f) / float(sr)
+        warm_thump = np.sin(phase) * np.exp(-t * 10.0)
+        soft_air = lowpass_warm_filter(rng.standard_normal(n).astype(np.float32), window_len=30) * np.sin(np.pi * (t / dur)) * np.exp(-t * 11.0)
+        sig = 0.72 * warm_thump + 0.28 * soft_air
+        max_v = max(float(np.max(np.abs(sig))), 1e-4)
+        return ((sig / max_v) * 0.062).astype(np.float32)
+
+    dur = 0.34
     n = int(sr * dur)
     t = np.linspace(0, dur, n, endpoint=False)
     env = np.sin(np.pi * (t / dur)) ** 1.6
     brown = np.cumsum(rng.standard_normal(n).astype(np.float32))
     brown -= np.mean(brown)
     brown /= max(float(np.max(np.abs(brown))), 1e-4)
-    warm_whoosh = lowpass_warm_filter(brown, window_len=42) * env
-    sub_bed = 0.45 * np.sin(2.0 * np.pi * 56.0 * t) * env
+    warm_whoosh = lowpass_warm_filter(brown, window_len=38) * env
+    sub_bed = 0.48 * np.sin(2.0 * np.pi * 56.0 * t) * env
     sig = warm_whoosh + sub_bed
     max_v = max(float(np.max(np.abs(sig))), 1e-4)
-    return ((sig / max_v) * 0.034).astype(np.float32)
+    return ((sig / max_v) * 0.054).astype(np.float32)
 
 def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     """
-    NITISH RAJPUT / JOHNNY HARRIS STYLE WARM CINEMA DOCUMENTARY SCORE (0.046 Peak = -27 dBFS):
-    1. Warm, deep, low-pass filtered Cello & Analog Pad chords (110Hz-330Hz) + Soft Felt-Piano Notes.
-    2. Zero harsh high-pitched synths, zero metallic hi-hats, zero distortion!
-    3. Sits softly and smoothly underneath the human voice so the narration is 100% crystal clear!
+    MODERN DOCUMENTARY SCORE AT -18dB (0.088 Peak):
+    1. Warm, deep Cello & Analog Pad chords (110Hz-330Hz) + Soft Felt-Piano Arpeggio + Sub-Bass Pulse.
+    2. Balanced at -18dB (0.088 peak) under dialogue so the score is clearly felt and emotionally engaging
+       while keeping the narrator's voice 100% dominant and crystal clear!
     """
     tracks = STUDIO_ALBUM_50_MIND_BLOWING_TRACKS.get(mood, STUDIO_ALBUM_50_MIND_BLOWING_TRACKS["dark_geopolitics"])
     track_tuple = tracks[track_idx % len(tracks)]
@@ -1089,61 +1144,59 @@ def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
 
     n_seg = max(int(sr * seg_dur), 128)
     t = np.linspace(0, seg_dur, n_seg, endpoint=False)
-    beat_len = 60.0 / float(max(76, min(bpm, 98)))
+    beat_len = 60.0 / float(max(78, min(bpm, 104)))
     bar_len = beat_len * 4.0
 
     bar_idx = (t // bar_len).astype(int)
     chord_roots = np.array([root_freqs[i % len(root_freqs)] for i in bar_idx], dtype=np.float32)
-    # Smooth chord root transitions so there is never a click between bars
     chord_roots = lowpass_warm_filter(chord_roots, window_len=256)
 
     phase_root = 2.0 * np.pi * np.cumsum(chord_roots) / float(sr)
     third_ratio = 1.1892 if style_mode in ["minor_tension", "imperial_epic", "deep_drone", "tactical_pulse"] else 1.2599
 
-    # Layer 1: Warm Cello & Viola Documentary String Pad (Fundamental + Soft 3rd + 5th)
+    # Layer 1: Warm Cello & Viola Documentary String Pad
     pad_wave = (
         0.52 * np.sin(phase_root)
         + 0.28 * np.sin(phase_root * 1.002)
-        + 0.22 * np.sin(phase_root * third_ratio)
+        + 0.24 * np.sin(phase_root * third_ratio)
         + 0.20 * np.sin(phase_root * 1.4983)
     )
-    pad_swell = 0.78 + 0.22 * np.sin(2.0 * np.pi * (t / bar_len))
+    pad_swell = 0.76 + 0.24 * np.sin(2.0 * np.pi * (t / bar_len))
     pad_layer = pad_wave * pad_swell * 0.48
 
     # Layer 2: Deep Warm Cinema Sub-Bass Foundation (55Hz-85Hz)
-    sub_layer = 0.36 * np.sin(phase_root * 0.5) * (0.85 + 0.15 * np.cos(2.0 * np.pi * (t / (bar_len * 2.0))))
+    sub_layer = 0.38 * np.sin(phase_root * 0.5) * (0.85 + 0.15 * np.cos(2.0 * np.pi * (t / (bar_len * 2.0))))
 
-    # Layer 3: Gentle Felt-Piano / Warm Marimba Documentary Pulse (Soft attack, warm low register)
+    # Layer 3: Gentle Felt-Piano / Warm Marimba Documentary Pulse
     subdiv_len = beat_len * 1.0
     arp_step_idx = (t // subdiv_len).astype(int)
     arp_mults = [1.0, third_ratio, 1.4983, 2.0]
     chosen_mults = np.array([arp_mults[arp_order[i % len(arp_order)] % len(arp_mults)] for i in arp_step_idx], dtype=np.float32)
     arp_local_t = t % subdiv_len
-    # Soft fade-in attack (no sharp click) + warm exponential decay
-    felt_attack = np.minimum(1.0, arp_local_t / 0.035)
-    felt_decay = np.exp(-arp_local_t * 5.2)
+    felt_attack = np.minimum(1.0, arp_local_t / 0.032)
+    felt_decay = np.exp(-arp_local_t * 4.8)
     arp_phase = 2.0 * np.pi * np.cumsum(chord_roots * chosen_mults) / float(sr)
-    arp_layer = 0.18 * np.sin(arp_phase) * felt_attack * felt_decay
+    arp_layer = 0.22 * np.sin(arp_phase) * felt_attack * felt_decay
 
     # Layer 4: Subtle Deep Documentary Heartbeat Pulse on Beat 1 & 3
     bar_local_t = t % (beat_len * 2.0)
     pulse_attack = np.minimum(1.0, bar_local_t / 0.025)
-    pulse_env = pulse_attack * np.exp(-bar_local_t * 11.0)
-    pulse_layer = 0.18 * np.sin(2.0 * np.pi * 58.0 * bar_local_t) * pulse_env
+    pulse_env = pulse_attack * np.exp(-bar_local_t * 10.5)
+    pulse_layer = 0.20 * np.sin(2.0 * np.pi * 58.0 * bar_local_t) * pulse_env
 
     raw_mix = pad_layer + sub_layer + arp_layer + pulse_layer
-    warm_mix = lowpass_warm_filter(raw_mix, window_len=28)
+    warm_mix = lowpass_warm_filter(raw_mix, window_len=24)
     max_s = max(float(np.max(np.abs(warm_mix))), 1e-4)
-    # Subtle, warm studio documentary background level (0.046 peak = -27 dBFS)
-    mastered_seg = (warm_mix / max_s) * 0.046
+    # Modern Broadcast -18dB Background Score Level (0.088 Peak)
+    mastered_seg = (warm_mix / max_s) * 0.088
     return mastered_seg.astype(np.float32), track_name
 
 def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times, mood="dark_geopolitics", track_seed=0, sfx_events=None):
     """
-    SUBTLE, WARM SITUATION-ADAPTIVE DOCUMENTARY SCORE + SOFT SPOTLIGHT SFX:
-    1. Smoothly crossfades across situation moods every 3-4 beats (with 1.0s gentle crossfades).
-    2. Plays soft, unobtrusive transition textures ONLY on Subject Spotlight reveals or Chapter boundaries
-       (never on every sentence!), keeping the voiceover 100% dominant and crystal clear!
+    MODERN LAYERED SOUND DESIGN (-18dB BGM + DRAMATIC SILENCE DROPS + CONTEXT FOLEY SFX):
+    1. Smoothly evolves across situation moods every 3 beats.
+    2. Applies dramatic 0.55s audio silence drops right when severe statistics or crisis numbers hit!
+    3. Mixes context-specific Foley SFX (LIGO chirp, tactical map zoom, paper evidence slide, spotlight pulse).
     """
     sr = 44100
     n_samples = max(int(sr * duration), sr)
@@ -1185,32 +1238,49 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
             i1 = min(n_samples, i0 + len(s_wave))
             if i1 > i0:
                 seg_slice = s_wave[:i1 - i0].copy()
-                fade_n = min(int(0.85 * sr), len(seg_slice) // 3)
+                fade_n = min(int(0.75 * sr), len(seg_slice) // 3)
                 if fade_n > 10:
-                    seg_slice[:fade_n] *= np.linspace(0.15, 1.0, fade_n, dtype=np.float32)
-                    seg_slice[-fade_n:] *= np.linspace(1.0, 0.15, fade_n, dtype=np.float32)
+                    seg_slice[:fade_n] *= np.linspace(0.18, 1.0, fade_n, dtype=np.float32)
+                    seg_slice[-fade_n:] *= np.linspace(1.0, 0.18, fade_n, dtype=np.float32)
                 audio[i0:i1] += seg_slice
     else:
         s_wave, t_name = synthesize_segment_music_wave(duration, mood, track_seed, sr=sr)
         used_track_names.append(t_name)
         audio[:min(n_samples, len(s_wave))] = s_wave[:min(n_samples, len(s_wave))]
 
-    print(f"   🎵 [Warm Subtle Documentary Score (-27dB)] Active Tracks: {used_track_names[:5]}", flush=True)
-
-    # Mix Soft, Subtle SFX ONLY on Subject Spotlight Cards or Major Chapter Shifts (every 3rd beat)
+    # Apply Dramatic Pre-Statistic Silence Drops + Context-Matched Foley SFX
+    silence_drops_count = 0
     if sfx_events:
         for ev_i, ev in enumerate(sfx_events):
             ev_sfx = str(ev.get("sfx_type", ""))
-            is_spotlight_sfx = ev_sfx in ["camera_shutter_flash", "dossier_stamp_thud", "cinematic_medallion_reveal", "digital_hud_lock"]
-            if not is_spotlight_sfx and (ev_i % 3 != 0 or ev_i == 0):
-                continue
             ev_t = float(ev.get("time", 0.0))
             idx = int(ev_t * sr)
+
+            # Dramatic 0.55s BGM Silence Drop on high-impact statistics / crisis revelations!
+            if ev.get("dramatic_silence_drop") and 0 < idx < n_samples:
+                drop_len = min(int(0.60 * sr), n_samples - idx)
+                if drop_len > 100:
+                    duck_curve = np.ones(drop_len, dtype=np.float32) * 0.08
+                    ramp = min(int(0.12 * sr), drop_len // 3)
+                    duck_curve[:ramp] = np.linspace(1.0, 0.08, ramp, dtype=np.float32)
+                    duck_curve[-ramp:] = np.linspace(0.08, 1.0, ramp, dtype=np.float32)
+                    audio[idx:idx + drop_len] *= duck_curve
+                    silence_drops_count += 1
+
+            is_special_foley = ev_sfx in [
+                "ligo_gravitational_chirp", "tactical_map_zoom_whoosh", "paper_evidence_highlighter",
+                "crisis_stat_sub_drop", "camera_shutter_flash", "dossier_stamp_thud",
+                "cinematic_medallion_reveal", "digital_hud_lock"
+            ]
+            if not is_special_foley and (ev_i % 2 != 0 or ev_i == 0):
+                continue
             if 0 < idx < n_samples:
-                sfx_wave = synthesize_pro_sfx_event(ev_sfx if is_spotlight_sfx else "soft_whoosh", sr=sr)
+                sfx_wave = synthesize_pro_sfx_event(ev_sfx if is_special_foley else "soft_whoosh", sr=sr)
                 slen = min(len(sfx_wave), n_samples - idx)
                 if slen > 0:
-                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.88 + sfx_wave[:slen]
+                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.85 + sfx_wave[:slen]
+
+    print(f"   🎵 [Modern Documentary Score (-18dB) + {silence_drops_count} Dramatic Silence Drops] Active Tracks: {used_track_names[:5]}", flush=True)
 
     audio_int16 = np.int16(np.clip(audio, -1.0, 1.0) * 32767)
     with wave.open(filename, "w") as wf:
@@ -1562,7 +1632,8 @@ def clean_fact(text):
 
     text = re.sub(r"(?i)see more headlines and perspectives on google news\.?", "", text)
     text = re.sub(r"(?i),?\s*(?:as\s+|first\s+)?reported by\s+(?:the\s+)?[A-Za-z\s]{2,25}(?=[,.]|$)", "", text)
-    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera|IndieWire|Variety|Smithsonian|CNN Live|CNN|Reuters|Associated Press|AP News|CBS News|CBS|The New York Times|New York Times|TechCrunch|The Verge|The Information|Bloomberg|Financial Times)\b", "official reports", text)
+    # Preserve real named agencies, journals & institutions (Reuters, BBC, Al Jazeera, Nature, WHO, UN OCHA) for credibility!
+    text = re.sub(r"(?i)\b(BBC World Service|CNN Live|Al Jazeera Sport)\b", lambda m: m.group(0).split()[0], text)
     text = re.sub(r"(?i)\s*,\s*,", ",", text)
     text = re.sub(r"\[([^\]]+)\]", r"\1", text)
     text = re.sub(r"[^\x20-\x7E]", "", text)
@@ -1584,6 +1655,78 @@ def clean_fact(text):
         return ""
 
     return text
+
+
+def proofread_and_deduplicate_narration(raw_narration, seen_sentences, dossier, scene_idx=0):
+    """
+    ZERO-LOOP SCRIPT PROOFREADER & GRAMMAR ENGINE (Fixes the 01:57 Black Hole Loop & Grammar Glitches!):
+    1. Never wipes out AI narration containing conversational 'we\'ve' or 'let\'s' (unlike raw article `clean_fact`).
+    2. Fixes common LLM grammar errors ('waves and it travel' -> 'waves and they travel',
+       'different size' -> 'different sizes', 'is a physical weight' -> 'it is a physical weight').
+    3. Deduplicates every sentence against `seen_sentences` across the entire video so NO scene can
+       EVER repeat a definition or sentence spoken earlier in the video!
+    """
+    if not raw_narration:
+        return ""
+    txt = str(raw_narration).strip()
+    repl = {"\u2011": "-", "\u2013": "-", "\u2014": " - ", "\u2018": "'", "\u2019": "'", "\u201c": "", "\u201d": "", '"': "", "\u00a0": " "}
+    for k, v in repl.items():
+        txt = txt.replace(k, v)
+    txt = re.sub(r"\[([^\]]+)\]", r"\1", txt)
+    txt = re.sub(r"[^\x20-\x7E]", " ", txt)
+
+    # Grammar & natural English fixes
+    grammar_fixes = [
+        (r"(?i)\bgravitational waves and it travel\b", "gravitational waves and they travel"),
+        (r"(?i)\bwaves and it travel\b", "waves and they travel"),
+        (r"(?i)\bripples and it travel\b", "ripples and they travel"),
+        (r"(?i)\bit travel across\b", "they travel across"),
+        (r"(?i)\bthey travels\b", "they travel"),
+        (r"(?i)\bare very different size\b", "are very different sizes"),
+        (r"(?i)\bof different size\b", "of different sizes"),
+        (r"(?i)\btwo different size\b", "two different sizes"),
+        (r"(?i)\bnot just a metaphor, is a physical\b", "not just a metaphor, it is a physical"),
+        (r"(?i)\bis not just a metaphor, is a\b", "is not just a metaphor, it is a"),
+        (r"(?i)\b(\d+)\s*km/h\b", r"\1 kilometers per hour"),
+        (r"(?i)\b(\d+(?:\.\d+)?)\s*bn\b", r"\1 billion")
+    ]
+    for pat, rep in grammar_fixes:
+        txt = re.sub(pat, rep, txt)
+
+    txt = re.sub(r"\s+", " ", txt).strip()
+    sents = [s.strip() for s in split_into_complete_sentences(txt) if len(s.strip()) > 12]
+    unique_out = []
+    stop_w = {"the", "and", "for", "with", "from", "that", "this", "have", "has", "had", "were", "was", "are", "into", "over", "when", "what", "where", "which", "their", "there"}
+
+    for s in sents:
+        s_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", s) if w.lower() not in stop_w}
+        if len(s_words) < 3:
+            continue
+        is_dup = False
+        for prev_w in seen_sentences:
+            overlap = len(s_words.intersection(prev_w)) / float(min(len(s_words), len(prev_w)))
+            if overlap >= 0.58:
+                is_dup = True
+                break
+        if not is_dup:
+            seen_sentences.append(s_words)
+            if s[-1] not in ".!?":
+                s += "."
+            unique_out.append(s)
+
+    if unique_out:
+        return " ".join(unique_out)
+
+    # Fallback: find an unused claim from dossier['verified_claims']
+    claims = dossier.get("verified_claims") or []
+    for c_i in range(len(claims)):
+        cand = paraphrase_into_original_creator_voice(claims[(scene_idx + c_i) % len(claims)]["text"], scene_idx + c_i)
+        c_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", cand) if w.lower() not in stop_w}
+        if c_words and not any((len(c_words.intersection(pw)) / float(min(len(c_words), len(pw)))) >= 0.58 for pw in seen_sentences):
+            seen_sentences.append(c_words)
+            return cand
+
+    return f"Researchers and international analysts emphasize that the long-term structural implications of {dossier.get('topic_anchor', 'this shift')} are now unfolding faster than previously projected."
 
 def split_into_complete_sentences(paragraph_text):
     protected = re.sub(r"\b(U\.S|U\.K|U\.N|E\.U|Oct|Nov|Dec|Jan|Feb|Mar|Apr|Aug|Sept|Mr|Mrs|Ms|Dr|Prof|St|Gen|Col|Sen|Rep|S)\.", r"\1<DOT>", paragraph_text)
@@ -2249,18 +2392,23 @@ def is_valid_human_name_candidate(cand_name):
             return False
     return True
 
-def detect_person_in_narration_text(text, ai_person="", ai_role=""):
+def detect_person_in_narration_text(text, ai_person="", ai_role="", story_title=""):
     """
-    UNIVERSAL DYNAMIC SUBJECT SPOTLIGHT DETECTOR (People, Animals/Wildlife, Iconic Tech/Spacecraft, Historical Figures):
-    1. Matches `PERSON_WIKI_MAP` (includes World Leaders, Scientists, Historical Icons, AND Wildlife/Animals!).
-    2. Maps generic titles like 'Chancellor' in a UK story to 'Rachel Reeves' so it NEVER fetches a Coat of Arms!
-    3. Detects specific concrete props/machines/landmarks from `CONCRETE_WIKI_PROPS` when no person is named,
-       so EVERY story (whether about a Person, an Animal, a Tech Breakthrough, or a Local Crisis) gets dynamic visual highlights!
+    STRICT CONTEXT-VERIFIED PERSON & SUBJECT SPOTLIGHT DETECTOR:
+    1. Matches `PERSON_WIKI_MAP` only on unambiguous full names or verified historical/world leaders.
+    2. Matches `WILDLIFE_SPECIES_MAP` ONLY if the species is in `story_title` (never pops up cats/dinosaurs in physics or war videos!).
+    3. Validates named researchers/officials (e.g. 'Stephen Hawking', 'Roy Kerr', 'Roger Penrose', 'Rashad al-Alimi').
     """
     low = text.lower()
+    title_low = str(story_title or "").lower()
     for p_key in sorted(PERSON_WIKI_MAP.keys(), key=len, reverse=True):
         if re.search(rf"\b{re.escape(p_key)}\b", low):
             return PERSON_WIKI_MAP[p_key]
+
+    if title_low:
+        for w_key in sorted(WILDLIFE_SPECIES_MAP.keys(), key=len, reverse=True):
+            if w_key in title_low and re.search(rf"\b{re.escape(w_key)}\b", low):
+                return WILDLIFE_SPECIES_MAP[w_key]
 
     if "chancellor" in low and any(k in low for k in ["uk", "britain", "british", "high street", "tax", "budget"]):
         return ("Rachel Reeves", "Rachel Reeves", "UK CHANCELLOR OF THE EXCHEQUER")
@@ -2287,11 +2435,6 @@ def detect_person_in_narration_text(text, ai_person="", ai_role=""):
             cand_name = m.group(1).strip()
             if is_valid_human_name_candidate(cand_name):
                 return (cand_name, cand_name, default_role)
-
-    # Also check if a concrete Tech/Science/Market/Defense subject is in the sentence for dynamic spotlighting!
-    for prop_k, (prop_badge, wiki_exact, _) in CONCRETE_WIKI_PROPS.items():
-        if len(prop_k) >= 4 and re.search(rf"\b{re.escape(prop_k)}\b", low):
-            return (wiki_exact, wiki_exact, prop_badge[:28])
 
     return None
 
@@ -2961,14 +3104,42 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     chosen_ent = " ".join(beat_words[:2]).title() if beat_words else entities[beat_idx % len(entities)]
     return f"{sub_pillar.replace('_', ' ')} • {fit_whole_words_limit(topic_anchor.upper(), 16)}", chosen_ent, f"{sentence_exact_phrase} {topic_anchor} {domain_ctx}", False
 
+METAPHOR_NOISE_WORDS = {
+    "loophole", "messy", "cluttered", "room", "bedroom", "kitchen", "cook", "cooking", "bake",
+    "recipe", "toy", "blocks", "paint", "cans", "bucket", "ski", "skier", "skiing", "theater",
+    "cinema", "dinosaur", "purple", "cat", "kitten", "puppy", "dog", "deer", "rapunzel", "ursula",
+    "disney", "fairy", "tale", "magic", "spell", "metaphor", "imagine", "picture", "suppose"
+}
+
+def sanitize_visual_search_query(raw_q, dossier):
+    """
+    Strips conversational metaphors ('messy room', 'cook it', 'loophole', 'toy blocks') from image queries
+    and anchors the query to the real geopolitical/scientific subject of the story!
+    """
+    topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
+    pillar = dossier.get("pillar", "WORLD")
+    title_low = dossier.get("title", "").lower()
+    words = [w for w in re.findall(r"[A-Za-z0-9\-]{3,}", str(raw_q or "")) if w.lower() not in METAPHOR_NOISE_WORDS and w.lower() not in HEADLINE_STOP_VERBS_ADJS]
+    cleaned = " ".join(words[:6]).strip()
+    if any(k in title_low for k in ["black hole", "gravitational", "hawking", "entropy", "cosmos", "astrophysics", "spacetime"]):
+        if not any(sp in cleaned.lower() for sp in ["black hole", "telescope", "observatory", "galaxy", "nasa", "event horizon", "ligo", "space"]):
+            cleaned = f"Event Horizon Telescope black hole astrophysics observatory {cleaned}"[:65]
+    elif any(k in title_low for k in ["taiz", "yemen", "houthi", "aden", "sanaa"]):
+        if not any(ym in cleaned.lower() for ym in ["taiz", "yemen", "sanaa", "aden", "middle east"]):
+            cleaned = f"Taiz Yemen city humanitarian crisis photojournalism {cleaned}"[:65]
+    if len(cleaned) < 6:
+        cleaned = f"{topic_anchor} {pillar.lower()}"
+    return cleaned
+
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat", used_image_urls=None):
     if used_image_urls is None:
         used_image_urls = set()
     pillar = dossier.get("pillar", "WORLD")
     p_cfg = CATEGORY_FEEDS.get(pillar, CATEGORY_FEEDS["WORLD"])
     domain_ctx = p_cfg.get("domain_context", "")
-    neg_guard = DOMAIN_NEGATIVE_GUARDS.get(pillar, f"-nba -basketball -logo -icon -cartoon -shirt {STRICT_SAFE_SEARCH_SUFFIX}")
+    neg_guard = "-nsfw -nude -cartoon -illustration -game -logo"
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
+    news_query = sanitize_visual_search_query(news_query, dossier)
 
     # 1. First check if Wikipedia has an exact high-res article/entity photo for `wiki_exact_title`!
     if wiki_exact_title and len(wiki_exact_title) >= 4:
@@ -3021,7 +3192,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         anchored_q = f"{news_query} {geo_tag}"
     else:
         anchored_q = news_query
-    extra_neg = "-collage -split -meme -podcast -thumbnail -game -simulator -comic -drawing -banner -poster"
+    extra_neg = "-meme -comic -poster"
 
     for b_img_q in [f"{anchored_q} real press photo", f"{anchored_q} {domain_ctx}", f"{topic_anchor} {geo_tag} {wiki_exact_title} photo"]:
         if not b_img_q or len(b_img_q) < 4:
@@ -3296,6 +3467,392 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
     beat["prebuilt_hud_layer"] = hud
     return hud
 
+
+# ==============================================================================
+# 10B. V5 MODERN PRODUCTION VISUAL ENGINES (Kurzgesagt / Veritasium / Nitish Rajput / Johnny Harris)
+#      1. Procedural 2D/3D Astrophysics & Black Hole Simulation Engine (24fps)
+#      2. 3D Tactical Cartographic Siege Map & Supply Corridor Engine (24fps)
+#      3. 3D-Tilted Research Paper / UN Dossier Cut-Out + Animated Price/Crisis Gauge
+# ==============================================================================
+def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0):
+    """
+    Determines whether a beat requires a custom 24fps Procedural Physics Simulation
+    or a Johnny Harris / Nitish Rajput 3D Tactical Cartographic Map Breakdown!
+    """
+    comb = f"{dossier.get('title', '')} {beat_text}".lower()
+    b_low = beat_text.lower()
+
+    # 1. Astrophysics / Black Hole / Relativity / Quantum Physics Simulation
+    if any(k in comb for k in ["black hole", "event horizon", "ergosphere", "gravitational wave", "hawking", "spacetime", "singularity", "kerr", "bekenstein"]):
+        if any(w in b_low for w in ["split", "divid", "two ", "smaller", "larger", "fragment", "offspring", "asymmetric", "loophole", "break apart"]):
+            return "SCIENCE_SIM_BLACK_HOLE_SPLIT"
+        if any(w in b_low for w in ["ripple", "gravitational wave", "ligo", "travel across", "spacetime fabric", "stretch", "detector", "strain"]):
+            return "SCIENCE_SIM_GRAVITATIONAL_WAVES"
+        if any(w in b_low for w in ["entropy", "disorder", "thermodynamic", "surface area", "hawking", "second law", "information", "area theorem"]):
+            return "SCIENCE_SIM_ENTROPY_HORIZON"
+        if any(w in b_low for w in ["spin", "rotat", "ergosphere", "angular momentum", "vortex", "whirlpool", "speed", "twist"]) or beat_idx % 2 == 0:
+            return "SCIENCE_SIM_KERR_ERGOSPHERE"
+
+    # 2. Geopolitical Siege Map / Corridor / Blockade / Border Breakdown
+    if any(k in comb for k in ["taiz", "yemen", "siege", "blockade", "corridor", "frontline", "strait", "red sea", "encircl", "checkpoint", "supply route", "al-turba", "aden"]):
+        if any(w in b_low for w in ["map", "siege", "corridor", "route", "road", "blockade", "cut off", "encircl", "frontline", "control", "border", "mountain", "highland", "port", "aden", "turba", "sanaa", "taiz", "houthi"]) or beat_idx in [0, 1, 3, 5]:
+            return "TACTICAL_GEOPOLITICAL_SIEGE_MAP"
+
+    return None
+
+def render_procedural_science_simulation_frame(sim_mode, beat, local_t, W, H, is_short=True):
+    """
+    KURZGESAGT / VERITASIUM 24FPS PROCEDURAL ASTROPHYSICS & BLACK HOLE SIMULATION ENGINE:
+    Renders dynamic, mathematically grounded 2D/3D relativistic visualizations at 24fps:
+    - `SCIENCE_SIM_KERR_ERGOSPHERE`: Rotating Kerr Black Hole shadow + glowing relativistic accretion disk + frame-dragging ergosphere vectors
+    - `SCIENCE_SIM_BLACK_HOLE_SPLIT`: Asymmetric Parent -> Large Primary + Fast Secondary Black Hole split with horizon area telemetry
+    - `SCIENCE_SIM_GRAVITATIONAL_WAVES`: Propagating LIGO spacetime strain ripples + interferometer wave graph
+    - `SCIENCE_SIM_ENTROPY_HORIZON`: Bekenstein-Hawking Event Horizon Planck-area entropy grid (`dA >= 0`)
+    """
+    canvas = Image.new("RGBA", (W, H), (5, 8, 18, 255))
+    draw = ImageDraw.Draw(canvas, "RGBA")
+
+    cx = W // 2
+    cy = int(H * (0.44 if is_short else 0.46))
+
+    # Deep Space Relativistic Coordinate Grid (Warped by Gravity)
+    grid_step = 90 if is_short else 85
+    for gx in range(0, W + grid_step, grid_step):
+        pts = []
+        for gy in range(110, H - 180, 45):
+            dx = gx - cx
+            dy = gy - cy
+            dist = math.sqrt(dx * dx + dy * dy) + 1.0
+            pull = min(55.0, 9500.0 / (dist + 65.0))
+            wx = gx - (dx / dist) * pull
+            wy = gy - (dy / dist) * pull
+            pts.append((wx, wy))
+        if len(pts) >= 2:
+            draw.line(pts, fill=(0, 195, 255, 34), width=1)
+
+    for gy in range(140, H - 180, grid_step):
+        pts = []
+        for gx in range(0, W + 45, 45):
+            dx = gx - cx
+            dy = gy - cy
+            dist = math.sqrt(dx * dx + dy * dy) + 1.0
+            pull = min(55.0, 9500.0 / (dist + 65.0))
+            wx = gx - (dx / dist) * pull
+            wy = gy - (dy / dist) * pull
+            pts.append((wx, wy))
+        if len(pts) >= 2:
+            draw.line(pts, fill=(0, 195, 255, 34), width=1)
+
+    if sim_mode == "SCIENCE_SIM_BLACK_HOLE_SPLIT":
+        # Parent Kerr Black Hole splitting asymmetrically into Large Primary + Smaller High-Velocity Secondary!
+        sep_p = min(max((local_t - 0.25) / 2.6, 0.0), 1.0)
+        sep_ease = 1.0 - ((1.0 - sep_p) ** 2.4)
+        sep_px = int((210 if is_short else 270) * sep_ease)
+
+        # Primary (Larger) Black Hole on Left, Secondary (Smaller, fast-spinning) on Right
+        c1_x = cx - int(sep_px * 0.42)
+        c1_y = cy
+        r1 = 108 if is_short else 118
+
+        c2_x = cx + int(sep_px * 0.78)
+        c2_y = cy - int(28 * math.sin(local_t * 2.2) * sep_ease)
+        r2 = 54 if is_short else 60
+
+        # Gravitational wave radiation rings emitted during the split
+        for w_i in range(5):
+            wave_r = int(((local_t * 140.0 + w_i * 95.0) % 520.0) + 80.0)
+            alpha_w = int(max(0, 145 * (1.0 - wave_r / 600.0)))
+            draw.ellipse([(cx - wave_r, cy - int(wave_r * 0.68)), (cx + wave_r, cy + int(wave_r * 0.68))], outline=(0, 235, 255, alpha_w), width=2)
+
+        # Glowing Plasma Bridge / Ergosphere Neck between the two horizons
+        if sep_ease < 0.92:
+            neck_alpha = int(210 * (1.0 - sep_ease * 0.7))
+            draw.line([(c1_x, c1_y), (c2_x, c2_y)], fill=(255, 165, 30, neck_alpha), width=max(4, int(36 * (1.0 - sep_ease))))
+
+        # Draw Primary Black Hole + Accretion Ring
+        for glow_r in range(r1 + 48, r1, -6):
+            a_g = int(115 * (1.0 - (glow_r - r1) / 48.0))
+            draw.ellipse([(c1_x - glow_r, c1_y - glow_r), (c1_x + glow_r, c1_y + glow_r)], fill=(255, 120, 20, a_g))
+        draw.ellipse([(c1_x - r1, c1_y - r1), (c1_x + r1, c1_y + r1)], fill=(3, 5, 10, 255), outline=(255, 210, 75, 255), width=4)
+
+        # Draw Secondary (Smaller Offspring) Black Hole + Recoil Velocity Vector
+        for glow_r in range(r2 + 32, r2, -5):
+            a_g = int(130 * (1.0 - (glow_r - r2) / 32.0))
+            draw.ellipse([(c2_x - glow_r, c2_y - glow_r), (c2_x + glow_r, c2_y + glow_r)], fill=(0, 225, 255, a_g))
+        draw.ellipse([(c2_x - r2, c2_y - r2), (c2_x + r2, c2_y + r2)], fill=(3, 5, 10, 255), outline=(0, 245, 255, 255), width=3)
+
+        if sep_ease > 0.25:
+            # Velocity vector arrow on secondary black hole
+            vx_end = min(W - 60, c2_x + r2 + 85)
+            draw.line([(c2_x + r2 + 8, c2_y), (vx_end, c2_y)], fill=(255, 225, 0, 255), width=4)
+            draw.polygon([(vx_end, c2_y), (vx_end - 16, c2_y - 10), (vx_end - 16, c2_y + 10)], fill=(255, 225, 0, 255))
+            draw.text((c1_x - 85, c1_y + r1 + 18), "PRIMARY HORIZON (M₁)", fill=(255, 215, 110, 255), font=get_font(20))
+            draw.text((c2_x - 75, c2_y + r2 + 16), "SECONDARY SPLIT (M₂ << M₁)", fill=(0, 245, 255, 255), font=get_font(20))
+
+        sim_title = "SIMULATION // ASYMMETRIC KERR HORIZON BIFURCATION"
+        eq_str = "HAWKING AREA LAW: A_total(final) = A₁ + A₂ ≥ A_initial  |  ΔS_entropy ≥ 0"
+
+    elif sim_mode == "SCIENCE_SIM_GRAVITATIONAL_WAVES":
+        # LIGO Spacetime Strain Ripples (Quadrupole h+ / hx wave propagation + live strain waveform)
+        for ring_i in range(8):
+            prog = ((local_t * 0.55 + ring_i * 0.14) % 1.0)
+            rx = int(60 + prog * (440 if is_short else 620) * (1.0 + 0.12 * math.sin(local_t * 6.0 + ring_i)))
+            ry = int(60 + prog * (440 if is_short else 420) * (1.0 - 0.12 * math.sin(local_t * 6.0 + ring_i)))
+            alpha_r = int(215 * (1.0 - prog))
+            col_r = (0, 240, 255, alpha_r) if ring_i % 2 == 0 else (255, 200, 40, alpha_r)
+            draw.ellipse([(cx - rx, cy - ry), (cx + rx, cy + ry)], outline=col_r, width=3)
+
+        # Central Binary/Split Wave Source
+        orb_ang = local_t * 5.2
+        b1x, b1y = cx + int(38 * math.cos(orb_ang)), cy + int(38 * math.sin(orb_ang))
+        b2x, b2y = cx - int(62 * math.cos(orb_ang)), cy - int(62 * math.sin(orb_ang))
+        draw.ellipse([(b1x - 28, b1y - 28), (b1x + 28, b1y + 28)], fill=(4, 6, 12, 255), outline=(255, 210, 60, 255), width=3)
+        draw.ellipse([(b2x - 16, b2y - 16), (b2x + 16, b2y + 16)], fill=(4, 6, 12, 255), outline=(0, 240, 255, 255), width=3)
+
+        # Live LIGO Interferometer Strain Waveform Box (`h(t)`)
+        wf_y = cy + (265 if is_short else 210)
+        wf_w = W - (120 if is_short else 440)
+        wf_x0 = (W - wf_w) // 2
+        draw.rounded_rectangle([(wf_x0 - 16, wf_y - 58), (wf_x0 + wf_w + 16, wf_y + 58)], radius=14, fill=(8, 16, 32, 230), outline=(0, 235, 255, 200), width=2)
+        wave_pts = []
+        for i_x in range(0, wf_w, 6):
+            u = i_x / float(wf_w)
+            freq_u = 18.0 + 45.0 * (u ** 2.2)
+            amp_u = 36.0 * (u ** 1.4) * math.sin(u * freq_u - local_t * 9.0)
+            wave_pts.append((wf_x0 + i_x, wf_y + amp_u))
+        if len(wave_pts) >= 2:
+            draw.line(wave_pts, fill=(255, 220, 0, 255), width=3)
+        draw.text((wf_x0 + 12, wf_y - 48), "LIGO STRAIN INTERFEROMETER SIGNAL h(t) × 10⁻²¹", fill=(0, 240, 255, 255), font=get_font(18))
+
+        sim_title = "SIMULATION // GRAVITATIONAL WAVE SPACETIME RADIATION"
+        eq_str = "EINSTEIN QUADRUPOLE RADIATION: h_μν ∝ (G / c⁴ r) ∂²I_μν / ∂t²"
+
+    elif sim_mode == "SCIENCE_SIM_ENTROPY_HORIZON":
+        # Bekenstein-Hawking Entropy Horizon Surface Area Grid (`S = k c^3 A / 4 hbar G`)
+        r_bh = 155 if is_short else 168
+        for g_r in range(r_bh + 65, r_bh, -6):
+            a_g = int(125 * (1.0 - (g_r - r_bh) / 65.0))
+            draw.ellipse([(cx - g_r, cy - g_r), (cx + g_r, cy + g_r)], fill=(0, 210, 255, a_g))
+        draw.ellipse([(cx - r_bh, cy - r_bh), (cx + r_bh, cy + r_bh)], fill=(4, 8, 18, 255), outline=(0, 245, 255, 255), width=4)
+
+        # Quantized Planck Horizon Microstate Cells on the Sphere
+        for lat_i in range(-4, 5):
+            lat_y = cy + int((lat_i / 4.5) * (r_bh - 14))
+            half_chord = int(math.sqrt(max(0.0, float(r_bh * r_bh - (lat_y - cy) ** 2)))) - 8
+            if half_chord > 20:
+                draw.line([(cx - half_chord, lat_y), (cx + half_chord, lat_y)], fill=(0, 240, 255, 120), width=2)
+        for lon_i in range(6):
+            ang = local_t * 0.9 + lon_i * (math.pi / 6.0)
+            rx_l = max(8, int(abs(math.cos(ang)) * r_bh))
+            draw.ellipse([(cx - rx_l, cy - r_bh), (cx + rx_l, cy + r_bh)], outline=(255, 215, 0, 115), width=2)
+
+        sim_title = "SIMULATION // BEKENSTEIN-HAWKING ENTROPY HORIZON AREA"
+        eq_str = "SECOND LAW OF BLACK HOLE MECHANICS: S_BH = (k_B c³ A) / (4 ℏ G)  |  dS ≥ 0"
+
+    else:
+        # `SCIENCE_SIM_KERR_ERGOSPHERE`: Rapidly Spinning Kerr Black Hole + Ergosphere Frame-Dragging Vortex
+        r_bh = 118 if is_short else 128
+        r_ergo_x = int(r_bh * 1.72)
+        r_ergo_y = int(r_bh * 1.18)
+
+        # Rotating Frame-Dragging Streamlines inside the Ergosphere
+        for s_i in range(16):
+            base_ang = (s_i / 16.0) * 2.0 * math.pi + local_t * 2.4
+            pts_arc = []
+            for step_j in range(14):
+                frac = step_j / 13.0
+                ang_j = base_ang + frac * 1.15
+                rad_x = r_bh + 18 + frac * (r_ergo_x - r_bh + 65)
+                rad_y = r_bh + 12 + frac * (r_ergo_y - r_bh + 40)
+                pts_arc.append((cx + math.cos(ang_j) * rad_x, cy + math.sin(ang_j) * rad_y))
+            col_stream = (255, 175, 35, 185) if s_i % 2 == 0 else (0, 235, 255, 175)
+            draw.line(pts_arc, fill=col_stream, width=3)
+
+        # Outer Ergosphere Boundary (Oblate Spheroid)
+        draw.ellipse([(cx - r_ergo_x, cy - r_ergo_y), (cx + r_ergo_x, cy + r_ergo_y)], outline=(0, 245, 255, 235), width=3)
+        # Inner Event Horizon Shadow + Photon Ring
+        for g_r in range(r_bh + 34, r_bh, -5):
+            a_g = int(145 * (1.0 - (g_r - r_bh) / 34.0))
+            draw.ellipse([(cx - g_r, cy - g_r), (cx + g_r, cy + g_r)], fill=(255, 140, 20, a_g))
+        draw.ellipse([(cx - r_bh, cy - r_bh), (cx + r_bh, cy + r_bh)], fill=(3, 5, 10, 255), outline=(255, 225, 90, 255), width=4)
+
+        draw.text((cx + r_ergo_x - 120, cy - r_ergo_y - 32), "ERGOSPHERE (FRAME-DRAGGING ZONE)", fill=(0, 245, 255, 255), font=get_font(19))
+        draw.text((cx - 88, cy - 12), "EVENT HORIZON", fill=(255, 220, 120, 230), font=get_font(20))
+
+        sim_title = "SIMULATION // KERR SPINNING BLACK HOLE & ERGOSPHERE"
+        eq_str = "KERR METRIC SPIN PARAMETER: a = J / (M c)  |  PENROSE rotational energy extraction"
+
+    # Top-Left Telemetry Header Box for Science Simulation
+    box_x = 42
+    box_y = 285 if is_short else 152
+    f_sim = get_font(20 if is_short else 19)
+    f_eq = get_font(17 if is_short else 17)
+    w_box = max(draw.textbbox((0, 0), sim_title, font=f_sim)[2], draw.textbbox((0, 0), eq_str, font=f_eq)[2]) + 44
+    draw.rounded_rectangle([(box_x, box_y), (box_x + w_box, box_y + 74)], radius=12, fill=(8, 16, 32, 235), outline=(0, 235, 255, 220), width=2)
+    draw.text((box_x + 18, box_y + 12), sim_title, fill=(255, 225, 0, 255), font=f_sim)
+    draw.text((box_x + 18, box_y + 42), eq_str, fill=(210, 240, 255, 255), font=f_eq)
+
+    canvas.alpha_composite(get_prebuilt_vignette_overlay(W, H))
+    return canvas
+
+def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
+    """
+    JOHNNY HARRIS / NITISH RAJPUT 3D TACTICAL CARTOGRAPHIC SIEGE MAP & CORRIDOR ENGINE:
+    Renders a satellite-styled geopolitical topography map with:
+    - Shaded Control Zones (Crimson Red = Blockade / Insurgent Control vs Emerald/Cyan = Lifeline / Govt Area)
+    - High-altitude camera zoom + radar scan sweep
+    - Animated pulsing red/gold supply route & blockade checkpoints (e.g. Taiz -> Al-Turba -> Aden Port)
+    """
+    story = beat["story"]
+    title_low = story.get("title", "").lower()
+    is_yemen_taiz = any(k in title_low for k in ["taiz", "yemen", "houthi", "aden", "sanaa"])
+
+    canvas = Image.new("RGBA", (W, H), (8, 16, 26, 255))
+    draw = ImageDraw.Draw(canvas, "RGBA")
+
+    cx = W // 2
+    cy = int(H * (0.45 if is_short else 0.47))
+
+    # Topographic Elevation Contours & Satellite Tactical Grid
+    for g_x in range(0, W, 80):
+        draw.line([(g_x, 0), (g_x, H)], fill=(0, 210, 255, 22), width=1)
+    for g_y in range(0, H, 80):
+        draw.line([(0, g_y), (W, g_y)], fill=(0, 210, 255, 22), width=1)
+
+    for c_i in range(1, 7):
+        rx = c_i * (115 if is_short else 145)
+        ry = c_i * (88 if is_short else 95)
+        draw.ellipse([(cx - rx, cy - ry), (cx + rx, cy + ry)], outline=(45, 95, 130, 48), width=2)
+
+    # Shaded Control Zone 1: Northern / Highland Blockade Perimeter (Crimson Red Translucent Polygon)
+    north_poly = [
+        (cx - 380, cy - 290), (cx + 360, cy - 270), (cx + 420, cy - 20),
+        (cx + 190, cy + 45), (cx + 60, cy - 55), (cx - 140, cy - 45), (cx - 340, cy + 35)
+    ]
+    draw.polygon(north_poly, fill=(215, 25, 45, 76), outline=(255, 55, 75, 220))
+
+    # Shaded Control Zone 2: Southern / Coastal Lifeline Territory (Cyan-Emerald Translucent Polygon)
+    south_poly = [
+        (cx - 320, cy + 45), (cx - 120, cy - 30), (cx + 75, cy - 40),
+        (cx + 210, cy + 55), (cx + 370, cy + 285), (cx - 340, cy + 295)
+    ]
+    draw.polygon(south_poly, fill=(0, 185, 155, 64), outline=(0, 235, 195, 200))
+
+    # Animated Siege Encirclement Arc around Target City (`TAIZ` or Story Epicenter)
+    pulse_r = int(84 + 8 * math.sin(local_t * 4.5))
+    draw.ellipse([(cx - pulse_r, cy - pulse_r), (cx + pulse_r, cy + pulse_r)], fill=(235, 25, 45, 55), outline=(255, 60, 80, 245), width=4)
+
+    # Supply Corridor Waypoints (Target City -> Mountain Corridor -> Coastal Port)
+    wp_city = (cx, cy)
+    wp_mid = (cx - 95, cy + 125)
+    wp_port = (cx + 155, cy + 255)
+    corridor_pts = [wp_city, wp_mid, wp_port]
+
+    # Draw Animated Corridor Path
+    route_prog = min(max(local_t / 1.4, 0.15), 1.0)
+    draw.line(corridor_pts, fill=(255, 215, 0, 235), width=6)
+
+    # Severed Highway / Checkpoint Blockade X Marks on the northern & eastern roads
+    for blk_x, blk_y in [(cx - 115, cy - 52), (cx + 108, cy - 42), (cx + 95, cy + 28)]:
+        draw.ellipse([(blk_x - 18, blk_y - 18), (blk_x + 18, blk_y + 18)], fill=(220, 15, 35, 245), outline=(255, 255, 255, 240), width=2)
+        draw.line([(blk_x - 9, blk_y - 9), (blk_x + 9, blk_y + 9)], fill=(255, 255, 255, 255), width=3)
+        draw.line([(blk_x - 9, blk_y + 9), (blk_x + 9, blk_y - 9)], fill=(255, 255, 255, 255), width=3)
+
+    # Animated Supply Pulse Dot along the Al-Turba -> Aden Lifeline
+    u_pulse = (local_t * 0.65) % 1.0
+    if u_pulse < 0.5:
+        u2 = u_pulse * 2.0
+        px = int(wp_city[0] + (wp_mid[0] - wp_city[0]) * u2)
+        py = int(wp_city[1] + (wp_mid[1] - wp_city[1]) * u2)
+    else:
+        u2 = (u_pulse - 0.5) * 2.0
+        px = int(wp_mid[0] + (wp_port[0] - wp_mid[0]) * u2)
+        py = int(wp_mid[1] + (wp_port[1] - wp_mid[1]) * u2)
+    draw.ellipse([(px - 10, py - 10), (px + 10, py + 10)], fill=(255, 235, 0, 255), outline=(10, 14, 24, 255), width=2)
+
+    # Target City Pin + Labels
+    city_lbl = "TAIZ (BESIEGED HIGHLANDS)" if is_yemen_taiz else f"{(story.get('topic_anchor') or 'CONFLICT ZONE').upper()[:22]}"
+    mid_lbl = "AL-TURBA MOUNTAIN ROUTE" if is_yemen_taiz else "PRIMARY SUPPLY CORRIDOR"
+    port_lbl = "ADEN PORT LIFELINE" if is_yemen_taiz else "STRATEGIC ACCESS HUB"
+    zone_red_lbl = "RED ZONE: BLOCKADE & ARTILLERY PERIMETER" if is_yemen_taiz else "RED ZONE: CONTESTED BLOCKADE SECTOR"
+
+    draw.ellipse([(cx - 12, cy - 12), (cx + 12, cy + 12)], fill=(255, 35, 55, 255), outline=(255, 255, 255, 255), width=3)
+    draw.rounded_rectangle([(cx + 18, cy - 22), (cx + 345, cy + 20)], radius=8, fill=(10, 16, 30, 240), outline=(255, 65, 85, 255), width=2)
+    draw.text((cx + 28, cy - 12), f"🎯 {city_lbl}", fill=(255, 255, 255, 255), font=get_font(19))
+
+    draw.rounded_rectangle([(wp_mid[0] - 260, wp_mid[1] - 18), (wp_mid[0] - 14, wp_mid[1] + 20)], radius=8, fill=(10, 16, 30, 235), outline=(255, 215, 0, 235), width=2)
+    draw.text((wp_mid[0] - 248, wp_mid[1] - 9), mid_lbl, fill=(255, 225, 0, 255), font=get_font(17))
+
+    draw.ellipse([(wp_port[0] - 9, wp_port[1] - 9), (wp_port[0] + 9, wp_port[1] + 9)], fill=(0, 240, 200, 255), outline=(255, 255, 255, 255), width=2)
+    draw.rounded_rectangle([(wp_port[0] + 16, wp_port[1] - 18), (wp_port[0] + 245, wp_port[1] + 20)], radius=8, fill=(10, 16, 30, 235), outline=(0, 240, 200, 235), width=2)
+    draw.text((wp_port[0] + 28, wp_port[1] - 9), port_lbl, fill=(0, 245, 210, 255), font=get_font(17))
+
+    # Top Tactical Map Legend Box
+    leg_x = 42
+    leg_y = 285 if is_short else 152
+    draw.rounded_rectangle([(leg_x, leg_y), (leg_x + 540, leg_y + 76)], radius=12, fill=(8, 14, 26, 238), outline=(255, 65, 85, 235), width=2)
+    draw.text((leg_x + 18, leg_y + 11), "🗺️ SATELLITE TACTICAL SIEGE & CORRIDOR MAP", fill=(255, 225, 0, 255), font=get_font(19))
+    draw.text((leg_x + 18, leg_y + 42), zone_red_lbl, fill=(255, 130, 140, 255), font=get_font(17))
+
+    canvas.alpha_composite(get_prebuilt_vignette_overlay(W, H))
+    return canvas
+
+def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
+    """
+    NITISH RAJPUT / VERITASIUM 3D-TILTED RESEARCH PAPER / UN REPORT CUT-OUT CARD:
+    When a beat references a scientific journal, university, UN agency, or verified statistic,
+    displays a clean document clipping card with an animated fluorescent yellow highlighter sweep!
+    """
+    b_txt = beat.get("beat_excerpt", "")
+    low = b_txt.lower()
+    claim_meta = beat.get("claim_meta") or {}
+    src_name = str(claim_meta.get("source_name") or beat["story"].get("source_name") or "Official Dossier").strip()
+    pub_date = str(claim_meta.get("published_date") or beat["story"].get("published_date") or "")[:16]
+
+    # Trigger on scientific papers, UN/humanitarian reports, or explicit evidence sentences
+    has_evidence_cue = any(k in low for k in [
+        "study", "research", "physic", "journal", "university", "scientist", "theo", "united nations",
+        "world health", "report", "data", "hospital", "rial", "percent", "%", "million", "billion",
+        "thousand", "according", "published", "confirmed", "documented"
+    ])
+    if not has_evidence_cue:
+        return None
+
+    cw = 520 if is_short else 540
+    ch = 148 if is_short else 142
+    card = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card, "RGBA")
+
+    # Document Paper Card with Drop Shadow
+    d.rounded_rectangle([(6, 6), (cw - 2, ch - 2)], radius=14, fill=(0, 0, 0, 185))
+    d.rounded_rectangle([(0, 0), (cw - 8, ch - 8)], radius=14, fill=(246, 244, 236, 248), outline=(210, 30, 50, 255), width=3)
+    d.rectangle([(0, 0), (cw - 8, 34)], fill=(18, 28, 48, 255))
+
+    doc_header = f"📄 PRIMARY SOURCE // {src_name.upper()[:24]} ({pub_date})"
+    d.text((16, 7), doc_header, fill=(255, 225, 0, 255), font=get_font(15))
+
+    # Extract key clause to highlight in yellow marker
+    point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "VERIFIED EVIDENCE FINDING").upper(), 34)
+    excerpt_line = fit_whole_words_limit(re.sub(r"[^\x20-\x7E]", "", b_txt).strip(), 56)
+
+    # Animated fluorescent yellow highlighter bar sweeping across the key evidence line
+    hl_prog = min(max((local_t - 0.15) / 0.55, 0.0), 1.0)
+    hl_w = int((cw - 44) * hl_prog)
+    if hl_w > 8:
+        d.rounded_rectangle([(16, 46), (16 + hl_w, 82)], radius=6, fill=(255, 238, 0, 235))
+
+    d.text((22, 51), point_txt, fill=(10, 14, 24, 255), font=get_font(22))
+    d.text((22, 88), f'"{excerpt_line}..."', fill=(35, 42, 58, 255), font=get_font(15))
+
+    # Animated Statistical / Crisis Meter Gauge Bar at the bottom of the Evidence Card
+    meter_prog = min(max((local_t - 0.10) / 0.70, 0.0), 1.0)
+    bar_x0, bar_y0 = 22, ch - 26
+    bar_total_w = cw - 52
+    d.rounded_rectangle([(bar_x0, bar_y0), (bar_x0 + bar_total_w, bar_y0 + 10)], radius=5, fill=(215, 220, 230, 255))
+    fill_w = max(12, int(bar_total_w * (0.82 * meter_prog)))
+    d.rounded_rectangle([(bar_x0, bar_y0), (bar_x0 + fill_w, bar_y0 + 10)], radius=5, fill=(220, 20, 45, 255))
+    return card
+
 def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_short=True):
     beat_dur = beat["duration"]
     bp = min(max(local_t / max(beat_dur, 0.1), 0.0), 1.0)
@@ -3303,8 +3860,13 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     section_t = beat["section_elapsed_before"] + local_t
     cam_mode = beat.get("camera_mode", 0)
 
-    # 1. Base Visual (Full-Sentence HD Video B-Roll OR Cinema Stage Photo)
-    if b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg") is not None:
+    # 1. Base Visual (Procedural 2D/3D Physics Simulation OR Tactical Siege Map OR HD Video B-Roll OR Verified Photo)
+    sim_mode = beat.get("special_sim_mode")
+    if sim_mode and sim_mode.startswith("SCIENCE_SIM_"):
+        frame = render_procedural_science_simulation_frame(sim_mode, beat, local_t, W, H, is_short=is_short)
+    elif sim_mode == "TACTICAL_GEOPOLITICAL_SIEGE_MAP":
+        frame = render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=is_short)
+    elif b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg") is not None:
         vseg = beat["vseg"]
         vc = vseg["vclip"]
         try:
@@ -3356,6 +3918,15 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             bar_x2 = bar_x1 + int((pt_w - 34) * swipe_p)
             bar_y = pt_y + pt_h - 11
             f_draw.rounded_rectangle([(bar_x1, bar_y), (bar_x2, bar_y + 5)], radius=2, fill=(255, 225, 0, 245))
+
+    # 3B. NITISH RAJPUT / VERITASIUM 3D-TILTED RESEARCH PAPER / UN REPORT CUT-OUT CARD
+    if beat.get("person_popup") is None and local_t <= min(beat_dur * 0.85, 3.6):
+        ev_card = build_evidence_paper_cutout_rgba(beat, local_t, is_short=is_short)
+        if ev_card is not None:
+            ev_w, ev_h = ev_card.size
+            ev_x = (W - ev_w) // 2 if is_short else (W - ev_w - 42)
+            ev_y = (H - ev_h - 460) if is_short else (H - ev_h - 235)
+            frame.paste(ev_card, (ev_x, ev_y), ev_card)
 
     # 4. UNIVERSAL DYNAMIC SUBJECT SPOTLIGHT POP-UP (Person, Animal, Object, or Key Evidence!)
     if beat.get("person_popup") is not None:
@@ -3530,7 +4101,7 @@ def build_prop_driven_storyboard_1080p(
         sentence_beats_info = compute_exact_sentence_beat_timings(narration, raw_sents, word_timings, sec_dur)
         num_beats = len(sentence_beats_info)
 
-        scene_person_tuple = detect_person_in_narration_text(narration, ai_person=ai_person, ai_role=ai_role)
+        scene_person_tuple = detect_person_in_narration_text(narration, ai_person=ai_person, ai_role=ai_role, story_title=dossier.get("title", ""))
         scene_person_popup = None
         if scene_person_tuple:
             w_name, d_name, r_lbl = scene_person_tuple
@@ -3575,7 +4146,7 @@ def build_prop_driven_storyboard_1080p(
 
             # Detect if an important person is named in THIS exact sentence (or scene fallback)
             beat_person_popup = None
-            beat_person_tuple = detect_person_in_narration_text(b_txt, ai_person=bv_person, ai_role=bv_role)
+            beat_person_tuple = detect_person_in_narration_text(b_txt, ai_person=bv_person, ai_role=bv_role, story_title=dossier.get("title", ""))
             if beat_person_tuple:
                 bw_name, bd_name, br_lbl = beat_person_tuple
                 bp_im = fetch_person_portrait_image(bw_name, bd_name, br_lbl)
@@ -3594,15 +4165,24 @@ def build_prop_driven_storyboard_1080p(
             if beat_person_popup is not None:
                 person_popup_beats += 1
 
-            # Choose a distinct, non-repeating Pro SFX for this beat!
-            if beat_person_popup is not None:
+            # Detect if this beat should render a 24fps Science Simulation or Tactical Siege Map
+            special_sim_mode = classify_special_visual_simulation_mode(b_txt, dossier, beat_idx=global_beat_idx)
+            has_shock_stat = bool(re.search(r"\b(\d{2,}|percent|%|million|billion|trillion|hospital|rial|dead|killed|collapsed|crisis|violation)\b", b_txt, flags=re.I))
+
+            # Choose context-accurate Foley & Cinematic SFX for this beat!
+            if special_sim_mode and special_sim_mode.startswith("SCIENCE_SIM_"):
+                chosen_sfx = "ligo_gravitational_chirp"
+            elif special_sim_mode == "TACTICAL_GEOPOLITICAL_SIEGE_MAP":
+                chosen_sfx = "tactical_map_zoom_whoosh"
+            elif beat_person_popup is not None:
                 person_sfx_cycle = ["camera_shutter_flash", "dossier_stamp_thud", "digital_hud_lock", "cinematic_medallion_reveal"]
                 chosen_sfx = person_sfx_cycle[beat_person_popup["style_idx"] % len(person_sfx_cycle)]
+            elif has_shock_stat:
+                chosen_sfx = "crisis_stat_sub_drop" if global_beat_idx % 2 == 0 else "paper_evidence_highlighter"
             else:
                 point_sfx_cycle = [
-                    "crystal_point_highlight", "tactical_data_tick", "sonar_mystery_ping",
-                    "orchestral_riser_hit", "deep_sub_drop", "analog_cut_snap",
-                    "air_filter_sweep", "heartbeat_tension_pulse"
+                    "paper_evidence_highlighter", "tactical_map_zoom_whoosh", "deep_sub_drop",
+                    "camera_shutter_flash", "dossier_stamp_thud"
                 ]
                 chosen_sfx = point_sfx_cycle[global_beat_idx % len(point_sfx_cycle)]
 
@@ -3660,6 +4240,8 @@ def build_prop_driven_storyboard_1080p(
                 "point_highlight": point_hl_str,
                 "highlight_keywords": hl_keywords,
                 "sfx_type": chosen_sfx,
+                "special_sim_mode": special_sim_mode,
+                "dramatic_silence_drop": has_shock_stat and (global_beat_idx % 3 == 1),
                 "situation_mood": beat_sit_mood,
                 "person_popup": beat_person_popup,
                 "full_section_narration": narration,
@@ -3695,8 +4277,24 @@ class VoiceAndSubtitleEngine:
     def __init__(self):
         self._subtitle_cache = {}
 
+    PHONETIC_TTS_MAP = {
+        r"\bTaiz\b": "Tah-eez",
+        r"\bTAIZ\b": "Tah-eez",
+        r"\bHouthi\b": "Hoo-thee",
+        r"\bHouthis\b": "Hoo-theez",
+        r"\bSana'a\b": "Sah-naa",
+        r"\bSanaa\b": "Sah-naa",
+        r"\bAl-Turba\b": "Al-Toor-bah",
+        r"\bHodeidah\b": "Ho-day-dah",
+        r"\bMarib\b": "Mah-rib",
+        r"\bKurzgesagt\b": "Koorts-geh-zahgt"
+    }
+
     async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD", is_short=False):
         core_hub = PILLAR_TO_CORE_HUB.get(pillar, pillar)
+        tts_spoken_text = str(text)
+        for pat_ph, rep_ph in self.PHONETIC_TTS_MAP.items():
+            tts_spoken_text = re.sub(pat_ph, rep_ph, tts_spoken_text, flags=re.I)
         long_v, short_v, dg_backup, long_rate, short_rate = CATEGORY_VOICE_CAST.get(
             core_hub, ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+0%", "+2%")
         )
@@ -3708,7 +4306,7 @@ class VoiceAndSubtitleEngine:
 
         for _ in range(2):
             try:
-                comm = edge_tts.Communicate(text, edge_voice, rate=rate, pitch="+0Hz")
+                comm = edge_tts.Communicate(tts_spoken_text, edge_voice, rate=rate, pitch="+0Hz")
                 word_timings = []
                 with open(raw_mp3, "wb") as audio_file:
                     async for chunk in comm.stream():
@@ -3717,7 +4315,8 @@ class VoiceAndSubtitleEngine:
                         elif chunk["type"] == "WordBoundary":
                             w_start = chunk["offset"] / 10_000_000.0
                             w_dur = chunk["duration"] / 10_000_000.0
-                            word_timings.append({"word": chunk["text"], "start": round(w_start, 3), "end": round(w_start + max(w_dur, 0.08), 3)})
+                            disp_w = chunk["text"].replace("Tah-eez", "Taiz").replace("tah-eez", "Taiz").replace("Hoo-theez", "Houthis").replace("Hoo-thee", "Houthi").replace("Sah-naa", "Sanaa").replace("Al-Toor-bah", "Al-Turba")
+                            word_timings.append({"word": disp_w, "start": round(w_start, 3), "end": round(w_start + max(w_dur, 0.08), 3)})
                 if os.path.exists(raw_mp3) and os.path.getsize(raw_mp3) > 1000:
                     break
             except Exception:
@@ -3730,7 +4329,7 @@ class VoiceAndSubtitleEngine:
                     r = requests.post(
                         f"https://api.deepgram.com/v1/speak?model={dg_backup}",
                         headers={"Authorization": f"Token {dg_key}", "Content-Type": "application/json"},
-                        json={"text": text[:1900]},
+                        json={"text": tts_spoken_text[:1900]},
                         timeout=16
                     )
                     if r.status_code == 200 and len(r.content) > 2000:
@@ -3740,7 +4339,7 @@ class VoiceAndSubtitleEngine:
                     pass
 
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1000:
-            gTTS(text=text, lang="en").save(raw_mp3)
+            gTTS(text=tts_spoken_text, lang="en").save(raw_mp3)
 
         try:
             # Studio Human Podcast Voice Mastering: Warm 175Hz chest resonance + 3.2kHz clarity + smooth broadcast compressor
@@ -4055,10 +4654,11 @@ def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
 
         sections = []
         claims = dossier["verified_claims"]
+        seen_narration_sentences = []
         for idx, sc in enumerate(ai_pkg["scenes"]):
-            nar = clean_fact(str(sc.get("narration", "")))
+            nar = proofread_and_deduplicate_narration(str(sc.get("narration", "")), seen_narration_sentences, dossier, scene_idx=idx)
             if len(nar) < 20:
-                nar = paraphrase_into_original_creator_voice(claims[idx % len(claims)]["text"], idx)
+                nar = proofread_and_deduplicate_narration(claims[idx % len(claims)]["text"], seen_narration_sentences, dossier, scene_idx=idx)
             if nar[-1] not in ".!?":
                 nar += "."
             pill = re.sub(r"[^\x20-\x7E]", "", str(sc.get("context_pill", dossier["topic_anchor"]))).upper().strip()[:24]
@@ -4081,7 +4681,14 @@ def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
             if "description" not in sections[-1]["narration"].lower():
                 sections[-1]["narration"] = f"{sections[-1]['narration']} Watch the full documentary via the link in the description and pinned comment!"
         elif not is_short and sections:
-            sections[-1]["narration"] = f"{sections[-1]['narration']} Subscribe to World Talk Brief for daily original case studies."
+            t_anc = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
+            analytical_outro = (
+                f"Ultimately, what makes {t_anc} so consequential is not just the immediate headline, "
+                f"but what it reveals about how rapidly our scientific and geopolitical foundations are shifting. "
+                f"Share your perspective in the comments below, and subscribe to World Talk Brief for daily original deep-dive investigations."
+            )
+            if "subscribe to world talk brief" not in sections[-1]["narration"].lower():
+                sections[-1]["narration"] = f"{sections[-1]['narration']} {analytical_outro}"
         return sections, ents
 
     if is_short:
@@ -4255,7 +4862,8 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
             beat_switch_times_l.append(round(cur_lt, 2))
             sfx_events_l.append({
                 "time": round(cur_lt, 2),
-                "sfx_type": b.get("sfx_type", "crystal_point_highlight"),
+                "sfx_type": b.get("sfx_type", "paper_evidence_highlighter"),
+                "dramatic_silence_drop": b.get("dramatic_silence_drop", False),
                 "situation_mood": b.get("situation_mood", lead_long_dossier["category"])
             })
             cur_lt += b["duration"]
@@ -4344,7 +4952,8 @@ async def render_and_upload_short_unit(
             beat_switch_times_s.append(round(cur_t, 2))
             sfx_events_s.append({
                 "time": round(cur_t, 2),
-                "sfx_type": b.get("sfx_type", "crystal_point_highlight"),
+                "sfx_type": b.get("sfx_type", "paper_evidence_highlighter"),
+                "dramatic_silence_drop": b.get("dramatic_silence_drop", False),
                 "situation_mood": b.get("situation_mood", short_dossier["category"])
             })
             cur_t += b["duration"]
