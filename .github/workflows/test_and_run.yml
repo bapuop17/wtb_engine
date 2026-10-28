@@ -33,11 +33,10 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Set up Python 3.11 with Pip Cache
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: Fast Install System FFmpeg (No-Hang + No-Bloat Mode)
         run: |
