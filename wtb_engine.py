@@ -100,19 +100,19 @@ PILLAR_TO_CORE_HUB = {
     "DAILY_24H_MEGA_NEWS": "WORLD"
 }
 
-# 100% NATURAL HUMAN GEN-3 MULTILINGUAL NEURAL VOICES (Zero Robotic Warble!)
+# 100% ULTRA-NATURAL EXPRESSIVE HUMAN STORYTELLER VOICES (Andrew & Ava Multilingual + Deepgram Aura)
 CATEGORY_VOICE_CAST = {
-    "WORLD": ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+0%", "+2%"),
-    "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-helios-en", "+0%", "+2%"),
-    "MIND_BLOWING_FACTS": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-asteria-en", "+0%", "+2%"),
-    "SCIENCE": ("en-US-BrianMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-helios-en", "+0%", "+2%"),
-    "BUSINESS": ("en-US-AndrewMultilingualNeural", "en-US-BrianMultilingualNeural", "aura-orion-en", "+0%", "+2%"),
-    "HEALTH": ("en-US-AvaMultilingualNeural", "en-US-EmmaMultilingualNeural", "aura-asteria-en", "+0%", "+2%"),
-    "SPORTS": ("en-US-BrianMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-arcas-en", "+1%", "+3%"),
-    "ENTERTAINMENT": ("en-US-EmmaMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-stella-en", "+0%", "+2%")
+    "WORLD": ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+2%", "+4%"),
+    "TECHNOLOGY": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-helios-en", "+2%", "+4%"),
+    "MIND_BLOWING_FACTS": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-asteria-en", "+2%", "+4%"),
+    "SCIENCE": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-helios-en", "+2%", "+4%"),
+    "BUSINESS": ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+2%", "+4%"),
+    "HEALTH": ("en-US-AvaMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-asteria-en", "+2%", "+4%"),
+    "SPORTS": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-arcas-en", "+3%", "+5%"),
+    "ENTERTAINMENT": ("en-US-AvaMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-stella-en", "+2%", "+4%")
 }
 
-STRICT_SAFE_SEARCH_SUFFIX = "-nude -naked -nsfw -bikini -lingerie -underwear -swimsuit -erotic -statue -sculpture -painting -cleavage -adult -18+ -uncensored -boudoir -topless -imago -shutterstock -getty -adobestock -watermark -chart -diagram -infographic"
+STRICT_SAFE_SEARCH_SUFFIX = "-nude -naked -nsfw -bikini -lingerie -underwear -swimsuit -erotic -statue -sculpture -painting -cleavage -adult -18+ -uncensored -boudoir -topless -imago -shutterstock -getty -adobestock -watermark -chart -diagram -infographic -ai -midjourney -dalle -stable -diffusion -illustration -vector -3d -render -cgi -cartoon -futuristic -scifi -wallpaper -poster -thumbnail"
 
 ADULT_NSFW_BANNED_TERMS = [
     "nude", "nudity", "naked", "nsfw", "erotic", "erotica", "porn", "porno", "xxx", "sex ", "sexy",
@@ -166,7 +166,7 @@ CATEGORY_FEEDS = {
         "bgm_mood": "cyberpunk_tech",
         "reddit_subs": "technology+robotics+artificial+singularity",
         "search_query": "artificial intelligence humanoid robot nvidia openai technology",
-        "domain_context": "technology engineering laboratory",
+        "domain_context": "official press photo",
         "feeds": [
             ("Google News Tech 24h", "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-US&gl=US&ceid=US:en"),
             ("TechCrunch AI", "https://techcrunch.com/category/artificial-intelligence/feed/"),
@@ -184,7 +184,7 @@ CATEGORY_FEEDS = {
         "bgm_mood": "cosmic_mystery",
         "reddit_subs": "Damnthatsinteresting+interestingasfuck+space",
         "search_query": "unbelievable facts scientific mystery mind blowing discovery",
-        "domain_context": "science discovery engineering",
+        "domain_context": "real documentary photo",
         "feeds": [
             ("Google News Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-US&gl=US&ceid=US:en"),
             ("SciTechDaily Discoveries", "https://scitechdaily.com/feed/"),
@@ -353,12 +353,16 @@ BANNED_IMAGE_SOURCES = [
     "123rf", "depositphotos", "vecteezy", "canstock", "bigstock", "sputnik",
     "imago", "imago-images", "adobestock", "ftcdn", "stock.adobe", "nurphoto",
     "corbis", "rexfeatures", "zuma", "civitai", "deviantart", "artstation",
-    "ytimg", "youtube", "cartoon", "clipart", "meme", "watermark", "agefotostock", "pond5",
-    "etsy", "redbubble", "zazzle", "teespring", "cafepress", "pinterest", "shopify", "ebay",
-    "diagram", "chart", "infographic", "graph", "table", "slide", "presentation", "screenshot",
-    "logo", "emblem", "insignia", "seal", "badge", "coat_of_arms",
-    "nude", "naked", "nsfw", "erotic", "bikini", "lingerie", "swimsuit", "underwear", "playboy",
-    "onlyfans", "statue_of_venus", "aphrodite", "nymph", "odalisque", "boudoir", "strip", "adult"
+    "lexica", "midjourney", "openart", "nightcafe", "playgroundai", "craiyon",
+    "pollinations", "huggingface", "stablediffusion", "ai-generated", "aigenerated",
+    "ytimg", "youtube", "vi_webp", "maxresdefault", "hqdefault", "cartoon", "clipart",
+    "meme", "watermark", "agefotostock", "pond5", "etsy", "redbubble", "zazzle",
+    "teespring", "cafepress", "pinterest", "shopify", "ebay", "diagram", "chart",
+    "infographic", "graph", "table", "slide", "presentation", "screenshot", "logo",
+    "emblem", "insignia", "seal", "badge", "coat_of_arms", "3d-render", "3d_render",
+    "illustration", "vector", "futuristic", "cyberpunk", "sci-fi", "scifi",
+    "nude", "naked", "nsfw", "erotic", "bikini", "lingerie", "swimsuit", "underwear",
+    "playboy", "onlyfans", "statue_of_venus", "aphrodite", "nymph", "odalisque", "boudoir", "strip", "adult"
 ]
 
 PERSON_WIKI_MAP = {
@@ -469,7 +473,19 @@ PERSON_WIKI_MAP = {
     "warren buffett": ("Warren Buffett", "Warren Buffett", "CEO OF BERKSHIRE HATHAWAY"),
     "cook": ("Tim Cook", "Tim Cook", "CEO OF APPLE"),
     "pichai": ("Sundar Pichai", "Sundar Pichai", "CEO OF GOOGLE"),
-    "nadella": ("Satya Nadella", "Satya Nadella", "CEO OF MICROSOFT")
+    "sundar pichai": ("Sundar Pichai", "Sundar Pichai", "CEO OF GOOGLE"),
+    "nadella": ("Satya Nadella", "Satya Nadella", "CEO OF MICROSOFT"),
+    "jassy": ("Andy Jassy", "Andy Jassy", "CEO OF AMAZON"),
+    "andy jassy": ("Andy Jassy", "Andy Jassy", "CEO OF AMAZON"),
+    "amodei": ("Dario Amodei", "Dario Amodei", "CEO OF ANTHROPIC"),
+    "dario amodei": ("Dario Amodei", "Dario Amodei", "CEO OF ANTHROPIC"),
+    "daniela amodei": ("Daniela Amodei", "Daniela Amodei", "PRESIDENT OF ANTHROPIC"),
+    "dimon": ("Jamie Dimon", "Jamie Dimon", "CEO OF JPMORGAN CHASE"),
+    "jamie dimon": ("Jamie Dimon", "Jamie Dimon", "CEO OF JPMORGAN CHASE"),
+    "powell": ("Jerome Powell", "Jerome Powell", "FEDERAL RESERVE CHAIR"),
+    "jerome powell": ("Jerome Powell", "Jerome Powell", "FEDERAL RESERVE CHAIR"),
+    "lagarde": ("Christine Lagarde", "Christine Lagarde", "PRESIDENT OF THE ECB"),
+    "fink": ("Larry Fink", "Larry Fink", "CEO OF BLACKROCK")
 }
 
 CONCRETE_WIKI_PROPS = {
@@ -514,7 +530,14 @@ CONCRETE_WIKI_PROPS = {
     "oil": ("GLOBAL ENERGY MARKETS", "Oil refinery", "oil refinery tanker energy"),
     "fighter": ("FIGHTER JET DEPLOYMENT", "Eurofighter Typhoon", "fighter jet military aircraft"),
     "drone": ("MILITARY DRONE / UAV", "Unmanned combat aerial vehicle", "military combat drone UAV"),
-    "missile": ("BALLISTIC MISSILE SYSTEM", "MIM-104 Patriot", "missile defense launcher military")
+    "missile": ("BALLISTIC MISSILE SYSTEM", "MIM-104 Patriot", "missile defense launcher military"),
+    "anthropic": ("ANTHROPIC AI & CLAUDE", "Dario Amodei", "Dario Amodei Anthropic CEO press conference photo"),
+    "amazon": ("AMAZON & AWS CLOUD", "Andy Jassy", "Amazon headquarters Seattle spheres building exterior photo"),
+    "aws": ("AMAZON WEB SERVICES", "Amazon Web Services", "Amazon Web Services data center server racks photo"),
+    "google": ("GOOGLE & ALPHABET", "Googleplex", "Googleplex headquarters Mountain View exterior photo"),
+    "sequoia": ("VENTURE CAPITAL & WALL STREET", "Sand Hill Road", "New York Stock Exchange Wall Street exterior photo"),
+    "ipo": ("WALL STREET IPO FILING", "New York Stock Exchange", "New York Stock Exchange trading floor traders photo"),
+    "convertible": ("BILLION-DOLLAR DEAL STRUCTURE", "Wall Street", "Wall Street financial district Manhattan photo")
 }
 
 GLOBAL_OPEN_VCLIPS = []
@@ -607,34 +630,52 @@ def get_available_groq_chat_models(groq_key):
         if r.status_code == 200:
             data = r.json().get("data", [])
             all_ids = [m.get("id", "") for m in data if m.get("id")]
+            # Exclude TTS/audio/guard/arabic/orpheus models so only pure English/Multilingual LLM chat models run!
             chat_ids = [
                 mid for mid in all_ids
-                if not any(b in mid.lower() for b in ["whisper", "tts", "guard", "embed", "vision", "audio", "playai"])
+                if not any(b in mid.lower() for b in ["whisper", "tts", "guard", "embed", "vision", "audio", "playai", "orpheus", "arabic", "allam", "distil-whisper"])
             ]
-            preferred = sorted(
-                chat_ids,
-                key=lambda x: (0 if "70b" in x.lower() else (1 if "qwen" in x.lower() or "deepseek" in x.lower() or "llama" in x.lower() else 2))
-            )
-            CACHED_GROQ_MODELS = preferred[:4]
-            print(f"✅ [Groq Live Models Discovered]: {CACHED_GROQ_MODELS}", flush=True)
+            def score_model(mid):
+                ml = mid.lower()
+                if "llama-3.3-70b" in ml or "llama-3.1-70b" in ml:
+                    return 0
+                if "llama" in ml and ("70b" in ml or "8b" in ml):
+                    return 1
+                if "qwen" in ml or "deepseek" in ml or "gemma" in ml or "mixtral" in ml:
+                    return 2
+                return 3
+            preferred = sorted(chat_ids, key=score_model)
+            CACHED_GROQ_MODELS = preferred[:5]
+            print(f"✅ [Groq Live Chat Models Locked]: {CACHED_GROQ_MODELS}", flush=True)
             return CACHED_GROQ_MODELS
     except Exception as e:
         print("⚠️ Groq model list note:", str(e)[:80], flush=True)
-    CACHED_GROQ_MODELS = []
+    CACHED_GROQ_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
     return CACHED_GROQ_MODELS
 
 def parse_json_safely(raw_text):
+    """
+    BULLETPROOF JSON PARSER:
+    Strips `<think>...</think>` reasoning blocks (from Qwen3 / DeepSeek models), markdown fences,
+    and trailing commas before extracting the JSON object!
+    """
     if not raw_text:
         return None
-    cleaned = re.sub(r"^```(?:json)?\s*", "", raw_text.strip(), flags=re.I)
+    # Strip <think>...</think> reasoning blocks so braces inside thoughts never break json.loads!
+    no_think = re.sub(r"<think>.*?</think>", "", raw_text, flags=re.S | re.I).strip()
+    if "<think>" in no_think:
+        no_think = no_think.split("</think>")[-1].strip()
+    cleaned = re.sub(r"^```(?:json)?\s*", "", no_think, flags=re.I)
     cleaned = re.sub(r"\s*```$", "", cleaned.strip())
+    cleaned = re.sub(r",\s*([}\]])", r"\1", cleaned)
     try:
         return json.loads(cleaned)
     except Exception:
         m = re.search(r"\{.*\}", cleaned, flags=re.S)
         if m:
+            cand = re.sub(r",\s*([}\]])", r"\1", m.group(0))
             try:
-                return json.loads(m.group(0))
+                return json.loads(cand)
             except Exception:
                 pass
     return None
@@ -954,196 +995,248 @@ def detect_sentence_situation_mood(sentence_text, base_mood="dark_geopolitics", 
 
 def synthesize_pro_sfx_event(sfx_type, sr=44100):
     """
-    Synthesizes 12 crisp, clearly audible studio sound effects (boosted to 0.13-0.16 peak gain)
-    for Person Center Pop-Ups, Point Highlights, and Scene Transitions!
+    MODERN 2026 PRO DOCUMENTARY SOUND DESIGN (Boosted to 0.22-0.25 Peak Gain):
+    Rich, multi-harmonic sound effects for Person Pop-Ups, Point Highlights, and Scene Cuts
+    that cut cleanly through the mix on both mobile and desktop speakers!
     """
     if sfx_type == "camera_shutter_flash":
+        dur = 0.34
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        click1 = np.sin(2.0 * np.pi * 1950.0 * t) * np.exp(-t * 85.0)
+        click2 = np.sin(2.0 * np.pi * 2650.0 * np.maximum(0.0, t - 0.042)) * np.exp(-np.maximum(0.0, t - 0.042) * 75.0)
+        chime = (0.60 * np.sin(2.0 * np.pi * 1318.5 * t) + 0.35 * np.sin(2.0 * np.pi * 2637.0 * t)) * np.exp(-t * 10.5)
+        return (0.235 * np.tanh(1.6 * (click1 + 0.9 * click2 + chime))).astype(np.float32)
+
+    if sfx_type == "dossier_stamp_thud":
+        dur = 0.38
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        sub_f = 140.0 * np.exp(-t * 15.0) + 46.0
+        thud = np.sin(2.0 * np.pi * sub_f * t) * np.exp(-t * 9.5)
+        snap = (0.65 * np.sin(2.0 * np.pi * 1120.0 * t) + 0.40 * np.sin(2.0 * np.pi * 2240.0 * t)) * np.exp(-t * 45.0)
+        return (0.245 * np.tanh(1.7 * (thud + snap))).astype(np.float32)
+
+    if sfx_type == "digital_hud_lock":
         dur = 0.30
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
-        click1 = np.sin(2.0 * np.pi * 1850.0 * t) * np.exp(-t * 90.0)
-        click2 = np.sin(2.0 * np.pi * 2450.0 * np.maximum(0.0, t - 0.045)) * np.exp(-np.maximum(0.0, t - 0.045) * 80.0)
-        chime = 0.55 * np.sin(2.0 * np.pi * 1318.5 * t) * np.exp(-t * 12.0)
-        return (0.145 * (click1 + 0.85 * click2 + chime)).astype(np.float32)
-
-    if sfx_type == "dossier_stamp_thud":
-        dur = 0.36
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        sub_f = 125.0 * np.exp(-t * 16.0) + 44.0
-        thud = np.sin(2.0 * np.pi * sub_f * t) * np.exp(-t * 10.0)
-        snap = 0.60 * np.sin(2.0 * np.pi * 960.0 * t) * np.exp(-t * 50.0)
-        return (0.155 * (thud + snap)).astype(np.float32)
-
-    if sfx_type == "digital_hud_lock":
-        dur = 0.28
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        f_beep = np.where(t < 0.09, 880.0, np.where(t < 0.18, 1174.66, 1760.0))
-        env = np.exp(-(t % 0.09) * 24.0)
-        return (0.125 * np.sin(2.0 * np.pi * f_beep * t) * env).astype(np.float32)
+        f_beep = np.where(t < 0.09, 987.77, np.where(t < 0.18, 1318.51, 1975.53))
+        env = np.exp(-(t % 0.09) * 20.0)
+        sig = (np.sin(2.0 * np.pi * f_beep * t) + 0.4 * np.sin(4.0 * np.pi * f_beep * t)) * env
+        return (0.215 * sig).astype(np.float32)
 
     if sfx_type == "cinematic_medallion_reveal":
-        dur = 0.44
+        dur = 0.48
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
-        env = np.sin(np.pi * (t / dur)) * np.exp(-t * 4.0)
+        env = np.sin(np.pi * (t / dur)) * np.exp(-t * 3.6)
         chord = (
             0.55 * np.sin(2.0 * np.pi * 220.0 * t)
-            + 0.38 * np.sin(2.0 * np.pi * 329.63 * t)
-            + 0.28 * np.sin(2.0 * np.pi * 440.0 * t)
-            + 0.22 * np.sin(2.0 * np.pi * 659.25 * t)
+            + 0.42 * np.sin(2.0 * np.pi * 329.63 * t)
+            + 0.35 * np.sin(2.0 * np.pi * 440.0 * t)
+            + 0.28 * np.sin(2.0 * np.pi * 659.25 * t)
+            + 0.20 * np.sin(2.0 * np.pi * 880.0 * t)
         )
-        return (0.140 * chord * env).astype(np.float32)
+        return (0.230 * np.tanh(1.5 * chord * env)).astype(np.float32)
 
     if sfx_type == "crystal_point_highlight":
-        dur = 0.32
+        dur = 0.35
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
         bell = (
-            0.65 * np.sin(2.0 * np.pi * 1046.50 * t)
-            + 0.38 * np.sin(2.0 * np.pi * 1567.98 * t)
-            + 0.22 * np.sin(2.0 * np.pi * 2093.0 * t)
-        ) * np.exp(-t * 11.5)
-        return (0.130 * bell).astype(np.float32)
+            0.65 * np.sin(2.0 * np.pi * 1174.66 * t)
+            + 0.42 * np.sin(2.0 * np.pi * 1760.0 * t)
+            + 0.28 * np.sin(2.0 * np.pi * 2349.32 * t)
+        ) * np.exp(-t * 10.0)
+        return (0.220 * bell).astype(np.float32)
 
     if sfx_type == "tactical_data_tick":
-        dur = 0.24
+        dur = 0.26
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
-        env = np.exp(-((t % 0.055) * 58.0))
-        tone = np.sin(2.0 * np.pi * (1480.0 + 320.0 * (t // 0.055)) * t)
-        return (0.115 * tone * env).astype(np.float32)
+        env = np.exp(-((t % 0.055) * 52.0))
+        freq = 1567.98 + 380.0 * (t // 0.055)
+        tone = np.sin(2.0 * np.pi * freq * t) + 0.35 * np.sin(4.0 * np.pi * freq * t)
+        return (0.205 * tone * env).astype(np.float32)
 
     if sfx_type == "deep_sub_drop":
-        dur = 0.50
+        dur = 0.52
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
-        freq = 98.0 * np.exp(-t * 6.0) + 38.0
+        freq = 115.0 * np.exp(-t * 5.8) + 42.0
         phase = 2.0 * np.pi * np.cumsum(freq) / float(sr)
-        return (0.155 * np.sin(phase) * np.exp(-t * 4.8)).astype(np.float32)
+        sig = (np.sin(phase) + 0.45 * np.sin(phase * 2.0)) * np.exp(-t * 4.5)
+        return (0.245 * np.tanh(1.6 * sig)).astype(np.float32)
 
     if sfx_type == "analog_cut_snap":
-        dur = 0.18
+        dur = 0.20
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
         snap = (
-            0.65 * np.sin(2.0 * np.pi * 440.0 * t) * np.exp(-t * 34.0)
-            + 0.45 * np.sin(2.0 * np.pi * 1320.0 * t) * np.exp(-t * 58.0)
+            0.65 * np.sin(2.0 * np.pi * 520.0 * t) * np.exp(-t * 30.0)
+            + 0.50 * np.sin(2.0 * np.pi * 1560.0 * t) * np.exp(-t * 50.0)
         )
-        return (0.125 * snap).astype(np.float32)
+        return (0.215 * snap).astype(np.float32)
 
     if sfx_type == "sonar_mystery_ping":
-        dur = 0.46
+        dur = 0.48
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
         ping = (
-            0.75 * np.sin(2.0 * np.pi * 783.99 * t) * np.exp(-t * 7.8)
-            + 0.28 * np.sin(2.0 * np.pi * 1567.98 * t) * np.exp(-t * 12.5)
+            0.75 * np.sin(2.0 * np.pi * 880.0 * t) * np.exp(-t * 7.2)
+            + 0.35 * np.sin(2.0 * np.pi * 1760.0 * t) * np.exp(-t * 11.0)
         )
-        return (0.130 * ping).astype(np.float32)
+        return (0.220 * ping).astype(np.float32)
 
     if sfx_type == "orchestral_riser_hit":
-        dur = 0.40
+        dur = 0.44
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
-        f_rise = 165.0 + 310.0 * ((t / dur) ** 2)
+        f_rise = 196.0 + 420.0 * ((t / dur) ** 2)
         phase = 2.0 * np.pi * np.cumsum(f_rise) / float(sr)
         env = np.sin(np.pi * (t / dur))
-        return (0.135 * (np.sin(phase) + 0.55 * np.sin(phase * 1.5)) * env).astype(np.float32)
+        return (0.225 * (np.sin(phase) + 0.6 * np.sin(phase * 1.5) + 0.3 * np.sin(phase * 2.0)) * env).astype(np.float32)
 
     if sfx_type == "heartbeat_tension_pulse":
-        dur = 0.42
+        dur = 0.44
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
-        lub = np.sin(2.0 * np.pi * 60.0 * t) * np.exp(-t * 20.0)
+        lub = (np.sin(2.0 * np.pi * 65.0 * t) + 0.4 * np.sin(2.0 * np.pi * 130.0 * t)) * np.exp(-t * 18.0)
         t2 = np.maximum(0.0, t - 0.16)
-        dub = np.where(t >= 0.16, np.sin(2.0 * np.pi * 50.0 * t2) * np.exp(-t2 * 22.0), 0.0)
-        return (0.155 * (lub + 0.88 * dub)).astype(np.float32)
+        dub = np.where(t >= 0.16, (np.sin(2.0 * np.pi * 55.0 * t2) + 0.4 * np.sin(2.0 * np.pi * 110.0 * t2)) * np.exp(-t2 * 20.0), 0.0)
+        return (0.245 * (lub + 0.90 * dub)).astype(np.float32)
 
     # Default: air_filter_sweep
-    dur = 0.26
+    dur = 0.28
     n = int(sr * dur)
     t = np.linspace(0, dur, n, endpoint=False)
-    env = np.sin(np.pi * (t / dur)) * np.exp(-t * 7.0)
-    sweep = np.sin(2.0 * np.pi * (260.0 - 105.0 * t) * t) + 0.45 * np.sin(2.0 * np.pi * 390.0 * t)
-    return (0.120 * sweep * env).astype(np.float32)
+    env = np.sin(np.pi * (t / dur)) * np.exp(-t * 6.5)
+    sweep = np.sin(2.0 * np.pi * (320.0 - 120.0 * t) * t) + 0.55 * np.sin(2.0 * np.pi * 640.0 * t)
+    return (0.210 * sweep * env).astype(np.float32)
 
 def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     """
-    Synthesizes a high-quality, multi-layered cinema segment for a specific emotional situation
-    (Warm Acoustic Piano/Harp Harmonics + Lush Strings Pad + Deep Sub-Bass + Rhythmic Pulse).
+    MODERN 2026 ENGAGING YOUTUBE DOCUMENTARY SOUNDTRACK SYNTHESIZER:
+    Replaces dull low-frequency sine waves with a crisp, modern 5-Layer Documentary Groove
+    (Rich FM/Sawtooth Synth Pluck Arpeggios + Harmonic Reese Bass + Crisp 16th-Note Hi-Hat/Shaker
+    Groove + Snare Backbeat + Wide Cinema Chord Pad) that sounds modern, energetic, and clear
+    on both mobile phones and studio headphones!
     """
     tracks = STUDIO_ALBUM_50_MIND_BLOWING_TRACKS.get(mood, STUDIO_ALBUM_50_MIND_BLOWING_TRACKS["dark_geopolitics"])
     track_tuple = tracks[track_idx % len(tracks)]
     track_name, root_freqs, bpm, arp_order = track_tuple[0], track_tuple[1], track_tuple[2], track_tuple[3]
     style_mode = track_tuple[4] if len(track_tuple) > 4 else "minor_tension"
 
+    # Boost BPM slightly for modern 2026 YouTube documentary pacing
+    modern_bpm = max(96, int(bpm * 1.06))
     n_seg = max(int(sr * seg_dur), 128)
     t = np.linspace(0, seg_dur, n_seg, endpoint=False)
-    beat_len = 60.0 / float(bpm)
+    beat_len = 60.0 / float(modern_bpm)
     bar_len = beat_len * 4.0
 
     bar_idx = (t // bar_len).astype(int)
     chord_roots = np.array([root_freqs[i % len(root_freqs)] for i in bar_idx], dtype=np.float32)
 
-    # Warm detuned stereo-style analog string pad + fifth & octave overtones
+    # Layer 1: Rich Sawtooth/Analog String Pad (Octave-Up Harmonics so it's warm & clear on phone speakers!)
     phase_root = 2.0 * np.pi * np.cumsum(chord_roots) / float(sr)
     third_ratio = 1.1892 if style_mode in ["minor_tension", "imperial_epic", "deep_drone", "tactical_pulse"] else 1.2599
     pad_wave = (
-        0.48 * np.sin(phase_root)
-        + 0.25 * np.sin(phase_root * 1.003)
-        + 0.26 * np.sin(phase_root * third_ratio)
-        + 0.24 * np.sin(phase_root * 1.4983)
-        + 0.14 * np.sin(phase_root * 2.0)
+        0.38 * np.sin(phase_root * 2.0)
+        + 0.28 * np.sin(phase_root * 2.0 * third_ratio)
+        + 0.26 * np.sin(phase_root * 2.0 * 1.4983)
+        + 0.16 * np.sin(phase_root * 3.0)
+        + 0.12 * np.sin(phase_root * 4.0)
     )
-    pad_env = 0.76 + 0.24 * np.sin(2.0 * np.pi * (t / bar_len))
-    pad_layer = pad_wave * pad_env * 0.42
+    # Sidechain-style rhythmic pumping envelope on every beat for modern 2026 groove!
+    beat_local_t = t % beat_len
+    sidechain_env = 0.55 + 0.45 * (1.0 - np.exp(-beat_local_t * 10.0))
+    pad_layer = pad_wave * sidechain_env * 0.34
 
-    # Deep cinema sub-bass foundation
-    sub_layer = 0.32 * np.sin(phase_root * 0.5) * (0.85 + 0.15 * np.cos(2.0 * np.pi * (t / (bar_len * 2.0))))
+    # Layer 2: Modern Saturated Reese / 808 Bassline (with 2nd & 3rd harmonics for phone speaker clarity!)
+    bass_wave = np.tanh(2.2 * (
+        0.65 * np.sin(phase_root * 0.5)
+        + 0.45 * np.sin(phase_root * 1.0)
+        + 0.25 * np.sin(phase_root * 1.5)
+    ))
+    bass_layer = 0.32 * bass_wave * sidechain_env
 
-    # Expressive Felt-Piano / Crystal Arpeggio Melody Notes
-    subdiv_len = beat_len * 0.5
+    # Layer 3: Crisp 2026 FM Synth Pluck Arpeggiator (16th/8th-note melodic hook in 400Hz-2400Hz range!)
+    subdiv_len = beat_len * 0.25 if style_mode in ["synth_arp", "tactical_pulse", "driving_action"] else beat_len * 0.5
     arp_step_idx = (t // subdiv_len).astype(int)
-    arp_mults = [1.0, third_ratio, 1.4983, 2.0, 2.0 * third_ratio]
+    arp_mults = [2.0, 2.0 * third_ratio, 2.9966, 4.0, 3.0 * third_ratio, 2.0 * 1.4983]
     chosen_mults = np.array([arp_mults[arp_order[i % len(arp_order)] % len(arp_mults)] for i in arp_step_idx], dtype=np.float32)
     arp_local_t = t % subdiv_len
-    arp_env = np.exp(-arp_local_t * (7.5 if style_mode in ["warm_swell", "ethereal_pad"] else 11.5))
+    arp_env = np.exp(-arp_local_t * 16.0)
     arp_phase = 2.0 * np.pi * np.cumsum(chord_roots * chosen_mults) / float(sr)
-    arp_layer = (0.24 * np.sin(arp_phase) + 0.08 * np.sin(arp_phase * 2.0)) * arp_env
+    # FM modulation for modern bell/pluck sheen
+    fm_mod = 0.85 * np.sin(arp_phase * 2.0) * np.exp(-arp_local_t * 28.0)
+    arp_layer = 0.34 * np.sin(arp_phase + fm_mod) * arp_env
 
-    # Soft Cinematic Pulse
-    beat_local_t = t % beat_len
-    kick_freq_sweep = 78.0 * np.exp(-beat_local_t * 16.0) + 38.0
-    kick_env = np.exp(-beat_local_t * 12.0)
-    kick_layer = 0.24 * np.sin(2.0 * np.pi * kick_freq_sweep * beat_local_t) * kick_env
+    # Layer 4: Modern Documentary Drum Groove (Punchy Kick + Crisp Hi-Hat Tick + Beat 2/4 Rim/Snare)
+    kick_freq_sweep = 110.0 * np.exp(-beat_local_t * 22.0) + 44.0
+    kick_env = np.exp(-beat_local_t * 15.0)
+    kick_layer = 0.34 * np.tanh(1.8 * np.sin(2.0 * np.pi * kick_freq_sweep * beat_local_t)) * kick_env
 
-    seg_mix = pad_layer + sub_layer + arp_layer + kick_layer
+    # Crisp high-frequency hi-hat/shaker tick on every half-beat
+    hat_local_t = t % (beat_len * 0.5)
+    hat_env = np.exp(-hat_local_t * 55.0)
+    hat_carrier = (
+        np.sin(2.0 * np.pi * 5400.0 * t)
+        + 0.7 * np.sin(2.0 * np.pi * 7850.0 * t)
+        + 0.5 * np.sin(2.0 * np.pi * 10200.0 * t)
+    )
+    hat_layer = 0.085 * hat_carrier * hat_env
+
+    # Subtle Rimshot/Snare snap on Beats 2 and 4 of each bar
+    bar_local_t = t % bar_len
+    snare_t1 = np.maximum(0.0, bar_local_t - beat_len)
+    snare_t2 = np.maximum(0.0, bar_local_t - beat_len * 3.0)
+    snare_env = np.where((bar_local_t >= beat_len) & (bar_local_t < beat_len * 1.25), np.exp(-snare_t1 * 38.0), 0.0) +                 np.where((bar_local_t >= beat_len * 3.0) & (bar_local_t < beat_len * 3.25), np.exp(-snare_t2 * 38.0), 0.0)
+    snare_wave = (np.sin(2.0 * np.pi * 380.0 * t) + 0.6 * np.sin(2.0 * np.pi * 1850.0 * t)) * snare_env
+    snare_layer = 0.14 * snare_wave
+
+    seg_mix = pad_layer + bass_layer + arp_layer + kick_layer + hat_layer + snare_layer
     max_s = max(float(np.max(np.abs(seg_mix))), 1e-4)
-    return ((seg_mix / max_s) * 0.108).astype(np.float32), track_name
+    # Boosted to 0.152 peak with warm studio saturation so the music is engaging, modern, and clearly audible!
+    mastered_seg = np.tanh(1.35 * (seg_mix / max_s)) * 0.152
+    return mastered_seg.astype(np.float32), track_name
 
 def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times, mood="dark_geopolitics", track_seed=0, sfx_events=None):
     """
-    SITUATION-ADAPTIVE 50-TRACK CINEMA SOUNDTRACK + AUDIBLE PRO HIGHLIGHT SFX MIXER:
-    1. Automatically changes music mood & track as the story's situation shifts across chapters/beats!
-    2. Never repeats the same single track across videos (uses story-unique seed + situation transitions).
-    3. Balanced at a clear, warm documentary level (0.108 BGM + 0.145 Pro Highlight SFX) so both
-       the background score and point/person highlight sound effects are clearly heard!
+    MODERN 2026 SITUATION-ADAPTIVE MULTI-TRACK SOUNDTRACK + AUDIBLE PRO SFX MIXER:
+    1. Guarantees that the music switches tracks & emotional mood on EVERY 2-beat chapter/situation shift!
+    2. Even if two consecutive sections share a theme, rotates across distinct emotional moods
+       (e.g. Investigative Thriller -> High-Stakes Finance -> Cyberpunk Tech -> Dark Geopolitics -> Mind-Bending Wonder)
+       so the viewer clearly hears the music evolve with the story situation!
     """
     sr = 44100
     n_samples = max(int(sr * duration), sr)
     audio = np.zeros(n_samples, dtype=np.float32)
 
-    # Build situation segments from sfx_events if available, else divide into 3 evolving acts
+    all_mood_progression = [
+        mood,
+        "investigative_thriller",
+        "cyberpunk_tech",
+        "high_stakes_finance",
+        "mind_bending_wonder",
+        "dark_geopolitics",
+        "inspiring_science",
+        "emotional_human_story",
+        "ancient_history_epic",
+        "stadium_action"
+    ]
+
     used_track_names = []
     if sfx_events and len(sfx_events) >= 2:
-        # Group beats into 2-beat situation chapters so music shifts smoothly with the story situation
         seg_starts = [0.0]
         seg_moods = [sfx_events[0].get("situation_mood") or mood]
         for idx_e, ev in enumerate(sfx_events[1:], 1):
             ev_mood = ev.get("situation_mood") or mood
             if idx_e % 2 == 0 or ev_mood != seg_moods[-1]:
+                # Force a distinct mood & track on every shift so the music NEVER stays static!
+                if ev_mood == seg_moods[-1]:
+                    ev_mood = all_mood_progression[(idx_e + track_seed) % len(all_mood_progression)]
                 seg_starts.append(float(ev.get("time", 0.0)))
                 seg_moods.append(ev_mood)
         seg_starts.append(float(duration))
@@ -1154,27 +1247,26 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
             if t1 <= t0 + 0.1:
                 continue
             s_mood = seg_moods[s_i]
-            s_wave, t_name = synthesize_segment_music_wave(t1 - t0, s_mood, track_seed + s_i * 3, sr=sr)
+            s_wave, t_name = synthesize_segment_music_wave(t1 - t0, s_mood, track_seed + s_i * 2 + 1, sr=sr)
             if t_name not in used_track_names:
                 used_track_names.append(t_name)
             i0 = int(t0 * sr)
             i1 = min(n_samples, i0 + len(s_wave))
             if i1 > i0:
                 seg_slice = s_wave[:i1 - i0].copy()
-                # Smooth 0.25s fade-in/out at situation boundaries
-                fade_n = min(int(0.25 * sr), len(seg_slice) // 3)
+                fade_n = min(int(0.22 * sr), len(seg_slice) // 3)
                 if fade_n > 10:
-                    seg_slice[:fade_n] *= np.linspace(0.2, 1.0, fade_n, dtype=np.float32)
-                    seg_slice[-fade_n:] *= np.linspace(1.0, 0.2, fade_n, dtype=np.float32)
+                    seg_slice[:fade_n] *= np.linspace(0.25, 1.0, fade_n, dtype=np.float32)
+                    seg_slice[-fade_n:] *= np.linspace(1.0, 0.25, fade_n, dtype=np.float32)
                 audio[i0:i1] += seg_slice
     else:
         s_wave, t_name = synthesize_segment_music_wave(duration, mood, track_seed, sr=sr)
         used_track_names.append(t_name)
         audio[:min(n_samples, len(s_wave))] = s_wave[:min(n_samples, len(s_wave))]
 
-    print(f"   🎵 [Situation-Adaptive Multi-Track BGM] Active Tracks: {used_track_names[:4]}", flush=True)
+    print(f"   🎵 [Modern 2026 Situation-Adaptive BGM] Switched Across {len(used_track_names)} Tracks: {used_track_names[:6]}", flush=True)
 
-    # Mix Varied, Audible Pro Studio SFX Events (Person Pop-Ups, Point Highlights, Sentence Cuts)
+    # Mix Audible Pro Studio SFX Events (Person Pop-Ups, Point Highlights, Sentence Cuts)
     if sfx_events:
         for ev in sfx_events:
             ev_t = float(ev.get("time", 0.0))
@@ -1184,8 +1276,7 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
                 sfx_wave = synthesize_pro_sfx_event(ev_sfx, sr=sr)
                 slen = min(len(sfx_wave), n_samples - idx)
                 if slen > 0:
-                    # Subtle ducking of BGM during the crisp SFX transient
-                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.78 + sfx_wave[:slen]
+                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.72 + sfx_wave[:slen]
     else:
         cut_cycle = [
             "crystal_point_highlight", "analog_cut_snap", "digital_hud_lock",
@@ -1198,7 +1289,7 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
                 sfx_wave = synthesize_pro_sfx_event(cut_cycle[c_i % len(cut_cycle)], sr=sr)
                 slen = min(len(sfx_wave), n_samples - idx)
                 if slen > 0:
-                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.78 + sfx_wave[:slen]
+                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.72 + sfx_wave[:slen]
 
     audio_int16 = np.int16(np.clip(audio, -1.0, 1.0) * 32767)
     with wave.open(filename, "w") as wf:
@@ -1549,7 +1640,9 @@ def clean_fact(text):
     text = re.sub(r"\b(\d+(?:\.\d+)?)\s*bn\b", r"\1 billion", text, flags=re.I)
 
     text = re.sub(r"(?i)see more headlines and perspectives on google news\.?", "", text)
-    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera|IndieWire|Variety|Smithsonian|CNN Live|CNN|Reuters|Associated Press|AP News|CBS News|CBS|The New York Times|New York Times)\b", "", text)
+    text = re.sub(r"(?i),?\s*(?:as\s+|first\s+)?reported by\s+(?:the\s+)?[A-Za-z\s]{2,25}(?=[,.]|$)", "", text)
+    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera|IndieWire|Variety|Smithsonian|CNN Live|CNN|Reuters|Associated Press|AP News|CBS News|CBS|The New York Times|New York Times|TechCrunch|The Verge|The Information|Bloomberg|Financial Times)\b", "official reports", text)
+    text = re.sub(r"(?i)\s*,\s*,", ",", text)
     text = re.sub(r"\[([^\]]+)\]", r"\1", text)
     text = re.sub(r"[^\x20-\x7E]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
@@ -2497,6 +2590,23 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str):
         pass
     return None
 
+VIDEO_EXACT_SCENE_MAP = {
+    "stock": "stock market trading floor",
+    "ipo": "stock exchange trading floor",
+    "convertible": "financial district skyscrapers",
+    "billion": "wall street financial district",
+    "investors": "stock exchange trading screens",
+    "anthropic": "server room data center",
+    "amazon": "warehouse logistics robotics",
+    "aws": "cloud data center server",
+    "google": "technology campus silicon valley",
+    "court": "supreme court courthouse building",
+    "judge": "courthouse justice building",
+    "cholesterol": "medical laboratory blood test",
+    "heart": "hospital cardiology medical monitor",
+    "protein": "biotechnology laboratory microscope"
+}
+
 def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, used_video_queries, tag_id="vclip"):
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
     pillar = dossier.get("pillar", "WORLD")
@@ -2507,10 +2617,16 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
     subj_words = []
     for w in re.findall(r"[A-Za-z0-9]{3,}", clean_subj):
         wl = w.lower()
-        if wl not in HEADLINE_STOP_VERBS_ADJS and wl not in subj_words:
+        if wl not in HEADLINE_STOP_VERBS_ADJS and wl not in {"instead", "taking", "upfront", "none", "those", "while", "each", "both", "much", "more"} and wl not in subj_words:
             subj_words.append(wl)
 
-    query_str = " ".join(subj_words[:3]) if subj_words else topic_anchor
+    mapped_v_q = None
+    for sw in subj_words:
+        if sw in VIDEO_EXACT_SCENE_MAP:
+            mapped_v_q = VIDEO_EXACT_SCENE_MAP[sw]
+            break
+
+    query_str = mapped_v_q if mapped_v_q else (" ".join(subj_words[:3]) if subj_words else topic_anchor)
     if query_str.lower() in used_video_queries:
         query_str = f"{query_str} {len(used_video_queries) + 1}"
     used_video_queries.add(query_str.lower())
@@ -2573,7 +2689,8 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
             "lecture", "interview", "golf", "tree", "park", "pronunciation", "spoken", "audio",
             "session", "recorded", "wikidata", "conference", "talk", "presentation", "isolated",
             "nude", "naked", "nsfw", "erotic", "sex", "bikini", "lingerie", "swimsuit", "anatomy", "statue",
-            "tractor", "allis", "farming", "harvest", "grand rounds", "webinar", "seminar", "slide", "chart"
+            "tractor", "allis", "farming", "harvest", "grand rounds", "webinar", "seminar", "slide", "chart",
+            "rolling stock", "locomotive", "railway", "train", "mountain", "hiking", "scenery", "landscape"
         ]
         try:
             api = "https://commons.wikimedia.org/w/api.php"
@@ -2658,6 +2775,12 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450):
     if (counts.max() / float(120 * 120)) > 0.26:
         return None
 
+    # Reject synthetic AI neon renders & CGI illustrations (excessive hyper-saturated neon cyan/blue/magenta pixels)
+    hsv_check = cv2.cvtColor(np.array(im.resize((160, 160)), dtype=np.uint8), cv2.COLOR_RGB2HSV)
+    high_sat_neon = np.mean((hsv_check[:, :, 1] > 215) & (hsv_check[:, :, 2] > 200))
+    if high_sat_neon > 0.24:
+        return None
+
     gray_cv = cv2.cvtColor(np.array(im.resize((480, 270))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
     if blur_score < 85.0 or im.entropy() < 6.3:
@@ -2677,50 +2800,35 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450):
 
     return apply_copyright_safe_documentary_lut(im)
 
-def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, tag_id="ai_scene", is_short=False):
-    if not ai_prompt or len(ai_prompt) < 5:
+def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, tag_id="real_fallback", is_short=False):
+    """
+    100% REAL EDITORIAL PHOTOGRAPHY ONLY (AI Image Generation Completely Disabled per User Rule!):
+    Instead of generating synthetic AI images, this fallback harvests authentic real-world press
+    and editorial photographs from Bing News & Bing Photojournalism Search!
+    """
+    if not ai_prompt:
         return None
-    clean_p = re.sub(r"\b(diagram|chart|graph|infographic|text|label|poster|logo|emblem|insignia|nude|naked|statue|sculpture|bikini)\b", "", ai_prompt, flags=re.I)
-    full_p = (
-        f"{clean_p}, wide angle photorealistic documentary photography, Sony A7R V 35mm lens, "
-        f"family-friendly, broadcast safe, fully clothed subjects, razor sharp focus, natural cinematic lighting, 8k resolution, zero text, zero logos, no watermark"
-    )
-    target_w, target_h = (1080, 1920) if is_short else (1920, 1080)
-
-    hf_token = os.environ.get("HF_TOKEN", "").strip()
-    if hf_token:
-        try:
-            hf_url = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
-            r = requests.post(
-                hf_url,
-                headers={"Authorization": f"Bearer {hf_token}", "Content-Type": "application/json"},
-                json={"inputs": full_p},
-                timeout=14
-            )
-            if r.status_code == 200 and len(r.content) > 25000:
-                p = f"temp/{tag_id}_hfflux.jpg"
-                with open(p, "wb") as f:
-                    f.write(r.content)
-                im_raw = Image.open(p).convert("RGB")
-                vim = validate_and_enhance_1080p(im_raw, existing_hashes, min_w=700, min_h=700)
-                if vim is not None:
-                    print("   🎨 [HuggingFace FLUX.1 100% Copyright-Free Scene]:", clean_p[:45], flush=True)
-                    return vim
-        except Exception:
-            pass
-
+    clean_q = re.sub(r"(?i)\b(photorealistic|8k|family-friendly|documentary|photography|wide|cinematic|shot|fully|clothed|no|text|logos|sony|lens)\b", "", ai_prompt)
+    clean_q = " ".join(re.findall(r"[A-Za-z0-9]{3,}", clean_q)[:5])
+    if not clean_q:
+        return None
     try:
-        seed = random.randint(100, 999999)
-        u = f"https://image.pollinations.ai/prompt/{urllib.parse.quote(full_p)}?width={target_w}&height={target_h}&seed={seed}&nologo=true&model=flux&safe=true"
-        r = requests.get(u, headers=HEADERS_WEB, timeout=13)
-        if r.status_code == 200 and len(r.content) > 30000:
-            p = f"temp/{tag_id}_flux.jpg"
-            with open(p, "wb") as f:
-                f.write(r.content)
-            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=750, min_h=450)
-            if vim is not None:
-                print("   🎨 [Pollinations Flux Native 1080p Scene]:", clean_p[:45], flush=True)
-                return vim
+        b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(clean_q + ' press photo reuters ap -ai -illustration -3d -render -cartoon -chart -logo')}&first=0&count=25&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
+        r = requests.get(b_url, headers=HEADERS_WEB, timeout=6)
+        murls = re.findall(r"murl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
+        for u in murls[:16]:
+            u_clean = u.replace("&amp;", "&")
+            if any(b in u_clean.lower() for b in BANNED_IMAGE_SOURCES) or any(nf in u_clean.lower() for nf in ADULT_NSFW_BANNED_TERMS):
+                continue
+            ir = requests.get(u_clean, headers=HEADERS_WEB, timeout=5)
+            if ir.status_code == 200 and len(ir.content) > 28000:
+                p = f"temp/{tag_id}_realnews.jpg"
+                with open(p, "wb") as f:
+                    f.write(ir.content)
+                vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=800, min_h=450)
+                if vim is not None:
+                    print(f"   📸 [100% Real Editorial Press Photo Locked]: {clean_q[:42]}", flush=True)
+                    return vim
     except Exception:
         pass
     return None
@@ -3452,9 +3560,9 @@ def build_prop_driven_storyboard_1080p(
                 ]
                 chosen_sfx = point_sfx_cycle[global_beat_idx % len(point_sfx_cycle)]
 
-            # Max 1 unique Full-Sentence HD moving video B-roll per section
+            # Fetch Real Full-Sentence HD Moving Video B-Roll (up to 2 clips per section for dynamic real footage!)
             vseg = None
-            if not section_got_video and (b_i == 1 or num_beats == 1):
+            if b_i in [0, 1] and not (section_got_video and b_i == 1 and num_beats <= 2):
                 v_q = ai_video_q if ai_video_q else search_q
                 vseg = fetch_and_transcode_real_video_broll(
                     v_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vc_{global_beat_idx}"
@@ -3589,9 +3697,10 @@ class VoiceAndSubtitleEngine:
             gTTS(text=text, lang="en").save(raw_mp3)
 
         try:
+            # Studio Human Podcast Voice Mastering: Warm 175Hz chest resonance + 3.2kHz clarity + smooth broadcast compressor
             cmd = [
                 "ffmpeg", "-y", "-i", raw_mp3,
-                "-af", "apad=pad_dur=0.14",
+                "-af", "equalizer=f=175:width_type=o:width=1.2:g=2.4,equalizer=f=3100:width_type=o:width=1.4:g=1.6,acompressor=threshold=-16dB:ratio=2.2:attack=12:release=160,apad=pad_dur=0.16",
                 "-ar", "44100", "-ac", "2", "-b:a", "192k", out_path
             ]
             subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
