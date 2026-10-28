@@ -485,7 +485,37 @@ PERSON_WIKI_MAP = {
     "powell": ("Jerome Powell", "Jerome Powell", "FEDERAL RESERVE CHAIR"),
     "jerome powell": ("Jerome Powell", "Jerome Powell", "FEDERAL RESERVE CHAIR"),
     "lagarde": ("Christine Lagarde", "Christine Lagarde", "PRESIDENT OF THE ECB"),
-    "fink": ("Larry Fink", "Larry Fink", "CEO OF BLACKROCK")
+    "fink": ("Larry Fink", "Larry Fink", "CEO OF BLACKROCK"),
+    "reeves": ("Rachel Reeves", "Rachel Reeves", "UK CHANCELLOR OF THE EXCHEQUER"),
+    "rachel reeves": ("Rachel Reeves", "Rachel Reeves", "UK CHANCELLOR OF THE EXCHEQUER"),
+    "uk chancellor": ("Rachel Reeves", "Rachel Reeves", "UK CHANCELLOR OF THE EXCHEQUER"),
+    "chancellor of the exchequer": ("Rachel Reeves", "Rachel Reeves", "UK CHANCELLOR OF THE EXCHEQUER"),
+    "sunak": ("Rishi Sunak", "Rishi Sunak", "UK POLITICAL LEADER"),
+    "rishi sunak": ("Rishi Sunak", "Rishi Sunak", "UK POLITICAL LEADER"),
+    # Universal Wildlife, Animals & Nature Subjects (for Animal/Science/Nature News!)
+    "tiger": ("Tiger", "Bengal Tiger", "APEX PREDATOR • WILDLIFE"),
+    "lion": ("Lion", "African Lion", "APEX PREDATOR • WILDLIFE"),
+    "elephant": ("Elephant", "Elephant", "MEGafauna • WILDLIFE"),
+    "shark": ("Great white shark", "Great White Shark", "MARINE APEX PREDATOR"),
+    "whale": ("Blue whale", "Blue Whale", "MARINE GIANT • OCEAN LIFE"),
+    "dolphin": ("Dolphin", "Bottlenose Dolphin", "MARINE INTELLIGENCE"),
+    "octopus": ("Octopus", "Giant Octopus", "CEPHALOPOD INTELLIGENCE"),
+    "wolf": ("Wolf", "Gray Wolf", "PACK PREDATOR • WILDLIFE"),
+    "bear": ("Brown bear", "Grizzly / Brown Bear", "WILDLIFE IN FOCUS"),
+    "polar bear": ("Polar bear", "Polar Bear", "ARCTIC WILDLIFE"),
+    "panda": ("Giant panda", "Giant Panda", "PROTECTED SPECIES"),
+    "eagle": ("Bald eagle", "Eagle", "RAPTOR IN FOCUS"),
+    "cobra": ("King cobra", "King Cobra", "VENOMOUS REPTILE"),
+    "snake": ("Snake", "Serpent / Reptile", "REPTILE SPECIES"),
+    "crocodile": ("Saltwater crocodile", "Crocodile", "APEX REPTILE PREDATOR"),
+    "chimpanzee": ("Chimpanzee", "Chimpanzee", "PRIMATE INTELLIGENCE"),
+    "gorilla": ("Gorilla", "Mountain Gorilla", "ENDANGERED PRIMATE"),
+    "orangutan": ("Orangutan", "Orangutan", "GREAT APE SPECIES"),
+    "honeybee": ("Western honey bee", "Honeybee", "CRITICAL POLLINATOR"),
+    "mammoth": ("Woolly mammoth", "Woolly Mammoth", "PREHISTORIC MEGAFAUNA"),
+    "dinosaur": ("Tyrannosaurus", "Prehistoric Dinosaur", "PALEONTOLOGY DISCOVERY"),
+    "dog": ("Dog", "Canine Companion", "ANIMAL BEHAVIOR STUDY"),
+    "cat": ("Cat", "Feline Species", "ANIMAL BEHAVIOR STUDY")
 }
 
 CONCRETE_WIKI_PROPS = {
@@ -813,10 +843,14 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
         "Output STRICT JSON only."
     )
 
+    c_prof_name = dossier.get("country_profile", {}).get("name", "Global")
+    t_anchor_hint = dossier.get("topic_anchor") or raw_title[:40]
     usr_prompt = f"""
 Create a complete {format_label} package for the category [{pillar}].
 
 BREAKING SOURCE HEADLINE: {raw_title}
+COUNTRY / GEOGRAPHIC CONTEXT: {c_prof_name}
+PRIMARY TOPIC ANCHOR: {t_anchor_hint}
 VERIFIED LATEST FACTS:
 {chr(10).join('- ' + f for f in raw_facts)}
 
@@ -827,41 +861,41 @@ Return ONLY valid JSON in this exact structure:
   "viral_title": "A 100% original, high-CTR YouTube title (50-75 chars, curiosity-driven, e.g. 'Why X Just Triggered a Massive Global Shift')",
   "thumb_line_1": "2 TO 3 CAPS WORDS (max 15 chars, e.g. 'GLOBAL SHOCK')",
   "thumb_line_2": "2 TO 3 CAPS WORDS (max 15 chars, e.g. 'THE REAL TRUTH')",
-  "core_subject": "2-4 word exact physical subject (e.g. 'Fifth Generation Fighter Jet')",
+  "core_subject": "2-4 word exact physical subject (e.g. 'British High Street Retail')",
   "story_emotion": "Pick ONE best emotional theme: dark_geopolitics | cyberpunk_tech | cosmic_mystery | high_stakes_finance | inspiring_science | stadium_action | emotional_human_story | ancient_history_epic | investigative_thriller | mind_bending_wonder",
   "seo_description": "A compelling 3-paragraph YouTube SEO description summarizing the core case study.",
   "seo_tags": ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8"],
   "scenes": [
     {{
       "scene_num": 1,
-      "context_pill": "SHORT CHAPTER TITLE (max 22 chars, ASCII only, e.g. 'THE SHOCKING PIVOT')",
-      "hook_tape": "ABHI & NIYU STYLE TOP IMPACT BANNER (max 34 chars, CAPS, e.g. 'WHY THIS CHANGES EVERYTHING')",
-      "stat_callout": "Key noted point or fact highlighted in this scene (max 28 chars, e.g. 'KEY POINT: 40% FASTER SHIFT')",
-      "mentioned_person": "If ANY important person, historical ruler (e.g. 'Alexander the Great'), scientist, CEO, or leader is named in this scene, write their canonical Wikipedia name here! Otherwise write ''",
-      "person_role": "Official title/role of mentioned_person (e.g. 'KING OF MACEDON' or 'U.S. PRESIDENT'), or '' if none",
+      "context_pill": "SHORT CHAPTER TITLE (max 22 chars, ASCII only, e.g. 'THE SILENT COLLAPSE')",
+      "hook_tape": "ABHI & NIYU STYLE TOP IMPACT BANNER (max 34 chars, CAPS, e.g. '14% OF UK SHOPS ARE NOW EMPTY')",
+      "stat_callout": "Key noted point or fact highlighted in this scene (max 28 chars, e.g. '14% RETAIL UNITS VACANT')",
+      "mentioned_person": "If a specific named Person, Animal/Species (e.g. 'Bengal Tiger'), Iconic Machine/Telescope, or Historic Figure is the focus of this scene, write its exact Wikipedia name here (NEVER write generic job titles like 'Chancellor' without a person's name!). Otherwise write ''",
+      "person_role": "Short 2-4 word label for mentioned_person (e.g. 'UK CHANCELLOR', 'APEX PREDATOR', 'DEEP SPACE TELESCOPE'), or ''",
       "narration": "Engaging spoken narration ({words_per_scene}) in natural human conversational English with contractions (here's, it's, didn't, that's). Write out all units in full words.",
-      "video_broll_query": "Distinct 3-4 word family-friendly query to fetch real HD moving video footage for THIS specific scene (MUST be different for every scene!)",
+      "video_broll_query": "Exact 4-5 word real-world footage search query INCLUDING the country/subject '{c_prof_name}' (e.g. 'London UK shopping street pedestrians')",
       "beat_visuals": [
         {{
-          "point_highlight": "3 to 5 CAPS words summarizing the exact point of Sentence 1 (e.g. 'POINT 1: SECRET SUPPLY ROUTE')",
-          "mentioned_person": "Name of person mentioned in Sentence 1 if any (e.g. 'Alexander the Great'), else ''",
-          "person_role": "Role of person in Sentence 1 if any, else ''",
-          "photo_query": "Exact 4-6 word family-friendly query for Sentence 1 describing a real physical scene matching Sentence 1 point-to-point (NEVER nude, NEVER statues, NEVER logos)",
-          "ai_prompt": "Photorealistic 8k family-friendly documentary photography of Sentence 1, wide cinematic shot, fully clothed, no text, no logos"
+          "point_highlight": "3 to 5 CAPS words stating the exact factual takeaway of Sentence 1 (e.g. '14% UK SHOPS NOW VACANT' — NEVER write 'POINT 1' or broken verbs!)",
+          "mentioned_person": "Exact Wikipedia name of any Person, Animal, or Specific Entity highlighted in Sentence 1, else ''",
+          "person_role": "Short role/category tag if mentioned_person is set, else ''",
+          "photo_query": "Exact 5-7 word real news photo query for Sentence 1 INCLUDING '{c_prof_name}' and concrete physical nouns (e.g. 'closed empty retail shopfront UK high street Britain photo')",
+          "ai_prompt": "Real editorial photojournalism of Sentence 1 in {c_prof_name}"
         }},
         {{
-          "point_highlight": "3 to 5 CAPS words summarizing the exact point of Sentence 2 (e.g. 'POINT 2: $4.2B DEFENSE SHIFT')",
-          "mentioned_person": "Name of person mentioned in Sentence 2 if any, else ''",
-          "person_role": "Role of person in Sentence 2 if any, else ''",
-          "photo_query": "Exact 4-6 word family-friendly query for Sentence 2 describing a DIFFERENT physical scene matching Sentence 2 point-to-point",
-          "ai_prompt": "Photorealistic 8k family-friendly documentary photography of Sentence 2, wide cinematic shot, fully clothed, no text, no logos"
+          "point_highlight": "3 to 5 CAPS words stating the exact factual takeaway of Sentence 2 (e.g. 'LOCAL ECONOMY IN CRISIS')",
+          "mentioned_person": "Exact Wikipedia name of any Person, Animal, or Specific Entity highlighted in Sentence 2, else ''",
+          "person_role": "Short role/category tag if mentioned_person is set, else ''",
+          "photo_query": "Exact 5-7 word real news photo query for Sentence 2 INCLUDING '{c_prof_name}' and concrete physical nouns",
+          "ai_prompt": "Real editorial photojournalism of Sentence 2 in {c_prof_name}"
         }},
         {{
-          "point_highlight": "3 to 5 CAPS words summarizing the exact point of Sentence 3 (e.g. 'POINT 3: GLOBAL MARKET IMPACT')",
-          "mentioned_person": "Name of person mentioned in Sentence 3 if any, else ''",
-          "person_role": "Role of person in Sentence 3 if any, else ''",
-          "photo_query": "Exact 4-6 word family-friendly query for Sentence 3 describing a DIFFERENT physical scene matching Sentence 3 point-to-point",
-          "ai_prompt": "Photorealistic 8k family-friendly documentary photography of Sentence 3, wide cinematic shot, fully clothed, no text, no logos"
+          "point_highlight": "3 to 5 CAPS words stating the exact factual takeaway of Sentence 3 (e.g. 'EMERGENCY TAX RELIEF DEBATE')",
+          "mentioned_person": "Exact Wikipedia name of any Person, Animal, or Specific Entity highlighted in Sentence 3, else ''",
+          "person_role": "Short role/category tag if mentioned_person is set, else ''",
+          "photo_query": "Exact 5-7 word real news photo query for Sentence 3 INCLUDING '{c_prof_name}' and concrete physical nouns",
+          "ai_prompt": "Real editorial photojournalism of Sentence 3 in {c_prof_name}"
         }}
       ]
     }}
@@ -869,9 +903,9 @@ Return ONLY valid JSON in this exact structure:
 }}
 CRITICAL RULES:
 1. Generate EXACTLY {num_scenes} scenes in "scenes".
-2. Every scene MUST have a DIFFERENT `video_broll_query` and `beat_visuals` where each item matches the exact sentence spoken in that scene point-to-point!
-3. Every item in `beat_visuals` MUST include a punchy `point_highlight` (3-5 words) so the viewer sees the exact noted point on screen for every sentence!
-4. All visuals MUST be 100% broadcast-safe and family-friendly (zero nudity, zero adult content, zero classical nude statues).
+2. Every `photo_query` and `video_broll_query` MUST include the specific country/subject context ({c_prof_name} / {t_anchor_hint}) and concrete physical nouns so search engines return 100% point-to-point real photos and never return video games or wrong countries!
+3. Every `point_highlight` MUST be a complete, meaningful 3-5 word headline takeaway (e.g. '14% SHOPS SITTING EMPTY', 'ONLINE GIANTS CRUSH MARGINS') — NEVER output truncated verbs like 'ISNT JUST TREND' or 'ARGUE WITHOUT DEEPER'!
+4. Never put a generic job title like 'Chancellor of the Exchequer' or 'Prime Minister' in `mentioned_person` — use the person's actual name (e.g. 'Rachel Reeves', 'Keir Starmer') or a specific animal/species/machine name!
 """
     ai_pkg = call_multi_api_ai_brain_json(sys_prompt, usr_prompt)
     if ai_pkg and isinstance(ai_pkg.get("scenes"), list) and len(ai_pkg["scenes"]) >= 4:
@@ -993,222 +1027,123 @@ def detect_sentence_situation_mood(sentence_text, base_mood="dark_geopolitics", 
         return "ancient_history_epic"
     return base_mood
 
+def lowpass_warm_filter(wave_arr, window_len=24):
+    """
+    STUDIO WARMTH LOW-PASS FILTER:
+    Removes all metallic/harsh high-frequency buzz above ~900Hz so the background score
+    and transition textures sound warm, deep, and cinematic like Nitish Rajput / DW Documentaries!
+    """
+    if len(wave_arr) < window_len * 2:
+        return wave_arr
+    kernel = np.hanning(window_len).astype(np.float32)
+    kernel /= max(float(np.sum(kernel)), 1e-6)
+    return np.convolve(wave_arr, kernel, mode="same").astype(np.float32)
+
 def synthesize_pro_sfx_event(sfx_type, sr=44100):
     """
-    MODERN 2026 PRO DOCUMENTARY SOUND DESIGN (Boosted to 0.22-0.25 Peak Gain):
-    Rich, multi-harmonic sound effects for Person Pop-Ups, Point Highlights, and Scene Cuts
-    that cut cleanly through the mix on both mobile and desktop speakers!
+    ULTRA-SUBTLE, SOFT ORGANIC DOCUMENTARY SOUND DESIGN (0.032 - 0.044 Peak Gain):
+    Zero harsh beeps, zero metallic bells, zero 'woop' frequency risers!
+    Uses warm low-pass filtered air whooshes, soft paper textures, and deep cinema sub-pulses
+    that sit gently in the background without ever distracting from the narrator's voice!
     """
-    if sfx_type == "camera_shutter_flash":
-        dur = 0.34
+    rng = np.random.default_rng(abs(hash(sfx_type)) % 99999)
+
+    if sfx_type in ["camera_shutter_flash", "dossier_stamp_thud", "cinematic_medallion_reveal", "digital_hud_lock"]:
+        # Soft Warm Cinema Sub-Pulse + Gentle Paper/Felt Tap (for Subject Spotlight Card Reveal)
+        dur = 0.28
         n = int(sr * dur)
         t = np.linspace(0, dur, n, endpoint=False)
-        click1 = np.sin(2.0 * np.pi * 1950.0 * t) * np.exp(-t * 85.0)
-        click2 = np.sin(2.0 * np.pi * 2650.0 * np.maximum(0.0, t - 0.042)) * np.exp(-np.maximum(0.0, t - 0.042) * 75.0)
-        chime = (0.60 * np.sin(2.0 * np.pi * 1318.5 * t) + 0.35 * np.sin(2.0 * np.pi * 2637.0 * t)) * np.exp(-t * 10.5)
-        return (0.235 * np.tanh(1.6 * (click1 + 0.9 * click2 + chime))).astype(np.float32)
+        sub_f = 78.0 * np.exp(-t * 14.0) + 42.0
+        phase = 2.0 * np.pi * np.cumsum(sub_f) / float(sr)
+        warm_thump = np.sin(phase) * np.exp(-t * 11.0)
+        soft_air = lowpass_warm_filter(rng.standard_normal(n).astype(np.float32), window_len=36) * np.sin(np.pi * (t / dur)) * np.exp(-t * 12.0)
+        sig = 0.75 * warm_thump + 0.25 * soft_air
+        max_v = max(float(np.max(np.abs(sig))), 1e-4)
+        return ((sig / max_v) * 0.042).astype(np.float32)
 
-    if sfx_type == "dossier_stamp_thud":
-        dur = 0.38
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        sub_f = 140.0 * np.exp(-t * 15.0) + 46.0
-        thud = np.sin(2.0 * np.pi * sub_f * t) * np.exp(-t * 9.5)
-        snap = (0.65 * np.sin(2.0 * np.pi * 1120.0 * t) + 0.40 * np.sin(2.0 * np.pi * 2240.0 * t)) * np.exp(-t * 45.0)
-        return (0.245 * np.tanh(1.7 * (thud + snap))).astype(np.float32)
-
-    if sfx_type == "digital_hud_lock":
-        dur = 0.30
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        f_beep = np.where(t < 0.09, 987.77, np.where(t < 0.18, 1318.51, 1975.53))
-        env = np.exp(-(t % 0.09) * 20.0)
-        sig = (np.sin(2.0 * np.pi * f_beep * t) + 0.4 * np.sin(4.0 * np.pi * f_beep * t)) * env
-        return (0.215 * sig).astype(np.float32)
-
-    if sfx_type == "cinematic_medallion_reveal":
-        dur = 0.48
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        env = np.sin(np.pi * (t / dur)) * np.exp(-t * 3.6)
-        chord = (
-            0.55 * np.sin(2.0 * np.pi * 220.0 * t)
-            + 0.42 * np.sin(2.0 * np.pi * 329.63 * t)
-            + 0.35 * np.sin(2.0 * np.pi * 440.0 * t)
-            + 0.28 * np.sin(2.0 * np.pi * 659.25 * t)
-            + 0.20 * np.sin(2.0 * np.pi * 880.0 * t)
-        )
-        return (0.230 * np.tanh(1.5 * chord * env)).astype(np.float32)
-
-    if sfx_type == "crystal_point_highlight":
-        dur = 0.35
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        bell = (
-            0.65 * np.sin(2.0 * np.pi * 1174.66 * t)
-            + 0.42 * np.sin(2.0 * np.pi * 1760.0 * t)
-            + 0.28 * np.sin(2.0 * np.pi * 2349.32 * t)
-        ) * np.exp(-t * 10.0)
-        return (0.220 * bell).astype(np.float32)
-
-    if sfx_type == "tactical_data_tick":
-        dur = 0.26
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        env = np.exp(-((t % 0.055) * 52.0))
-        freq = 1567.98 + 380.0 * (t // 0.055)
-        tone = np.sin(2.0 * np.pi * freq * t) + 0.35 * np.sin(4.0 * np.pi * freq * t)
-        return (0.205 * tone * env).astype(np.float32)
-
-    if sfx_type == "deep_sub_drop":
-        dur = 0.52
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        freq = 115.0 * np.exp(-t * 5.8) + 42.0
-        phase = 2.0 * np.pi * np.cumsum(freq) / float(sr)
-        sig = (np.sin(phase) + 0.45 * np.sin(phase * 2.0)) * np.exp(-t * 4.5)
-        return (0.245 * np.tanh(1.6 * sig)).astype(np.float32)
-
-    if sfx_type == "analog_cut_snap":
-        dur = 0.20
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        snap = (
-            0.65 * np.sin(2.0 * np.pi * 520.0 * t) * np.exp(-t * 30.0)
-            + 0.50 * np.sin(2.0 * np.pi * 1560.0 * t) * np.exp(-t * 50.0)
-        )
-        return (0.215 * snap).astype(np.float32)
-
-    if sfx_type == "sonar_mystery_ping":
-        dur = 0.48
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        ping = (
-            0.75 * np.sin(2.0 * np.pi * 880.0 * t) * np.exp(-t * 7.2)
-            + 0.35 * np.sin(2.0 * np.pi * 1760.0 * t) * np.exp(-t * 11.0)
-        )
-        return (0.220 * ping).astype(np.float32)
-
-    if sfx_type == "orchestral_riser_hit":
-        dur = 0.44
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        f_rise = 196.0 + 420.0 * ((t / dur) ** 2)
-        phase = 2.0 * np.pi * np.cumsum(f_rise) / float(sr)
-        env = np.sin(np.pi * (t / dur))
-        return (0.225 * (np.sin(phase) + 0.6 * np.sin(phase * 1.5) + 0.3 * np.sin(phase * 2.0)) * env).astype(np.float32)
-
-    if sfx_type == "heartbeat_tension_pulse":
-        dur = 0.44
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        lub = (np.sin(2.0 * np.pi * 65.0 * t) + 0.4 * np.sin(2.0 * np.pi * 130.0 * t)) * np.exp(-t * 18.0)
-        t2 = np.maximum(0.0, t - 0.16)
-        dub = np.where(t >= 0.16, (np.sin(2.0 * np.pi * 55.0 * t2) + 0.4 * np.sin(2.0 * np.pi * 110.0 * t2)) * np.exp(-t2 * 20.0), 0.0)
-        return (0.245 * (lub + 0.90 * dub)).astype(np.float32)
-
-    # Default: air_filter_sweep
-    dur = 0.28
+    # Default for chapter transitions: Soft Warm Filtered Cinema Air Whoosh (Zero Pitched Sine Sweep!)
+    dur = 0.32
     n = int(sr * dur)
     t = np.linspace(0, dur, n, endpoint=False)
-    env = np.sin(np.pi * (t / dur)) * np.exp(-t * 6.5)
-    sweep = np.sin(2.0 * np.pi * (320.0 - 120.0 * t) * t) + 0.55 * np.sin(2.0 * np.pi * 640.0 * t)
-    return (0.210 * sweep * env).astype(np.float32)
+    env = np.sin(np.pi * (t / dur)) ** 1.6
+    brown = np.cumsum(rng.standard_normal(n).astype(np.float32))
+    brown -= np.mean(brown)
+    brown /= max(float(np.max(np.abs(brown))), 1e-4)
+    warm_whoosh = lowpass_warm_filter(brown, window_len=42) * env
+    sub_bed = 0.45 * np.sin(2.0 * np.pi * 56.0 * t) * env
+    sig = warm_whoosh + sub_bed
+    max_v = max(float(np.max(np.abs(sig))), 1e-4)
+    return ((sig / max_v) * 0.034).astype(np.float32)
 
 def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     """
-    MODERN 2026 ENGAGING YOUTUBE DOCUMENTARY SOUNDTRACK SYNTHESIZER:
-    Replaces dull low-frequency sine waves with a crisp, modern 5-Layer Documentary Groove
-    (Rich FM/Sawtooth Synth Pluck Arpeggios + Harmonic Reese Bass + Crisp 16th-Note Hi-Hat/Shaker
-    Groove + Snare Backbeat + Wide Cinema Chord Pad) that sounds modern, energetic, and clear
-    on both mobile phones and studio headphones!
+    NITISH RAJPUT / JOHNNY HARRIS STYLE WARM CINEMA DOCUMENTARY SCORE (0.046 Peak = -27 dBFS):
+    1. Warm, deep, low-pass filtered Cello & Analog Pad chords (110Hz-330Hz) + Soft Felt-Piano Notes.
+    2. Zero harsh high-pitched synths, zero metallic hi-hats, zero distortion!
+    3. Sits softly and smoothly underneath the human voice so the narration is 100% crystal clear!
     """
     tracks = STUDIO_ALBUM_50_MIND_BLOWING_TRACKS.get(mood, STUDIO_ALBUM_50_MIND_BLOWING_TRACKS["dark_geopolitics"])
     track_tuple = tracks[track_idx % len(tracks)]
     track_name, root_freqs, bpm, arp_order = track_tuple[0], track_tuple[1], track_tuple[2], track_tuple[3]
     style_mode = track_tuple[4] if len(track_tuple) > 4 else "minor_tension"
 
-    # Boost BPM slightly for modern 2026 YouTube documentary pacing
-    modern_bpm = max(96, int(bpm * 1.06))
     n_seg = max(int(sr * seg_dur), 128)
     t = np.linspace(0, seg_dur, n_seg, endpoint=False)
-    beat_len = 60.0 / float(modern_bpm)
+    beat_len = 60.0 / float(max(76, min(bpm, 98)))
     bar_len = beat_len * 4.0
 
     bar_idx = (t // bar_len).astype(int)
     chord_roots = np.array([root_freqs[i % len(root_freqs)] for i in bar_idx], dtype=np.float32)
+    # Smooth chord root transitions so there is never a click between bars
+    chord_roots = lowpass_warm_filter(chord_roots, window_len=256)
 
-    # Layer 1: Rich Sawtooth/Analog String Pad (Octave-Up Harmonics so it's warm & clear on phone speakers!)
     phase_root = 2.0 * np.pi * np.cumsum(chord_roots) / float(sr)
     third_ratio = 1.1892 if style_mode in ["minor_tension", "imperial_epic", "deep_drone", "tactical_pulse"] else 1.2599
+
+    # Layer 1: Warm Cello & Viola Documentary String Pad (Fundamental + Soft 3rd + 5th)
     pad_wave = (
-        0.38 * np.sin(phase_root * 2.0)
-        + 0.28 * np.sin(phase_root * 2.0 * third_ratio)
-        + 0.26 * np.sin(phase_root * 2.0 * 1.4983)
-        + 0.16 * np.sin(phase_root * 3.0)
-        + 0.12 * np.sin(phase_root * 4.0)
+        0.52 * np.sin(phase_root)
+        + 0.28 * np.sin(phase_root * 1.002)
+        + 0.22 * np.sin(phase_root * third_ratio)
+        + 0.20 * np.sin(phase_root * 1.4983)
     )
-    # Sidechain-style rhythmic pumping envelope on every beat for modern 2026 groove!
-    beat_local_t = t % beat_len
-    sidechain_env = 0.55 + 0.45 * (1.0 - np.exp(-beat_local_t * 10.0))
-    pad_layer = pad_wave * sidechain_env * 0.34
+    pad_swell = 0.78 + 0.22 * np.sin(2.0 * np.pi * (t / bar_len))
+    pad_layer = pad_wave * pad_swell * 0.48
 
-    # Layer 2: Modern Saturated Reese / 808 Bassline (with 2nd & 3rd harmonics for phone speaker clarity!)
-    bass_wave = np.tanh(2.2 * (
-        0.65 * np.sin(phase_root * 0.5)
-        + 0.45 * np.sin(phase_root * 1.0)
-        + 0.25 * np.sin(phase_root * 1.5)
-    ))
-    bass_layer = 0.32 * bass_wave * sidechain_env
+    # Layer 2: Deep Warm Cinema Sub-Bass Foundation (55Hz-85Hz)
+    sub_layer = 0.36 * np.sin(phase_root * 0.5) * (0.85 + 0.15 * np.cos(2.0 * np.pi * (t / (bar_len * 2.0))))
 
-    # Layer 3: Crisp 2026 FM Synth Pluck Arpeggiator (16th/8th-note melodic hook in 400Hz-2400Hz range!)
-    subdiv_len = beat_len * 0.25 if style_mode in ["synth_arp", "tactical_pulse", "driving_action"] else beat_len * 0.5
+    # Layer 3: Gentle Felt-Piano / Warm Marimba Documentary Pulse (Soft attack, warm low register)
+    subdiv_len = beat_len * 1.0
     arp_step_idx = (t // subdiv_len).astype(int)
-    arp_mults = [2.0, 2.0 * third_ratio, 2.9966, 4.0, 3.0 * third_ratio, 2.0 * 1.4983]
+    arp_mults = [1.0, third_ratio, 1.4983, 2.0]
     chosen_mults = np.array([arp_mults[arp_order[i % len(arp_order)] % len(arp_mults)] for i in arp_step_idx], dtype=np.float32)
     arp_local_t = t % subdiv_len
-    arp_env = np.exp(-arp_local_t * 16.0)
+    # Soft fade-in attack (no sharp click) + warm exponential decay
+    felt_attack = np.minimum(1.0, arp_local_t / 0.035)
+    felt_decay = np.exp(-arp_local_t * 5.2)
     arp_phase = 2.0 * np.pi * np.cumsum(chord_roots * chosen_mults) / float(sr)
-    # FM modulation for modern bell/pluck sheen
-    fm_mod = 0.85 * np.sin(arp_phase * 2.0) * np.exp(-arp_local_t * 28.0)
-    arp_layer = 0.34 * np.sin(arp_phase + fm_mod) * arp_env
+    arp_layer = 0.18 * np.sin(arp_phase) * felt_attack * felt_decay
 
-    # Layer 4: Modern Documentary Drum Groove (Punchy Kick + Crisp Hi-Hat Tick + Beat 2/4 Rim/Snare)
-    kick_freq_sweep = 110.0 * np.exp(-beat_local_t * 22.0) + 44.0
-    kick_env = np.exp(-beat_local_t * 15.0)
-    kick_layer = 0.34 * np.tanh(1.8 * np.sin(2.0 * np.pi * kick_freq_sweep * beat_local_t)) * kick_env
+    # Layer 4: Subtle Deep Documentary Heartbeat Pulse on Beat 1 & 3
+    bar_local_t = t % (beat_len * 2.0)
+    pulse_attack = np.minimum(1.0, bar_local_t / 0.025)
+    pulse_env = pulse_attack * np.exp(-bar_local_t * 11.0)
+    pulse_layer = 0.18 * np.sin(2.0 * np.pi * 58.0 * bar_local_t) * pulse_env
 
-    # Crisp high-frequency hi-hat/shaker tick on every half-beat
-    hat_local_t = t % (beat_len * 0.5)
-    hat_env = np.exp(-hat_local_t * 55.0)
-    hat_carrier = (
-        np.sin(2.0 * np.pi * 5400.0 * t)
-        + 0.7 * np.sin(2.0 * np.pi * 7850.0 * t)
-        + 0.5 * np.sin(2.0 * np.pi * 10200.0 * t)
-    )
-    hat_layer = 0.085 * hat_carrier * hat_env
-
-    # Subtle Rimshot/Snare snap on Beats 2 and 4 of each bar
-    bar_local_t = t % bar_len
-    snare_t1 = np.maximum(0.0, bar_local_t - beat_len)
-    snare_t2 = np.maximum(0.0, bar_local_t - beat_len * 3.0)
-    snare_env = np.where((bar_local_t >= beat_len) & (bar_local_t < beat_len * 1.25), np.exp(-snare_t1 * 38.0), 0.0) +                 np.where((bar_local_t >= beat_len * 3.0) & (bar_local_t < beat_len * 3.25), np.exp(-snare_t2 * 38.0), 0.0)
-    snare_wave = (np.sin(2.0 * np.pi * 380.0 * t) + 0.6 * np.sin(2.0 * np.pi * 1850.0 * t)) * snare_env
-    snare_layer = 0.14 * snare_wave
-
-    seg_mix = pad_layer + bass_layer + arp_layer + kick_layer + hat_layer + snare_layer
-    max_s = max(float(np.max(np.abs(seg_mix))), 1e-4)
-    # Boosted to 0.152 peak with warm studio saturation so the music is engaging, modern, and clearly audible!
-    mastered_seg = np.tanh(1.35 * (seg_mix / max_s)) * 0.152
+    raw_mix = pad_layer + sub_layer + arp_layer + pulse_layer
+    warm_mix = lowpass_warm_filter(raw_mix, window_len=28)
+    max_s = max(float(np.max(np.abs(warm_mix))), 1e-4)
+    # Subtle, warm studio documentary background level (0.046 peak = -27 dBFS)
+    mastered_seg = (warm_mix / max_s) * 0.046
     return mastered_seg.astype(np.float32), track_name
 
 def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times, mood="dark_geopolitics", track_seed=0, sfx_events=None):
     """
-    MODERN 2026 SITUATION-ADAPTIVE MULTI-TRACK SOUNDTRACK + AUDIBLE PRO SFX MIXER:
-    1. Guarantees that the music switches tracks & emotional mood on EVERY 2-beat chapter/situation shift!
-    2. Even if two consecutive sections share a theme, rotates across distinct emotional moods
-       (e.g. Investigative Thriller -> High-Stakes Finance -> Cyberpunk Tech -> Dark Geopolitics -> Mind-Bending Wonder)
-       so the viewer clearly hears the music evolve with the story situation!
+    SUBTLE, WARM SITUATION-ADAPTIVE DOCUMENTARY SCORE + SOFT SPOTLIGHT SFX:
+    1. Smoothly crossfades across situation moods every 3-4 beats (with 1.0s gentle crossfades).
+    2. Plays soft, unobtrusive transition textures ONLY on Subject Spotlight reveals or Chapter boundaries
+       (never on every sentence!), keeping the voiceover 100% dominant and crystal clear!
     """
     sr = 44100
     n_samples = max(int(sr * duration), sr)
@@ -1217,24 +1152,20 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
     all_mood_progression = [
         mood,
         "investigative_thriller",
-        "cyberpunk_tech",
-        "high_stakes_finance",
-        "mind_bending_wonder",
-        "dark_geopolitics",
-        "inspiring_science",
         "emotional_human_story",
-        "ancient_history_epic",
-        "stadium_action"
+        "high_stakes_finance",
+        "inspiring_science",
+        "dark_geopolitics",
+        "cosmic_mystery"
     ]
 
     used_track_names = []
-    if sfx_events and len(sfx_events) >= 2:
+    if sfx_events and len(sfx_events) >= 3:
         seg_starts = [0.0]
         seg_moods = [sfx_events[0].get("situation_mood") or mood]
         for idx_e, ev in enumerate(sfx_events[1:], 1):
             ev_mood = ev.get("situation_mood") or mood
-            if idx_e % 2 == 0 or ev_mood != seg_moods[-1]:
-                # Force a distinct mood & track on every shift so the music NEVER stays static!
+            if idx_e % 3 == 0:
                 if ev_mood == seg_moods[-1]:
                     ev_mood = all_mood_progression[(idx_e + track_seed) % len(all_mood_progression)]
                 seg_starts.append(float(ev.get("time", 0.0)))
@@ -1244,7 +1175,7 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
         for s_i in range(len(seg_moods)):
             t0 = seg_starts[s_i]
             t1 = seg_starts[s_i + 1]
-            if t1 <= t0 + 0.1:
+            if t1 <= t0 + 0.2:
                 continue
             s_mood = seg_moods[s_i]
             s_wave, t_name = synthesize_segment_music_wave(t1 - t0, s_mood, track_seed + s_i * 2 + 1, sr=sr)
@@ -1254,42 +1185,32 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
             i1 = min(n_samples, i0 + len(s_wave))
             if i1 > i0:
                 seg_slice = s_wave[:i1 - i0].copy()
-                fade_n = min(int(0.22 * sr), len(seg_slice) // 3)
+                fade_n = min(int(0.85 * sr), len(seg_slice) // 3)
                 if fade_n > 10:
-                    seg_slice[:fade_n] *= np.linspace(0.25, 1.0, fade_n, dtype=np.float32)
-                    seg_slice[-fade_n:] *= np.linspace(1.0, 0.25, fade_n, dtype=np.float32)
+                    seg_slice[:fade_n] *= np.linspace(0.15, 1.0, fade_n, dtype=np.float32)
+                    seg_slice[-fade_n:] *= np.linspace(1.0, 0.15, fade_n, dtype=np.float32)
                 audio[i0:i1] += seg_slice
     else:
         s_wave, t_name = synthesize_segment_music_wave(duration, mood, track_seed, sr=sr)
         used_track_names.append(t_name)
         audio[:min(n_samples, len(s_wave))] = s_wave[:min(n_samples, len(s_wave))]
 
-    print(f"   🎵 [Modern 2026 Situation-Adaptive BGM] Switched Across {len(used_track_names)} Tracks: {used_track_names[:6]}", flush=True)
+    print(f"   🎵 [Warm Subtle Documentary Score (-27dB)] Active Tracks: {used_track_names[:5]}", flush=True)
 
-    # Mix Audible Pro Studio SFX Events (Person Pop-Ups, Point Highlights, Sentence Cuts)
+    # Mix Soft, Subtle SFX ONLY on Subject Spotlight Cards or Major Chapter Shifts (every 3rd beat)
     if sfx_events:
-        for ev in sfx_events:
+        for ev_i, ev in enumerate(sfx_events):
+            ev_sfx = str(ev.get("sfx_type", ""))
+            is_spotlight_sfx = ev_sfx in ["camera_shutter_flash", "dossier_stamp_thud", "cinematic_medallion_reveal", "digital_hud_lock"]
+            if not is_spotlight_sfx and (ev_i % 3 != 0 or ev_i == 0):
+                continue
             ev_t = float(ev.get("time", 0.0))
-            ev_sfx = str(ev.get("sfx_type", "crystal_point_highlight"))
             idx = int(ev_t * sr)
-            if 0 <= idx < n_samples:
-                sfx_wave = synthesize_pro_sfx_event(ev_sfx, sr=sr)
-                slen = min(len(sfx_wave), n_samples - idx)
-                if slen > 0:
-                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.72 + sfx_wave[:slen]
-    else:
-        cut_cycle = [
-            "crystal_point_highlight", "analog_cut_snap", "digital_hud_lock",
-            "sonar_mystery_ping", "tactical_data_tick", "orchestral_riser_hit",
-            "dossier_stamp_thud", "air_filter_sweep"
-        ]
-        for c_i, bt in enumerate(beat_switch_times):
-            idx = int(bt * sr)
             if 0 < idx < n_samples:
-                sfx_wave = synthesize_pro_sfx_event(cut_cycle[c_i % len(cut_cycle)], sr=sr)
+                sfx_wave = synthesize_pro_sfx_event(ev_sfx if is_spotlight_sfx else "soft_whoosh", sr=sr)
                 slen = min(len(sfx_wave), n_samples - idx)
                 if slen > 0:
-                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.72 + sfx_wave[:slen]
+                    audio[idx:idx + slen] = audio[idx:idx + slen] * 0.88 + sfx_wave[:slen]
 
     audio_int16 = np.int16(np.clip(audio, -1.0, 1.0) * 32767)
     with wave.open(filename, "w") as wf:
@@ -2311,14 +2232,17 @@ NON_PERSON_ORG_WORDS = {
     "world", "health", "chalmers", "royal", "swedish", "american", "british", "egyptian", "indian",
     "chinese", "russian", "israeli", "iranian", "european", "global", "national", "federal",
     "supreme", "high", "misdemeanour", "misdemeanors", "security", "forces", "police", "military",
-    "army", "navy", "hospital", "clinic", "laboratory", "lab", "program", "group", "corp", "inc"
+    "army", "navy", "hospital", "clinic", "laboratory", "lab", "program", "group", "corp", "inc",
+    "chancellor", "exchequer", "treasury", "minister", "president", "secretary", "governor",
+    "senator", "mayor", "speaker", "ambassador", "commissioner", "director", "chairman", "chairwoman",
+    "owners", "customers", "residents", "shop", "shops", "street", "streets", "pawnbrokers", "betting"
 }
 
 def is_valid_human_name_candidate(cand_name):
     if not cand_name:
         return False
     parts = [w.strip(".,'\"") for w in cand_name.split() if w.strip(".,'\"")]
-    if not parts:
+    if len(parts) < 2 or len(parts) > 4:
         return False
     for p in parts:
         if p in COMMON_NON_PERSON_CAP_WORDS or p.lower() in NON_PERSON_ORG_WORDS:
@@ -2327,24 +2251,26 @@ def is_valid_human_name_candidate(cand_name):
 
 def detect_person_in_narration_text(text, ai_person="", ai_role=""):
     """
-    STRICT HUMAN-ONLY IMPORTANT PERSON DETECTOR:
-    1. Matches `PERSON_WIKI_MAP` (including 'Alexander', 'Aristotle', 'Caesar', 'Einstein', 'Modi', 'Trump', 'Musk', etc.).
-    2. Extracts journalists, scientists, professors, leaders, and historical figures mentioned in the sentence
-       (e.g., 'journalist Lina Attalah', 'says Clemens Wittenbecher, who led the study')
-    3. Blocks all Organizations/Outlets/Institutions ('Mada Masr', 'Amnesty International', 'Chalmers University')
-       from ever being mislabeled as a person!
+    UNIVERSAL DYNAMIC SUBJECT SPOTLIGHT DETECTOR (People, Animals/Wildlife, Iconic Tech/Spacecraft, Historical Figures):
+    1. Matches `PERSON_WIKI_MAP` (includes World Leaders, Scientists, Historical Icons, AND Wildlife/Animals!).
+    2. Maps generic titles like 'Chancellor' in a UK story to 'Rachel Reeves' so it NEVER fetches a Coat of Arms!
+    3. Detects specific concrete props/machines/landmarks from `CONCRETE_WIKI_PROPS` when no person is named,
+       so EVERY story (whether about a Person, an Animal, a Tech Breakthrough, or a Local Crisis) gets dynamic visual highlights!
     """
     low = text.lower()
     for p_key in sorted(PERSON_WIKI_MAP.keys(), key=len, reverse=True):
         if re.search(rf"\b{re.escape(p_key)}\b", low):
             return PERSON_WIKI_MAP[p_key]
 
+    if "chancellor" in low and any(k in low for k in ["uk", "britain", "british", "high street", "tax", "budget"]):
+        return ("Rachel Reeves", "Rachel Reeves", "UK CHANCELLOR OF THE EXCHEQUER")
+
     if ai_person:
         clean_name = re.sub(r"[^\x20-\x7E]", "", ai_person).strip()
         if clean_name.lower() in PERSON_WIKI_MAP:
             return PERSON_WIKI_MAP[clean_name.lower()]
         if clean_name.lower() not in {"none", "null", "n/a", "unknown", "host", "narrator"} and is_valid_human_name_candidate(clean_name):
-            clean_role = re.sub(r"[^\x20-\x7E]", "", ai_role or "KEY FIGURE IN STORY").strip().upper()
+            clean_role = re.sub(r"[^\x20-\x7E]", "", ai_role or "KEY SUBJECT IN FOCUS").strip().upper()
             return (clean_name, clean_name, clean_role[:28])
 
     role_patterns = [
@@ -2362,7 +2288,37 @@ def detect_person_in_narration_text(text, ai_person="", ai_role=""):
             if is_valid_human_name_candidate(cand_name):
                 return (cand_name, cand_name, default_role)
 
+    # Also check if a concrete Tech/Science/Market/Defense subject is in the sentence for dynamic spotlighting!
+    for prop_k, (prop_badge, wiki_exact, _) in CONCRETE_WIKI_PROPS.items():
+        if len(prop_k) >= 4 and re.search(rf"\b{re.escape(prop_k)}\b", low):
+            return (wiki_exact, wiki_exact, prop_badge[:28])
+
     return None
+
+def is_real_natural_subject_photo(im_rgb):
+    """
+    STRICT ANTI-COAT-OF-ARMS / ANTI-LOGO / ANTI-CLIPART GUARD FOR SPOTLIGHT CARDS:
+    Rejects heraldic coats of arms (like the UK Royal Arms on 'Chancellor of the Exchequer'),
+    flags, seals, solid-background vector logos, and text banners!
+    """
+    arr = np.asarray(im_rgb.resize((120, 120)), dtype=np.float32)
+    # Reject solid white/black/transparent-converted backgrounds typical of coats of arms & logos
+    white_ratio = np.mean((arr[:, :, 0] > 235) & (arr[:, :, 1] > 235) & (arr[:, :, 2] > 235))
+    black_ratio = np.mean((arr[:, :, 0] < 18) & (arr[:, :, 1] < 18) & (arr[:, :, 2] < 18))
+    if white_ratio > 0.16 or black_ratio > 0.38:
+        return False
+    # Check border pixels (logos/crests almost always have uniform border color)
+    top_row_std = float(np.std(arr[:8, :, :]))
+    left_col_std = float(np.std(arr[:, :8, :]))
+    if top_row_std < 12.0 and left_col_std < 12.0:
+        return False
+    # Color quantization check (vector emblems have dominant flat colors)
+    quant = (arr // 32).astype(int)
+    flat = quant[:, :, 0] * 64 + quant[:, :, 1] * 8 + quant[:, :, 2]
+    _, counts = np.unique(flat, return_counts=True)
+    if (counts.max() / float(120 * 120)) > 0.24:
+        return False
+    return True
 
 def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
     cache_key = display_name.lower().strip()
@@ -2370,6 +2326,11 @@ def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
         return PERSON_PORTRAIT_CACHE[cache_key]
 
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
+    banned_spotlight_tokens = [
+        "logo", "flag", "map", "icon", "seal", "signature", "nude", "naked", "venus",
+        "coat_of_arms", "royal_arms", "arms_of", "crest", "emblem", "insignia", "herald",
+        "diagram", "chart", "svg", "placeholder", "silhouette"
+    ]
 
     for candidate_page in [wiki_name, display_name]:
         if not candidate_page:
@@ -2380,9 +2341,9 @@ def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
             if r.status_code == 200:
                 data = r.json()
                 img_u = data.get("originalimage", {}).get("source") or data.get("thumbnail", {}).get("source")
-                if img_u and not any(b in img_u.lower() for b in ["logo", "flag", "map", "icon", "seal", "signature", "nude", "naked", "venus"]):
+                if img_u and not img_u.lower().endswith(".svg") and not any(b in img_u.lower() for b in banned_spotlight_tokens):
                     ir = requests.get(img_u, headers=HEADERS_WIKI, timeout=5)
-                    if ir.status_code == 200 and len(ir.content) > 6000:
+                    if ir.status_code == 200 and len(ir.content) > 10000:
                         p = f"temp/person_{hashlib.md5(cache_key.encode()).hexdigest()[:8]}.jpg"
                         with open(p, "wb") as f:
                             f.write(ir.content)
@@ -2392,37 +2353,39 @@ def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
                         left = (iw - side) // 2
                         top = max(0, int((ih - side) * 0.10))
                         im_sq = im.crop((left, top, left + side, top + side)).resize((340, 340), resample_mode)
-                        if is_safe_family_friendly_image(im_sq, is_portrait=True):
+                        if is_safe_family_friendly_image(im_sq, is_portrait=True) and is_real_natural_subject_photo(im_sq):
                             PERSON_PORTRAIT_CACHE[cache_key] = im_sq
-                            print(f"   👤 [Person Center Pop-Up Portrait Locked (Wiki)]: {display_name} ({role_str})", flush=True)
+                            print(f"   🎯 [Dynamic Subject Spotlight Locked (Wiki)]: {display_name} ({role_str})", flush=True)
                             return im_sq
         except Exception:
             pass
 
     try:
-        q_str = f"{display_name} {role_str} portrait face close up -cartoon -logo -nude -naked -statue -bikini"
-        b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(q_str)}&first=0&count=8&adlt=strict&qft=+filterui:photo-photo+filterui:face-portrait"
+        is_animal_or_obj = any(k in role_str.upper() for k in ["PREDATOR", "WILDLIFE", "MARINE", "SPECIES", "TELESCOPE", "ROCKET", "MARKET", "AI", "CHIP", "ROBOT", "FIGHTER", "DRONE", "MISSILE"])
+        q_suffix = "real close up wildlife photography -cartoon -logo -drawing" if is_animal_or_obj else "official press photo portrait -cartoon -logo -crest -coat_of_arms -nude -statue"
+        q_str = f"{display_name} {role_str} {q_suffix}"
+        b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(q_str)}&first=0&count=10&adlt=strict&qft=+filterui:photo-photo"
         r = requests.get(b_url, headers=HEADERS_WEB, timeout=5)
         murls = re.findall(r"murl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
-        for u in murls[:6]:
+        for u in murls[:8]:
             u_clean = u.replace("&amp;", "&")
-            if any(b in u_clean.lower() for b in BANNED_IMAGE_SOURCES) or any(nf in u_clean.lower() for nf in ADULT_NSFW_BANNED_TERMS):
+            if any(b in u_clean.lower() for b in BANNED_IMAGE_SOURCES + banned_spotlight_tokens) or any(nf in u_clean.lower() for nf in ADULT_NSFW_BANNED_TERMS):
                 continue
             ir = requests.get(u_clean, headers=HEADERS_WEB, timeout=5)
-            if ir.status_code == 200 and len(ir.content) > 8000:
+            if ir.status_code == 200 and len(ir.content) > 12000:
                 p = f"temp/person_b_{hashlib.md5(cache_key.encode()).hexdigest()[:8]}.jpg"
                 with open(p, "wb") as f:
                     f.write(ir.content)
                 im = Image.open(p).convert("RGB")
                 iw, ih = im.size
-                if iw >= 200 and ih >= 200:
+                if iw >= 220 and ih >= 220:
                     side = min(iw, ih)
                     left = (iw - side) // 2
                     top = max(0, int((ih - side) * 0.10))
                     im_sq = im.crop((left, top, left + side, top + side)).resize((340, 340), resample_mode)
-                    if is_safe_family_friendly_image(im_sq, is_portrait=True):
+                    if is_safe_family_friendly_image(im_sq, is_portrait=True) and is_real_natural_subject_photo(im_sq):
                         PERSON_PORTRAIT_CACHE[cache_key] = im_sq
-                        print(f"   👤 [Person Center Pop-Up Portrait Locked (Bing SafeSearch)]: {display_name} ({role_str})", flush=True)
+                        print(f"   🎯 [Dynamic Subject Spotlight Locked (Bing Photo)]: {display_name} ({role_str})", flush=True)
                         return im_sq
     except Exception:
         pass
@@ -2517,16 +2480,54 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
 # ==============================================================================
 # 8. NON-REPEATING HD VIDEO B-ROLL HARVESTER (Max 1 Clip Per Chapter = Fast & Unique!)
 # ==============================================================================
+def has_collage_or_text_banner_artifacts(im_rgb):
+    """
+    NITISH RAJPUT QUALITY GUARD — BLOCKS COLLAGES, MEMES, PODCAST THUMBNAILS ('COMING UP...'),
+    BURNED-IN SUBTITLES ('YES, CALIFORNIA...'), AND 3D GAME SCREENS ('Cash Register'):
+    1. Detects vertical or horizontal split-screen divider lines across the image (blocks 2x2 / 3-panel collages).
+    2. Detects dense horizontal text/subtitle blocks in the middle or lower third of the image.
+    3. Detects comic-book / cartoon ink outlines & synthetic 3D game UI flatness.
+    """
+    try:
+        small_g = cv2.cvtColor(np.array(im_rgb.resize((320, 180)), dtype=np.uint8), cv2.COLOR_RGB2GRAY)
+        # 1. Check for vertical or horizontal split-screen collage lines in the middle 30%-70%
+        col_diffs = np.mean(np.abs(np.diff(small_g[:, 90:230].astype(np.float32), axis=1)), axis=0)
+        col_stds = np.std(small_g[:, 90:230].astype(np.float32), axis=0)
+        if np.min(col_stds) < 6.5 or np.max(col_diffs) > 62.0:
+            return True
+        row_stds = np.std(small_g[50:130, :].astype(np.float32), axis=1)
+        if np.min(row_stds) < 6.5:
+            return True
+
+        # 2. Check for burned-in yellow/white subtitle text or giant title banners ('COMING UP...', 'TikTok and...')
+        kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 3))
+        grad = cv2.morphologyEx(small_g, cv2.MORPH_GRADIENT, kernel_rect)
+        # High-contrast sharp text strokes in the center or bottom third
+        text_stroke_ratio = float(np.mean(grad[25:165, 20:300] > 115))
+        if text_stroke_ratio > 0.145:
+            return True
+
+        # 3. Check for comic-book / cartoon heavy dark outlines
+        edges = cv2.Canny(small_g, 100, 200)
+        if float(np.mean(edges > 0)) > 0.165:
+            return True
+
+        return False
+    except Exception:
+        return False
+
 def is_valid_cinematic_video_frame(frame_rgb):
     pil_f = Image.fromarray(frame_rgb)
     if not is_safe_family_friendly_image(pil_f, is_portrait=False):
         return False
+    if has_collage_or_text_banner_artifacts(pil_f):
+        return False
     arr = np.asarray(pil_f.resize((120, 120)), dtype=np.float32)
-    if float(np.std(arr)) < 26.0:
+    if float(np.std(arr)) < 28.0:
         return False
     white_px = np.sum((arr[:, :, 0] > 230) & (arr[:, :, 1] > 230) & (arr[:, :, 2] > 230)) / float(120 * 120)
     black_px = np.sum((arr[:, :, 0] < 22) & (arr[:, :, 1] < 22) & (arr[:, :, 2] < 22)) / float(120 * 120)
-    if white_px > 0.22 or black_px > 0.48:
+    if white_px > 0.18 or black_px > 0.42:
         return False
     return True
 
@@ -2663,13 +2664,33 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         except Exception:
             pass
 
-    # Reddit Native HD Video (`v.redd.it`)
+    strict_banned_video_words = [
+        "vlog", "webcam", "stream", "gaming", "game", "gameplay", "counter-strike", "csgo", "valorant",
+        "call of duty", "warzone", "gta", "roblox", "fortnite", "simulator", "fps", "twitch", "minecraft",
+        "cartoon", "anime", "comic", "user", "test", "lecture", "interview", "podcast", "shapiro",
+        "coming up", "episode", "golf", "tree", "park", "pronunciation", "spoken", "audio", "session",
+        "recorded", "wikidata", "conference", "talk", "presentation", "isolated", "nude", "naked",
+        "nsfw", "erotic", "sex", "bikini", "lingerie", "swimsuit", "anatomy", "statue", "tractor",
+        "allis", "farming", "harvest", "grand rounds", "webinar", "seminar", "slide", "chart",
+        "rolling stock", "locomotive", "railway", "train", "mountain", "hiking", "scenery", "landscape",
+        "piano", "guitar", "violin", "concert", "living room", "bedroom", "kitchen", "radar", "weather",
+        "loop", "animation", "tiktok", "unboxing", "motherboard", "intel", "amd", "california"
+    ]
+    required_match_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{query_str} {topic_anchor}") if w.lower() not in HEADLINE_STOP_VERBS_ADJS}
+
+    # Reddit Native HD Video (`v.redd.it`) — ONLY accepted if post title strictly matches >=2 story/query keywords!
     try:
         rd_url = f"https://www.reddit.com/r/{subreddits}/search.json?q={urllib.parse.quote(query_str)}&restrict_sr=1&sort=relevance&t=year&limit=10"
         rr = requests.get(rd_url, headers=HEADERS_WIKI, timeout=6).json()
         for child in rr.get("data", {}).get("children", []):
             post = child.get("data", {})
             if post.get("over_18"):
+                continue
+            post_title_low = str(post.get("title", "")).lower()
+            if any(bw in post_title_low for bw in strict_banned_video_words):
+                continue
+            post_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", post_title_low)}
+            if len(post_tokens.intersection(required_match_tokens)) < 2:
                 continue
             rv = (post.get("secure_media") or post.get("media") or {}).get("reddit_video", {})
             fb_u = rv.get("fallback_url", "")
@@ -2681,17 +2702,9 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
     except Exception:
         pass
 
-    # Wikimedia Commons HD Video Archive
+    # Wikimedia Commons HD Video Archive — ONLY accepted if file title strictly matches >=2 subject keywords!
     if subj_words:
-        wm_q = " ".join(subj_words[:2])
-        banned_video_words = [
-            "vlog", "webcam", "stream", "gaming", "twitch", "minecraft", "cartoon", "user", "test",
-            "lecture", "interview", "golf", "tree", "park", "pronunciation", "spoken", "audio",
-            "session", "recorded", "wikidata", "conference", "talk", "presentation", "isolated",
-            "nude", "naked", "nsfw", "erotic", "sex", "bikini", "lingerie", "swimsuit", "anatomy", "statue",
-            "tractor", "allis", "farming", "harvest", "grand rounds", "webinar", "seminar", "slide", "chart",
-            "rolling stock", "locomotive", "railway", "train", "mountain", "hiking", "scenery", "landscape"
-        ]
+        wm_q = " ".join(subj_words[:3])
         try:
             api = "https://commons.wikimedia.org/w/api.php"
             params = {
@@ -2703,7 +2716,10 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
             r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=6).json()
             for pg in r.get("query", {}).get("pages", {}).values():
                 v_title = pg.get("title", "").lower()
-                if any(bw in v_title for bw in banned_video_words):
+                if any(bw in v_title for bw in strict_banned_video_words):
+                    continue
+                v_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", v_title)}
+                if len(v_tokens.intersection(required_match_tokens)) < 2:
                     continue
                 vi = (pg.get("videoinfo") or pg.get("imageinfo") or [{}])[0]
                 for d in vi.get("derivatives", []):
@@ -2743,8 +2759,10 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450):
     # Crop outer 4% border to remove any corner agency watermarks/timestamps
     im = im.crop((int(w * 0.04), int(h * 0.04), int(w * 0.96), int(h * 0.93)))
 
-    # 100% Broadcast-Safe Family-Friendly Skin/NSFW Check (Blocks 18+ scenes & nude statues!)
+    # 100% Broadcast-Safe Family-Friendly Skin/NSFW Check + Anti-Collage / Anti-Text-Thumbnail / Anti-Game Check!
     if not is_safe_family_friendly_image(im, is_portrait=False):
+        return None
+    if has_collage_or_text_banner_artifacts(im):
         return None
 
     arr = np.asarray(im.resize((120, 120)), dtype=np.float32)
@@ -2848,19 +2866,20 @@ def fit_whole_words_limit(text_str, max_chars=26):
 
 def extract_key_point_from_sentence(sentence_text, beat_num=1, fallback_stat=""):
     """
-    GUARANTEED MEANINGFUL POINT-BY-POINT EXTRACTOR:
-    Strips boilerplate attribution clauses ('Amnesty International said', 'In a move that', 'Comes only weeks')
-    and extracts the actual factual takeaway or statistic of the sentence!
+    ABHI & NIYU / NITISH RAJPUT CRISP POINT HIGHLIGHT EXTRACTOR:
+    1. Always honors the AI Director's per-sentence `point_highlight` (`fallback_stat`) across ALL beats!
+    2. Strips redundant 'POINT 1:' prefixes and never outputs broken verbs/contractions like 'ISNT JUST TREND'.
     """
     s_clean = re.sub(r"[^\x20-\x7E]", "", sentence_text).strip()
     if "subscribe to world talk brief" in s_clean.lower() or "watch the full documentary" in s_clean.lower():
-        return "KEY TAKEAWAY: FULL CASE STUDY", ["takeaway", "documentary", "brief"]
+        return "FULL DOCUMENTARY CASE STUDY", ["takeaway", "documentary", "brief"]
 
-    if fallback_stat and len(fallback_stat.strip()) >= 5 and "EVIDENCE FILE" not in fallback_stat.upper() and beat_num == 1:
-        clean_fb = fit_whole_words_limit(re.sub(r"[^\x20-\x7E]", "", fallback_stat).upper(), 28)
-        return clean_fb, [w.lower() for w in re.findall(r"[A-Za-z0-9$%]{3,}", clean_fb)]
+    if fallback_stat and len(fallback_stat.strip()) >= 5 and "EVIDENCE FILE" not in fallback_stat.upper():
+        cleaned_stat = re.sub(r"^(?:POINT\s*#?\d+\s*[:\-]\s*|KEY\s+POINT\s*[:\-]\s*)", "", fallback_stat.strip(), flags=re.I)
+        clean_fb = fit_whole_words_limit(re.sub(r"[^\x20-\x7E]", "", cleaned_stat).upper(), 30)
+        if len(clean_fb) >= 4:
+            return clean_fb, [w.lower() for w in re.findall(r"[A-Za-z0-9$%]{3,}", clean_fb)]
 
-    # Strip leading conversational/attribution filler so we highlight the REAL point of the sentence
     s_core = re.sub(
         r"^(?:Here's what nobody is telling you:|Story number \d+ in our[^:]+:|Verified data from[^,]+,|According to[^,]+,|"
         r"In a move that astonished[^,]+,|During the release procedures,|Last week,|It comes only weeks after|Understanding how they affect[^,]+,|"
@@ -2869,27 +2888,32 @@ def extract_key_point_from_sentence(sentence_text, beat_num=1, fallback_stat="")
     ).strip()
 
     # 1. Check if sentence has a concrete number/percentage/statistic/year/distance
-    num_match = re.search(r"((?:\$|₹|€|£)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|million|billion|trillion|thousand|kilometers|miles|years|days|hours|times|fold|tons|journalists|people|deaths|investigations))?(?:\s+[A-Za-z]{3,14}){1,3})", s_core, flags=re.I)
+    num_match = re.search(r"((?:\$|₹|€|£)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|million|billion|trillion|thousand|kilometers|miles|years|days|hours|times|fold|tons|shops|units|people|stores))?(?:\s+[A-Za-z]{4,14}){1,3})", s_core, flags=re.I)
     if num_match:
-        phrase = fit_whole_words_limit(num_match.group(1).strip().upper(), 24)
+        phrase = fit_whole_words_limit(num_match.group(1).strip().upper(), 28)
         kw_list = [w.lower() for w in re.findall(r"[A-Za-z0-9$%]{3,}", phrase)]
-        return f"POINT #{beat_num}: {phrase}", kw_list[:4]
+        return phrase, kw_list[:4]
 
-    # 2. Extract core subject + action/object words
+    # 2. Extract concrete nouns & impact words (strictly excluding contractions, verbs, and prepositions!)
     stop_filler = {
         "here", "heres", "what", "nobody", "telling", "that", "this", "these", "those", "there", "their",
         "they", "them", "about", "which", "would", "could", "should", "have", "has", "had", "been", "were",
         "was", "from", "with", "into", "over", "after", "before", "under", "while", "when", "where",
         "because", "however", "meanwhile", "according", "verified", "data", "reports", "official",
         "officials", "said", "says", "also", "only", "weeks", "understanding", "affect", "among",
-        "during", "move", "astonished", "present", "help", "find", "more", "ways", "some", "much", "such"
+        "during", "move", "astonished", "present", "help", "find", "more", "ways", "some", "much", "such",
+        "isnt", "arent", "wasnt", "werent", "dont", "doesnt", "didnt", "cant", "cannot", "wont", "wouldnt",
+        "theyre", "youre", "weve", "just", "even", "simply", "enough", "argue", "argues", "without", "deeper",
+        "fighting", "survive", "against", "steeper", "every", "being", "judged", "paying", "creates", "create",
+        "means", "mean", "shows", "show", "needs", "need", "walk", "down", "today", "will", "sitting", "nearly",
+        "stark", "haunting", "pattern", "longer", "afford", "moving", "first", "place", "alone", "spend"
     }
-    words_raw = re.findall(r"[A-Za-z0-9$%'-]{4,}", s_core)
-    meaningful = [w for w in words_raw if w.lower().strip("'-") not in stop_filler]
-    selected = meaningful[:4] if len(meaningful) >= 3 else words_raw[:4]
-    point_str = fit_whole_words_limit(" ".join(selected).upper(), 24)
-    kw_list = [w.lower().strip(".,!?'-") for w in selected if len(w) >= 3]
-    return f"POINT #{beat_num}: {point_str}", kw_list[:4]
+    words_raw = re.findall(r"[A-Za-z0-9$%]{4,}", s_core.replace("'", ""))
+    meaningful = [w for w in words_raw if w.lower() not in stop_filler]
+    selected = meaningful[:4] if len(meaningful) >= 2 else words_raw[:3]
+    point_str = fit_whole_words_limit(" ".join(selected).upper(), 28)
+    kw_list = [w.lower() for w in selected if len(w) >= 3]
+    return point_str, kw_list[:4]
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     """
@@ -2991,11 +3015,19 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    for b_img_q in [f"{news_query}", f"{news_query} {domain_ctx}", f"{topic_anchor} {wiki_exact_title} {domain_ctx}"]:
+    c_prof = dossier.get("country_profile", {})
+    geo_tag = "" if c_prof.get("is_global_topic") else c_prof.get("name", "").title()
+    if geo_tag and geo_tag.lower() not in news_query.lower():
+        anchored_q = f"{news_query} {geo_tag}"
+    else:
+        anchored_q = news_query
+    extra_neg = "-collage -split -meme -podcast -thumbnail -game -simulator -comic -drawing -banner -poster"
+
+    for b_img_q in [f"{anchored_q} real press photo", f"{anchored_q} {domain_ctx}", f"{topic_anchor} {geo_tag} {wiki_exact_title} photo"]:
         if not b_img_q or len(b_img_q) < 4:
             continue
         try:
-            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + ' ' + neg_guard)}&first=0&count=22&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
+            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + ' ' + extra_neg + ' ' + neg_guard)}&first=0&count=24&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
             r = requests.get(b_url, headers=HEADERS_WEB, timeout=6)
             murls = re.findall(r"murl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)
             for u in murls[:14]:
@@ -3239,15 +3271,17 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
     stat_callout = beat.get("point_highlight") or beat.get("stat_callout") or "VERIFIED CASE POINT"
 
     if not is_short:
-        ev_w = 430
-        ev_h = 90
-        ev_x = W - ev_w - 38
-        ev_y = 94
-        draw.rounded_rectangle([(ev_x + 4, ev_y + 4), (ev_x + ev_w + 4, ev_y + ev_h + 4)], radius=14, fill=(0, 0, 0, 175))
-        draw.rounded_rectangle([(ev_x, ev_y), (ev_x + ev_w, ev_y + ev_h)], radius=14, fill=(10, 16, 30, 235), outline=(0, 235, 255, 220), width=2)
-        draw.rectangle([(ev_x, ev_y), (ev_x + 10, ev_y + ev_h)], fill=(220, 20, 45, 255))
-        draw.text((ev_x + 24, ev_y + 12), f"SOURCE: {src_name} • {pub_d}", fill=(0, 235, 255, 255), font=get_font(14))
-        draw.text((ev_x + 24, ev_y + 38), fit_whole_words_limit(stat_callout, 26), fill=(255, 255, 255, 255), font=get_font(23))
+        # Clean, compact Nitish Rajput Verified Source Badge (never duplicates the bottom-left Point Highlight!)
+        src_badge_txt = f"📰 VERIFIED SOURCE: {src_name} • {pub_d}"
+        f_src = get_font(16)
+        ev_w = draw.textbbox((0, 0), src_badge_txt, font=f_src)[2] + 42
+        ev_h = 42
+        ev_x = W - ev_w - 36
+        ev_y = 92
+        draw.rounded_rectangle([(ev_x + 3, ev_y + 3), (ev_x + ev_w + 3, ev_y + ev_h + 3)], radius=12, fill=(0, 0, 0, 165))
+        draw.rounded_rectangle([(ev_x, ev_y), (ev_x + ev_w, ev_y + ev_h)], radius=12, fill=(10, 16, 30, 230), outline=(0, 235, 255, 195), width=2)
+        draw.rectangle([(ev_x, ev_y), (ev_x + 8, ev_y + ev_h)], fill=(220, 20, 45, 255))
+        draw.text((ev_x + 20, ev_y + 11), src_badge_txt, fill=(235, 245, 255, 255), font=f_src)
 
     # 5. On-Screen Callout Banner on Shorts pointing to the Linked Full Long Video
     if is_short:
@@ -3301,7 +3335,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     hud_layer = build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=is_short)
     frame.alpha_composite(hud_layer)
 
-    # 3. GUARANTEED ON-SCREEN POINT HIGHLIGHT BANNER (Animates in on every sentence!)
+    # 3. ABHI & NIYU / NITISH RAJPUT DYNAMIC HIGHLIGHTER BANNER (with Animated Yellow Marker Swipe!)
     pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short)
     if pt_card is not None:
         pt_w, pt_h = pt_card.size
@@ -3314,24 +3348,36 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             pt_x = int(42 - (1.0 - pt_ease) * 260)
             pt_y = H - 228
         frame.paste(pt_card, (pt_x, pt_y), pt_card)
+        # Animated Yellow Highlighter Progress Sweep under the key point text during the first 0.55s!
+        swipe_p = min(max((local_t - 0.10) / 0.45, 0.0), 1.0)
+        if swipe_p > 0.02:
+            f_draw = ImageDraw.Draw(frame, "RGBA")
+            bar_x1 = pt_x + 14
+            bar_x2 = bar_x1 + int((pt_w - 34) * swipe_p)
+            bar_y = pt_y + pt_h - 11
+            f_draw.rounded_rectangle([(bar_x1, bar_y), (bar_x2, bar_y + 5)], radius=2, fill=(255, 225, 0, 245))
 
-    # 4. CENTER-STAGE IMPORTANT PERSON POP-UP (`बीच में` with Spring Zoom & Floating Effect!)
+    # 4. UNIVERSAL DYNAMIC SUBJECT SPOTLIGHT POP-UP (Person, Animal, Object, or Key Evidence!)
     if beat.get("person_popup") is not None:
         p_card = build_prebuilt_person_card_rgba(beat["person_popup"], is_short=is_short)
         if p_card is not None:
-            popup_show_dur = min(beat_dur * 0.88, 3.6)
+            popup_show_dur = min(beat_dur * 0.88, 3.8)
             if local_t <= popup_show_dur:
                 enter_p = min(max(local_t / 0.28, 0.0), 1.0)
                 exit_p = min(max((popup_show_dur - local_t) / 0.25, 0.0), 1.0) if local_t > (popup_show_dur - 0.25) else 1.0
-                scale_f = (0.72 + 0.28 * (1.0 - ((1.0 - enter_p) ** 3))) * (0.85 + 0.15 * exit_p)
+                scale_f = (0.76 + 0.24 * (1.0 - ((1.0 - enter_p) ** 3))) * (0.85 + 0.15 * exit_p)
                 resample_mode = getattr(Image, "Resampling", Image).BILINEAR
                 cw, ch = p_card.size
                 sw, sh = max(10, int(cw * scale_f)), max(10, int(ch * scale_f))
                 scaled_card = p_card.resize((sw, sh), resample_mode) if abs(scale_f - 1.0) > 0.02 else p_card
-                float_dy = int(6.0 * math.sin(local_t * 4.2))
-                # Placed RIGHT IN THE CENTER of the screen (`बीच में`)!
-                center_x = (W - sw) // 2
-                center_y = ((H - sh) // 2 - (70 if is_short else 35)) + float_dy
+                float_dy = int(5.0 * math.sin(local_t * 3.8))
+                # Center-stage on Shorts; alternating Center / Right-Evidence-Board on 16:9 Long videos
+                style_pos = int(beat["person_popup"].get("style_idx", 0)) % 2
+                if is_short or style_pos == 0:
+                    center_x = (W - sw) // 2
+                else:
+                    center_x = W - sw - 64
+                center_y = ((H - sh) // 2 - (70 if is_short else 30)) + float_dy
                 frame.paste(scaled_card, (center_x, center_y), scaled_card)
 
     # 5. Composite Cached Synced Subtitles (with Key Point Keyword Highlighting!)
@@ -3560,9 +3606,9 @@ def build_prop_driven_storyboard_1080p(
                 ]
                 chosen_sfx = point_sfx_cycle[global_beat_idx % len(point_sfx_cycle)]
 
-            # Fetch Real Full-Sentence HD Moving Video B-Roll (up to 2 clips per section for dynamic real footage!)
+            # Fetch 100% Verified Point-to-Point Real HD Video B-Roll (strictly verified title & frame!)
             vseg = None
-            if b_i in [0, 1] and not (section_got_video and b_i == 1 and num_beats <= 2):
+            if not section_got_video and b_i == 0:
                 v_q = ai_video_q if ai_video_q else search_q
                 vseg = fetch_and_transcode_real_video_broll(
                     v_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vc_{global_beat_idx}"
