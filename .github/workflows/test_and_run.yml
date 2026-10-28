@@ -8,8 +8,8 @@ on:
         required: false
         default: 'false'
   schedule:
-    # Runs every 3 hours across the 24h clock (Paired Long + Linked Short = 16 to 20+ Videos/Day)
-    - cron: '15 0,3,6,9,12,15,18 * * *'
+    # Runs every 2 hours across the 24h clock (Paired Long + Linked Short = 18 to 24 High-Quality Videos/Day)
+    - cron: '15 0,2,4,6,8,10,12,14,16,18,20 * * *'
     # Dedicated 6:00 PM USA Eastern Time (22:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
     - cron: '0 22 * * *'
 
