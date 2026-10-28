@@ -1548,7 +1548,8 @@ def clean_fact(text):
     text = re.sub(r"\b(\d+(?:\.\d+)?)\s*[mM]\b", r"\1 million", text)
     text = re.sub(r"\b(\d+(?:\.\d+)?)\s*bn\b", r"\1 billion", text, flags=re.I)
 
-    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera|IndieWire|Variety|Smithsonian)\b", "official reports", text)
+    text = re.sub(r"(?i)see more headlines and perspectives on google news\.?", "", text)
+    text = re.sub(r"(?i)\b(BBC World Service|BBC World|BBC News|BBC|DW|Wired|Al Jazeera Sport|Al Jazeera|IndieWire|Variety|Smithsonian|CNN Live|CNN|Reuters|Associated Press|AP News|CBS News|CBS|The New York Times|New York Times)\b", "", text)
     text = re.sub(r"\[([^\]]+)\]", r"\1", text)
     text = re.sub(r"[^\x20-\x7E]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
@@ -2038,12 +2039,18 @@ def build_daily_24h_mega_news_dossier():
     lead_img = None
     pub_d = datetime.utcnow().strftime("%Y-%m-%d")
 
-    feed_sources = (
-        CATEGORY_FEEDS["WORLD"]["feeds"][:4]
-        + CATEGORY_FEEDS["BUSINESS"]["feeds"][:2]
-        + CATEGORY_FEEDS["TECHNOLOGY"]["feeds"][:2]
-        + CATEGORY_FEEDS["SCIENCE"]["feeds"][:1]
-    )
+    # Prioritize direct full-text global wire feeds first so we get rich article paragraphs without Google News duplicate titles
+    feed_sources = [
+        ("BBC World Breaking", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+        ("Al Jazeera Global", "https://www.aljazeera.com/xml/rss/all.xml"),
+        ("The Guardian World", "https://www.theguardian.com/world/rss"),
+        ("DW World News", "https://rss.dw.com/rdf/rss-en-world"),
+        ("France24 World", "https://www.france24.com/en/rss"),
+        ("CNBC Business", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"),
+        ("BBC Technology", "http://feeds.bbci.co.uk/news/technology/rss.xml"),
+        ("Space.com Breaking", "https://www.space.com/feeds/all"),
+        ("Google News World 24h", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en")
+    ]
 
     for src, url in feed_sources:
         try:
@@ -2055,13 +2062,40 @@ def build_daily_24h_mega_news_dossier():
                 raw_t = clean_fact(entry.title.rsplit(" - ", 1)[0])
                 if len(raw_t) < 25 or any(bt in raw_t.lower() for bt in BANNED_ARTICLE_TITLES):
                     continue
-                raw_sum = clean_fact(BeautifulSoup(getattr(entry, "summary", ""), "html.parser").get_text(separator=" "))
-                combined_txt = f"{raw_t}. {raw_sum}" if raw_sum else f"{raw_t}."
+                soup_sum = BeautifulSoup(getattr(entry, "summary", ""), "html.parser")
+                # If Google News list of links, take only distinct sub-headlines that don't repeat raw_t
+                li_texts = [clean_fact(li.get_text(" ").rsplit(" - ", 1)[0]) for li in soup_sum.find_all("li")]
+                extra_sents = []
+                for lt in li_texts:
+                    if len(lt) > 30 and lt.lower()[:25] != raw_t.lower()[:25]:
+                        extra_sents.append(lt.rstrip(".") + ".")
+                if not extra_sents:
+                    raw_sum = clean_fact(soup_sum.get_text(separator=" "))
+                    if raw_sum and raw_sum.lower()[:25] != raw_t.lower()[:25]:
+                        extra_sents.append(raw_sum.rstrip(".") + ".")
+
+                link = getattr(entry, "link", "https://news.google.com")
+                if "news.google.com" not in link and len(extra_sents) < 2:
+                    try:
+                        ar = requests.get(link, headers=HEADERS_WEB, timeout=5)
+                        if ar.status_code == 200:
+                            asoup = BeautifulSoup(ar.text, "html.parser")
+                            for p in asoup.find_all("p")[:6]:
+                                pt = clean_fact(p.get_text(" ").strip())
+                                if 45 <= len(pt) <= 190 and pt.lower()[:25] != raw_t.lower()[:25]:
+                                    extra_sents.append(pt.rstrip(".") + ".")
+                                    if len(extra_sents) >= 2:
+                                        break
+                    except Exception:
+                        pass
+
+                body_joined = " ".join(extra_sents[:2])
+                combined_txt = f"{raw_t.rstrip('.')}. {body_joined}".strip() if body_joined else f"{raw_t.rstrip('.')}."
                 if not is_semantically_similar_claim(combined_txt, mega_claims):
                     mega_claims.append({
-                        "text": combined_txt[:220],
+                        "text": combined_txt[:340],
                         "headline_short": raw_t[:65],
-                        "source_url": getattr(entry, "link", "https://news.google.com"),
+                        "source_url": link,
                         "source_name": src,
                         "published_date": pub_d
                     })
@@ -3740,19 +3774,51 @@ def build_long_documentary_script(dossier):
     is_mega_24h = dossier.get("is_mega_24h", False)
 
     if is_mega_24h:
+        mega_context_closers = [
+            "This development marks one of the most consequential policy shifts of the week.",
+            "Regional observers warn that the next forty-eight hours will be critical for everyone involved.",
+            "The announcement has already sparked intense debate among lawmakers and security experts.",
+            "International monitors are now closely watching how neighboring states respond to the move.",
+            "Economic and diplomatic analysts say this could reshape long-standing alliances in the region.",
+            "Local authorities have stepped up readiness as further updates are expected later today.",
+            "Public reaction continues to grow as new details emerge from official briefings.",
+            "Strategic planners point out that this turn of events changes the political calculus moving forward.",
+            "Legal and diplomatic teams are now reviewing the full implications of today's decision.",
+            "The story has quickly become a central focus across international newsrooms today.",
+            "Energy and trade markets are also factoring this development into their weekly outlook.",
+            "Defense and foreign ministry officials have scheduled follow-up talks to address the situation.",
+            "Independent researchers note that this trend has been building over the past several months.",
+            "Community leaders and international agencies are calling for immediate transparency and action.",
+            "What happens next here will set the tone for upcoming global summits."
+        ]
+        lead_transitions = [
+            "Leading our twenty-four hour intelligence briefing:",
+            "Moving to our second major global development:",
+            "Next, in a story drawing international attention:",
+            "Turning to our fourth headline of the day:",
+            "Meanwhile, in another major development:",
+            "Our sixth report focuses on a critical shift:",
+            "Next up in today's global roundup:",
+            "Shifting focus to our eighth major story:",
+            "In another closely watched legal and political update:",
+            "Number ten on our global radar today:",
+            "Turning now to energy, politics, and global strategy:",
+            "Our twelfth story examines a deeper geopolitical question:",
+            "Next, looking at shifting alliances in the Middle East:",
+            "In our fourteenth report from the ground:",
+            "Finally, closing out our top fifteen global stories:"
+        ]
         chapters = []
         for idx, c in enumerate(claims[:15]):
             h_short = c.get("headline_short") or make_clean_context_headline(c["text"], max_words=6)
             base_nar = paraphrase_into_original_creator_voice(c["text"], idx)
-            expanded_nar = (
-                f"Story number {idx + 1} in our 24-hour global briefing: {base_nar} "
-                f"Analysts tracking this development emphasize that the ripple effects across international diplomacy, security corridors, and global markets will be felt throughout the coming weeks. "
-                f"Officials on the ground continue to monitor the rapidly evolving situation as world capitals coordinate their next strategic response."
-            )
+            lead_in = lead_transitions[idx % len(lead_transitions)]
+            closer_line = mega_context_closers[idx % len(mega_context_closers)]
+            expanded_nar = f"{lead_in} {base_nar} {closer_line}"
             if idx == 0:
-                expanded_nar = f"Welcome to World Talk Brief's special 24-hour global intelligence roundup. Over the next ten minutes, we're breaking down every major geopolitical, economic, and technological shockwave from the past 24 hours. {expanded_nar}"
+                expanded_nar = f"Welcome to World Talk Brief's special twenty-four hour global intelligence roundup. Here are the biggest geopolitical, economic, and scientific developments from around the world today. {expanded_nar}"
             if idx == len(claims[:15]) - 1:
-                expanded_nar = f"{expanded_nar} That completes our 24-hour global briefing. Subscribe to World Talk Brief and share which headline surprised you the most in the comments below."
+                expanded_nar = f"{expanded_nar} That completes our twenty-four hour global briefing. Subscribe to World Talk Brief and let us know in the comments which headline stood out to you the most."
             chapters.append({
                 "chapter_num": idx + 1,
                 "chapter_title": h_short.upper()[:28],
@@ -4044,8 +4110,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
 
     final_long = concatenate_videoclips(long_clips, method="compose")
     story_hash_seed = int(hashlib.md5(lead_long_dossier["story_key"].encode()).hexdigest()[:6], 16)
-    story_hash_seed_s = int(hashlib.md5(short_dossier["story_key"].encode()).hexdigest()[:6], 16) + 2
-    track_seed = hist_obj.get("bgm_track_counter", 0) + unit_num + story_hash_seed_s + story_hash_seed
+    track_seed = hist_obj.get("bgm_track_counter", 0) + unit_num + story_hash_seed
     hist_obj["bgm_track_counter"] = track_seed
     bgm_l = AudioFileClip(build_30_track_mood_adaptive_album_bgm(
         f"temp/bgm_l{unit_num}.wav", final_long.duration, beat_switch_times_l,
@@ -4133,7 +4198,8 @@ async def render_and_upload_short_unit(
         short_clips.append(clip)
 
     final_short = concatenate_videoclips(short_clips, method="compose")
-    track_seed = hist_obj.get("bgm_track_counter", 0) + unit_num
+    story_hash_seed_s = int(hashlib.md5(short_dossier["story_key"].encode()).hexdigest()[:6], 16) + 7
+    track_seed = hist_obj.get("bgm_track_counter", 0) + unit_num + story_hash_seed_s
     hist_obj["bgm_track_counter"] = track_seed
     bgm_s = AudioFileClip(build_30_track_mood_adaptive_album_bgm(
         f"temp/bgm_s{unit_num}.wav", final_short.duration, beat_switch_times_s,
