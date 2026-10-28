@@ -8,31 +8,36 @@ on:
         required: false
         default: 'false'
   schedule:
-    # Runs every 2 hours across the 24h clock (Paired Long + Linked Short = 18 to 24 High-Quality Videos/Day)
-    - cron: '15 0,2,4,6,8,10,12,14,16,18,20 * * *'
+    # Runs automatically every 1.5 hours (90 minutes) 24x7 across the clock (16 runs/day)
+    - cron: '5 0,3,6,9,12,15,18,21 * * *'
+    - cron: '35 1,4,7,10,13,16,19,22 * * *'
     # Dedicated 6:00 PM USA Eastern Time (22:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
     - cron: '0 22 * * *'
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
-  group: wtb-production-group
+  group: wtb-production-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
   build-1080p-videos:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 85
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.11 with Pip Cache
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Fast Install System FFmpeg (No-Hang + No-Bloat Mode)
         run: |
@@ -60,7 +65,7 @@ jobs:
         run: |
           python3 -u wtb_engine.py
 
-      - name: Save Non-Repeating Topic & Category History to GitHub
+      - name: Save Non-Repeating Topic & Category History to GitHub (Keep Cron Active!)
         if: always()
         run: |
           if [ -f published_history.json ]; then
@@ -68,17 +73,24 @@ jobs:
             git config user.email "bot@worldtalkbrief.org"
             git pull --rebase origin main || true
             git add published_history.json
-            git diff --staged --quiet || git commit -m "Update published_history.json [skip ci]"
-            git push || true
+            git diff --staged --quiet || git commit -m "Auto-update published_history.json ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+            git push origin HEAD:main || true
           fi
+
+      - name: Ensure Workflow Remains Enabled & Active 24x7
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow enable "test_and_run.yml" || true
 
       - name: Upload Generated 1080p Videos & Thumbnails to GitHub Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: World-Talk-Brief-1080p-Output
+          name: World-Talk-Brief-1080p-Output-${{ github.run_number }}
           path: |
             output/*.mp4
             output/*.jpg
             output/wtb_1080p_report.json
-          retention-days: 3
+          retention-days: 2
