@@ -152,16 +152,18 @@ CATEGORY_FEEDS = {
         "search_query": "world news geopolitics summit military sanctions",
         "domain_context": "geopolitics diplomacy government",
         "feeds": [
-            ("Google News World 24h", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
-            ("Google Geopolitics & War 24h", "https://news.google.com/rss/search?q=geopolitics+OR+war+OR+military+OR+sanctions+OR+conflict+OR+missile+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            ("Al Jazeera Global", "https://www.aljazeera.com/xml/rss/all.xml"),
-            ("BBC World Breaking", "http://feeds.bbci.co.uk/news/world/rss.xml"),
-            ("CNN World Breaking", "http://rss.cnn.com/rss/edition_world.rss"),
-            ("The Guardian World", "https://www.theguardian.com/world/rss"),
-            ("DW World News", "https://rss.dw.com/rdf/rss-en-world"),
-            ("France24 World", "https://www.france24.com/en/rss"),
-            ("NDTV World Geopolitics", "https://feeds.feedburner.com/ndtvnews-world-news"),
-            ("Google Middle East & Asia Conflict", "https://news.google.com/rss/search?q=Israel+OR+Iran+OR+Russia+OR+Ukraine+OR+China+OR+Taiwan+OR+India+OR+Pakistan+when:1d&hl=en-US&gl=US&ceid=US:en")
+            ("BBC World Global", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+            ("USA National & Global Power", "https://news.google.com/rss/search?q=United+States+OR+White+House+OR+Pentagon+OR+Trump+OR+US+military+OR+Congress+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("India & South Asia Power", "https://feeds.feedburner.com/ndtvnews-world-news"),
+            ("India Geopolitics & Defense", "https://news.google.com/rss/search?q=India+geopolitics+OR+New+Delhi+OR+Indian+economy+OR+Modi+OR+India+defense+when:1d&hl=en-IN&gl=IN&ceid=IN:en"),
+            ("Israel, Dubai UAE & Middle East", "https://news.google.com/rss/search?q=Israel+OR+Dubai+OR+UAE+OR+Saudi+Arabia+OR+Iran+OR+Red+Sea+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("Europe, UK, Russia & Ukraine", "https://rss.dw.com/rdf/rss-en-world"),
+            ("China, Taiwan, Japan & Indo-Pacific", "https://news.google.com/rss/search?q=China+OR+Taiwan+OR+Japan+OR+South+Korea+OR+North+Korea+OR+Philippines+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("France24 Global Affairs", "https://www.france24.com/en/rss"),
+            ("The Guardian International", "https://www.theguardian.com/world/rss"),
+            ("CNN Global Headlines", "http://rss.cnn.com/rss/edition_world.rss"),
+            ("Google World Top Headlines", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
+            ("Al Jazeera International", "https://www.aljazeera.com/xml/rss/all.xml")
         ]
     },
     "TECHNOLOGY": {
@@ -291,8 +293,50 @@ CATEGORY_FEEDS = {
 # ==============================================================================
 # 2. COMPLETE WORLD GEOPOLITICAL & VERIFIED PERSON DATABASE
 # ==============================================================================
+# Tiered Global Priority Countries for a US-Based Global Documentary Channel (BBC World / Johnny Harris / Nitish Rajput Standard)
+TIER_1_HIGH_DEMAND_COUNTRIES = {
+    "UNITED STATES", "INDIA", "ISRAEL", "UNITED ARAB EMIRATES", "UNITED KINGDOM",
+    "RUSSIA", "CHINA", "UKRAINE", "IRAN", "SAUDI ARABIA", "GERMANY", "FRANCE",
+    "JAPAN", "SOUTH KOREA", "TAIWAN", "CANADA", "AUSTRALIA", "TURKEY", "BRAZIL", "PAKISTAN"
+}
+
 COUNTRY_GEO_DB = {
     "UNITED STATES": ("US", "USA", "Washington, D.C.", "335 million", "North America", 38.895, -77.036),
+    "UNITED ARAB EMIRATES": ("AE", "ARE", "Dubai / Abu Dhabi", "10.2 million", "Middle East", 25.204, 55.270),
+    "SINGAPORE": ("SG", "SGP", "Singapore", "5.9 million", "Southeast Asia", 1.352, 103.819),
+    "INDONESIA": ("ID", "IDN", "Jakarta", "277 million", "Southeast Asia", -6.208, 106.845),
+    "VIETNAM": ("VN", "VNM", "Hanoi", "99 million", "Southeast Asia", 21.028, 105.854),
+    "PHILIPPINES": ("PH", "PHL", "Manila", "117 million", "Southeast Asia", 14.599, 120.984),
+    "THAILAND": ("TH", "THA", "Bangkok", "71.8 million", "Southeast Asia", 13.756, 100.501),
+    "MALAYSIA": ("MY", "MYS", "Kuala Lumpur", "34.3 million", "Southeast Asia", 3.139, 101.686),
+    "QATAR": ("QA", "QAT", "Doha", "2.7 million", "Middle East", 25.285, 51.531),
+    "KUWAIT": ("KW", "KWT", "Kuwait City", "4.3 million", "Middle East", 29.375, 47.977),
+    "OMAN": ("OM", "OMN", "Muscat", "4.6 million", "Middle East", 23.588, 58.382),
+    "JORDAN": ("JO", "JOR", "Amman", "11.3 million", "Middle East", 31.945, 35.928),
+    "IRAQ": ("IQ", "IRQ", "Baghdad", "45.5 million", "Middle East", 33.315, 44.366),
+    "AFGHANISTAN": ("AF", "AFG", "Kabul", "42.2 million", "South Asia", 34.555, 69.207),
+    "BANGLADESH": ("BD", "BGD", "Dhaka", "173 million", "South Asia", 23.810, 90.412),
+    "SRI LANKA": ("LK", "LKA", "Colombo", "22 million", "South Asia", 6.927, 79.861),
+    "NEPAL": ("NP", "NPL", "Kathmandu", "30.9 million", "South Asia", 27.717, 85.324),
+    "SWITZERLAND": ("CH", "CHE", "Bern", "8.8 million", "Europe", 46.948, 7.447),
+    "SWEDEN": ("SE", "SWE", "Stockholm", "10.5 million", "Europe", 59.329, 18.068),
+    "NORWAY": ("NO", "NOR", "Oslo", "5.5 million", "Europe", 59.913, 10.752),
+    "FINLAND": ("FI", "FIN", "Helsinki", "5.6 million", "Europe", 60.169, 24.938),
+    "NETHERLANDS": ("NL", "NLD", "Amsterdam", "17.9 million", "Europe", 52.367, 4.904),
+    "BELGIUM": ("BE", "BEL", "Brussels", "11.7 million", "Europe", 50.850, 4.351),
+    "SERBIA": ("RS", "SRB", "Belgrade", "6.6 million", "Europe", 44.786, 20.448),
+    "HUNGARY": ("HU", "HUN", "Budapest", "9.6 million", "Europe", 47.497, 19.040),
+    "ARGENTINA": ("AR", "ARG", "Buenos Aires", "46.6 million", "South America", -34.603, -58.381),
+    "COLOMBIA": ("CO", "COL", "Bogota", "52 million", "South America", 4.711, -74.072),
+    "CHILE": ("CL", "CHL", "Santiago", "19.6 million", "South America", -33.448, -70.669),
+    "VENEZUELA": ("VE", "VEN", "Caracas", "28.8 million", "South America", 10.480, -66.903),
+    "SOUTH AFRICA": ("ZA", "ZAF", "Pretoria", "60.4 million", "Africa", -25.747, 28.229),
+    "NIGERIA": ("NG", "NGA", "Abuja", "223 million", "Africa", 9.076, 7.398),
+    "KENYA": ("KE", "KEN", "Nairobi", "55.1 million", "Africa", -1.292, 36.821),
+    "ETHIOPIA": ("ET", "ETH", "Addis Ababa", "126 million", "Africa", 9.032, 38.746),
+    "MOROCCO": ("MA", "MAR", "Rabat", "37.8 million", "North Africa", 34.020, -6.841),
+    "ALGERIA": ("DZ", "DZA", "Algiers", "45.6 million", "North Africa", 36.753, 3.058),
+    "LIBYA": ("LY", "LBY", "Tripoli", "6.8 million", "North Africa", 32.887, 13.191),
     "RUSSIA": ("RU", "RUS", "Moscow", "144 million", "Eurasia", 55.755, 37.617),
     "CHINA": ("CN", "CHN", "Beijing", "1.41 billion", "East Asia", 39.904, 116.407),
     "ISRAEL": ("IL", "ISR", "Jerusalem", "9.8 million", "Middle East", 31.768, 35.213),
@@ -332,6 +376,13 @@ COUNTRY_GEO_DB = {
 }
 
 DEMONYM_TO_COUNTRY = {
+    "dubai": "UNITED ARAB EMIRATES", "abu dhabi": "UNITED ARAB EMIRATES", "uae": "UNITED ARAB EMIRATES", "emirati": "UNITED ARAB EMIRATES", "emirates": "UNITED ARAB EMIRATES",
+    "white house": "UNITED STATES", "pentagon": "UNITED STATES", "washington": "UNITED STATES", "trump": "UNITED STATES", "biden": "UNITED STATES", "obama": "UNITED STATES", "wall street": "UNITED STATES", "congress": "UNITED STATES",
+    "new delhi": "INDIA", "mumbai": "INDIA", "modi": "INDIA", "bengaluru": "INDIA",
+    "tel aviv": "ISRAEL", "jerusalem": "ISRAEL", "idf": "ISRAEL", "netanyahu": "ISRAEL",
+    "doha": "QATAR", "riyadh": "SAUDI ARABIA", "amman": "JORDAN", "damascus": "SYRIA", "beirut": "LEBANON", "baghdad": "IRAQ",
+    "singaporean": "SINGAPORE", "jakarta": "INDONESIA", "indonesian": "INDONESIA", "vietnamese": "VIETNAM", "manila": "PHILIPPINES", "filipino": "PHILIPPINES",
+    "nigerian": "NIGERIA", "south african": "SOUTH AFRICA", "kenyan": "KENYA", "serbian": "SERBIA", "belgrade": "SERBIA", "swiss": "SWITZERLAND", "swedish": "SWEDEN", "dutch": "NETHERLANDS",
     "barcelona": "SPAIN", "real madrid": "SPAIN", "madrid": "SPAIN", "spanish": "SPAIN",
     "england": "UNITED KINGDOM", "scotland": "UNITED KINGDOM", "wales": "UNITED KINGDOM", "nhs": "UNITED KINGDOM",
     "british": "UNITED KINGDOM", "london": "UNITED KINGDOM", "starmer": "UNITED KINGDOM", "uk ": "UNITED KINGDOM",
@@ -1619,6 +1670,7 @@ def load_published_history():
                     "event_fingerprints": data.get("event_fingerprints", []),
                     "last_categories": data.get("last_categories", []),
                     "last_sources": data.get("last_sources", []),
+                    "last_countries": data.get("last_countries", []),
                     "round_robin_idx": int(data.get("round_robin_idx", 0)),
                     "bgm_track_counter": int(data.get("bgm_track_counter", 0)),
                     "last_mega_24h_date": data.get("last_mega_24h_date", "")
@@ -1630,6 +1682,7 @@ def load_published_history():
         "event_fingerprints": [],
         "last_categories": [],
         "last_sources": [],
+        "last_countries": [],
         "round_robin_idx": 0,
         "bgm_track_counter": 0,
         "last_mega_24h_date": ""
@@ -1646,7 +1699,8 @@ def save_published_history(hist_obj):
                 "published_keys": list(hist_obj["published_keys"])[-500:],
                 "event_fingerprints": hist_obj["event_fingerprints"][-250:],
                 "last_categories": hist_obj["last_categories"][-30:],
-                "last_sources": hist_obj["last_sources"][-30:]
+                "last_sources": hist_obj["last_sources"][-30:],
+                "last_countries": hist_obj.get("last_countries", [])[-40:]
             }, f, indent=2)
     except Exception:
         pass
@@ -2312,7 +2366,7 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                             for bs in split_into_complete_sentences(b_desc):
                                 cbs = clean_fact(bs)
                                 s_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", cbs)}
-                                if 45 <= len(cbs) <= 205 and len(s_toks.intersection(headline_specific_tokens)) >= 2 and not is_semantically_similar_claim(cbs, verified_claims, headline_title=title):
+                                if 45 <= len(cbs) <= 205 and len(s_toks.intersection(headline_specific_tokens)) >= 1 and not is_semantically_similar_claim(cbs, verified_claims, headline_title=title):
                                     if cbs[-1] not in ".!?":
                                         cbs += "."
                                     verified_claims.append({
@@ -2338,10 +2392,26 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             orig_yt_title = build_100_percent_original_youtube_title(title, sub_pillar, c_prof, t_anchor, is_update=is_followup)
 
             comb = f"{title} {' '.join(raw_facts[:3])}".lower()
-            analytics_boost = sum(8 for w_kw in winning_keywords if re.search(rf"\b{re.escape(w_kw)}\b", comb))
+            country_name_upper = c_prof.get("name", "INTERNATIONAL").upper()
+            last_countries = hist_obj.get("last_countries", [])
+
+            # 1. Country Rotation Audit: Penalize countries already covered in the last 5 videos or earlier in this batch!
+            country_penalty = 0
+            if country_name_upper in last_countries[-2:]:
+                country_penalty = 140
+            elif country_name_upper in last_countries[-5:]:
+                country_penalty = 65
+
+            # 2. High-Demand Global Country Boost (USA, India, Israel, Dubai/UAE, UK, Russia, China, Europe, Japan, etc.)
+            tier_boost = 38 if country_name_upper in TIER_1_HIGH_DEMAND_COUNTRIES else 18
+
+            # 3. Source Diversity Guard: Prevent Al Jazeera from dominating over BBC/USA/India/Global feeds
+            src_penalty = 45 if "al jazeera" in src.lower() else 0
+
+            analytics_boost = sum(10 for w_kw in winning_keywords if re.search(rf"\b{re.escape(w_kw)}\b", comb))
             recency_boost = int(max(0.0, 48.0 - hours_old) * 2.5)
             update_boost = 25 if is_followup else 0
-            trend_score = len(verified_claims) * 4 + analytics_boost + recency_boost + update_boost
+            trend_score = (len(verified_claims) * 4) + analytics_boost + recency_boost + update_boost + tier_boost - country_penalty - src_penalty
 
             candidates.append({
                 "score": trend_score,
@@ -2368,15 +2438,23 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                 "country_profile": c_prof,
                 "wb_data": None
             })
-            if len(candidates) >= 6:
+            # Cap at max 2 candidates per single feed so we ALWAYS sample across BBC, USA, India, Israel/UAE, Europe, Asia & Global feeds!
+            if sum(1 for c_it in candidates if c_it["source_name"] == src) >= 2:
                 break
-        if len(candidates) >= 6:
+        if len(candidates) >= 18:
             break
 
     if not candidates:
         return None
     candidates.sort(key=lambda x: x["score"], reverse=True)
     chosen = candidates[0]
+    chosen_country = chosen["country_profile"].get("name", "INTERNATIONAL").upper()
+    hist_obj.setdefault("last_countries", []).append(chosen_country)
+    print(
+        f"🌍 [Global Country & Public Demand Audit] Selected Country: {chosen_country} | "
+        f"Topic: '{chosen['title'][:52]}' | Score: {chosen['score']} (Pool Audited: {len(candidates)} Global Stories)",
+        flush=True
+    )
     batch_fingerprints.append(set(chosen["event_tokens"]))
     return chosen
 
@@ -2870,34 +2948,22 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
 # ==============================================================================
 def has_collage_or_text_banner_artifacts(im_rgb):
     """
-    NITISH RAJPUT QUALITY GUARD — BLOCKS COLLAGES, MEMES, PODCAST THUMBNAILS ('COMING UP...'),
-    BURNED-IN SUBTITLES ('YES, CALIFORNIA...'), AND 3D GAME SCREENS ('Cash Register'):
-    1. Detects vertical or horizontal split-screen divider lines across the image (blocks 2x2 / 3-panel collages).
-    2. Detects dense horizontal text/subtitle blocks in the middle or lower third of the image.
-    3. Detects comic-book / cartoon ink outlines & synthetic 3D game UI flatness.
+    NITISH RAJPUT QUALITY GUARD — BLOCKS TRUE SPLIT-SCREEN COLLAGES & MEME TEXT BANNERS
+    WITHOUT REJECTING REAL PRESS PHOTOS OF BUILDINGS, COURTROOMS, OR INTERVIEWS!
     """
     try:
         small_g = cv2.cvtColor(np.array(im_rgb.resize((320, 180)), dtype=np.uint8), cv2.COLOR_RGB2GRAY)
-        # 1. Check for vertical or horizontal split-screen collage lines in the middle 30%-70%
-        col_diffs = np.mean(np.abs(np.diff(small_g[:, 90:230].astype(np.float32), axis=1)), axis=0)
-        col_stds = np.std(small_g[:, 90:230].astype(np.float32), axis=0)
-        if np.min(col_stds) < 6.5 or np.max(col_diffs) > 62.0:
-            return True
-        row_stds = np.std(small_g[50:130, :].astype(np.float32), axis=1)
-        if np.min(row_stds) < 6.5:
+        # 1. True split-screen collage divider: a pure white/black vertical line with near-zero std (< 1.8) AND huge jump (> 92)
+        col_diffs = np.mean(np.abs(np.diff(small_g[:, 100:220].astype(np.float32), axis=1)), axis=0)
+        col_stds = np.std(small_g[:, 100:220].astype(np.float32), axis=0)
+        if np.min(col_stds) < 1.8 and np.max(col_diffs) > 92.0:
             return True
 
-        # 2. Check for burned-in yellow/white subtitle text or giant title banners ('COMING UP...', 'TikTok and...')
+        # 2. Check for giant burned-in meme text covering >26% of the entire frame
         kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 3))
         grad = cv2.morphologyEx(small_g, cv2.MORPH_GRADIENT, kernel_rect)
-        # High-contrast sharp text strokes in the center or bottom third
-        text_stroke_ratio = float(np.mean(grad[25:165, 20:300] > 115))
-        if text_stroke_ratio > 0.145:
-            return True
-
-        # 3. Check for comic-book / cartoon heavy dark outlines
-        edges = cv2.Canny(small_g, 100, 200)
-        if float(np.mean(edges > 0)) > 0.165:
+        text_stroke_ratio = float(np.mean(grad[35:155, 30:290] > 135))
+        if text_stroke_ratio > 0.26:
             return True
 
         return False
@@ -3221,40 +3287,30 @@ def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
         if float(np.mean(minion_yellow_mask)) > 0.20 or float(np.mean(creeper_green_mask)) > 0.24:
             return False
 
-        # 3. Block 3D Pixar/Disney Cartoons & Synthetic AI/CGI Renders via Camera Sensor Micro-Texture Audit:
-        # Real photographs have natural high-frequency luminance texture across midtone patches;
-        # 3D cartoons (like the Pixar girl at 00:06) have smooth airbrushed plastic surfaces!
+        # 3. Block 3D Pixar/Disney Cartoons & Flat Vector Art without rejecting real sky/suit/bokeh press photos!
         gray_u8 = cv2.cvtColor(arr.astype(np.uint8), cv2.COLOR_RGB2GRAY)
         blur_3 = cv2.GaussianBlur(gray_u8, (5, 5), 0)
         micro_diff = np.abs(gray_u8.astype(np.float32) - blur_3.astype(np.float32))
-        # Calculate fraction of 8x8 blocks that are unnaturally smooth (plastic CGI / vector / cartoon skin)
         smooth_blocks = 0
         total_blocks = 0
         for by in range(15, 120, 15):
             for bx in range(20, 220, 20):
                 patch = micro_diff[by:by+15, bx:bx+20]
                 total_blocks += 1
-                if float(np.mean(patch)) < 1.55:
+                if float(np.mean(patch)) < 0.55:
                     smooth_blocks += 1
-        if total_blocks > 0 and (smooth_blocks / float(total_blocks)) > 0.52:
+        if total_blocks > 0 and (smooth_blocks / float(total_blocks)) > 0.82:
             return False
 
-        # 4. Block images with large corner logo banners (like 'Recorded Future' white rectangle in top-right)
-        top_right = arr[:35, 165:, :]
-        tr_white = np.mean((top_right[:, :, 0] > 215) & (top_right[:, :, 1] > 215) & (top_right[:, :, 2] > 215))
-        if tr_white > 0.32:
-            return False
-
-        # 4B. Block Editorial Cartoons / Comic-Book Illustrations (e.g. Pharaoh Judge with Bitcoin coins at 01:42 of bW0UbwgmMIc):
-        # Comic/editorial illustrations have dense dark ink outlines (`gray < 42` on Canny edges) bordering flat quantized color regions!
-        edges_ink = cv2.Canny(gray_u8, 85, 175)
+        # 4. Block Editorial Cartoons / Comic-Book Illustrations (e.g. Pharaoh Judge with Bitcoin coins):
+        edges_ink = cv2.Canny(gray_u8, 100, 200)
         dilated_edges = cv2.dilate(edges_ink, np.ones((3, 3), np.uint8), iterations=1)
-        dark_ink_on_edge = float(np.mean((dilated_edges > 0) & (gray_u8 < 48)))
-        quant_16 = (arr // 28).astype(int)
+        dark_ink_on_edge = float(np.mean((dilated_edges > 0) & (gray_u8 < 35)))
+        quant_16 = (arr // 32).astype(int)
         flat_16 = quant_16[:, :, 0] * 100 + quant_16[:, :, 1] * 10 + quant_16[:, :, 2]
         _, q_counts = np.unique(flat_16, return_counts=True)
         top3_color_share = float(np.sum(np.sort(q_counts)[-3:])) / float(240 * 135)
-        if dark_ink_on_edge > 0.055 and top3_color_share > 0.34:
+        if dark_ink_on_edge > 0.085 and top3_color_share > 0.52:
             return False
 
         # 5. OpenCV Cat / Animal Face Detector (Blocks random cats/billi in non-animal stories!)
@@ -3292,41 +3348,41 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450, story_
 
     arr = np.asarray(im.resize((120, 120)), dtype=np.float32)
 
-    if float(np.std(arr)) < 36.0:
+    if float(np.std(arr)) < 24.0:
         return None
 
     h1, h2 = arr[:, :60, :], arr[:, 60:, :]
-    if float(np.std(h1)) < 22.0 or float(np.std(h2)) < 22.0:
+    if float(np.std(h1)) < 14.0 or float(np.std(h2)) < 14.0:
         return None
 
-    white_px = np.sum((arr[:, :, 0] > 230) & (arr[:, :, 1] > 230) & (arr[:, :, 2] > 230))
-    if (white_px / float(120 * 120)) > 0.14:
+    white_px = np.sum((arr[:, :, 0] > 238) & (arr[:, :, 1] > 238) & (arr[:, :, 2] > 238))
+    if (white_px / float(120 * 120)) > 0.42:
         return None
 
-    black_px = np.sum((arr[:, :, 0] < 18) & (arr[:, :, 1] < 18) & (arr[:, :, 2] < 18))
-    if (black_px / float(120 * 120)) > 0.35:
+    black_px = np.sum((arr[:, :, 0] < 14) & (arr[:, :, 1] < 14) & (arr[:, :, 2] < 14))
+    if (black_px / float(120 * 120)) > 0.58:
         return None
 
     rg_diff = np.mean(np.abs(arr[:, :, 0] - arr[:, :, 1]))
     gb_diff = np.mean(np.abs(arr[:, :, 1] - arr[:, :, 2]))
-    if rg_diff < 5.5 and gb_diff < 5.5:
+    if rg_diff < 3.5 and gb_diff < 3.5:
         return None
 
     quant = (arr // 32).astype(int)
     flat = quant[:, :, 0] * 64 + quant[:, :, 1] * 8 + quant[:, :, 2]
     _, counts = np.unique(flat, return_counts=True)
-    if (counts.max() / float(120 * 120)) > 0.24:
+    if (counts.max() / float(120 * 120)) > 0.42:
         return None
 
     # Reject synthetic AI neon renders & CGI illustrations
     hsv_check = cv2.cvtColor(np.array(im.resize((160, 160)), dtype=np.uint8), cv2.COLOR_RGB2HSV)
-    high_sat_neon = np.mean((hsv_check[:, :, 1] > 205) & (hsv_check[:, :, 2] > 195))
-    if high_sat_neon > 0.18:
+    high_sat_neon = np.mean((hsv_check[:, :, 1] > 218) & (hsv_check[:, :, 2] > 210))
+    if high_sat_neon > 0.28:
         return None
 
     gray_cv = cv2.cvtColor(np.array(im.resize((480, 270))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
-    if blur_score < 85.0 or im.entropy() < 6.3:
+    if blur_score < 28.0 or im.entropy() < 5.4:
         return None
 
     gray = im.convert("L").resize((13, 12))
@@ -4293,11 +4349,18 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
 # ==============================================================================
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False):
     """
-    100% REAL PHOTOGRAPHS & RAW FOOTAGE ONLY:
-    Returns None so every single sentence displays real, double-audited point-to-point
-    photographs and real HD video B-roll (never fake black-screen '100% ESCALATION' charts
-    or hardcoded 'GREAT MAN THEORY' timelines!).
+    V12 DYNAMIC INTERVIEW & STATEMENT VISUALIZER (100% Real Photo Base, Zero Black-Screen Charts!):
+    - Never triggers black-screen procedural charts ('100% ESCALATION' or 'GREAT MAN THEORY').
+    - When a sentence describes an Interview, Press Statement, Testimony, or Official Quote,
+      triggers `BROADCAST_INTERVIEW_QUOTE_MOCKUP` (which renders the real photo inside an ON-AIR
+      TV Interview Monitor + Live Waveform + Crisp Audience-Friendly Quote Summary Card!).
     """
+    low = str(beat_text or "").lower()
+    if beat_idx > 0 and (beat_idx % 3 == 1) and any(kw in low for kw in [
+        "interview", "speaking", "statement", "stated", "warned", "declared", "testified",
+        "press conference", "explained", "argued", "confirmed", "announced", "called on", "urged"
+    ]):
+        return "BROADCAST_INTERVIEW_QUOTE_MOCKUP"
     return None
 
 def render_25d_historical_timeline_frame(beat, local_t, W, H, is_short=True):
