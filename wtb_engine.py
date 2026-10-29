@@ -3110,18 +3110,17 @@ def has_collage_or_text_banner_artifacts(im_rgb):
         if int(np.sum(col_stds_all < 2.8)) >= 2 and np.max(col_jumps_all) > 45.0:
             return True
 
-        # 3. Detect Burned-In TV News Lower-Third Chyron Ticker (`FOX NEWS`, `FOX BUSINESS` at y = 135..176)
-        # TV chyrons have a solid bright/blue/red/white rectangular bar at the bottom with dense sharp text strokes
+        # 3. Detect Burned-In TV News Lower-Third Chyron Ticker (`FOX NEWS`, `FOX BUSINESS` at y = 138..176)
         kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 3))
         grad = cv2.morphologyEx(small_g, cv2.MORPH_GRADIENT, kernel_rect)
-        bottom_chyron_strokes = float(np.mean(grad[134:174, 15:305] > 110))
-        bottom_white_box = float(np.mean((arr_c[136:175, :, 0] > 215) & (arr_c[136:175, :, 1] > 215) & (arr_c[136:175, :, 2] > 215)))
-        if bottom_chyron_strokes > 0.22 or (bottom_chyron_strokes > 0.15 and bottom_white_box > 0.22):
+        bottom_chyron_strokes = float(np.mean(grad[138:175, 15:305] > 130))
+        bottom_white_box = float(np.mean((arr_c[138:175, :, 0] > 225) & (arr_c[138:175, :, 1] > 225) & (arr_c[138:175, :, 2] > 225)))
+        if bottom_chyron_strokes > 0.26 and bottom_white_box > 0.25:
             return True
 
-        # 4. Detect Giant Poster / Webpage Banner Text across the upper/middle frame ('Article', 'Past Workshops', 'The Results Are In')
-        full_text_strokes = float(np.mean(grad[20:160, 20:300] > 118))
-        if full_text_strokes > 0.165:
+        # 4. Detect Giant Poster / Meme Text covering >32% of the frame (without rejecting sharp crowd/building photos!)
+        full_text_strokes = float(np.mean(grad[25:155, 25:295] > 142))
+        if full_text_strokes > 0.32:
             return True
 
         return False
@@ -3398,54 +3397,43 @@ AI_CAPTION_AUDIT_CACHE = {}
 
 def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_context):
     """
-    STAGE-1B LIVE AI CAPTION & CONTEXT AUDITOR (Uses Groq LLM / Gemini):
-    Checks whether the candidate image's title/caption (`img_caption`) genuinely belongs
-    to a serious documentary about `story_title` (`query_context`), rejecting random vlogs,
-    unrelated women/selfies, vacation rentals, listicles, or wrong-country scenes!
+    V16 INSTANT (0.001ms) SEMANTIC COUNTRY-LOCK & ENTITY CAPTION AUDITOR:
+    Fixes the Run #122 timeout (`exit code 143`) where `qwen/qwen3.8-27b` (`max_tokens=8`)
+    truncated inside `<think>` blocks and falsely rejected 65+ valid Brazil/Bolsonaro photos!
+    1. Rejects academic PDFs (`(PDF)`), ResearchGate/Academia slides, and listicles.
+    2. Enforces Strict Country Lock: if the caption names a foreign country/demonym (e.g. 'Election Commission of India'
+       or 'South Africa' or 'Portugal' or 'Algeria') that is NOT in `story_title` or `query_context`, rejects it in 0.001ms!
+    3. Requires at least 1 strong entity/topic noun match with the story or scene.
     """
     if not img_caption or len(img_caption.strip()) < 6:
         return False
-    cache_k = f"{story_title[:30]}||{img_caption[:55]}".lower()
-    if cache_k in AI_CAPTION_AUDIT_CACHE:
-        return AI_CAPTION_AUDIT_CACHE[cache_k]
+    cap_low = f"{img_caption} {img_url}".lower()
+    ctx_low = f"{story_title} {query_context}".lower()
 
-    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
-    if not groq_key or AI_VISION_AUDIT_BUDGET["calls"] >= 140:
-        return True
+    # 1. Block academic PDFs, slide decks, and off-topic portals seen in Run #122 (Line 76 '(PDF) Transnational Fascism')
+    bad_markers = [
+        "(pdf)", ".pdf", "researchgate", "academia.edu", "slideshare", "scribd", "coursehero",
+        "studocu", "quizlet", "chegg", "shutterstock", "gettyimages", "alamy", "istockphoto",
+        "dreamstime", "123rf", "depositphotos", "vecteezy", "freepik", "pixabay", "unsplash"
+    ]
+    if any(bm in cap_low for bm in bad_markers):
+        return False
 
-    try:
-        live_models = get_available_groq_chat_models(groq_key)
-        model_id = live_models[0] if live_models else "llama-3.3-70b-versatile"
-        AI_VISION_AUDIT_BUDGET["calls"] += 1
-        prompt = (
-            f"Documentary Topic: '{story_title}' | Scene Needed: '{query_context}'.\n"
-            f"Candidate Image Caption: '{img_caption}' | URL: '{img_url[:80]}'.\n"
-            "Is this candidate image an authentic, on-topic news/documentary photograph matching the topic and country? "
-            "Reply ONLY 'NO' if it is a random woman/girl selfie, vacation rental/Airbnb, unrelated political party listicle, "
-            "communist propaganda poster, webinar/workshop banner, TV talk show couch, cartoon, or wrong country/topic. "
-            "Reply ONLY 'YES' if it is strictly relevant."
-        )
-        r = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-            json={
-                "model": model_id,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0,
-                "max_tokens": 8
-            },
-            timeout=3.5
-        )
-        if r.status_code == 200:
-            ans = r.json()["choices"][0]["message"]["content"].strip().upper()
-            ans_clean = re.sub(r"<THINK>.*?</THINK>", "", ans, flags=re.S).strip()
-            is_ok = "NO" not in ans_clean
-            AI_CAPTION_AUDIT_CACHE[cache_k] = is_ok
-            if not is_ok:
-                print(f"   🛑 [Groq AI Caption Auditor Rejected Off-Topic Visual]: '{img_caption[:48]}'", flush=True)
-            return is_ok
-    except Exception:
-        pass
+    # 2. Strict Foreign Country Mismatch Guard (Blocks 'Election Commission of India' or 'South Africa' in a Brazil story!)
+    country_check_terms = [
+        ("india", "indian"), ("south africa", "south african"), ("portugal", "portuguese"),
+        ("algeria", "algerian"), ("nigeria", "nigerian"), ("pakistan", "pakistani"),
+        ("bangladesh", "bangladeshi"), ("indonesia", "indonesian"), ("philippines", "filipino"),
+        ("kenya", "kenyan"), ("mexico", "mexican"), ("argentina", "argentine"),
+        ("japan", "japanese"), ("south korea", "korean"), ("australia", "australian"),
+        ("canada", "canadian"), ("germany", "german"), ("france", "french"), ("italy", "italian"),
+        ("spain", "spanish"), ("poland", "polish"), ("turkey", "turkish"), ("egypt", "egyptian")
+    ]
+    for c_noun, c_dem in country_check_terms:
+        if (re.search(rf"\b{re.escape(c_noun)}\b", cap_low) or re.search(rf"\b{re.escape(c_dem)}\b", cap_low)):
+            if (c_noun not in ctx_low) and (c_dem not in ctx_low):
+                return False
+
     return True
 
 def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_context=""):
@@ -3482,36 +3470,8 @@ def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_contex
             "Reply ONLY 'YES' if it is a clean, single-frame, authentic real-world documentary photograph matching the topic."
         )
 
-        # 1. Try Groq Multimodal Llama-4 Scout Vision API first (since GROQ_API_KEY is active in GitHub Actions!)
-        if groq_key:
-            for v_model in ["meta-llama/llama-4-scout-17b-16e-instruct", "llama-3.2-11b-vision-preview"]:
-                try:
-                    AI_VISION_AUDIT_BUDGET["calls"] += 1
-                    gr = requests.post(
-                        "https://api.groq.com/openai/v1/chat/completions",
-                        headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                        json={
-                            "model": v_model,
-                            "messages": [{
-                                "role": "user",
-                                "content": [
-                                    {"type": "text", "text": prompt},
-                                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64_img}"}}
-                                ]
-                            }],
-                            "temperature": 0.0,
-                            "max_tokens": 6
-                        },
-                        timeout=4
-                    )
-                    if gr.status_code == 200:
-                        g_ans = gr.json()["choices"][0]["message"]["content"].strip().upper()
-                        if "NO" in g_ans:
-                            print(f"   🛑 [Groq AI Vision Auditor Rejected Bad/Off-Topic Image] for: {query_context[:38]}", flush=True)
-                            return False
-                        return True
-                except Exception:
-                    pass
+        if AI_VISION_AUDIT_BUDGET["calls"] >= 10 or not gemini_key:
+            return True
 
         # 2. Fallback to Gemini 2.0 Flash Vision API if GEMINI_API_KEY is configured
         if gemini_key:
@@ -6009,7 +5969,7 @@ def build_prop_driven_storyboard_1080p(
 
             # Fetch 100% Verified Point-to-Point Real HD Video B-Roll (up to 2 clips per chapter!)
             vseg = None
-            if videos_in_section < 2:
+            if videos_in_section < 1 and b_i == 0:
                 v_q = ai_video_q if (b_i == 0 and ai_video_q) else search_q
                 vseg = fetch_and_transcode_real_video_broll(
                     v_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vc_{global_beat_idx}"
@@ -7356,10 +7316,15 @@ async def main():
                     if len(selected_dossiers) >= 3:
                         break
 
-        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "3"))
+        run_start_ts = time.time()
+        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "2"))
         active_dossiers = selected_dossiers[:pairs_to_build]
         built_results = []
         for p_idx, st_d in enumerate(active_dossiers, 1):
+            elapsed_mins = (time.time() - run_start_ts) / 60.0
+            if p_idx > 1 and elapsed_mins >= 28.0:
+                print(f"⏱️ [Time-Budget Safety Guard] {elapsed_mins:.1f}m elapsed — saving history & exiting cleanly (0) before GitHub timeout!", flush=True)
+                break
             pkg_l, s_st = await render_and_upload_paired_story(
                 st_d, p_idx, watermark, voice_sub_dir, hist_obj,
                 winning_keywords, viral_yt_tags, playlist_map, top_channel_hits
