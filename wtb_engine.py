@@ -153,17 +153,12 @@ CATEGORY_FEEDS = {
         "domain_context": "geopolitics diplomacy government",
         "feeds": [
             ("BBC World Global", "http://feeds.bbci.co.uk/news/world/rss.xml"),
-            ("USA National & Global Power", "https://news.google.com/rss/search?q=United+States+OR+White+House+OR+Pentagon+OR+Trump+OR+US+military+OR+Congress+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            ("India & South Asia Power", "https://feeds.feedburner.com/ndtvnews-world-news"),
-            ("India Geopolitics & Defense", "https://news.google.com/rss/search?q=India+geopolitics+OR+New+Delhi+OR+Indian+economy+OR+Modi+OR+India+defense+when:1d&hl=en-IN&gl=IN&ceid=IN:en"),
-            ("Israel, Dubai UAE & Middle East", "https://news.google.com/rss/search?q=Israel+OR+Dubai+OR+UAE+OR+Saudi+Arabia+OR+Iran+OR+Red+Sea+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            ("Europe, UK, Russia & Ukraine", "https://rss.dw.com/rdf/rss-en-world"),
-            ("China, Taiwan, Japan & Indo-Pacific", "https://news.google.com/rss/search?q=China+OR+Taiwan+OR+Japan+OR+South+Korea+OR+North+Korea+OR+Philippines+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            ("France24 Global Affairs", "https://www.france24.com/en/rss"),
-            ("The Guardian International", "https://www.theguardian.com/world/rss"),
-            ("CNN Global Headlines", "http://rss.cnn.com/rss/edition_world.rss"),
             ("Google World Top Headlines", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
-            ("Al Jazeera International", "https://www.aljazeera.com/xml/rss/all.xml")
+            ("The Guardian International", "https://www.theguardian.com/world/rss"),
+            ("DW World News", "https://rss.dw.com/rdf/rss-en-world"),
+            ("France24 Global Affairs", "https://www.france24.com/en/rss"),
+            ("CNN Global Headlines", "http://rss.cnn.com/rss/edition_world.rss"),
+            ("AP & Reuters Global Wires", "https://news.google.com/rss/search?q=when:1d+source:Reuters+OR+source:Associated_Press&hl=en-US&gl=US&ceid=US:en")
         ]
     },
     "TECHNOLOGY": {
@@ -294,6 +289,99 @@ CATEGORY_FEEDS = {
 # 2. COMPLETE WORLD GEOPOLITICAL & VERIFIED PERSON DATABASE
 # ==============================================================================
 # Tiered Global Priority Countries for a US-Based Global Documentary Channel (BBC World / Johnny Harris / Nitish Rajput Standard)
+
+# COMPULSORY 46-COUNTRY GLOBAL ROTATION RADAR (Covers Every Major Country Across All 6 Continents!)
+GLOBAL_ALL_COUNTRIES_ROTATION = [
+    ("UNITED KINGDOM", "GB", "UK Britain London Starmer Parliament"),
+    ("GERMANY", "DE", "Germany Berlin Scholz Bundestag Europe"),
+    ("FRANCE", "FR", "France Paris Macron Europe"),
+    ("RUSSIA", "RU", "Russia Moscow Kremlin Putin military"),
+    ("UKRAINE", "UA", "Ukraine Kyiv Zelenskyy conflict war"),
+    ("CHINA", "CN", "China Beijing Xi Jinping military economy"),
+    ("JAPAN", "JP", "Japan Tokyo defense economy tech"),
+    ("SOUTH KOREA", "KR", "South Korea Seoul Peninsula military tech"),
+    ("ISRAEL", "IL", "Israel Tel Aviv Jerusalem IDF defense"),
+    ("UNITED ARAB EMIRATES", "AE", "UAE Dubai Abu Dhabi economy aviation"),
+    ("SAUDI ARABIA", "SA", "Saudi Arabia Riyadh oil economy Middle East"),
+    ("TURKEY", "TR", "Turkey Ankara Erdogan NATO geopolitics"),
+    ("IRAN", "IR", "Iran Tehran nuclear sanctions military"),
+    ("CANADA", "CA", "Canada Ottawa economy politics"),
+    ("AUSTRALIA", "AU", "Australia Canberra Indo-Pacific defense"),
+    ("BRAZIL", "BR", "Brazil Brasilia Lula economy South America"),
+    ("ITALY", "IT", "Italy Rome Meloni Europe economy"),
+    ("SPAIN", "ES", "Spain Madrid Europe politics economy"),
+    ("POLAND", "PL", "Poland Warsaw NATO eastern border defense"),
+    ("TAIWAN", "TW", "Taiwan Taipei Strait semiconductor defense"),
+    ("SINGAPORE", "SG", "Singapore Asia finance maritime trade"),
+    ("INDONESIA", "ID", "Indonesia Jakarta Southeast Asia economy"),
+    ("MEXICO", "MX", "Mexico trade border cartel economy"),
+    ("SOUTH AFRICA", "ZA", "South Africa BRICS Africa economy"),
+    ("INDIA", "IN", "India New Delhi defense space economy"),
+    ("UNITED STATES", "US", "United States Pentagon White House Wall Street"),
+    ("PAKISTAN", "PK", "Pakistan Islamabad military economy crisis"),
+    ("EGYPT", "EG", "Egypt Cairo Suez Red Sea economy"),
+    ("ARGENTINA", "AR", "Argentina Buenos Aires Milei economy"),
+    ("SWEDEN", "SE", "Sweden Stockholm NATO Baltic defense"),
+    ("NORWAY", "NO", "Norway Oslo energy Arctic defense"),
+    ("SWITZERLAND", "CH", "Switzerland Bern Geneva global banking"),
+    ("NETHERLANDS", "NL", "Netherlands Amsterdam ASML chip Europe"),
+    ("GREECE", "GR", "Greece Athens Aegean Mediterranean"),
+    ("PHILIPPINES", "PH", "Philippines Manila South China Sea defense"),
+    ("VIETNAM", "VN", "Vietnam Hanoi manufacturing trade Asia"),
+    ("THAILAND", "TH", "Thailand Bangkok Southeast Asia economy"),
+    ("MALAYSIA", "MY", "Malaysia Kuala Lumpur strait semiconductor"),
+    ("QATAR", "QA", "Qatar Doha LNG diplomacy Middle East"),
+    ("NIGERIA", "NG", "Nigeria Abuja Africa oil economy"),
+    ("KENYA", "KE", "Kenya Nairobi East Africa economy"),
+    ("COLOMBIA", "CO", "Colombia Bogota South America politics"),
+    ("CHILE", "CL", "Chile Santiago lithium copper economy"),
+    ("SERBIA", "RS", "Serbia Belgrade Balkans Europe"),
+    ("HUNGARY", "HU", "Hungary Budapest EU NATO politics"),
+    ("NEW ZEALAND", "NZ", "New Zealand Wellington Pacific")
+]
+
+LOW_INTEREST_BORING_WORDS = [
+    "farmers decide what to plan", "what to plant", "food safety", "cooking oil", "recipe",
+    "gardening", "horoscope", "weather forecast", "local traffic", "high school", "county fair",
+    "spelling bee", "pet adoption", "charity run", "book club", "restaurant review"
+]
+
+def build_dynamic_country_viral_feeds(hist_obj, count_countries=5):
+    """
+    Dynamically selects the next `count_countries` countries from `GLOBAL_ALL_COUNTRIES_ROTATION`
+    (skipping any country covered in `last_countries[-8:]`) and generates:
+    1. Google Trends Live 100K–200K+ Daily Search Trends RSS (`https://trends.google.com/trending/rss?geo={iso2}`)
+    2. Country-Specific High-Impact Breaking News RSS (`when:1d`)
+    so EVERY country's biggest 100K–200K+ viral topic is compulsorily discovered and covered!
+    """
+    last_c = set(hist_obj.get("last_countries", [])[-8:])
+    c_idx = int(hist_obj.get("country_rot_idx", 0))
+    chosen_tuples = []
+    for step in range(len(GLOBAL_ALL_COUNTRIES_ROTATION)):
+        cand_t = GLOBAL_ALL_COUNTRIES_ROTATION[(c_idx + step) % len(GLOBAL_ALL_COUNTRIES_ROTATION)]
+        if cand_t[0] not in last_c:
+            chosen_tuples.append(cand_t)
+            if len(chosen_tuples) >= count_countries:
+                break
+    if not chosen_tuples:
+        chosen_tuples = GLOBAL_ALL_COUNTRIES_ROTATION[:count_countries]
+    hist_obj["country_rot_idx"] = (c_idx + count_countries) % len(GLOBAL_ALL_COUNTRIES_ROTATION)
+
+    dynamic_feeds = []
+    for c_name, iso2, kw_str in chosen_tuples:
+        # 1. Google Trends Live 100K-200K+ Viral Search Feed for this exact country
+        dynamic_feeds.append((
+            f"Google Trends 200K+ Viral [{c_name}]",
+            f"https://trends.google.com/trending/rss?geo={iso2}"
+        ))
+        # 2. Country Top Breaking Headline Feed (excluding Al Jazeera)
+        q_enc = urllib.parse.quote(f"{c_name} when:1d -site:aljazeera.com")
+        dynamic_feeds.append((
+            f"Top Viral News [{c_name}]",
+            f"https://news.google.com/rss/search?q={q_enc}&hl=en-US&gl=US&ceid=US:en"
+        ))
+    return dynamic_feeds
+
 TIER_1_HIGH_DEMAND_COUNTRIES = {
     "UNITED STATES", "INDIA", "ISRAEL", "UNITED ARAB EMIRATES", "UNITED KINGDOM",
     "RUSSIA", "CHINA", "UKRAINE", "IRAN", "SAUDI ARABIA", "GERMANY", "FRANCE",
@@ -408,6 +496,15 @@ DEMONYM_TO_COUNTRY = {
 }
 
 BANNED_CAPTION_AND_TITLE_WORDS = [
+    "airbnb", "vacation rental", "bare ", "webcam", "vlog", "reaction", "youtuber", "influencer",
+    "selfie", "couch", "sofa", "bedroom", "living room", "tank top", "bikini", "model ", "actress",
+    "fox news", "fox business", "kudlow", "hannity", "tucker", "morning joe", "the five", "outnumbered",
+    "clash over", "monologue", "full episode", "podcast", "livestream", "zoom call", "zoom meeting",
+    "wikimedia", "wikimania", "user group", "communist", "communists", "hammer and sickle", "marxist",
+    "past workshops", "innovation center", "sorus", "agricuture", "infographic", "template", "poster",
+    "article", "blog post", "opinion:", "editorial:", "newsletter", "subscribe", "hotel deal",
+    "facts about", "facts.net", "top 5 ", "top 10 ", "28 facts", "10 things", "al jazeera", "aljazeera",
+    "for sale", "real estate", "apartment for rent",
     "cartoon", "pixar", "disney", "minion", "minions", "despicable", "minecraft", "creeper",
     "roblox", "fortnite", "pokemon", "anime", "manga", "comic", "cosplay", "toy", "plush",
     "doll", "action figure", "lego", "funko", "mascot", "costume", "3d render", "3d illustration",
@@ -422,6 +519,12 @@ BANNED_CAPTION_AND_TITLE_WORDS = [
 ]
 
 BANNED_IMAGE_SOURCES = [
+    "ytimg.com", "i.ytimg.com", "youtube.com", "youtu.be", "vimeo.com", "tiktokcdn", "tiktok.com",
+    "instagram.com", "cdninstagram", "fbcdn.net", "facebook.com", "twimg.com", "pbs.twimg.com",
+    "fncstatic.com", "foxnews.com/static", "a57.foxnews.com", "msnbc.com", "substackcdn.com",
+    "medium.com", "wordpress.com", "blogspot.com", "tumblr.com", "deviantart.com", "artstation.com",
+    "aljazeera.com", "aljazeera.net", "aljazeera", "airbnb.", "facts.net", "zillow.", "tripadvisor.",
+    "booking.com", "expedia.", "boredpanda.", "buzzfeed.", "ranker.com", "screenrant.", "cbr.com",
     "footballmanager", "fm24", "fm23", "fm22", "sportsinteractive", "easports", "ea-sports",
     "fifa", "efootball", "pes20", "steamstatic", "steamcommunity", "ign.com", "gamespot",
     "polygon.com", "kotaku", "pcgamer", "eurogamer", "rockpapershotgun", "dexerto",
@@ -953,12 +1056,16 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
     top_hits_str = ", ".join(top_channel_hits[:3]) if top_channel_hits else "High-impact geopolitical shifts, defense tech, AI breakthroughs, and mind-blowing mysteries"
 
     sys_prompt = (
-        "You are an elite YouTube Documentary Director combining the multi-source investigative research and crystal-clear public storytelling of Nitish Rajput "
-        "with the high-retention point-by-point clarity of Abhi & Niyu. "
-        "CRITICAL STORYTELLING & VISUAL RULES: "
-        "1. SYNTHESIZE ALL SOURCES FOR THE GENERAL PUBLIC: Combine facts from all provided news sources into simple, crystal-clear, engaging human storytelling that any everyday viewer can immediately understand (explain WHO is involved, WHAT happened, WHY it happened, WHAT the lawyers/judges/officials/experts said, and WHAT it means next). "
-        "2. ALWAYS INTRODUCE PEOPLE BY FULL NAME AND ROLE: Never leave dangling surnames like 'Azhari added' or vague phrases like 'the association said' — always state their full role and name clearly (e.g., 'Her defense lawyer, Hassan al-Azhari, explained that...'). "
-        "3. EXACT POINT-TO-POINT SENTENCE VISUALS: Map EVERY single sentence to the exact person, role, or setting spoken in that sentence! When a sentence mentions a lawyer/defense team, set `photo_query` to that lawyer/defense team at court; when it mentions a courtroom/judge/trial, set `photo_query` to the actual courtroom/judge/hearing; never repeat the same person query across every sentence! "
+        "You are the world's #1 YouTube Documentary Showrunner, combining the exact storytelling DNA of three legendary creators: "
+        "(1) NITISH RAJPUT (forensic chronological date-by-date, minute-by-minute reconstruction where every person's full name, background, exact location, and motive is explained with hard evidence), "
+        "(2) THINK SCHOOL (explosive cold-open contradiction hook, 'Follow-the-Money' financial/strategic math breakdown, and exposing the hidden power loop behind the scenes), and "
+        "(3) ABHI & NIYU (high-energy emotional ground-reality hook, crystal-clear everyday public language, and 'Big Global Lessons' takeaway at the end). "
+        "CRITICAL A-TO-Z SCRIPT & VISUAL RULES: "
+        "1. SCENE 1 (COLD-OPEN CLIMAX & CONTRADICTION HOOK): Start right in the middle of the most shocking moment or contradiction of the story, then state the 3 core questions this video will uncover. "
+        "2. SCENES 2-4 (CHRONOLOGICAL TIMELINE & GROUND REALITY): Walk through the exact sequence of events with concrete dates, locations, full names + roles of every key person (leaders, lawyers, judges, pilots, economists, witnesses), and what happened step by step. "
+        "3. SCENES 5-6 (THE HIDDEN MECHANISM & FOLLOW THE MONEY): Break down the exact numbers, billions/millions, percentages, laws, or strategic calculations in simple math anyone in the general public can grasp immediately. "
+        "4. SCENES 7-8 (THE GLOBAL LESSONS & FINAL VERDICT): Deliver the deeper geopolitical/economic lessons ('Lesson #1', 'Lesson #2') and end with a thought-provoking question that compels viewers to comment. "
+        "5. 100% POINT-TO-POINT VISUAL MAPPING: Every single sentence in `beat_visuals` MUST have a distinct, concrete real-world `photo_query` matching the exact person, role, courtroom, street protest, factory, or document spoken in that sentence! Never mention external news channels like Al Jazeera or BBC. "
         "Output STRICT JSON only."
     )
 
@@ -1672,6 +1779,7 @@ def load_published_history():
                     "last_sources": data.get("last_sources", []),
                     "last_countries": data.get("last_countries", []),
                     "round_robin_idx": int(data.get("round_robin_idx", 0)),
+                    "country_rot_idx": int(data.get("country_rot_idx", 0)),
                     "bgm_track_counter": int(data.get("bgm_track_counter", 0)),
                     "last_mega_24h_date": data.get("last_mega_24h_date", "")
                 }
@@ -1694,6 +1802,7 @@ def save_published_history(hist_obj):
             json.dump({
                 "updated_at": datetime.utcnow().isoformat(),
                 "round_robin_idx": int(hist_obj.get("round_robin_idx", 0)),
+                "country_rot_idx": int(hist_obj.get("country_rot_idx", 0)),
                 "bgm_track_counter": int(hist_obj.get("bgm_track_counter", 0)),
                 "last_mega_24h_date": str(hist_obj.get("last_mega_24h_date", "")),
                 "published_keys": list(hist_obj["published_keys"])[-500:],
@@ -2218,7 +2327,11 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
     p_cfg = CATEGORY_FEEDS.get(core_hub, CATEGORY_FEEDS["WORLD"])
     candidates = []
 
-    for src, url in p_cfg["feeds"]:
+    feed_list = list(p_cfg["feeds"])
+    if core_hub == "WORLD" or sub_pillar in ["GEOPOLITICS", "GLOBAL_POWERS", "DEFENSE_MILITARY"]:
+        feed_list = build_dynamic_country_viral_feeds(hist_obj, count_countries=5) + feed_list
+
+    for src, url in feed_list:
         try:
             r_feed = requests.get(url, headers=HEADERS_WEB, timeout=8)
             if r_feed.status_code != 200:
@@ -2228,9 +2341,25 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             continue
 
         for entry in feed.entries[:14]:
-            raw_t = entry.title.rsplit(" - ", 1)[0]
+            # Support Google Trends 100K-200K+ RSS items (extracting the viral news headline & traffic volume!)
+            viral_traffic_boost = 0
+            raw_t = getattr(entry, "title", "").rsplit(" - ", 1)[0]
+            if "trends.google.com" in url:
+                raw_xml_entry = str(entry)
+                tr_m = re.search(r"([0-9,]+)\+", str(getattr(entry, "ht_approx_traffic", "") or raw_xml_entry))
+                if tr_m:
+                    tr_num = int(tr_m.group(1).replace(",", ""))
+                    if tr_num >= 100000:
+                        viral_traffic_boost = 95
+                    elif tr_num >= 50000:
+                        viral_traffic_boost = 60
+                nt_m = getattr(entry, "ht_news_item_title", "")
+                if nt_m:
+                    raw_t = BeautifulSoup(str(nt_m), "html.parser").get_text(" ").rsplit(" - ", 1)[0]
+                elif len(raw_t.split()) < 4:
+                    raw_t = f"Why {raw_t} Is Triggering a Massive National Shockwave Today"
             low_raw_t = raw_t.lower()
-            if any(bt in low_raw_t for bt in BANNED_ARTICLE_TITLES):
+            if any(bt in low_raw_t for bt in BANNED_ARTICLE_TITLES) or any(bw in low_raw_t for bw in LOW_INTEREST_BORING_WORDS):
                 continue
 
             raw_pub = getattr(entry, "published", "") or getattr(entry, "updated", "")
@@ -2243,7 +2372,7 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                 continue
 
             link = getattr(entry, "link", "").strip()
-            if any(b_url in link.lower() for b_url in ["/deals/", "/shopping/", "/coupons/", "/reviews/", "/podcasts/", "/video/", "/music/"]):
+            if any(b_url in link.lower() for b_url in ["aljazeera", "/deals/", "/shopping/", "/coupons/", "/reviews/", "/podcasts/", "/video/", "/music/"]) or "al jazeera" in getattr(entry, "title", "").lower():
                 continue
 
             pub_date = normalize_pub_date(raw_pub)
@@ -2395,23 +2524,22 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             country_name_upper = c_prof.get("name", "INTERNATIONAL").upper()
             last_countries = hist_obj.get("last_countries", [])
 
-            # 1. Country Rotation Audit: Penalize countries already covered in the last 5 videos or earlier in this batch!
+            # 1. Compulsory All-Countries Rotation Audit: NEVER repeat any country from the last 8 videos!
             country_penalty = 0
-            if country_name_upper in last_countries[-2:]:
-                country_penalty = 140
-            elif country_name_upper in last_countries[-5:]:
-                country_penalty = 65
+            if country_name_upper in last_countries[-4:]:
+                country_penalty = 240
+            elif country_name_upper in last_countries[-10:]:
+                country_penalty = 120
 
-            # 2. High-Demand Global Country Boost (USA, India, Israel, Dubai/UAE, UK, Russia, China, Europe, Japan, etc.)
-            tier_boost = 38 if country_name_upper in TIER_1_HIGH_DEMAND_COUNTRIES else 18
-
-            # 3. Source Diversity Guard: Prevent Al Jazeera from dominating over BBC/USA/India/Global feeds
-            src_penalty = 45 if "al jazeera" in src.lower() else 0
+            # 2. Equal Global Country Boost + Massive 100K-200K+ Viral Traffic Boost
+            tier_boost = 30 if country_name_upper != "INTERNATIONAL" else 5
+            high_impact_kws = ["war", "military", "missile", "president", "prime minister", "parliament", "sanctions", "crisis", "billion", "trillion", "protest", "strike", "supreme court", "breakthrough", "nuclear", "treaty", "summit", "collapse", "intelligence", "tariffs", "arrest"]
+            impact_boost = sum(12 for hkw in high_impact_kws if hkw in comb)
 
             analytics_boost = sum(10 for w_kw in winning_keywords if re.search(rf"\b{re.escape(w_kw)}\b", comb))
             recency_boost = int(max(0.0, 48.0 - hours_old) * 2.5)
             update_boost = 25 if is_followup else 0
-            trend_score = (len(verified_claims) * 4) + analytics_boost + recency_boost + update_boost + tier_boost - country_penalty - src_penalty
+            trend_score = (len(verified_claims) * 4) + viral_traffic_boost + impact_boost + analytics_boost + recency_boost + update_boost + tier_boost - country_penalty
 
             candidates.append({
                 "score": trend_score,
@@ -2468,8 +2596,7 @@ def build_daily_24h_mega_news_dossier():
     # Prioritize direct full-text global wire feeds first so we get rich article paragraphs without Google News duplicate titles
     feed_sources = [
         ("BBC World Breaking", "http://feeds.bbci.co.uk/news/world/rss.xml"),
-        ("Al Jazeera Global", "https://www.aljazeera.com/xml/rss/all.xml"),
-        ("The Guardian World", "https://www.theguardian.com/world/rss"),
+                ("The Guardian World", "https://www.theguardian.com/world/rss"),
         ("DW World News", "https://rss.dw.com/rdf/rss-en-world"),
         ("France24 World", "https://www.france24.com/en/rss"),
         ("CNBC Business", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"),
@@ -2627,7 +2754,11 @@ def is_safe_family_friendly_image(im_rgb, is_portrait=False):
                 return False
             return True
 
-        if full_skin_ratio > 0.27 or torso_skin_ratio > 0.29:
+        # Strict Couch-Girl / Webcam Selfie / Bare-Shoulder Tank-Top Guard (Fixes 02:48 of 0FirikPv84w!):
+        # Rejects any scene image where central chest/shoulder skin (`rows 40%..88%, cols 25%..75%`) is > 0.16
+        # or full_skin_ratio > 0.20!
+        center_chest_skin = float(np.mean(skin_mask[64:142, 40:120]))
+        if full_skin_ratio > 0.20 or torso_skin_ratio > 0.18 or center_chest_skin > 0.16:
             return False
         return True
     except Exception:
@@ -2849,7 +2980,13 @@ def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
                     left = (iw - side) // 2
                     top = max(0, int((ih - side) * 0.10))
                     im_sq = im.crop((left, top, left + side, top + side)).resize((460, 460), resample_mode)
-                    if is_safe_family_friendly_image(im_sq, is_portrait=True) and is_real_natural_subject_photo(im_sq):
+                    # Verify portrait is NOT a 2-person split-screen (00:00 of 0FirikPv84w) and contains 1 clear face centered!
+                    if not has_collage_or_text_banner_artifacts(im) and is_safe_family_friendly_image(im_sq, is_portrait=True) and is_real_natural_subject_photo(im_sq):
+                        if FACE_CASCADE is not None:
+                            g_port = cv2.cvtColor(np.array(im_sq.resize((240, 240)), dtype=np.uint8), cv2.COLOR_RGB2GRAY)
+                            faces_p = FACE_CASCADE.detectMultiScale(g_port, scaleFactor=1.1, minNeighbors=4, minSize=(36, 36))
+                            if len(faces_p) != 1:
+                                continue
                         PERSON_PORTRAIT_CACHE[cache_key] = im_sq
                         print(f"   🎯 [Dynamic Subject Spotlight Locked (Bing Photo)]: {display_name} ({role_str})", flush=True)
                         return im_sq
@@ -2948,22 +3085,43 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
 # ==============================================================================
 def has_collage_or_text_banner_artifacts(im_rgb):
     """
-    NITISH RAJPUT QUALITY GUARD — BLOCKS TRUE SPLIT-SCREEN COLLAGES & MEME TEXT BANNERS
-    WITHOUT REJECTING REAL PRESS PHOTOS OF BUILDINGS, COURTROOMS, OR INTERVIEWS!
+    V14 STRICT ANTI-COLLAGE, ANTI-SPLIT-SCREEN, ANTI-TV-CHYRON & ANTI-POSTER-TEXT DETECTOR:
+    Blocks all 5 visual flaws seen in 0FirikPv84w:
+    1. Side-by-side 2-panel split screens (`00:00`, `01:05`, `01:17`) via central vertical seam detection (`x = 148..172`).
+    2. Multi-panel grid collages (`01:29`, `02:37`, `02:24` Zoom call) via horizontal/vertical divider seams.
+    3. TV Broadcast Lower-Third Chyrons (`FOX NEWS`, `FOX BUSINESS` at `00:21`, `01:17`, `02:17`) via bottom-band high-contrast text/box check.
+    4. Giant Poster / Website Header Text Banners (`00:14` 'Article', `01:45` 'Past Workshops', `02:03` 'The Results Are In').
     """
     try:
-        small_g = cv2.cvtColor(np.array(im_rgb.resize((320, 180)), dtype=np.uint8), cv2.COLOR_RGB2GRAY)
-        # 1. True split-screen collage divider: a pure white/black vertical line with near-zero std (< 1.8) AND huge jump (> 92)
-        col_diffs = np.mean(np.abs(np.diff(small_g[:, 100:220].astype(np.float32), axis=1)), axis=0)
-        col_stds = np.std(small_g[:, 100:220].astype(np.float32), axis=0)
-        if np.min(col_stds) < 1.8 and np.max(col_diffs) > 92.0:
+        arr_c = np.array(im_rgb.resize((320, 180)), dtype=np.uint8)
+        small_g = cv2.cvtColor(arr_c, cv2.COLOR_RGB2GRAY)
+        gf = small_g.astype(np.float32)
+
+        # 1. Detect 2-Panel Side-by-Side Split-Screen Seam near center (`x = 146..174`):
+        # A split-screen has either a uniform white/black divider stripe (`center_stds < 3.2`) OR a full-height vertical cut (`center_jumps > 62.0`)
+        center_jumps = np.mean(np.abs(np.diff(gf[15:165, 146:174], axis=1)), axis=0)
+        center_stds = np.std(gf[15:165, 146:174], axis=0)
+        if np.max(center_jumps) > 62.0 or (np.min(center_stds) < 3.2 and np.max(center_jumps) > 28.0):
             return True
 
-        # 2. Check for giant burned-in meme text covering >26% of the entire frame
+        # 2. Detect Multi-Panel Grid Collage Seams (3x3 / 4x3 grids like 02:37 or Zoom grids like 02:24)
+        col_stds_all = np.std(gf[15:165, 40:280], axis=0)
+        col_jumps_all = np.mean(np.abs(np.diff(gf[15:165, 40:280], axis=1)), axis=0)
+        if int(np.sum(col_stds_all < 2.8)) >= 2 and np.max(col_jumps_all) > 45.0:
+            return True
+
+        # 3. Detect Burned-In TV News Lower-Third Chyron Ticker (`FOX NEWS`, `FOX BUSINESS` at y = 135..176)
+        # TV chyrons have a solid bright/blue/red/white rectangular bar at the bottom with dense sharp text strokes
         kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 3))
         grad = cv2.morphologyEx(small_g, cv2.MORPH_GRADIENT, kernel_rect)
-        text_stroke_ratio = float(np.mean(grad[35:155, 30:290] > 135))
-        if text_stroke_ratio > 0.26:
+        bottom_chyron_strokes = float(np.mean(grad[134:174, 15:305] > 110))
+        bottom_white_box = float(np.mean((arr_c[136:175, :, 0] > 215) & (arr_c[136:175, :, 1] > 215) & (arr_c[136:175, :, 2] > 215)))
+        if bottom_chyron_strokes > 0.22 or (bottom_chyron_strokes > 0.15 and bottom_white_box > 0.22):
+            return True
+
+        # 4. Detect Giant Poster / Webpage Banner Text across the upper/middle frame ('Article', 'Past Workshops', 'The Results Are In')
+        full_text_strokes = float(np.mean(grad[20:160, 20:300] > 118))
+        if full_text_strokes > 0.165:
             return True
 
         return False
@@ -3121,7 +3279,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
             pass
 
     strict_banned_video_words = [
-        "vlog", "webcam", "stream", "gaming", "game", "gameplay", "counter-strike", "csgo", "valorant",
+        "zoom", "meetup", "meeting", "wikimedia", "wikimania", "user group", "roundtable", "hangout", "jitsi", "panel", "workshop", "vlog", "webcam", "stream", "gaming", "game", "gameplay", "counter-strike", "csgo", "valorant",
         "call of duty", "warzone", "gta", "roblox", "fortnite", "simulator", "fps", "twitch", "minecraft",
         "cartoon", "anime", "comic", "user", "test", "lecture", "interview", "podcast", "shapiro",
         "coming up", "episode", "golf", "tree", "park", "pronunciation", "spoken", "audio", "session",
@@ -3134,48 +3292,71 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
     ]
     required_match_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{query_str} {topic_anchor}") if w.lower() not in HEADLINE_STOP_VERBS_ADJS}
 
-    # Reddit Native HD Video (`v.redd.it`) — ONLY accepted if post title strictly matches >=2 story/query keywords!
-    try:
-        rd_url = f"https://www.reddit.com/r/{subreddits}/search.json?q={urllib.parse.quote(query_str)}&restrict_sr=1&sort=relevance&t=year&limit=10"
-        rr = requests.get(rd_url, headers=HEADERS_WIKI, timeout=6).json()
-        for child in rr.get("data", {}).get("children", []):
-            post = child.get("data", {})
-            if post.get("over_18"):
-                continue
-            post_title_low = str(post.get("title", "")).lower()
-            if any(bw in post_title_low for bw in strict_banned_video_words):
-                continue
-            post_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", post_title_low)}
-            if len(post_tokens.intersection(required_match_tokens)) < 1:
-                continue
-            rv = (post.get("secure_media") or post.get("media") or {}).get("reddit_video", {})
-            fb_u = rv.get("fallback_url", "")
-            vh = int(rv.get("height") or 0)
-            if fb_u and ".mp4" in fb_u and vh >= 720 and fb_u not in used_video_urls:
-                res = download_and_transcode_mp4_url(fb_u, used_video_urls, f"{tag_id}_rd", query_str)
-                if res is not None:
-                    return res
-    except Exception:
-        pass
+    c_prof = dossier.get("country_profile", {})
+    c_name = "" if c_prof.get("is_global_topic") else c_prof.get("name", "").title()
+    candidate_video_queries = []
+    for cq in [query_str, f"{topic_anchor} {c_name}".strip(), " ".join(subj_words[:2]), c_name]:
+        cq_clean = cq.strip()
+        if cq_clean and len(cq_clean) >= 3 and cq_clean not in candidate_video_queries:
+            candidate_video_queries.append(cq_clean)
 
-    # Wikimedia Commons HD Video Archive — ONLY accepted if file title strictly matches >=2 subject keywords!
-    if subj_words:
-        wm_q = " ".join(subj_words[:3])
+    # 1. Bing Web Video Direct MP4 Stream Harvester (Searches news video portals across the web!)
+    for bv_q in candidate_video_queries[:2]:
+        try:
+            bv_url = f"https://www.bing.com/videos/search?q={urllib.parse.quote(bv_q + ' news footage')}&qft=+filterui:msite-youtube.com"
+            bvr = requests.get(f"https://www.bing.com/videos/search?q={urllib.parse.quote(bv_q + ' news footage')}", headers=HEADERS_WEB, timeout=5)
+            mp4_matches = re.findall(r"(https?://[^\s\"'<>\\]+?\.mp4(?:\?[^\s\"'<>\\]{0,90})?)", bvr.text, flags=re.I)
+            for m_u in mp4_matches[:6]:
+                m_clean = m_u.replace("&amp;", "&").replace("\\/", "/")
+                if m_clean not in used_video_urls and not any(b in m_clean.lower() for b in ["aljazeera", "cartoon", "game", "logo"]):
+                    res = download_and_transcode_mp4_url(m_clean, used_video_urls, f"{tag_id}_bingv", bv_q)
+                    if res is not None:
+                        return res
+        except Exception:
+            pass
+
+    # 2. Reddit Native HD Video (`v.redd.it`) across both Subreddits & Global Reddit Video Search
+    for rd_q in candidate_video_queries[:2]:
+        for rd_endpoint in [
+            f"https://www.reddit.com/r/{subreddits}/search.json?q={urllib.parse.quote(rd_q)}&restrict_sr=1&sort=relevance&t=year&limit=12",
+            f"https://www.reddit.com/search.json?q={urllib.parse.quote(rd_q + ' news')}&sort=relevance&t=year&limit=12"
+        ]:
+            try:
+                rr = requests.get(rd_endpoint, headers=HEADERS_WIKI, timeout=5).json()
+                for child in rr.get("data", {}).get("children", []):
+                    post = child.get("data", {})
+                    if post.get("over_18"):
+                        continue
+                    post_title_low = str(post.get("title", "")).lower()
+                    if any(bw in post_title_low for bw in strict_banned_video_words):
+                        continue
+                    post_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", post_title_low)}
+                    if required_match_tokens and len(post_tokens.intersection(required_match_tokens)) < 1:
+                        continue
+                    rv = (post.get("secure_media") or post.get("media") or {}).get("reddit_video", {})
+                    fb_u = rv.get("fallback_url", "")
+                    vh = int(rv.get("height") or 0)
+                    if fb_u and ".mp4" in fb_u and vh >= 480 and fb_u not in used_video_urls:
+                        res = download_and_transcode_mp4_url(fb_u, used_video_urls, f"{tag_id}_rd", rd_q)
+                        if res is not None:
+                            return res
+            except Exception:
+                pass
+
+    # 3. Wikimedia Commons HD Video Archive — Progressive Multi-Query Search (Scene -> Topic Anchor -> Country)
+    for wm_q in candidate_video_queries[:3]:
         try:
             api = "https://commons.wikimedia.org/w/api.php"
             params = {
                 "action": "query", "generator": "search",
                 "gsrsearch": f"filetype:video {wm_q}",
-                "gsrnamespace": "6", "gsrlimit": 8,
+                "gsrnamespace": "6", "gsrlimit": 10,
                 "prop": "videoinfo|imageinfo", "viprop": "url|size|derivatives", "iiprop": "url|size", "format": "json"
             }
-            r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=6).json()
+            r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=5).json()
             for pg in r.get("query", {}).get("pages", {}).values():
                 v_title = pg.get("title", "").lower()
                 if any(bw in v_title for bw in strict_banned_video_words):
-                    continue
-                v_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", v_title)}
-                if len(v_tokens.intersection(required_match_tokens)) < 1:
                     continue
                 vi = (pg.get("videoinfo") or pg.get("imageinfo") or [{}])[0]
                 for d in vi.get("derivatives", []):
@@ -3184,6 +3365,11 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
                         res = download_and_transcode_mp4_url(du, used_video_urls, f"{tag_id}_wm", wm_q)
                         if res is not None:
                             return res
+                orig_u = vi.get("url", "")
+                if orig_u.endswith((".webm", ".mp4")) and orig_u not in used_video_urls:
+                    res = download_and_transcode_mp4_url(orig_u, used_video_urls, f"{tag_id}_wmo", wm_q)
+                    if res is not None:
+                        return res
         except Exception:
             pass
 
@@ -3208,14 +3394,71 @@ def apply_copyright_safe_documentary_lut(im):
 
 
 AI_VISION_AUDIT_BUDGET = {"calls": 0}
+AI_CAPTION_AUDIT_CACHE = {}
+
+def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_context):
+    """
+    STAGE-1B LIVE AI CAPTION & CONTEXT AUDITOR (Uses Groq LLM / Gemini):
+    Checks whether the candidate image's title/caption (`img_caption`) genuinely belongs
+    to a serious documentary about `story_title` (`query_context`), rejecting random vlogs,
+    unrelated women/selfies, vacation rentals, listicles, or wrong-country scenes!
+    """
+    if not img_caption or len(img_caption.strip()) < 6:
+        return False
+    cache_k = f"{story_title[:30]}||{img_caption[:55]}".lower()
+    if cache_k in AI_CAPTION_AUDIT_CACHE:
+        return AI_CAPTION_AUDIT_CACHE[cache_k]
+
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    if not groq_key or AI_VISION_AUDIT_BUDGET["calls"] >= 140:
+        return True
+
+    try:
+        live_models = get_available_groq_chat_models(groq_key)
+        model_id = live_models[0] if live_models else "llama-3.3-70b-versatile"
+        AI_VISION_AUDIT_BUDGET["calls"] += 1
+        prompt = (
+            f"Documentary Topic: '{story_title}' | Scene Needed: '{query_context}'.\n"
+            f"Candidate Image Caption: '{img_caption}' | URL: '{img_url[:80]}'.\n"
+            "Is this candidate image an authentic, on-topic news/documentary photograph matching the topic and country? "
+            "Reply ONLY 'NO' if it is a random woman/girl selfie, vacation rental/Airbnb, unrelated political party listicle, "
+            "communist propaganda poster, webinar/workshop banner, TV talk show couch, cartoon, or wrong country/topic. "
+            "Reply ONLY 'YES' if it is strictly relevant."
+        )
+        r = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+            json={
+                "model": model_id,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.0,
+                "max_tokens": 8
+            },
+            timeout=3.5
+        )
+        if r.status_code == 200:
+            ans = r.json()["choices"][0]["message"]["content"].strip().upper()
+            ans_clean = re.sub(r"<THINK>.*?</THINK>", "", ans, flags=re.S).strip()
+            is_ok = "NO" not in ans_clean
+            AI_CAPTION_AUDIT_CACHE[cache_k] = is_ok
+            if not is_ok:
+                print(f"   🛑 [Groq AI Caption Auditor Rejected Off-Topic Visual]: '{img_caption[:48]}'", flush=True)
+            return is_ok
+    except Exception:
+        pass
+    return True
 
 def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_context=""):
     """
-    STAGE-2 LIVE MULTIMODAL AI VISION AUDITOR:
-    Uses Gemini-2.0-Flash Vision (or Groq Llama-4 Vision) to visually inspect the candidate image
-    and reject any cartoon, 3D animation, Minion, Minecraft character, cat/dog, or unrelated graphic!
+    STAGE-2 LIVE MULTIMODAL AI VISION PIXEL AUDITOR (Groq Llama-4 Vision + Gemini 2.0 Flash Vision):
+    Visually inspects the actual image pixels and rejects:
+    - Random women/girl webcam/couch selfies ('ladki ka photo' at 02:48 of 0FirikPv84w)
+    - TV news studio chyrons/tickers (Fox News / CNN banners at 00:21, 01:17, 02:17)
+    - Split-screen 2-person collages or multi-panel grids (00:00, 01:05, 01:29, 02:37)
+    - AI-generated charts with garbled text ('Agricuture Slates', 'Sorus Partices' at 00:49)
+    - Cartoons, 3D animations, cats/dogs, or off-topic scenes!
     """
-    if AI_VISION_AUDIT_BUDGET["calls"] >= 28:
+    if AI_VISION_AUDIT_BUDGET["calls"] >= 140:
         return True
     gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
     groq_key = os.environ.get("GROQ_API_KEY", "").strip()
@@ -3228,11 +3471,49 @@ def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_contex
         small_pil_rgb.save(buf, format="JPEG", quality=72)
         b64_img = base64.b64encode(buf.getvalue()).decode("utf-8")
         prompt = (
-            f"You are a strict TV News Documentary Visual Auditor. Topic: '{story_title}' ({query_context}). "
-            "Look at this image. Reply ONLY 'NO' if it is a cartoon, 3D animation, Pixar/Disney character, "
-            "Minion, Minecraft/video game screenshot, cat/dog/pet, meme, glowing blue brain/hologram clipart, "
-            "or completely unrelated to the topic. Reply 'YES' if it is an authentic real-world photograph suitable for this news documentary."
+            f"You are a strict TV News Documentary Visual Auditor. Documentary Topic: '{story_title}' (Scene: '{query_context}'). "
+            "Inspect this image carefully. Reply ONLY 'NO' if the image shows ANY of the following: "
+            "(1) a random woman/girl selfie, webcam shot, or person sitting on a home couch/bed, "
+            "(2) a TV news broadcast screenshot with lower-third ticker text (like FOX NEWS / FOX BUSINESS / CNN banners), "
+            "(3) a split-screen collage of 2 or more separate photos or a multi-panel grid, "
+            "(4) big promotional poster text, book covers, or AI-generated gibberish chart text, "
+            "(5) a Zoom/webcam video call grid, "
+            "(6) a cartoon, 3D render, anime, animal/cat, or a scene from the wrong country/topic. "
+            "Reply ONLY 'YES' if it is a clean, single-frame, authentic real-world documentary photograph matching the topic."
         )
+
+        # 1. Try Groq Multimodal Llama-4 Scout Vision API first (since GROQ_API_KEY is active in GitHub Actions!)
+        if groq_key:
+            for v_model in ["meta-llama/llama-4-scout-17b-16e-instruct", "llama-3.2-11b-vision-preview"]:
+                try:
+                    AI_VISION_AUDIT_BUDGET["calls"] += 1
+                    gr = requests.post(
+                        "https://api.groq.com/openai/v1/chat/completions",
+                        headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                        json={
+                            "model": v_model,
+                            "messages": [{
+                                "role": "user",
+                                "content": [
+                                    {"type": "text", "text": prompt},
+                                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64_img}"}}
+                                ]
+                            }],
+                            "temperature": 0.0,
+                            "max_tokens": 6
+                        },
+                        timeout=4
+                    )
+                    if gr.status_code == 200:
+                        g_ans = gr.json()["choices"][0]["message"]["content"].strip().upper()
+                        if "NO" in g_ans:
+                            print(f"   🛑 [Groq AI Vision Auditor Rejected Bad/Off-Topic Image] for: {query_context[:38]}", flush=True)
+                            return False
+                        return True
+                except Exception:
+                    pass
+
+        # 2. Fallback to Gemini 2.0 Flash Vision API if GEMINI_API_KEY is configured
         if gemini_key:
             AI_VISION_AUDIT_BUDGET["calls"] += 1
             g_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}"
@@ -3253,7 +3534,7 @@ def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_contex
             if r.status_code == 200:
                 ans = r.json()["candidates"][0]["content"]["parts"][0]["text"].strip().upper()
                 if "NO" in ans:
-                    print(f"   🛑 [AI Vision Auditor #2 Rejected Off-Topic/Cartoon Image] for: {story_title[:36]}", flush=True)
+                    print(f"   🛑 [Gemini AI Vision Auditor Rejected Bad/Off-Topic Image] for: {query_context[:38]}", flush=True)
                     return False
     except Exception:
         pass
@@ -3418,6 +3699,8 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
         for u, cap_t in blocks[:16]:
             u_clean = u.replace("&amp;", "&")
             if not passes_audit_gate_1_caption_and_url(u_clean, cap_t, d_obj, clean_q):
+                continue
+            if not ai_audit_caption_and_scene_match(cap_t, u_clean, d_obj.get('title', ''), clean_q):
                 continue
             ir = requests.get(u_clean, headers=HEADERS_WEB, timeout=5)
             if ir.status_code == 200 and len(ir.content) > 28000:
@@ -3701,17 +3984,47 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         generic_weak_words = {
             "first", "second", "third", "sixth", "years", "year", "time", "step", "steps", "case", "cases",
             "nature", "read", "clear", "intent", "once", "after", "before", "under", "over", "between",
-            "through", "during", "without", "within", "states", "state", "national", "global", "world",
+            "through", "during", "without", "within", "states", "state", "united", "national", "global", "world",
             "daily", "original", "deep", "dive", "studies", "study", "brief", "subscribe", "report", "reports",
-            "decision", "ruling", "action", "actions", "group", "groups", "team", "teams", "space", "remains"
+            "decision", "ruling", "action", "actions", "group", "groups", "team", "teams", "space", "remains",
+            "american", "america", "india", "indian", "british", "britain", "china", "chinese", "russia", "russian",
+            "party", "facts", "fact", "politics", "political", "issue", "issues", "local", "plan", "decide",
+            "approach", "challenge", "challenges", "country", "countries", "government", "people", "public"
         }
-        story_tokens = {
-            w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {query_str}")
-            if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS and w.lower() not in generic_weak_words
-        }
-        caption_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{img_title_or_desc} {img_url}")}
-        if story_tokens and caption_tokens and len(story_tokens.intersection(caption_tokens)) == 0:
-            return False
+    else:
+        # Never accept an image with an empty title/caption!
+        return False
+
+    generic_weak_words = {
+        "first", "second", "third", "sixth", "years", "year", "time", "step", "steps", "case", "cases",
+        "nature", "read", "clear", "intent", "once", "after", "before", "under", "over", "between",
+        "through", "during", "without", "within", "states", "state", "united", "national", "global", "world",
+        "daily", "original", "deep", "dive", "studies", "study", "brief", "subscribe", "report", "reports",
+        "decision", "ruling", "action", "actions", "group", "groups", "team", "teams", "space", "remains",
+        "american", "america", "india", "indian", "british", "britain", "china", "chinese", "russia", "russian",
+        "party", "facts", "fact", "politics", "political", "issue", "issues", "local", "plan", "decide",
+        "approach", "challenge", "challenges", "country", "countries", "government", "people", "public",
+        "standoff", "strategic", "phase", "decisive", "choices", "ground", "carry", "lasting", "consequences",
+        "regional", "stability", "share", "perspective", "comments", "below", "investigations", "investigation",
+        "future", "strength", "organizing", "numbers", "collective", "individual", "ballots", "making", "impossible"
+    }
+    headline_core_tokens = {
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')}")
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS and w.lower() not in generic_weak_words
+    }
+    query_core_tokens = {
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", str(query_str or ""))
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS and w.lower() not in generic_weak_words
+    }
+    story_tokens = headline_core_tokens | query_core_tokens
+    caption_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", str(img_title_or_desc))}
+    if not caption_tokens:
+        return False
+    # Must match at least 1 core token from the headline/topic_anchor OR >=2 specific scene tokens!
+    if headline_core_tokens and len(headline_core_tokens.intersection(caption_tokens)) == 0 and len(story_tokens.intersection(caption_tokens)) < 2:
+        return False
+    if story_tokens and len(story_tokens.intersection(caption_tokens)) == 0:
+        return False
     return True
 
 
@@ -4069,6 +4382,8 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                     continue
                 if not passes_audit_gate_1_caption_and_url(u_clean, cap_t, dossier, b_img_q):
                     continue
+                if not ai_audit_caption_and_scene_match(cap_t, u_clean, story_title, b_img_q):
+                    continue
                 ir = requests.get(u_clean, headers=HEADERS_WEB, timeout=5)
                 if ir.status_code == 200 and len(ir.content) > 28000:
                     p = f"temp/{tag_id}_binghd.jpg"
@@ -4347,20 +4662,233 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
 #      - V4 Layer: 12°-Tilted Vintage Newspaper & Archival Receipt Cut-Out with Animated Yellow Marker Wipe
 #      - V5 Layer: Kinetic Typography Number Scaling (90% -> 100% Cubic Bézier Ease Curve)
 # ==============================================================================
+
+def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_short=True):
+    """
+    NITISH RAJPUT / THINK SCHOOL SPLIT-CANVAS INVESTIGATIVE DOSSIER BOARD:
+    - Eliminates the 'face pasted over another face' issue forever!
+    - Left/Top Panel: High-contrast framed Portrait of the named Person/Subject with Gold/Crimson border,
+      Role Badge, and 'CLASSIFIED DOSSIER' header.
+    - Right/Bottom Panel: Dark Slate-Grid Investigative Board where 3 crisp evidence points from the
+      scene slide in with animated yellow highlighter bars as the narrator speaks!
+    """
+    pop_info = beat.get("person_popup") or {}
+    port_im = pop_info.get("portrait_im") or beat.get("primary_im") or Image.new("RGB", (600, 600), (18, 26, 42))
+    bg_im = beat.get("primary_im") or port_im
+    disp_name = str(pop_info.get("name") or beat["story"].get("topic_anchor") or "KEY FIGURE").upper()[:24]
+    role_lbl = str(pop_info.get("role") or "INVESTIGATIVE PROFILE").upper()[:30]
+    b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY EVIDENCE FILE").upper(), 30)
+
+    # Darkened, softly blurred real scene background (22% brightness) + subtle tactical grid
+    bg = fit_full_height_face_aware_1080p(bg_im, W, H).filter(ImageFilter.GaussianBlur(radius=24))
+    bg = ImageEnhance.Brightness(bg).enhance(0.22)
+    canvas = bg.convert("RGBA")
+    draw = ImageDraw.Draw(canvas, "RGBA")
+
+    for gx in range(0, W, 80):
+        draw.line([(gx, 0), (gx, H)], fill=(0, 210, 255, 18), width=1)
+    for gy in range(0, H, 80):
+        draw.line([(0, gy), (W, gy)], fill=(0, 210, 255, 18), width=1)
+
+    enter_p = cubic_bezier_ease_in_out(min(max(local_t / 0.35, 0.0), 1.0))
+    resample_mode = getattr(Image, "Resampling", Image).LANCZOS
+
+    if is_short:
+        # Vertical 9:16 Split Board: Top Center Portrait Card + Middle 3-Point Evidence Dossier Board
+        pw, ph = 420, 420
+        px = (W - pw) // 2
+        py = int(215 - (1.0 - enter_p) * 35)
+        draw.rounded_rectangle([(px + 12, py + 14), (px + pw + 12, py + ph + 14)], radius=26, fill=(0, 0, 0, 210))
+        draw.rounded_rectangle([(px - 6, py - 6), (px + pw + 6, py + ph + 6)], radius=28, fill=(10, 16, 30, 255), outline=(255, 215, 0, 255), width=5)
+        port_crop = fit_full_height_face_aware_1080p(port_im, pw, ph).convert("RGBA")
+        mask = Image.new("L", (pw, ph), 0)
+        ImageDraw.Draw(mask).rounded_rectangle([(0, 0), (pw, ph)], radius=22, fill=255)
+        canvas.paste(port_crop, (px, py), mask)
+
+        # Name & Role Plate right below portrait
+        np_w, np_h = 860, 118
+        np_x, np_y = (W - np_w) // 2, py + ph + 18
+        draw.rounded_rectangle([(np_x, np_y), (np_x + np_w, np_y + np_h)], radius=18, fill=(10, 16, 32, 248), outline=(0, 235, 255, 240), width=3)
+        draw.rectangle([(np_x, np_y), (np_x + 12, np_y + np_h)], fill=(225, 25, 50, 255))
+        draw.text((np_x + 30, np_y + 16), disp_name, fill=(255, 255, 255, 255), font=get_font(40))
+        draw.text((np_x + 30, np_y + 68), f"⚡ {role_lbl}", fill=(255, 225, 0, 255), font=get_font(23))
+
+        # Lower Evidence Board (y = 795..1395)
+        eb_x, eb_y, eb_w, eb_h = (W - 920) // 2, np_y + np_h + 22, 920, 560
+    else:
+        # Landscape 16:9 Split Board: Left 40% Portrait Dossier Card + Right 56% Investigative Evidence Board
+        pw, ph = 520, 560
+        px = int(72 - (1.0 - enter_p) * 45)
+        py = 165
+        draw.rounded_rectangle([(px + 14, py + 16), (px + pw + 14, py + ph + 150)], radius=24, fill=(0, 0, 0, 215))
+        draw.rounded_rectangle([(px - 6, py - 6), (px + pw + 6, py + ph + 136)], radius=24, fill=(10, 16, 32, 250), outline=(255, 215, 0, 255), width=4)
+        port_crop = fit_full_height_face_aware_1080p(port_im, pw, ph).convert("RGBA")
+        mask = Image.new("L", (pw, ph), 0)
+        ImageDraw.Draw(mask).rounded_rectangle([(0, 0), (pw, ph)], radius=18, fill=255)
+        canvas.paste(port_crop, (px, py), mask)
+
+        # Red Classified Stamp Badge at top-left of portrait
+        draw.rounded_rectangle([(px + 18, py + 18), (px + 255, py + 54)], radius=8, fill=(220, 20, 45, 245))
+        draw.text((px + 30, py + 25), "📂 PROFILE IN FOCUS", fill=(255, 255, 255, 255), font=get_font(18))
+
+        draw.text((px + 24, py + ph + 18), disp_name, fill=(255, 255, 255, 255), font=get_font(36))
+        draw.text((px + 24, py + ph + 68), f"⚡ {role_lbl}", fill=(255, 225, 0, 255), font=get_font(21))
+
+        eb_x, eb_y, eb_w, eb_h = px + pw + 48, 165, W - (px + pw + 120), 696
+
+    # Render Right/Bottom Investigative Dossier Evidence Board
+    draw.rounded_rectangle([(eb_x + 12, eb_y + 14), (eb_x + eb_w + 12, eb_y + eb_h + 14)], radius=24, fill=(0, 0, 0, 210))
+    draw.rounded_rectangle([(eb_x, eb_y), (eb_x + eb_w, eb_y + eb_h)], radius=24, fill=(12, 19, 36, 246), outline=(0, 235, 255, 220), width=3)
+    draw.rounded_rectangle([(eb_x, eb_y), (eb_x + eb_w, eb_y + 66)], radius=22, fill=(18, 28, 52, 255))
+    draw.text((eb_x + 28, eb_y + 18), f"🔍 CASE DOSSIER // {beat.get('section_headline', 'KEY EVIDENCE')[:28]}", fill=(0, 240, 255, 255), font=get_font(24))
+
+    # Animated Yellow Marker Bar on Main Point Highlight
+    hl_p = cubic_bezier_ease_in_out(min(max((local_t - 0.10) / 0.45, 0.0), 1.0))
+    hl_w = int((eb_w - 56) * hl_p)
+    if hl_w > 12:
+        draw.rounded_rectangle([(eb_x + 28, eb_y + 92), (eb_x + 28 + hl_w, eb_y + 154)], radius=10, fill=(255, 230, 0, 245))
+    draw.text((eb_x + 42, eb_y + 104), point_hl, fill=(10, 14, 24, 255), font=get_font(32 if is_short else 34))
+
+    # Split spoken excerpt into 3 clean investigative bullet rows that reveal progressively!
+    words_b = [w for w in re.sub(r"[^\x20-\x7E]", "", b_txt).split() if w]
+    chunk_n = max(4, (len(words_b) + 2) // 3)
+    bullets = [
+        " ".join(words_b[:chunk_n]),
+        " ".join(words_b[chunk_n:chunk_n * 2]),
+        " ".join(words_b[chunk_n * 2:chunk_n * 3])
+    ]
+    by_cur = eb_y + 188
+    for b_idx, b_line in enumerate(bullets):
+        if not b_line:
+            continue
+        row_p = cubic_bezier_ease_in_out(min(max((local_t - (0.18 + b_idx * 0.22)) / 0.35, 0.0), 1.0))
+        if row_p <= 0.02:
+            continue
+        rx_off = int((1.0 - row_p) * 35)
+        draw.rounded_rectangle([(eb_x + 28 + rx_off, by_cur), (eb_x + eb_w - 28, by_cur + 96)], radius=14, fill=(18, 28, 48, int(235 * row_p)), outline=(255, 215, 0, int(165 * row_p)), width=2)
+        draw.ellipse([(eb_x + 46 + rx_off, by_cur + 32), (eb_x + 74 + rx_off, by_cur + 60)], fill=(225, 25, 50, int(255 * row_p)))
+        draw.text((eb_x + 54 + rx_off, by_cur + 34), str(b_idx + 1), fill=(255, 255, 255, int(255 * row_p)), font=get_font(20))
+        # Wrap bullet text into up to 2 crisp lines
+        b_words = b_line.split()
+        l1 = " ".join(b_words[:7])
+        l2 = " ".join(b_words[7:14])
+        if l2:
+            draw.text((eb_x + 92 + rx_off, by_cur + 16), l1, fill=(240, 246, 255, int(255 * row_p)), font=get_font(24))
+            draw.text((eb_x + 92 + rx_off, by_cur + 50), l2, fill=(200, 225, 255, int(255 * row_p)), font=get_font(24))
+        else:
+            draw.text((eb_x + 92 + rx_off, by_cur + 32), l1, fill=(240, 246, 255, int(255 * row_p)), font=get_font(25))
+        by_cur += 116
+
+    canvas.alpha_composite(get_prebuilt_vignette_overlay(W, H))
+    return canvas
+
+def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_short=True):
+    """
+    THINK SCHOOL / ABHI & NIYU KINETIC DATA & MONEY TRAIL SCORECARD OVERLAY:
+    - Renders over the darkened real scene photo whenever concrete numbers, percentages,
+      dollar/pound figures, or multi-stat comparisons are spoken!
+    - Animates the exact spoken numbers in giant 76pt Gold/Cyan typography with an animated
+      impact bar and crisp explanation.
+    """
+    base_im = beat.get("primary_im") or Image.new("RGB", (1920, 1080), (12, 18, 32))
+    b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or "VERIFIED DATA METRIC").upper(), 30)
+
+    # Keep the real photo visible in the background at 34% brightness with gentle blur
+    bg = fit_full_height_face_aware_1080p(base_im, W, H).filter(ImageFilter.GaussianBlur(radius=16))
+    bg = ImageEnhance.Brightness(bg).enhance(0.34)
+    canvas = bg.convert("RGBA")
+    draw = ImageDraw.Draw(canvas, "RGBA")
+
+    # Extract all numbers/percentages/money figures from the sentence
+    num_matches = re.findall(
+        r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|thousand|tons|hours|years|days|states|countries|people|arrests|marches|sites|feet))?)",
+        b_txt, flags=re.I
+    )
+    cleaned_nums = []
+    for nm in num_matches:
+        nm_c = nm.strip().upper().replace("PERCENT", "%")
+        if nm_c and nm_c not in cleaned_nums:
+            cleaned_nums.append(nm_c)
+    if not cleaned_nums:
+        cleaned_nums = [point_hl[:16]]
+
+    cw = 880 if is_short else 1140
+    ch = 520 if is_short else 470
+    cx0 = (W - cw) // 2
+    cy0 = (H - ch) // 2 - (45 if is_short else 20)
+
+    draw.rounded_rectangle([(cx0 + 14, cy0 + 16), (cx0 + cw + 14, cy0 + ch + 16)], radius=26, fill=(0, 0, 0, 210))
+    draw.rounded_rectangle([(cx0, cy0), (cx0 + cw, cy0 + ch)], radius=26, fill=(10, 17, 34, 244), outline=(255, 215, 0, 255), width=4)
+    draw.rounded_rectangle([(cx0, cy0), (cx0 + cw, cy0 + 68)], radius=24, fill=(18, 28, 52, 255))
+    draw.text((cx0 + 32, cy0 + 18), f"📊 DATA & MONEY TRAIL // {point_hl}", fill=(255, 225, 0, 255), font=get_font(25))
+
+    # Render 1 or 2 Giant Metric Callout Cards inside the board
+    cards_to_show = cleaned_nums[:2]
+    num_c = len(cards_to_show)
+    box_w = (cw - 96) // num_c
+    for idx_n, val_str in enumerate(cards_to_show):
+        bx = cx0 + 32 + idx_n * (box_w + 32)
+        by = cy0 + 96
+        bh = 195
+        col_accent = (255, 225, 0, 255) if idx_n == 0 else (0, 240, 255, 255)
+        draw.rounded_rectangle([(bx, by), (bx + box_w, by + bh)], radius=18, fill=(16, 26, 48, 250), outline=col_accent, width=3)
+        f_big = get_font(64 if len(val_str) <= 10 else 48)
+        tw_v = draw.textbbox((0, 0), val_str, font=f_big)[2]
+        draw.text((bx + max(18, (box_w - tw_v) // 2), by + 36), val_str, fill=col_accent, font=f_big)
+
+        # Animated progress bar inside metric card
+        p_bar = cubic_bezier_ease_in_out(min(max((local_t - 0.12) / 0.55, 0.0), 1.0))
+        bar_w = max(16, int((box_w - 48) * (0.88 if idx_n == 0 else 0.68) * p_bar))
+        draw.rounded_rectangle([(bx + 24, by + bh - 38), (bx + box_w - 24, by + bh - 20)], radius=8, fill=(30, 42, 68, 255))
+        draw.rounded_rectangle([(bx + 24, by + bh - 38), (bx + 24 + bar_w, by + bh - 20)], radius=8, fill=col_accent)
+
+    # Bottom Explanation Strip showing the exact context of the numbers
+    words_ex = [w for w in re.sub(r"[^\x20-\x7E]", "", b_txt).split() if w]
+    l1 = " ".join(words_ex[:11])
+    l2 = " ".join(words_ex[11:22])
+    draw.rounded_rectangle([(cx0 + 32, cy0 + 318), (cx0 + cw - 32, cy0 + ch - 28)], radius=16, fill=(15, 24, 44, 245), outline=(0, 235, 255, 160), width=2)
+    draw.text((cx0 + 52, cy0 + 338), l1, fill=(245, 250, 255, 255), font=get_font(25))
+    if l2:
+        draw.text((cx0 + 52, cy0 + 378), l2, fill=(205, 228, 255, 255), font=get_font(25))
+
+    canvas.alpha_composite(get_prebuilt_vignette_overlay(W, H))
+    return canvas
+
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False):
     """
-    V12 DYNAMIC INTERVIEW & STATEMENT VISUALIZER (100% Real Photo Base, Zero Black-Screen Charts!):
-    - Never triggers black-screen procedural charts ('100% ESCALATION' or 'GREAT MAN THEORY').
-    - When a sentence describes an Interview, Press Statement, Testimony, or Official Quote,
-      triggers `BROADCAST_INTERVIEW_QUOTE_MOCKUP` (which renders the real photo inside an ON-AIR
-      TV Interview Monitor + Live Waveform + Crisp Audience-Friendly Quote Summary Card!).
+    V15 6-MODE GOD-LEVEL DOCUMENTARY VISUAL DIRECTOR (Abhi & Niyu + Think School + Nitish Rajput):
+    Dynamically selects the ideal visual presentation mode for each beat based on what is spoken:
+    1. `TACTICAL_GEOPOLITICAL_SIEGE_MAP`: When geographic routes, straits, borders, corridors, or nationwide spread are discussed.
+    2. `THINK_SCHOOL_DATA_SCORECARD`: When concrete percentages (%), billion/million dollar figures, or multi-number stats are spoken.
+    3. `BROADCAST_INTERVIEW_QUOTE_MOCKUP`: When a direct statement, interview, warning, or quote is spoken.
+    4. Otherwise returns None (which renders `NITISH_DOSSIER_SPLIT_BOARD` if a person is introduced,
+       `CENTER_DOCUMENT_HIGHLIGHT` on evidence beats, or `CLEAN_CINEMA_FULLBLEED` on action/footage beats!).
     """
     low = str(beat_text or "").lower()
-    if beat_idx > 0 and (beat_idx % 3 == 1) and any(kw in low for kw in [
+    if "subscribe to world talk brief" in low or "watch the full documentary" in low:
+        return None
+
+    # 1. Geographic Route / Strait / Border / Map Spread Beat (Abhi & Niyu / Johnny Harris / Nitish Rajput Map)
+    if any(mw in low for mw in [
+        "strait of hormuz", "red sea", "border", "corridor", "airspace", "flight", "route",
+        "spread across", "every area", "map", "island", "peninsula", "suez", "taiwan strait"
+    ]) and (beat_idx % 3 == 1):
+        return "TACTICAL_GEOPOLITICAL_SIEGE_MAP"
+
+    # 2. Think School Money Trail & Statistical Scorecard Beat (when % or $/£/million/billion is spoken)
+    has_strong_stat = bool(re.search(r"(\d+(?:\.\d+)?\s*(?:%|percent|billion|million|trillion)|(?:\$|£|€|₹)\d+)", low))
+    if has_strong_stat and (beat_idx % 2 == 1):
+        return "THINK_SCHOOL_DATA_SCORECARD"
+
+    # 3. Broadcast Interview / Official Quote Monitor Beat
+    if beat_idx > 0 and (beat_idx % 3 == 2) and any(kw in low for kw in [
         "interview", "speaking", "statement", "stated", "warned", "declared", "testified",
         "press conference", "explained", "argued", "confirmed", "announced", "called on", "urged"
     ]):
         return "BROADCAST_INTERVIEW_QUOTE_MOCKUP"
+
     return None
 
 def render_25d_historical_timeline_frame(beat, local_t, W, H, is_short=True):
@@ -5140,6 +5668,11 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         frame = render_25d_historical_timeline_frame(beat, local_t, W, H, is_short=is_short)
     elif sim_mode == "BROADCAST_INTERVIEW_QUOTE_MOCKUP":
         frame = render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=is_short)
+    elif sim_mode == "THINK_SCHOOL_DATA_SCORECARD":
+        frame = render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_short=is_short)
+    elif beat.get("person_popup") is not None and local_t <= min(beat_dur * 0.85, 3.6):
+        # Nitish Rajput / Think School Split-Canvas Investigative Dossier Board when introducing a key person!
+        frame = render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_short=is_short)
     elif sim_mode == "CORPORATE_POWER_ORGANOGRAM":
         frame = render_corporate_power_organogram_frame(beat, local_t, W, H, is_short=is_short)
     elif sim_mode == "DATA_CONTRAST_OUTRO_INFOGRAPHIC":
@@ -5201,32 +5734,11 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
 
     # Keep the center and right of the 1080p frame 100% clean for the real photograph/footage!
 
-    # 4. GIANT CENTER PERSON SPOTLIGHT POP-UP OR GIANT CENTER ARTICLE PROOF CUTOUT (`beech mein` & `bada`!)
-    if beat.get("person_popup") is not None and sim_mode not in ["ARCHIVAL_25D_TIMELINE", "BROADCAST_INTERVIEW_QUOTE_MOCKUP", "CORPORATE_POWER_ORGANOGRAM", "DATA_CONTRAST_OUTRO_INFOGRAPHIC"]:
-        p_card = build_prebuilt_person_card_rgba(beat["person_popup"], is_short=is_short)
-        if p_card is not None:
-            popup_show_dur = min(beat_dur * 0.85, 3.4)
-            if local_t <= popup_show_dur:
-                # Softly dim the background while the Giant Center Person Spotlight is on screen so faces never clash!
-                dim_overlay = Image.new("RGBA", (W, H), (6, 10, 20, 135))
-                frame.alpha_composite(dim_overlay)
-                enter_p = min(max(local_t / 0.25, 0.0), 1.0)
-                exit_p = min(max((popup_show_dur - local_t) / 0.22, 0.0), 1.0) if local_t > (popup_show_dur - 0.22) else 1.0
-                scale_f = (0.78 + 0.22 * (1.0 - ((1.0 - enter_p) ** 3))) * (0.86 + 0.14 * exit_p)
-                resample_mode = getattr(Image, "Resampling", Image).BILINEAR
-                cw, ch = p_card.size
-                sw, sh = max(10, int(cw * scale_f)), max(10, int(ch * scale_f))
-                scaled_card = p_card.resize((sw, sh), resample_mode) if abs(scale_f - 1.0) > 0.02 else p_card
-                float_dy = int(4.0 * math.sin(local_t * 3.6))
-                # Always place right in the CENTER (`beech mein`) of the screen!
-                center_x = (W - sw) // 2
-                center_y = ((H - sh) // 2 - (55 if is_short else 20)) + float_dy
-                frame.paste(scaled_card, (center_x, center_y), scaled_card)
-    elif int(beat.get("beat_in_section", 0)) == 1 and local_t <= min(beat_dur * 0.78, 2.8):
-        # Giant Center Article / Proof Cutout Card (`beech mein`) on key evidence beats!
+    # 4. NITISH RAJPUT 3D CENTER DOCUMENT / EVIDENCE CLIPPING (`beech mein` on key evidence beats when not in a full-screen board)
+    if beat.get("person_popup") is None and sim_mode is None and int(beat.get("beat_in_section", 0)) == 1 and local_t <= min(beat_dur * 0.78, 2.8):
         ev_card = build_evidence_paper_cutout_rgba(beat, local_t, is_short=is_short)
         if ev_card is not None:
-            dim_overlay = Image.new("RGBA", (W, H), (6, 10, 20, 115))
+            dim_overlay = Image.new("RGBA", (W, H), (6, 10, 20, 125))
             frame.alpha_composite(dim_overlay)
             ew, eh = ev_card.size
             ex = (W - ew) // 2
@@ -5497,7 +6009,7 @@ def build_prop_driven_storyboard_1080p(
 
             # Fetch 100% Verified Point-to-Point Real HD Video B-Roll (up to 2 clips per chapter!)
             vseg = None
-            if videos_in_section < 2 and (b_i == 0 or b_i == 2):
+            if videos_in_section < 2:
                 v_q = ai_video_q if (b_i == 0 and ai_video_q) else search_q
                 vseg = fetch_and_transcode_real_video_broll(
                     v_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vc_{global_beat_idx}"
@@ -5752,7 +6264,8 @@ class VoiceAndSubtitleEngine:
             phrase = " ".join(words_str_list)
             lw = draw.textbbox((0, 0), phrase, font=font)[2]
             x_cur = (W - lw) // 2
-            draw.rounded_rectangle([(x_cur - 34, 14), (x_cur + lw + 34, 92)], radius=22, fill=(8, 14, 28, 225), outline=(0, 230, 255, 150), width=2)
+            # Subtle translucent dark cinema pill without distracting cyan border lines
+            draw.rounded_rectangle([(x_cur - 28, 16), (x_cur + lw + 28, 90)], radius=16, fill=(4, 8, 16, 175))
             for idx_w, w in enumerate(words_str_list):
                 clean_w = re.sub(r"[^a-z0-9$%]", "", w.lower())
                 is_key_pt = (clean_w in hl_set) or any(ch.isdigit() for ch in clean_w)
@@ -6043,15 +6556,26 @@ def enrich_dossier_with_deep_research_and_proofs(dossier):
             except Exception:
                 pass
 
-    # 2. Scrape discovered news websites in parallel for full-article facts, original photos (`og:image`, `<figure> <img>`), and lawyer/person names!
+    # 2. Scrape up to 14 discovered news websites in parallel for full-article facts, original photos (`og:image`, `<figure> <img>`),
+    #    embedded raw `.mp4` video streams (`og:video`, JSON-LD `contentUrl`, `<video>`), and lawyer/person names!
+    article_videos = list(dossier.get("article_video_urls") or [])
+
     def scrape_external_news_site(item_tuple):
         s_url, s_name, s_pub, s_title = item_tuple
+        if "aljazeera" in s_url.lower() or "al jazeera" in s_name.lower():
+            return [], [], "", []
         site_facts = []
         site_photos = []
+        site_videos = []
         site_texts_for_persons = []
         try:
             r = requests.get(s_url, headers=HEADERS_WEB, timeout=5)
             if r.status_code == 200 and "permission to access" not in r.text.lower():
+                # Extract direct embedded MP4 raw footage URLs from the news website HTML / JSON-LD / OpenGraph!
+                for v_m in re.findall(r"(https?://[^\s\"'<>\\]+?\.mp4(?:\?[^\s\"'<>\\]{0,80})?)", r.text, flags=re.I):
+                    v_clean = v_m.replace("\\/", "/")
+                    if not any(b in v_clean.lower() for b in ["ad", "banner", "tracker", "pixel", "logo", "aljazeera", "sprite"]) and v_clean not in site_videos:
+                        site_videos.append(v_clean)
                 soup = BeautifulSoup(r.text, "html.parser")
                 for m_tag in [soup.find("meta", property="og:image"), soup.find("meta", attrs={"name": "twitter:image"})]:
                     if m_tag and m_tag.get("content"):
@@ -6087,17 +6611,20 @@ def enrich_dossier_with_deep_research_and_proofs(dossier):
                                 })
         except Exception:
             pass
-        return site_facts, site_photos, " ".join(site_texts_for_persons)
+        return site_facts, site_photos, " ".join(site_texts_for_persons), site_videos
 
     if multi_site_links:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
-            futs = [ex.submit(scrape_external_news_site, lnk) for lnk in multi_site_links[:8]]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+            futs = [ex.submit(scrape_external_news_site, lnk) for lnk in multi_site_links[:14]]
             for ft in concurrent.futures.as_completed(futs):
                 try:
-                    s_facts, s_photos, s_person_txt = ft.result()
+                    s_facts, s_photos, s_person_txt, s_vids = ft.result()
                     register_persons_from_text_into_directory(s_person_txt, person_dir)
+                    for vu in s_vids:
+                        if vu not in article_videos:
+                            article_videos.append(vu)
                     for ph in s_photos:
-                        if ph["url"] not in inline_imgs:
+                        if ph["url"] not in inline_imgs and "aljazeera" not in ph["url"].lower():
                             inline_imgs.append(ph["url"])
                             captioned_photos.append(ph)
                     for fc in s_facts:
@@ -6128,7 +6655,8 @@ def enrich_dossier_with_deep_research_and_proofs(dossier):
 
     dossier["verified_claims"] = claims
     dossier["raw_facts"] = [c["text"] for c in claims]
-    dossier["article_inline_images"] = inline_imgs[:24]
+    dossier["article_inline_images"] = [u for u in inline_imgs if "aljazeera" not in u.lower()][:32]
+    dossier["article_video_urls"] = article_videos[:16]
     dossier["article_captioned_photos"] = captioned_photos[:28]
     dossier["person_role_directory"] = person_dir
     GLOBAL_ACTIVE_DOSSIER_PERSONS.clear()
