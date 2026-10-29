@@ -59,25 +59,25 @@ HISTORY_FILE = "published_history.json"
 # ==============================================================================
 ORDERED_PILLARS = [
     "GEOPOLITICS",
-    "TECHNOLOGY",
     "DEFENSE_MILITARY",
-    "BUSINESS",
+    "GLOBAL_POWERS",
+    "GEOPOLITICS",
+    "TECHNOLOGY",
+    "GEOPOLITICS",
+    "MIND_BLOWING_FACTS",
+    "DEFENSE_MILITARY",
+    "GEOPOLITICS",
     "AI_ROBOTICS",
+    "GLOBAL_POWERS",
     "GEOPOLITICS",
     "SCIENCE",
-    "GLOBAL_POWERS",
+    "GEOPOLITICS",
+    "BUSINESS",
+    "DEFENSE_MILITARY",
     "MIND_BLOWING_FACTS",
-    "BILLIONAIRES_MARKETS",
-    "SPACE_COSMOS",
     "GEOPOLITICS",
     "CYBER_INTELLIGENCE",
-    "HEALTH",
-    "ENERGY_CLIMATE",
-    "MEGA_ENGINEERING",
-    "SPORTS",
-    "GEOPOLITICS",
-    "ANCIENT_MYSTERIES",
-    "ENTERTAINMENT"
+    "GLOBAL_POWERS"
 ]
 
 PILLAR_TO_CORE_HUB = {
@@ -153,11 +153,15 @@ CATEGORY_FEEDS = {
         "domain_context": "geopolitics diplomacy government",
         "feeds": [
             ("Google News World 24h", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
-            ("BBC World Breaking", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+            ("Google Geopolitics & War 24h", "https://news.google.com/rss/search?q=geopolitics+OR+war+OR+military+OR+sanctions+OR+conflict+OR+missile+when:1d&hl=en-US&gl=US&ceid=US:en"),
             ("Al Jazeera Global", "https://www.aljazeera.com/xml/rss/all.xml"),
+            ("BBC World Breaking", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+            ("CNN World Breaking", "http://rss.cnn.com/rss/edition_world.rss"),
             ("The Guardian World", "https://www.theguardian.com/world/rss"),
             ("DW World News", "https://rss.dw.com/rdf/rss-en-world"),
-            ("France24 World", "https://www.france24.com/en/rss")
+            ("France24 World", "https://www.france24.com/en/rss"),
+            ("NDTV World Geopolitics", "https://feeds.feedburner.com/ndtvnews-world-news"),
+            ("Google Middle East & Asia Conflict", "https://news.google.com/rss/search?q=Israel+OR+Iran+OR+Russia+OR+Ukraine+OR+China+OR+Taiwan+OR+India+OR+Pakistan+when:1d&hl=en-US&gl=US&ceid=US:en")
         ]
     },
     "TECHNOLOGY": {
@@ -189,9 +193,10 @@ CATEGORY_FEEDS = {
         "search_query": "unbelievable facts scientific mystery mind blowing discovery",
         "domain_context": "real documentary photo",
         "feeds": [
-            ("Google News Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-US&gl=US&ceid=US:en"),
+            ("Unbelievable Hidden Discoveries", "https://news.google.com/rss/search?q=scientists+baffled+OR+hidden+discovery+OR+secret+beneath+OR+never+before+seen+OR+ancient+mystery+when:2d&hl=en-US&gl=US&ceid=US:en"),
             ("SciTechDaily Discoveries", "https://scitechdaily.com/feed/"),
-            ("Phys.org Breakthroughs", "https://phys.org/rss-feed/")
+            ("Phys.org Breakthroughs", "https://phys.org/rss-feed/"),
+            ("Google News Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-US&gl=US&ceid=US:en")
         ]
     },
     "SCIENCE": {
@@ -1479,10 +1484,33 @@ def run_youtube_api_full_intelligence():
         except Exception as ce:
             print("⚠️ Channel stats note:", str(ce)[:80], flush=True)
 
+        # Discover what Geopolitics & World News videos are blowing up across ALL of YouTube right now (last 24 hours)!
+        try:
+            pub_after = (datetime.utcnow() - timedelta(hours=28)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            viral_search = yt.search().list(
+                part="snippet",
+                q="geopolitics war conflict crisis news explained",
+                type="video",
+                order="viewCount",
+                publishedAfter=pub_after,
+                maxResults=12
+            ).execute()
+            for v_it in viral_search.get("items", []):
+                vt = v_it.get("snippet", {}).get("title", "")
+                if vt and len(top_channel_hits) < 10:
+                    top_channel_hits.append(vt)
+                for w in re.findall(r"[a-z]{4,}", vt.lower()):
+                    if w not in stop_w and w not in winning_kws:
+                        winning_kws.insert(0, w)
+                        viral_yt_tags.append(w)
+            print(f"🔥 [YouTube Live Viral Geopolitics Trends Locked]: {top_channel_hits[:4]}", flush=True)
+        except Exception:
+            pass
+
         for dkw in default_viral_kws:
             if dkw not in winning_kws:
                 winning_kws.append(dkw)
-        return winning_kws[:25], viral_yt_tags[:18], playlist_map, top_channel_hits
+        return winning_kws[:30], viral_yt_tags[:20], playlist_map, top_channel_hits
     except Exception:
         return default_viral_kws, [], {}, []
 
@@ -1814,7 +1842,7 @@ def proofread_and_deduplicate_narration(raw_narration, seen_sentences, dossier, 
             unique_out.append(s)
 
     if unique_out:
-        return " ".join(unique_out)
+        return strip_news_publisher_mentions(" ".join(unique_out))
 
     # Fallback: find an unused claim from dossier['verified_claims']
     claims = dossier.get("verified_claims") or []
@@ -1827,10 +1855,33 @@ def proofread_and_deduplicate_narration(raw_narration, seen_sentences, dossier, 
 
     return f"Researchers and international analysts emphasize that the long-term structural implications of {dossier.get('topic_anchor', 'this shift')} are now unfolding faster than previously projected."
 
-def split_into_complete_sentences(paragraph_text):
+def split_into_complete_sentences(paragraph_text, split_long_for_visual_pacing=False):
     protected = re.sub(r"\b(U\.S|U\.K|U\.N|E\.U|Oct|Nov|Dec|Jan|Feb|Mar|Apr|Aug|Sept|Mr|Mrs|Ms|Dr|Prof|St|Gen|Col|Sen|Rep|S)\.", r"\1<DOT>", paragraph_text)
-    raw_sents = re.split(r"(?<=[.!?])\s+", protected)
-    return [s.replace("<DOT>", ".") for s in raw_sents]
+    raw_sents = [s.replace("<DOT>", ".").strip() for s in re.split(r"(?<=[.!?])\s+", protected) if s.strip()]
+    if not split_long_for_visual_pacing:
+        return raw_sents
+    # Sub-sentence visual pacing: split any sentence > 15 words at natural clause boundaries so visuals change every 3 to 4 seconds and NEVER get stuck!
+    paced_beats = []
+    for s in raw_sents:
+        words = s.split()
+        if len(words) <= 15:
+            paced_beats.append(s)
+            continue
+        # Try splitting near the middle at a comma or conjunction ('while', 'after', 'before', 'because', 'which', 'where', 'as', ' prompting', ' urging')
+        parts = re.split(r"(?:,\s+(?:while|after|before|because|which|where|as|prompting|urging|sparking|forcing|leaving|with|and|but)\b|,\s+)", s, maxsplit=1)
+        if len(parts) == 2 and len(parts[0].split()) >= 6 and len(parts[1].split()) >= 5:
+            # Re-extract exact split point from original sentence so no conjunction word is lost!
+            idx_split = s.find(parts[1])
+            p1 = s[:idx_split].strip().rstrip(",")
+            p2 = s[idx_split:].strip()
+            if p1 and p2:
+                paced_beats.append(p1)
+                paced_beats.append(p2)
+                continue
+        mid = len(words) // 2
+        paced_beats.append(" ".join(words[:mid]))
+        paced_beats.append(" ".join(words[mid:]))
+    return paced_beats
 
 def is_semantically_similar_claim(new_claim, existing_claims, headline_title=""):
     stop_c = {"the", "and", "for", "with", "from", "that", "this", "have", "has", "had", "were", "was", "are", "said", "says"}
@@ -1914,10 +1965,36 @@ def build_100_percent_original_youtube_title(raw_title, pillar, c_prof, topic_an
             break
     return " ".join(out)
 
+PUBLISHER_NAMES_STRIP_REGEX = (
+    r"\b(?:Al\s*Jazeera(?:\s+English)?|BBC(?:\s+News|\s+World)?|CNN(?:\s+International)?|"
+    r"The\s+Guardian(?:\s+World)?|Reuters|Associated\s+Press|AP\s+News|DW(?:\s+News)?|"
+    r"France\s*24|NDTV|The\s+Hindu|Indian\s+Express|Times\s+of\s+India|New\s+York\s+Times|"
+    r"Washington\s+Post|Bloomberg|CNBC|TechCrunch|The\s+Verge|Ars\s+Technica|SciTechDaily|"
+    r"Phys\.org|MedicalXpress|Space\.com|Hollywood\s+Reporter|Google\s+News)\b"
+)
+
+def strip_news_publisher_mentions(text_str):
+    """
+    100% ZERO EXTERNAL NEWS CHANNEL/ARTICLE ATTRIBUTION GUARD:
+    Ensures we NEVER mention 'Al Jazeera', 'BBC', 'CNN', 'The Guardian', 'Reuters', etc.
+    in our spoken script, HUD overlays, or video descriptions!
+    """
+    if not text_str:
+        return ""
+    s = str(text_str)
+    s = re.sub(r"\b(?:according to|reported by|as reported by|verified data from|reports from|speaking to|told|tells)\s+" + PUBLISHER_NAMES_STRIP_REGEX + r"\s*,?\s*", "", s, flags=re.I)
+    s = re.sub(PUBLISHER_NAMES_STRIP_REGEX + r"\s+(?:reported|reports|revealed|stated|said|warned|confirmed|noted|said)\s*,?\s*(?:that\s+)?", "", s, flags=re.I)
+    s = re.sub(r",?\s*(?:according to\s+)?" + PUBLISHER_NAMES_STRIP_REGEX + r"(?:\s+said|\s+reported|\s+added)?\.?", ".", s, flags=re.I)
+    s = re.sub(PUBLISHER_NAMES_STRIP_REGEX, "international analysts", s, flags=re.I)
+    s = re.sub(r"\s+", " ", s).strip()
+    if s and s[0].islower():
+        s = s[0].upper() + s[1:]
+    return s
+
 def paraphrase_into_original_creator_voice(raw_fact, beat_idx=0, dossier=None):
-    s = str(raw_fact or "").strip().rstrip(".")
+    s = strip_news_publisher_mentions(str(raw_fact or "").strip().rstrip("."))
     # Fix awkward 'Verified data from X, Y' or trailing ', X added' news wire fragments so the public understands every sentence!
-    s = re.sub(r"(?i)^verified data from\s+([^,]+),\s*", r"According to reports from \1, ", s)
+    s = re.sub(r"(?i)^verified data from\s+([^,]+),\s*", r"Internal records from \1 show that ", s)
     # If a trailing ', [Surname] added/said' appears, clarify their role if known from dossier person_role_directory!
     if dossier and isinstance(dossier.get("person_role_directory"), dict):
         p_dir = dossier["person_role_directory"]
@@ -2663,7 +2740,7 @@ def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
                         side = min(iw, ih)
                         left = (iw - side) // 2
                         top = max(0, int((ih - side) * 0.10))
-                        im_sq = im.crop((left, top, left + side, top + side)).resize((340, 340), resample_mode)
+                        im_sq = im.crop((left, top, left + side, top + side)).resize((460, 460), resample_mode)
                         if is_safe_family_friendly_image(im_sq, is_portrait=True) and is_real_natural_subject_photo(im_sq):
                             PERSON_PORTRAIT_CACHE[cache_key] = im_sq
                             print(f"   🎯 [Dynamic Subject Spotlight Locked (Wiki)]: {display_name} ({role_str})", flush=True)
@@ -2693,7 +2770,7 @@ def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
                     side = min(iw, ih)
                     left = (iw - side) // 2
                     top = max(0, int((ih - side) * 0.10))
-                    im_sq = im.crop((left, top, left + side, top + side)).resize((340, 340), resample_mode)
+                    im_sq = im.crop((left, top, left + side, top + side)).resize((460, 460), resample_mode)
                     if is_safe_family_friendly_image(im_sq, is_portrait=True) and is_real_natural_subject_photo(im_sq):
                         PERSON_PORTRAIT_CACHE[cache_key] = im_sq
                         print(f"   🎯 [Dynamic Subject Spotlight Locked (Bing Photo)]: {display_name} ({role_str})", flush=True)
@@ -2723,14 +2800,14 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
     role_lbl = person_info["role"].upper()[:32]
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
 
-    card_w = 680 if is_short else 660
-    card_h = 460 if is_short else 430
+    card_w = 880 if is_short else 840
+    card_h = 650 if is_short else 580
     card = Image.new("RGBA", (card_w, card_h), (0, 0, 0, 0))
     cdraw = ImageDraw.Draw(card, "RGBA")
 
     cx = card_w // 2
-    ava_sz = 250 if is_short else 236
-    ava_y = 26
+    ava_sz = 410 if is_short else 360
+    ava_y = 28
 
     # Outer soft ambient glow halo in center
     for r_glow in range(ava_sz // 2 + 34, ava_sz // 2 + 4, -5):
@@ -2762,28 +2839,28 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
                 cdraw.line([(px, py), (px + dx, py)], fill=(255, 215, 0, 255), width=4)
                 cdraw.line([(px, py), (px, py + dy)], fill=(255, 215, 0, 255), width=4)
 
-    # Lower Center Name & Role Pedestal Banner
-    plate_y = ava_y + ava_sz + 20
-    plate_h = 132
-    cdraw.rounded_rectangle([(34, plate_y + 6), (card_w - 26, plate_y + plate_h + 6)], radius=22, fill=(0, 0, 0, 200))
-    cdraw.rounded_rectangle([(28, plate_y), (card_w - 32, plate_y + plate_h)], radius=22, fill=(8, 14, 28, 248), outline=(255, 215, 0, 250), width=3)
+    # Lower Center Name & Role Pedestal Banner (Large, Bold & High-Contrast!)
+    plate_y = ava_y + ava_sz + 22
+    plate_h = 158 if is_short else 146
+    cdraw.rounded_rectangle([(28, plate_y + 8), (card_w - 20, plate_y + plate_h + 8)], radius=24, fill=(0, 0, 0, 215))
+    cdraw.rounded_rectangle([(22, plate_y), (card_w - 26, plate_y + plate_h)], radius=24, fill=(8, 14, 28, 250), outline=(255, 215, 0, 255), width=4)
 
-    tag_txt = "⚡ KEY FIGURE IN FOCUS" if style_idx % 2 == 0 else "📂 VERIFIED PROFILE // LIVE"
-    f_tag = get_font(16)
-    tw_tag = cdraw.textbbox((0, 0), tag_txt, font=f_tag)[2] + 32
-    cdraw.rounded_rectangle([(cx - tw_tag // 2, plate_y - 15), (cx + tw_tag // 2, plate_y + 15)], radius=10, fill=(220, 20, 45, 255), outline=(255, 255, 255, 230), width=2)
-    cdraw.text((cx - tw_tag // 2 + 16, plate_y - 10), tag_txt, fill=(255, 255, 255, 255), font=f_tag)
+    tag_txt = "⚡ KEY FIGURE IN FOCUS" if style_idx % 2 == 0 else "📂 KEY SUBJECT IN FOCUS"
+    f_tag = get_font(20 if is_short else 18)
+    tw_tag = cdraw.textbbox((0, 0), tag_txt, font=f_tag)[2] + 40
+    cdraw.rounded_rectangle([(cx - tw_tag // 2, plate_y - 18), (cx + tw_tag // 2, plate_y + 18)], radius=12, fill=(220, 20, 45, 255), outline=(255, 255, 255, 240), width=2)
+    cdraw.text((cx - tw_tag // 2 + 20, plate_y - 12), tag_txt, fill=(255, 255, 255, 255), font=f_tag)
 
-    f_name = get_font(34 if len(disp_name) <= 18 else 28)
+    f_name = get_font(44 if len(disp_name) <= 18 else 36)
     nw = cdraw.textbbox((0, 0), disp_name, font=f_name)[2]
-    cdraw.text((cx - nw // 2 + 2, plate_y + 26), disp_name, fill=(0, 0, 0, 240), font=f_name)
-    cdraw.text((cx - nw // 2, plate_y + 24), disp_name, fill=(255, 255, 255, 255), font=f_name)
+    cdraw.text((cx - nw // 2 + 3, plate_y + 30), disp_name, fill=(0, 0, 0, 245), font=f_name)
+    cdraw.text((cx - nw // 2, plate_y + 27), disp_name, fill=(255, 255, 255, 255), font=f_name)
 
-    f_role = get_font(20)
+    f_role = get_font(26 if is_short else 24)
     rw = cdraw.textbbox((0, 0), role_lbl, font=f_role)[2]
-    cdraw.text((cx - rw // 2, plate_y + 74), role_lbl, fill=(255, 220, 0, 255), font=f_role)
+    cdraw.text((cx - rw // 2, plate_y + 92), role_lbl, fill=(255, 225, 0, 255), font=f_role)
 
-    cdraw.line([(90, plate_y + 108), (card_w - 90, plate_y + 108)], fill=(0, 235, 255, 180), width=2)
+    cdraw.line([(80, plate_y + plate_h - 18), (card_w - 80, plate_y + plate_h - 18)], fill=(0, 235, 255, 200), width=3)
 
     person_info[cache_field] = card
     return card
@@ -3003,7 +3080,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
             if any(bw in post_title_low for bw in strict_banned_video_words):
                 continue
             post_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", post_title_low)}
-            if len(post_tokens.intersection(required_match_tokens)) < 2:
+            if len(post_tokens.intersection(required_match_tokens)) < 1:
                 continue
             rv = (post.get("secure_media") or post.get("media") or {}).get("reddit_video", {})
             fb_u = rv.get("fallback_url", "")
@@ -3032,7 +3109,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
                 if any(bw in v_title for bw in strict_banned_video_words):
                     continue
                 v_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", v_title)}
-                if len(v_tokens.intersection(required_match_tokens)) < 2:
+                if len(v_tokens.intersection(required_match_tokens)) < 1:
                     continue
                 vi = (pg.get("videoinfo") or pg.get("imageinfo") or [{}])[0]
                 for d in vi.get("derivatives", []):
@@ -4187,24 +4264,8 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
     draw.rounded_rectangle([(W - lw_box - 36, top_y + 12), (W - 36, top_y + 54)], radius=20, fill=(10, 14, 24, 230), outline=pill_outline, width=2)
     draw.text((W - lw_box - 18, top_y + 20), kicker_lbl, fill=(255, 255, 255, 255), font=f_lv)
 
-    # 4. NITISH RAJPUT STYLE EVIDENCE / SOURCE DOSSIER CARD (Top-Right on Long Videos)
-    claim_meta = beat.get("claim_meta") or {}
-    src_name = re.sub(r"[^\x20-\x7E]", "", str(claim_meta.get("source_name", "Global Wire"))).upper()[:22]
-    pub_d = str(claim_meta.get("published_date", ""))[:16]
+    # 4. ZERO EXTERNAL NEWS SOURCE MENTIONS IN HUD (keeps top-right 100% clean without Al Jazeera/BBC/Guardian badges!)
     stat_callout = beat.get("point_highlight") or beat.get("stat_callout") or "VERIFIED CASE POINT"
-
-    if not is_short:
-        # Clean, compact Nitish Rajput Verified Source Badge (never duplicates the bottom-left Point Highlight!)
-        src_badge_txt = f"📰 VERIFIED SOURCE: {src_name} • {pub_d}"
-        f_src = get_font(16)
-        ev_w = draw.textbbox((0, 0), src_badge_txt, font=f_src)[2] + 42
-        ev_h = 42
-        ev_x = W - ev_w - 36
-        ev_y = 92
-        draw.rounded_rectangle([(ev_x + 3, ev_y + 3), (ev_x + ev_w + 3, ev_y + ev_h + 3)], radius=12, fill=(0, 0, 0, 165))
-        draw.rounded_rectangle([(ev_x, ev_y), (ev_x + ev_w, ev_y + ev_h)], radius=12, fill=(10, 16, 30, 230), outline=(0, 235, 255, 195), width=2)
-        draw.rectangle([(ev_x, ev_y), (ev_x + 8, ev_y + ev_h)], fill=(220, 20, 45, 255))
-        draw.text((ev_x + 20, ev_y + 11), src_badge_txt, fill=(235, 245, 255, 255), font=f_src)
 
     # 5. On-Screen Callout Banner on Shorts pointing to the Linked Full Long Video
     if is_short:
@@ -4893,68 +4954,67 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
 
 def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
     """
-    V4 LAYER — 12°-TILTED VINTAGE NEWSPAPER & ARCHIVAL DOCUMENT CUT-OUT WITH YELLOW MARKER WIPE:
-    - Triggers on dates (1972, 1977, 1986), match scores (5-0), scientific studies, or official reports.
-    - Renders an aged newspaper/dossier clipping with an animated translucent yellow marker box
-      drawing across the headline, tilted at a 10°–12° perspective angle with a deep drop shadow!
+    V11 LARGE CENTER ARTICLE / EVIDENCE HIGHLIGHT CARD (`beech mein` & `bada` — Zero Publisher Names!):
+    - Pops up right in the CENTER of the screen (`beech mein`) on key evidence/number/fact beats
+      when no person portrait card is active.
+    - Large, bold, ultra-readable card (`820x250` on Shorts, `880x240` on Long) with animated
+      yellow marker wipe across the headline and 2 lines of the key evidence quote!
+    - Never prints external publisher names (like Al Jazeera/BBC/Guardian).
     """
-    b_txt = beat.get("beat_excerpt", "")
+    b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
     low = b_txt.lower()
-    claim_meta = beat.get("claim_meta") or {}
-    src_name = str(claim_meta.get("source_name") or beat["story"].get("source_name") or "Archival Press").strip()
-    pub_date = str(claim_meta.get("published_date") or beat["story"].get("published_date") or "")[:16]
-
     has_evidence_cue = any(k in low for k in [
-        "19", "20", "five to zero", "5-0", "defeat", "sacking", "sacked", "selhurst", "study",
-        "research", "physic", "journal", "university", "scientist", "united nations", "world health",
-        "report", "data", "hospital", "rial", "percent", "%", "million", "billion", "thousand",
-        "according", "published", "confirmed", "documented", "history", "humiliation", "affair"
+        "19", "20", "percent", "%", "million", "billion", "trillion", "thousand", "court",
+        "ruling", "fine", "law", "deal", "treaty", "missile", "military", "sanctions", "ban",
+        "study", "research", "scient", "official", "report", "record", "crisis", "strike"
     ])
     if not has_evidence_cue:
         return None
 
-    cw = 520 if is_short else 550
-    ch = 162 if is_short else 156
+    cw = 820 if is_short else 880
+    ch = 250 if is_short else 238
     card = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
     d = ImageDraw.Draw(card, "RGBA")
 
-    # 30px Drop Shadow + Aged Vintage Newspaper Cream Paper Texture
-    d.rounded_rectangle([(12, 14), (cw - 2, ch - 2)], radius=12, fill=(0, 0, 0, 195))
-    d.rounded_rectangle([(0, 0), (cw - 12, ch - 12)], radius=12, fill=(242, 236, 220, 252), outline=(35, 40, 52, 255), width=3)
-    d.rectangle([(0, 0), (cw - 12, 36)], fill=(18, 24, 38, 255))
+    # Deep Drop Shadow + Crisp Archival Dossier Cream Paper Card
+    d.rounded_rectangle([(14, 16), (cw - 2, ch - 2)], radius=18, fill=(0, 0, 0, 210))
+    d.rounded_rectangle([(0, 0), (cw - 14, ch - 14)], radius=18, fill=(246, 241, 228, 252), outline=(255, 215, 0, 255), width=4)
+    d.rounded_rectangle([(0, 0), (cw - 14, 48)], radius=16, fill=(14, 20, 36, 255))
 
-    # Faint newspaper column lines
-    for ny in range(44, ch - 24, 12):
-        d.line([(16, ny), (cw - 28, ny)], fill=(195, 188, 172, 95), width=1)
+    for ny in range(58, ch - 30, 16):
+        d.line([(24, ny), (cw - 36, ny)], fill=(205, 198, 182, 95), width=1)
 
-    doc_header = f"📰 ARCHIVAL RECEIPT // {src_name.upper()[:24]} • {pub_date}"
-    d.text((16, 8), doc_header, fill=(255, 225, 0, 255), font=get_font(15))
+    topic_tag = fit_whole_words_limit(str(beat["story"].get("topic_anchor") or "INVESTIGATIVE FILE").upper(), 24)
+    doc_header = f"📂 OFFICIAL CASE EVIDENCE // {topic_tag}"
+    d.text((24, 12), doc_header, fill=(255, 225, 0, 255), font=get_font(21))
 
-    point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "VERIFIED ARCHIVAL RECORD").upper(), 32)
-    excerpt_line = fit_whole_words_limit(re.sub(r"[^\x20-\x7E]", "", b_txt).strip(), 54)
+    point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY FACT HIGHLIGHTED").upper(), 30)
+    words_ex = re.sub(r"[^\x20-\x7E]", "", b_txt).strip().split()
+    line1_ex = " ".join(words_ex[:9])
+    line2_ex = " ".join(words_ex[9:18])
 
-    # Animated Translucent Yellow Marker Box drawing across the headline (synced to `dry_marker_squeak`)
-    hl_prog = cubic_bezier_ease_in_out(min(max((local_t - 0.10) / 0.50, 0.0), 1.0))
-    hl_w = int((cw - 48) * hl_prog)
-    if hl_w > 8:
-        d.rounded_rectangle([(16, 46), (16 + hl_w, 86)], radius=6, fill=(255, 238, 0, 228))
+    # Animated Translucent Yellow Marker Box drawing across the headline
+    hl_prog = cubic_bezier_ease_in_out(min(max((local_t - 0.08) / 0.45, 0.0), 1.0))
+    hl_w = int((cw - 56) * hl_prog)
+    if hl_w > 10:
+        d.rounded_rectangle([(22, 60), (22 + hl_w, 114)], radius=8, fill=(255, 235, 0, 238))
 
-    d.text((22, 53), point_txt, fill=(10, 12, 18, 255), font=get_font(22))
-    d.text((22, 94), f'"{excerpt_line}..."', fill=(30, 36, 48, 255), font=get_font(15))
+    d.text((32, 68), point_txt, fill=(10, 12, 18, 255), font=get_font(31 if is_short else 30))
+    if line1_ex:
+        d.text((30, 126), f'"{line1_ex}', fill=(22, 28, 40, 255), font=get_font(22))
+    if line2_ex:
+        d.text((30, 158), f'{line2_ex}..."', fill=(22, 28, 40, 255), font=get_font(22))
 
-    # Bottom Statistical Gauge Bar
-    meter_prog = cubic_bezier_ease_in_out(min(max((local_t - 0.12) / 0.65, 0.0), 1.0))
-    bar_x0, bar_y0 = 22, ch - 32
-    bar_total_w = cw - 56
-    d.rounded_rectangle([(bar_x0, bar_y0), (bar_x0 + bar_total_w, bar_y0 + 10)], radius=5, fill=(205, 200, 188, 255))
-    fill_w = max(12, int(bar_total_w * (0.85 * meter_prog)))
-    d.rounded_rectangle([(bar_x0, bar_y0), (bar_x0 + fill_w, bar_y0 + 10)], radius=5, fill=(215, 20, 45, 255))
+    meter_prog = cubic_bezier_ease_in_out(min(max((local_t - 0.10) / 0.55, 0.0), 1.0))
+    bar_x0, bar_y0 = 30, ch - 38
+    bar_total_w = cw - 72
+    d.rounded_rectangle([(bar_x0, bar_y0), (bar_x0 + bar_total_w, bar_y0 + 12)], radius=6, fill=(205, 200, 188, 255))
+    fill_w = max(16, int(bar_total_w * (0.88 * meter_prog)))
+    d.rounded_rectangle([(bar_x0, bar_y0), (bar_x0 + fill_w, bar_y0 + 12)], radius=6, fill=(220, 20, 45, 255))
 
-    # Apply genuine 10°–12° Perspective Tilt!
     resample_bicubic = getattr(Image, "Resampling", Image).BICUBIC
-    tilt_deg = 8.5 if (int(beat.get("camera_mode", 0)) % 2 == 0) else -8.5
-    tilted_card = card.rotate(tilt_deg, expand=True, resample=resample_bicubic)
-    return tilted_card
+    tilt_deg = 4.5 if (int(beat.get("camera_mode", 0)) % 2 == 0) else -4.5
+    return card.rotate(tilt_deg, expand=True, resample=resample_bicubic)
 
 def build_kinetic_number_callout_rgba(beat, local_t, is_short=True):
     """
@@ -5078,27 +5138,37 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
 
     # Keep the center and right of the 1080p frame 100% clean for the real photograph/footage!
 
-    # 4. UNIVERSAL DYNAMIC SUBJECT SPOTLIGHT POP-UP (when not already inside a full-screen V2/V3 custom graphic)
+    # 4. GIANT CENTER PERSON SPOTLIGHT POP-UP OR GIANT CENTER ARTICLE PROOF CUTOUT (`beech mein` & `bada`!)
     if beat.get("person_popup") is not None and sim_mode not in ["ARCHIVAL_25D_TIMELINE", "BROADCAST_INTERVIEW_QUOTE_MOCKUP", "CORPORATE_POWER_ORGANOGRAM", "DATA_CONTRAST_OUTRO_INFOGRAPHIC"]:
         p_card = build_prebuilt_person_card_rgba(beat["person_popup"], is_short=is_short)
         if p_card is not None:
-            popup_show_dur = min(beat_dur * 0.88, 3.8)
+            popup_show_dur = min(beat_dur * 0.85, 3.4)
             if local_t <= popup_show_dur:
-                enter_p = min(max(local_t / 0.28, 0.0), 1.0)
-                exit_p = min(max((popup_show_dur - local_t) / 0.25, 0.0), 1.0) if local_t > (popup_show_dur - 0.25) else 1.0
-                scale_f = (0.76 + 0.24 * (1.0 - ((1.0 - enter_p) ** 3))) * (0.85 + 0.15 * exit_p)
+                # Softly dim the background while the Giant Center Person Spotlight is on screen so faces never clash!
+                dim_overlay = Image.new("RGBA", (W, H), (6, 10, 20, 135))
+                frame.alpha_composite(dim_overlay)
+                enter_p = min(max(local_t / 0.25, 0.0), 1.0)
+                exit_p = min(max((popup_show_dur - local_t) / 0.22, 0.0), 1.0) if local_t > (popup_show_dur - 0.22) else 1.0
+                scale_f = (0.78 + 0.22 * (1.0 - ((1.0 - enter_p) ** 3))) * (0.86 + 0.14 * exit_p)
                 resample_mode = getattr(Image, "Resampling", Image).BILINEAR
                 cw, ch = p_card.size
                 sw, sh = max(10, int(cw * scale_f)), max(10, int(ch * scale_f))
                 scaled_card = p_card.resize((sw, sh), resample_mode) if abs(scale_f - 1.0) > 0.02 else p_card
-                float_dy = int(5.0 * math.sin(local_t * 3.8))
-                style_pos = int(beat["person_popup"].get("style_idx", 0)) % 2
-                if is_short or style_pos == 0:
-                    center_x = (W - sw) // 2
-                else:
-                    center_x = W - sw - 64
-                center_y = ((H - sh) // 2 - (70 if is_short else 30)) + float_dy
+                float_dy = int(4.0 * math.sin(local_t * 3.6))
+                # Always place right in the CENTER (`beech mein`) of the screen!
+                center_x = (W - sw) // 2
+                center_y = ((H - sh) // 2 - (55 if is_short else 20)) + float_dy
                 frame.paste(scaled_card, (center_x, center_y), scaled_card)
+    elif int(beat.get("beat_in_section", 0)) == 1 and local_t <= min(beat_dur * 0.78, 2.8):
+        # Giant Center Article / Proof Cutout Card (`beech mein`) on key evidence beats!
+        ev_card = build_evidence_paper_cutout_rgba(beat, local_t, is_short=is_short)
+        if ev_card is not None:
+            dim_overlay = Image.new("RGBA", (W, H), (6, 10, 20, 115))
+            frame.alpha_composite(dim_overlay)
+            ew, eh = ev_card.size
+            ex = (W - ew) // 2
+            ey = (H - eh) // 2 - (40 if is_short else 15)
+            frame.paste(ev_card, (ex, ey), ev_card)
 
     # 5. Composite Cached Synced Subtitles (with Key Point Keyword Highlighting!)
     sub_strip = voice_sub_dir.render_exact_synced_subtitles(
@@ -5253,7 +5323,7 @@ def build_prop_driven_storyboard_1080p(
         ai_person = sec.get("mentioned_person", "")
         ai_role = sec.get("person_role", "")
 
-        raw_sents = [s.strip() for s in split_into_complete_sentences(narration) if len(s.strip()) > 8]
+        raw_sents = [s.strip() for s in split_into_complete_sentences(narration, split_long_for_visual_pacing=True) if len(s.strip()) > 8]
         sentence_beats_info = compute_exact_sentence_beat_timings(narration, raw_sents, word_timings, sec_dur)
         num_beats = len(sentence_beats_info)
 
@@ -5265,8 +5335,16 @@ def build_prop_driven_storyboard_1080p(
             if p_im is not None:
                 scene_person_popup = {"name": d_name, "role": r_lbl, "portrait_im": p_im, "style_idx": global_beat_idx % 4}
 
-        section_got_video = False
+        videos_in_section = 0
         person_shown_in_sec = False
+        angle_modifiers = [
+            "editorial press photo",
+            "action scene photojournalism",
+            "official government courtroom briefing photo",
+            "wide documentary street photo",
+            "close up real event photo",
+            "international crisis press photo"
+        ]
 
         for b_i, s_info in enumerate(sentence_beats_info):
             b_txt = s_info["text"]
@@ -5349,15 +5427,20 @@ def build_prop_driven_storyboard_1080p(
             else:
                 chosen_sfx = "dry_marker_squeak"
 
-            # Fetch 100% Verified Point-to-Point Real HD Video B-Roll (strictly verified title & frame!)
+            # Diversify `search_q` across sub-beats so consecutive beats NEVER stick on the same query!
+            angle_mod = angle_modifiers[(global_beat_idx + b_i) % len(angle_modifiers)]
+            if b_i > 0 and angle_mod.split()[0] not in search_q.lower():
+                search_q = f"{search_q} {angle_mod}".strip()
+
+            # Fetch 100% Verified Point-to-Point Real HD Video B-Roll (up to 2 clips per chapter!)
             vseg = None
-            if not section_got_video and b_i == 0:
-                v_q = ai_video_q if ai_video_q else search_q
+            if videos_in_section < 2 and (b_i == 0 or b_i == 2):
+                v_q = ai_video_q if (b_i == 0 and ai_video_q) else search_q
                 vseg = fetch_and_transcode_real_video_broll(
                     v_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vc_{global_beat_idx}"
                 )
                 if vseg is not None:
-                    section_got_video = True
+                    videos_in_section += 1
 
             if vseg is not None:
                 b_type = "VIDEO_BROLL_BEAT"
@@ -5776,13 +5859,16 @@ def build_long_documentary_script(dossier):
         "CHAPTER 7 • GLOBAL IMPACT", "CHAPTER 8 • THE VERDICT"
     ]
 
+    t_anc = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
     chapters = []
     for idx, grp in enumerate(sent_groups):
-        body_txt = " ".join(grp)
+        body_txt = strip_news_publisher_mentions(" ".join(grp))
         if idx == 0:
-            body_txt = f"{paraphrase_into_original_creator_voice(dossier['title'], 0)} {body_txt}"
+            hook_intro = f"What just unfolded around {t_anc} has triggered an immediate global shockwave, and here is the real story behind the headlines."
+            body_txt = f"{hook_intro} {paraphrase_into_original_creator_voice(dossier['title'], 0, dossier=dossier)} {body_txt}"
         if idx == len(sent_groups) - 1:
-            body_txt = f"{body_txt} Subscribe to World Talk Brief for daily original deep-dive case studies."
+            verdict_outro = build_domain_grounded_conclusion(dossier, body_txt)
+            body_txt = f"{body_txt} {verdict_outro}"
         c_meta = claims[min(idx, len(claims) - 1)]
         ch_head = make_clean_context_headline(grp[0], max_words=6)
         chapters.append({
@@ -6025,7 +6111,7 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
             sec["claim_meta"] = claims[min(idx, len(claims) - 1)]
 
         # Script Audit #4: Lock exact sentence-by-sentence Visual & Proof Blueprint for the finalized narration!
-        final_sents = [s.strip() for s in split_into_complete_sentences(clean_nar) if len(s.strip()) > 8]
+        final_sents = [s.strip() for s in split_into_complete_sentences(clean_nar, split_long_for_visual_pacing=True) if len(s.strip()) > 8]
         existing_bvs = sec.get("beat_visuals") if isinstance(sec.get("beat_visuals"), list) else []
         locked_bvs = []
         ents_for_bp = extract_story_entities(dossier)
@@ -6454,11 +6540,11 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
 
     long_hashtags_str = " ".join(pkg_report["hashtags"] + ["#CaseStudy", "#DeepDive"])
     ai_desc = lead_long_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] presents an original deep-dive case study.")
+    clean_ai_desc = strip_news_publisher_mentions(ai_desc)
     long_seo_desc = (
         f"{pkg_report['selected_title']}\n\n"
-        f"{ai_desc}\n\n"
+        f"{clean_ai_desc}\n\n"
         f"CHAPTER TIMESTAMPS:\n" + "\n".join(chap_lines) + "\n\n"
-        f"KEY SUBJECTS & ENTITIES: {', '.join(lead_long_entities[:8])}\n\n"
         f"{long_hashtags_str}"
     )
     ai_tags = lead_long_dossier.get("ai_seo_tags", [])
@@ -6542,11 +6628,11 @@ async def render_and_upload_short_unit(
     )
     short_hashtags_str = " ".join(short_pkg["hashtags"] + ["#Shorts", "#Explained"])
     ai_desc = short_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] original #Shorts case study.")
+    clean_short_ai_desc = strip_news_publisher_mentions(ai_desc)
     short_seo_desc = (
         f"{long_link_block}"
         f"{short_dossier['original_yt_title']}\n\n"
-        f"{ai_desc}\n\n"
-        f"KEY ENTITIES: {', '.join(short_entities[:5])}\n\n"
+        f"{clean_short_ai_desc}\n\n"
         f"{short_hashtags_str}"
     )
     ai_tags = short_dossier.get("ai_seo_tags", [])
@@ -6620,28 +6706,54 @@ async def main():
                 print("✅ [DAILY USA 6:00 PM 24-HOUR MEGA NEWS + LINKED SHORT COMPLETE!]", flush=True)
                 return
 
+        # Auto-ensure GitHub Actions workflow cron is set to every 45 minutes (`*/45 * * * *`) so runs NEVER stall for 5 hours!
+        try:
+            wf_path = ".github/workflows/test_and_run.yml"
+            if os.path.exists(wf_path):
+                with open(wf_path, "r", encoding="utf-8") as wf_f:
+                    wf_txt = wf_f.read()
+                new_wf_txt = re.sub(r"cron:\s*['\"][^'\"]+['\"]", "cron: '*/45 * * * *'", wf_txt)
+                if new_wf_txt != wf_txt:
+                    with open(wf_path, "w", encoding="utf-8") as wf_f:
+                        wf_f.write(new_wf_txt)
+                    print("⚡ [Auto-Patched GitHub Workflow Schedule] Updated cron to '*/45 * * * *' (Every 45 Minutes)!", flush=True)
+        except Exception:
+            pass
+
         hot_geo_surge = detect_hot_geopolitics_surge()
         rr_idx = hist_obj.get("round_robin_idx", 0)
         batch_fingerprints = []
-        candidate_pool = []
 
-        # Always scan Hot Priority Pillars (Geopolitics, Science, AI/Tech, Defense) + current Round-Robin Pillars
-        priority_scan = ["GEOPOLITICS", "SCIENCE", "AI_ROBOTICS", "DEFENSE_MILITARY", "TECHNOLOGY"]
-        for step in range(6):
-            p_cand = ORDERED_PILLARS[(rr_idx + step) % len(ORDERED_PILLARS)]
-            if p_cand not in priority_scan:
-                priority_scan.append(p_cand)
+        # SLOT 1 & SLOT 2: Dedicated High-Velocity Geopolitics, Conflicts & Global Powers (10–15 Geopolitics Videos/Day!)
+        geo_dossiers = []
+        for geo_pillar in ["GEOPOLITICS", "DEFENSE_MILITARY", "GLOBAL_POWERS"]:
+            gd = discover_dossier_for_pillar(geo_pillar, hist_obj, winning_keywords, batch_fingerprints)
+            if gd is not None:
+                gd["score"] += 45
+                geo_dossiers.append(gd)
+                if len(geo_dossiers) >= 2:
+                    break
 
-        for sub_pillar in priority_scan[:7]:
-            d = discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fingerprints)
-            if d is not None:
-                if hot_geo_surge and sub_pillar in ["GEOPOLITICS", "DEFENSE_MILITARY", "GLOBAL_POWERS"]:
-                    d["score"] += 20
-                candidate_pool.append(d)
+        # SLOT 3: Rotates between Breaking Tech/AI (`TECHNOLOGY`/`AI_ROBOTICS`) & Unique Never-Before-Seen World Fact (`MIND_BLOWING_FACTS`)!
+        other_pillars = ["MIND_BLOWING_FACTS", "TECHNOLOGY", "AI_ROBOTICS", "SCIENCE", "BUSINESS"]
+        chosen_other_pillar = other_pillars[rr_idx % len(other_pillars)]
+        other_dossiers = []
+        for op in [chosen_other_pillar] + [p for p in other_pillars if p != chosen_other_pillar]:
+            od = discover_dossier_for_pillar(op, hist_obj, winning_keywords, batch_fingerprints)
+            if od is not None:
+                other_dossiers.append(od)
+                break
 
-        candidate_pool.sort(key=lambda x: x["score"], reverse=True)
-        selected_dossiers = candidate_pool[:2]
-        hist_obj["round_robin_idx"] = (rr_idx + 2) % len(ORDERED_PILLARS)
+        selected_dossiers = geo_dossiers[:2] + other_dossiers[:1]
+        hist_obj["round_robin_idx"] = (rr_idx + 1) % len(ORDERED_PILLARS)
+
+        if len(selected_dossiers) < 3:
+            for sub_pillar in ORDERED_PILLARS:
+                d = discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fingerprints)
+                if d is not None:
+                    selected_dossiers.append(d)
+                    if len(selected_dossiers) >= 3:
+                        break
 
         if len(selected_dossiers) < 2:
             hist_obj["published_keys"].clear()
@@ -6650,21 +6762,23 @@ async def main():
                 d = discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fingerprints)
                 if d is not None:
                     selected_dossiers.append(d)
-                    if len(selected_dossiers) >= 2:
+                    if len(selected_dossiers) >= 3:
                         break
 
-        story_1 = selected_dossiers[0]
-        story_2 = selected_dossiers[1] if len(selected_dossiers) > 1 else selected_dossiers[0]
+        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "3"))
+        active_dossiers = selected_dossiers[:pairs_to_build]
+        built_results = []
+        for p_idx, st_d in enumerate(active_dossiers, 1):
+            pkg_l, s_st = await render_and_upload_paired_story(
+                st_d, p_idx, watermark, voice_sub_dir, hist_obj,
+                winning_keywords, viral_yt_tags, playlist_map, top_channel_hits
+            )
+            built_results.append((st_d, pkg_l, s_st))
 
-        pkg_1, s1_stats = await render_and_upload_paired_story(
-            story_1, 1, watermark, voice_sub_dir, hist_obj,
-            winning_keywords, viral_yt_tags, playlist_map, top_channel_hits
-        )
-
-        pkg_2, s2_stats = await render_and_upload_paired_story(
-            story_2, 2, watermark, voice_sub_dir, hist_obj,
-            winning_keywords, viral_yt_tags, playlist_map, top_channel_hits
-        )
+        pkg_1, s1_stats = built_results[0][1], built_results[0][2]
+        story_1 = built_results[0][0]
+        pkg_2, s2_stats = (built_results[1][1], built_results[1][2]) if len(built_results) > 1 else (pkg_1, s1_stats)
+        story_2 = built_results[1][0] if len(built_results) > 1 else story_1
 
         save_published_history(hist_obj)
 
