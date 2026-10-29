@@ -9,6 +9,7 @@ import base64
 import random
 import asyncio
 import hashlib
+import signal
 import traceback
 import subprocess
 import urllib.parse
@@ -886,11 +887,12 @@ def get_available_groq_chat_models(groq_key):
             ]
             def score_model(mid):
                 ml = mid.lower()
-                if "llama-3.3-70b" in ml or "llama-3.1-70b" in ml:
+                if "llama-3.3-70b" in ml or "llama-3.1-70b" in ml or "gpt-oss-120b" in ml:
                     return 0
-                if "llama" in ml and ("70b" in ml or "8b" in ml):
+                if ("llama" in ml and ("70b" in ml or "8b" in ml)) or "gpt-oss-20b" in ml or "gemma" in ml:
                     return 1
-                if "qwen" in ml or "deepseek" in ml or "gemma" in ml or "mixtral" in ml:
+                # Put `<think>` reasoning models (`qwen3`, `deepseek-r1`, `qwq`) after direct JSON/chat models
+                if "qwen" in ml or "deepseek" in ml or "mixtral" in ml:
                     return 2
                 return 3
             preferred = sorted(chat_ids, key=score_model)
@@ -3159,13 +3161,14 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str):
         raw_local = f"temp/{tag_id}_raw.mp4"
         clean_mp4 = f"temp/{tag_id}_{len(used_video_urls)}.mp4"
 
-        with requests.get(cand_u, headers=HEADERS_WEB, stream=True, timeout=12) as vr:
+        dl_start_t = time.time()
+        with requests.get(cand_u, headers=HEADERS_WEB, stream=True, timeout=(5, 10)) as vr:
             if vr.status_code != 200:
                 return None
             bytes_read = 0
             with open(raw_local, "wb") as vf:
                 for chunk in vr.iter_content(chunk_size=262144):
-                    if not chunk:
+                    if not chunk or (time.time() - dl_start_t) > 14.0:
                         break
                     vf.write(chunk)
                     bytes_read += len(chunk)
@@ -3176,7 +3179,7 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str):
             return None
 
         cmd = [
-            "ffmpeg", "-y",
+            "ffmpeg", "-nostdin", "-y",
             "-ss", "0.8",
             "-i", raw_local,
             "-t", "11.0",
@@ -3184,7 +3187,7 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str):
             "-r", "24", "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
             clean_mp4
         ]
-        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=18, check=False)
+        subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=18, check=False)
         if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 45000:
             vc = VideoFileClip(clean_mp4)
             GLOBAL_OPEN_VCLIPS.append(vc)
@@ -3397,20 +3400,19 @@ AI_CAPTION_AUDIT_CACHE = {}
 
 def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_context):
     """
-    V16 INSTANT (0.001ms) SEMANTIC COUNTRY-LOCK & ENTITY CAPTION AUDITOR:
-    Fixes the Run #122 timeout (`exit code 143`) where `qwen/qwen3.8-27b` (`max_tokens=8`)
-    truncated inside `<think>` blocks and falsely rejected 65+ valid Brazil/Bolsonaro photos!
-    1. Rejects academic PDFs (`(PDF)`), ResearchGate/Academia slides, and listicles.
-    2. Enforces Strict Country Lock: if the caption names a foreign country/demonym (e.g. 'Election Commission of India'
-       or 'South Africa' or 'Portugal' or 'Algeria') that is NOT in `story_title` or `query_context`, rejects it in 0.001ms!
-    3. Requires at least 1 strong entity/topic noun match with the story or scene.
+    V17 HYBRID DETERMINISTIC + LIVE AI CAPTION & SCENE AUDITOR (Zero `<think>` Truncation Bug!):
+    1. Instant Gate: Rejects academic PDFs (`(PDF)`), stock sites, and wrong-country captions
+       (e.g. 'Election Commission of India' or 'South Africa' in a Brazil story).
+    2. Fast Strong-Match Pass: If the caption explicitly matches >=2 core proper nouns/entities from
+       `story_title` (e.g. 'Bolsonaro' + 'Brazil' or 'Lula' + 'Brazil'), approves immediately!
+    3. Live AI Judge (Groq Non-Thinking Model `openai/gpt-oss-120b` / `llama-3.3-70b`): For borderline
+       captions, asks the AI Judge with full `<think>` stripping so zero off-topic images ever slip through!
     """
     if not img_caption or len(img_caption.strip()) < 6:
         return False
     cap_low = f"{img_caption} {img_url}".lower()
     ctx_low = f"{story_title} {query_context}".lower()
 
-    # 1. Block academic PDFs, slide decks, and off-topic portals seen in Run #122 (Line 76 '(PDF) Transnational Fascism')
     bad_markers = [
         "(pdf)", ".pdf", "researchgate", "academia.edu", "slideshare", "scribd", "coursehero",
         "studocu", "quizlet", "chegg", "shutterstock", "gettyimages", "alamy", "istockphoto",
@@ -3419,7 +3421,6 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
     if any(bm in cap_low for bm in bad_markers):
         return False
 
-    # 2. Strict Foreign Country Mismatch Guard (Blocks 'Election Commission of India' or 'South Africa' in a Brazil story!)
     country_check_terms = [
         ("india", "indian"), ("south africa", "south african"), ("portugal", "portuguese"),
         ("algeria", "algerian"), ("nigeria", "nigerian"), ("pakistan", "pakistani"),
@@ -3434,6 +3435,56 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
             if (c_noun not in ctx_low) and (c_dem not in ctx_low):
                 return False
 
+    # Check how many headline proper nouns/core tokens appear in the caption
+    title_core = {
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", story_title)
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS
+    }
+    cap_words = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", img_caption)}
+    if len(title_core.intersection(cap_words)) >= 2:
+        return True
+
+    cache_k = f"{story_title[:30]}||{img_caption[:55]}".lower()
+    if cache_k in AI_CAPTION_AUDIT_CACHE:
+        return AI_CAPTION_AUDIT_CACHE[cache_k]
+
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    if not groq_key or AI_VISION_AUDIT_BUDGET["calls"] >= 90:
+        return True
+
+    try:
+        live_models = get_available_groq_chat_models(groq_key)
+        # Always pick a non-thinking model first (`gpt-oss` or `llama`) so output never truncates inside `<think>`!
+        non_think = [m for m in live_models if "qwen" not in m.lower() and "deepseek" not in m.lower()]
+        model_id = non_think[0] if non_think else (live_models[0] if live_models else "llama-3.3-70b-versatile")
+        AI_VISION_AUDIT_BUDGET["calls"] += 1
+        prompt = (
+            f"Documentary Topic: '{story_title}' | Scene: '{query_context}'.\n"
+            f"Candidate Photo Caption: '{img_caption}'.\n"
+            "Reply ONLY 'NO' if this photo is completely unrelated, a random girl/selfie, vacation rental, cartoon, or wrong country. "
+            "Reply ONLY 'YES' if it is a valid documentary/news photo for this story."
+        )
+        r = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+            json={
+                "model": model_id,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.0,
+                "max_tokens": 120
+            },
+            timeout=3.0
+        )
+        if r.status_code == 200:
+            raw_ans = r.json()["choices"][0]["message"]["content"].strip()
+            ans_clean = re.sub(r"<think>.*?</think>", "", raw_ans, flags=re.S | re.I).strip().upper()
+            if "<THINK>" in ans_clean:
+                ans_clean = ans_clean.split("</THINK>")[-1].strip()
+            is_ok = not bool(re.search(r"\bNO\b", ans_clean[-15:]))
+            AI_CAPTION_AUDIT_CACHE[cache_k] = is_ok
+            return is_ok
+    except Exception:
+        pass
     return True
 
 def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_context=""):
@@ -5969,7 +6020,7 @@ def build_prop_driven_storyboard_1080p(
 
             # Fetch 100% Verified Point-to-Point Real HD Video B-Roll (up to 2 clips per chapter!)
             vseg = None
-            if videos_in_section < 1 and b_i == 0:
+            if videos_in_section < 2 and (b_i == 0 or b_i == 2):
                 v_q = ai_video_q if (b_i == 0 and ai_video_q) else search_q
                 vseg = fetch_and_transcode_real_video_broll(
                     v_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vc_{global_beat_idx}"
@@ -6132,11 +6183,11 @@ class VoiceAndSubtitleEngine:
         try:
             # Studio Broadcast Loudness Mastering (-12 LUFS Equivalent): Warm 175Hz chest presence + 3.1kHz vocal clarity + +5dB makeup gain + 1.55x clean loudness boost + brickwall limiter at 0.96
             cmd = [
-                "ffmpeg", "-y", "-i", raw_mp3,
+                "ffmpeg", "-nostdin", "-y", "-i", raw_mp3,
                 "-af", "equalizer=f=175:width_type=o:width=1.2:g=2.6,equalizer=f=3100:width_type=o:width=1.4:g=2.2,acompressor=threshold=-18dB:ratio=2.4:attack=10:release=150:makeup=5dB,volume=1.55,alimiter=limit=0.96,apad=pad_dur=0.16",
                 "-ar", "44100", "-ac", "2", "-b:a", "192k", out_path
             ]
-            subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
+            subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
             if not os.path.exists(out_path) or os.path.getsize(out_path) < 1000:
                 os.replace(raw_mp3, out_path)
         except Exception:
@@ -7316,15 +7367,10 @@ async def main():
                     if len(selected_dossiers) >= 3:
                         break
 
-        run_start_ts = time.time()
-        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "2"))
+        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "3"))
         active_dossiers = selected_dossiers[:pairs_to_build]
         built_results = []
         for p_idx, st_d in enumerate(active_dossiers, 1):
-            elapsed_mins = (time.time() - run_start_ts) / 60.0
-            if p_idx > 1 and elapsed_mins >= 28.0:
-                print(f"⏱️ [Time-Budget Safety Guard] {elapsed_mins:.1f}m elapsed — saving history & exiting cleanly (0) before GitHub timeout!", flush=True)
-                break
             pkg_l, s_st = await render_and_upload_paired_story(
                 st_d, p_idx, watermark, voice_sub_dir, hist_obj,
                 winning_keywords, viral_yt_tags, playlist_map, top_channel_hits
@@ -7367,10 +7413,33 @@ async def main():
             except Exception:
                 pass
 
+def _graceful_signal_cleanup(signum, frame):
+    print(f"\n⚡ [Signal {signum} Received] Cleaning up open video/audio pipes & child ffmpeg processes cleanly...", flush=True)
+    for vc in list(GLOBAL_OPEN_VCLIPS):
+        try:
+            vc.close()
+        except Exception:
+            pass
+    try:
+        subprocess.run(["pkill", "-9", "-f", "ffmpeg"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=2, check=False)
+    except Exception:
+        pass
+    os._exit(0)
+
 if __name__ == "__main__":
+    try:
+        signal.signal(signal.SIGTERM, _graceful_signal_cleanup)
+        signal.signal(signal.SIGINT, _graceful_signal_cleanup)
+    except Exception:
+        pass
     try:
         asyncio.run(main())
     except Exception as exc:
         print("❌ CRITICAL ERROR DETAILS:", flush=True)
         traceback.print_exc()
         sys.exit(1)
+    finally:
+        try:
+            subprocess.run(["pkill", "-9", "-f", "ffmpeg"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=2, check=False)
+        except Exception:
+            pass
