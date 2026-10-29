@@ -785,8 +785,9 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
                             {"role": "system", "content": system_prompt},
                             {"role": "user", "content": user_prompt}
                         ],
-                        "temperature": 0.60,
-                        "max_tokens": 3900
+                        "temperature": 0.55,
+                        "max_tokens": 3900,
+                        "response_format": {"type": "json_object"}
                     },
                     timeout=26
                 )
@@ -807,7 +808,7 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
                 headers={"Content-Type": "application/json"},
                 json={
                     "contents": [{"parts": [{"text": f"{system_prompt}\n\n{user_prompt}"}]}],
-                    "generationConfig": {"temperature": 0.60, "maxOutputTokens": 3900}
+                    "generationConfig": {"temperature": 0.55, "maxOutputTokens": 3900, "responseMimeType": "application/json"}
                 },
                 timeout=25
             )
@@ -896,10 +897,12 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
     top_hits_str = ", ".join(top_channel_hits[:3]) if top_channel_hits else "High-impact geopolitical shifts, defense tech, AI breakthroughs, and mind-blowing mysteries"
 
     sys_prompt = (
-        "You are an elite YouTube Documentary Director combining the investigative case-study structure and evidence boards of Nitish Rajput, "
-        "the high-energy point-by-point highlights and top-banner impact tapes of Abhi & Niyu, and the visual pacing of Johnny Harris. "
-        "You write 100% family-friendly, broadcast-safe, copyright-free, natural human spoken-English storytelling scripts on TODAY'S LATEST BREAKING NEWS "
-        "and synchronize EVERY SINGLE SENTENCE with its own exact visual query, its own NOTED POINT HIGHLIGHT, its own emotional tone, and any important person mentioned (including historical figures like Alexander the Great, scientists, or world leaders). "
+        "You are an elite YouTube Documentary Director combining the multi-source investigative research and crystal-clear public storytelling of Nitish Rajput "
+        "with the high-retention point-by-point clarity of Abhi & Niyu. "
+        "CRITICAL STORYTELLING & VISUAL RULES: "
+        "1. SYNTHESIZE ALL SOURCES FOR THE GENERAL PUBLIC: Combine facts from all provided news sources into simple, crystal-clear, engaging human storytelling that any everyday viewer can immediately understand (explain WHO is involved, WHAT happened, WHY it happened, WHAT the lawyers/judges/officials/experts said, and WHAT it means next). "
+        "2. ALWAYS INTRODUCE PEOPLE BY FULL NAME AND ROLE: Never leave dangling surnames like 'Azhari added' or vague phrases like 'the association said' — always state their full role and name clearly (e.g., 'Her defense lawyer, Hassan al-Azhari, explained that...'). "
+        "3. EXACT POINT-TO-POINT SENTENCE VISUALS: Map EVERY single sentence to the exact person, role, or setting spoken in that sentence! When a sentence mentions a lawyer/defense team, set `photo_query` to that lawyer/defense team at court; when it mentions a courtroom/judge/trial, set `photo_query` to the actual courtroom/judge/hearing; never repeat the same person query across every sentence! "
         "Output STRICT JSON only."
     )
 
@@ -1126,7 +1129,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         shutter = lowpass_warm_filter(noise * (click1 + click2), window_len=6)
         sig = thud + 0.55 * shutter
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.074).astype(np.float32)
+        return ((sig / max_v) * 0.138).astype(np.float32)
 
     if sfx_type in ["dry_marker_squeak", "paper_evidence_highlighter"]:
         dur = 0.40
@@ -1141,7 +1144,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         warm_body = 0.35 * np.sin(2.0 * np.pi * 88.0 * t) * np.exp(-t * 14.0)
         sig = felt_stroke + lowpass_warm_filter(squeak_mod, window_len=12) + warm_body
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.066).astype(np.float32)
+        return ((sig / max_v) * 0.126).astype(np.float32)
 
     if sfx_type == "vinyl_stop_transition":
         dur = 0.48
@@ -1154,7 +1157,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         sig = (0.65 * np.sin(phase) + 0.35 * np.sin(phase * 1.5)) * env
         sig = lowpass_warm_filter(sig, window_len=18)
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.076).astype(np.float32)
+        return ((sig / max_v) * 0.142).astype(np.float32)
 
     if sfx_type == "organogram_arrow_whoosh":
         dur = 0.34
@@ -1168,7 +1171,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         snap = 0.48 * np.sin(2.0 * np.pi * 115.0 * t) * np.exp(-((t - 0.24) ** 2) / (2.0 * (0.018 ** 2)))
         sig = whoosh + snap
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.068).astype(np.float32)
+        return ((sig / max_v) * 0.128).astype(np.float32)
 
     if sfx_type == "ligo_gravitational_chirp":
         dur = 0.52
@@ -1181,7 +1184,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         sub_rumble = 0.38 * np.sin(2.0 * np.pi * 46.0 * t) * np.exp(-t * 4.5)
         sig = lowpass_warm_filter(chirp + sub_rumble, window_len=16)
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.068).astype(np.float32)
+        return ((sig / max_v) * 0.128).astype(np.float32)
 
     if sfx_type == "tactical_map_zoom_whoosh":
         dur = 0.42
@@ -1195,7 +1198,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         sub_sweep = 0.50 * np.sin(2.0 * np.pi * (82.0 * np.exp(-t * 5.0) + 42.0) * t) * env
         sig = whoosh + sub_sweep
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.064).astype(np.float32)
+        return ((sig / max_v) * 0.124).astype(np.float32)
 
     if sfx_type in ["crisis_stat_sub_drop", "deep_sub_drop"]:
         dur = 0.48
@@ -1205,7 +1208,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         phase = 2.0 * np.pi * np.cumsum(f_drop) / float(sr)
         sig = np.sin(phase) * np.exp(-t * 6.0)
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.076).astype(np.float32)
+        return ((sig / max_v) * 0.142).astype(np.float32)
 
     if sfx_type in ["camera_shutter_flash", "dossier_stamp_thud", "cinematic_medallion_reveal", "digital_hud_lock"]:
         dur = 0.30
@@ -1217,7 +1220,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         soft_air = lowpass_warm_filter(rng.standard_normal(n).astype(np.float32), window_len=30) * np.sin(np.pi * (t / dur)) * np.exp(-t * 11.0)
         sig = 0.72 * warm_thump + 0.28 * soft_air
         max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.064).astype(np.float32)
+        return ((sig / max_v) * 0.124).astype(np.float32)
 
     dur = 0.34
     n = int(sr * dur)
@@ -1230,7 +1233,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
     sub_bed = 0.48 * np.sin(2.0 * np.pi * 56.0 * t) * env
     sig = warm_whoosh + sub_bed
     max_v = max(float(np.max(np.abs(sig))), 1e-4)
-    return ((sig / max_v) * 0.056).astype(np.float32)
+    return ((sig / max_v) * 0.115).astype(np.float32)
 
 def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     """
@@ -1289,7 +1292,7 @@ def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     raw_mix = pad_layer + sub_layer + arp_layer + pulse_layer
     warm_mix = lowpass_warm_filter(raw_mix, window_len=24)
     max_s = max(float(np.max(np.abs(warm_mix))), 1e-4)
-    mastered_seg = (warm_mix / max_s) * 0.088
+    mastered_seg = (warm_mix / max_s) * 0.135
     return mastered_seg.astype(np.float32), track_name
 
 def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times, mood="dark_geopolitics", track_seed=0, sfx_events=None):
@@ -1911,13 +1914,28 @@ def build_100_percent_original_youtube_title(raw_title, pillar, c_prof, topic_an
             break
     return " ".join(out)
 
-def paraphrase_into_original_creator_voice(raw_fact, beat_idx=0):
-    s = raw_fact.strip().rstrip(".")
+def paraphrase_into_original_creator_voice(raw_fact, beat_idx=0, dossier=None):
+    s = str(raw_fact or "").strip().rstrip(".")
+    # Fix awkward 'Verified data from X, Y' or trailing ', X added' news wire fragments so the public understands every sentence!
+    s = re.sub(r"(?i)^verified data from\s+([^,]+),\s*", r"According to reports from \1, ", s)
+    # If a trailing ', [Surname] added/said' appears, clarify their role if known from dossier person_role_directory!
+    if dossier and isinstance(dossier.get("person_role_directory"), dict):
+        p_dir = dossier["person_role_directory"]
+        for key_low, (w_n, d_n, r_lbl) in p_dir.items():
+            if len(key_low) >= 4:
+                s = re.sub(
+                    rf",\s*{re.escape(d_n.split()[-1])}\s+(?:added|said|noted|stated|warned)\.?$",
+                    f", according to {r_lbl.lower()} {d_n}",
+                    s, flags=re.I
+                )
+    s = re.sub(r",\s*([A-Z][a-z]{3,16})\s+added\.?$", r", defense counsel  confirmed", s)
+    s = re.sub(r",\s*the\s+([a-z]+(?:\s+[a-z]+)?'s?\s+association)\s+said\.?$", r", according to the ", s, flags=re.I)
+
     rewrites = [
         (r"(?i)^in a study of\b", "When researchers analyzed"),
-        (r"(?i)^according to\b", "Verified data from"),
         (r"(?i)\bmounted a stunning comeback\b", "pulled off a historic turnaround"),
         (r"(?i)\bholds off far right\b", "secured a decisive victory"),
+        (r"(?i)\bin effect,\s*ambushed\b", "unexpectedly ambushed"),
         (r"(?i)\bmore than (\d+)", r"over \1"),
         (r"(?i)\bapproximately (\d+)", r"nearly \1"),
         (r"(?i)\bit is\b", "it's"),
@@ -2488,15 +2506,66 @@ def is_valid_human_name_candidate(cand_name):
             return False
     return True
 
-def detect_person_in_narration_text(text, ai_person="", ai_role="", story_title=""):
+GLOBAL_ACTIVE_DOSSIER_PERSONS = {}
+
+def register_persons_from_text_into_directory(raw_text, directory_dict):
     """
-    STRICT CONTEXT-VERIFIED PERSON & SUBJECT SPOTLIGHT DETECTOR:
-    1. Matches `PERSON_WIKI_MAP` only on unambiguous full names or verified historical/world leaders.
-    2. Matches `WILDLIFE_SPECIES_MAP` ONLY if the species is in `story_title` (never pops up cats/dinosaurs in physics or war videos!).
-    3. Validates named researchers/officials (e.g. 'Stephen Hawking', 'Roy Kerr', 'Roger Penrose', 'Rashad al-Alimi').
+    Scans article paragraphs across all news websites to build a complete lookup map of
+    every person's Full Name, Surname, and Role (e.g. 'Hassan al-Azhari' -> 'DEFENSE LAWYER',
+    'Lina Attalah' -> 'EDITOR-IN-CHIEF & JOURNALIST', 'Judge X' -> 'PRESIDING JUDGE').
+    """
+    if not raw_text:
+        return
+    patterns = [
+        (r"(?:defense\s+lawyer|defence\s+lawyer|lawyer|attorney|legal\s+counsel|prosecutor)\s+([A-Z][a-z]{2,15}(?:\s+(?:al-|el-|bin\s+|de\s+|van\s+)?[A-Z][a-z]{2,16}){1,2})", "DEFENSE LAWYER & COUNSEL"),
+        (r"([A-Z][a-z]{2,15}(?:\s+(?:al-|el-|bin\s+)?[A-Z][a-z]{2,16}){1,2}),\s+(?:a\s+|her\s+|his\s+|the\s+|mada\s+masr'?s?\s+)?(?:defense\s+lawyer|defence\s+lawyer|lawyer|attorney|legal\s+counsel)", "DEFENSE LAWYER & COUNSEL"),
+        (r"(?:judge|magistrate|chief\s+justice)\s+([A-Z][a-z]{2,15}(?:\s+(?:al-|el-)?[A-Z][a-z]{2,16}){1,2})", "PRESIDING COURT JUDGE"),
+        (r"(?:editor-in-chief|editor|journalist|reporter|correspondent|founder)\s+([A-Z][a-z]{2,15}(?:\s+(?:al-|el-)?[A-Z][a-z]{2,16}){1,2})", "JOURNALIST & EDITOR"),
+        (r"(?:spokesperson|spokesman|spokeswoman|director|president|prime\s+minister|minister|chancellor|ceo)\s+([A-Z][a-z]{2,15}(?:\s+(?:al-|el-)?[A-Z][a-z]{2,16}){1,2})", "OFFICIAL SPOKESPERSON & LEADER"),
+        (r"(?:Dr\.|Professor|researcher|scientist)\s+([A-Z][a-z]{2,15}(?:\s+[A-Z][a-z]{2,16}){1,2})", "LEAD RESEARCHER & EXPERT")
+    ]
+    for pat, role_lbl in patterns:
+        for m in re.finditer(pat, raw_text):
+            full_n = m.group(1).strip(" ,.;:'\"")
+            if is_valid_human_name_candidate(full_n.replace("al-", "").replace("el-", "")):
+                entry = (full_n, full_n, role_lbl)
+                directory_dict[full_n.lower()] = entry
+                surname = full_n.split()[-1].replace("al-", "").replace("el-", "").lower()
+                if len(surname) >= 4 and surname not in NON_PERSON_ORG_WORDS:
+                    directory_dict[surname] = entry
+
+    # Also detect '<Surname> added/said' when associated with 'defence team' or 'lawyer' in the same sentence
+    for m_sur in re.finditer(r"\b(defence\s+team|defense\s+team|legal\s+team|lawyer|lawyers|court\s+hearing)[^.!?]{0,95}\b([A-Z][a-z]{3,15})\s+(?:added|said|stated|told|argued)", raw_text):
+        sur = m_sur.group(2).strip()
+        if sur not in COMMON_NON_PERSON_CAP_WORDS and sur.lower() not in NON_PERSON_ORG_WORDS:
+            if sur.lower() not in directory_dict:
+                directory_dict[sur.lower()] = (f"{sur} lawyer", sur, "DEFENSE LAWYER & COUNSEL")
+
+def detect_person_in_narration_text(text, ai_person="", ai_role="", story_title="", prefer_secondary=False, primary_anchor=""):
+    """
+    STRICT CONTEXT-VERIFIED PERSON, LAWYER, JUDGE & SUBJECT SPOTLIGHT DETECTOR:
+    1. Resolves secondary speakers & surnames (like lawyer 'Azhari' / 'Hassan al-Azhari') from `GLOBAL_ACTIVE_DOSSIER_PERSONS`
+       BEFORE matching the primary headline subject so when a lawyer or official is spoken, THEIR photo appears!
+    2. Matches `PERSON_WIKI_MAP` on verified world leaders / historical figures.
+    3. Validates named lawyers, judges, researchers, journalists, and officials.
     """
     low = text.lower()
     title_low = str(story_title or "").lower()
+    prim_low = str(primary_anchor or "").lower()
+
+    # 0. Check cross-site discovered Person & Role Directory first (prioritizing secondary people like lawyers/judges!)
+    if GLOBAL_ACTIVE_DOSSIER_PERSONS:
+        # First pass: look for any person in `text` who is NOT the main headline anchor (e.g., lawyer Azhari when Attalah is also in sentence)
+        for p_k, p_tup in sorted(GLOBAL_ACTIVE_DOSSIER_PERSONS.items(), key=lambda x: len(x[0]), reverse=True):
+            if prim_low and (p_k in prim_low or prim_low in p_k):
+                continue
+            if re.search(rf"\b{re.escape(p_k)}\b", low):
+                return p_tup
+        # Second pass: allow primary anchor if not `prefer_secondary`
+        if not prefer_secondary:
+            for p_k, p_tup in sorted(GLOBAL_ACTIVE_DOSSIER_PERSONS.items(), key=lambda x: len(x[0]), reverse=True):
+                if re.search(rf"\b{re.escape(p_k)}\b", low):
+                    return p_tup
     for p_key in sorted(PERSON_WIKI_MAP.keys(), key=len, reverse=True):
         if re.search(rf"\b{re.escape(p_key)}\b", low):
             return PERSON_WIKI_MAP[p_key]
@@ -3099,6 +3168,18 @@ def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
         if tr_white > 0.32:
             return False
 
+        # 4B. Block Editorial Cartoons / Comic-Book Illustrations (e.g. Pharaoh Judge with Bitcoin coins at 01:42 of bW0UbwgmMIc):
+        # Comic/editorial illustrations have dense dark ink outlines (`gray < 42` on Canny edges) bordering flat quantized color regions!
+        edges_ink = cv2.Canny(gray_u8, 85, 175)
+        dilated_edges = cv2.dilate(edges_ink, np.ones((3, 3), np.uint8), iterations=1)
+        dark_ink_on_edge = float(np.mean((dilated_edges > 0) & (gray_u8 < 48)))
+        quant_16 = (arr // 28).astype(int)
+        flat_16 = quant_16[:, :, 0] * 100 + quant_16[:, :, 1] * 10 + quant_16[:, :, 2]
+        _, q_counts = np.unique(flat_16, return_counts=True)
+        top3_color_share = float(np.sum(np.sort(q_counts)[-3:])) / float(240 * 135)
+        if dark_ink_on_edge > 0.055 and top3_color_share > 0.34:
+            return False
+
         # 5. OpenCV Cat / Animal Face Detector (Blocks random cats/billi in non-animal stories!)
         if CAT_CASCADE is not None and not any(k in title_low for k in ["cat", "feline", "kitten", "animal", "pet", "wildlife"]):
             cats = CAT_CASCADE.detectMultiScale(gray_u8, scaleFactor=1.1, minNeighbors=4, minSize=(24, 24))
@@ -3308,12 +3389,17 @@ def extract_key_point_from_sentence(sentence_text, beat_num=1, fallback_stat="")
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     """
-    EXACT PERSON, ORGANIZATION, ARTICLE SUBJECT & CONCEPT VISUAL MATCHER:
-    1. If a specific person is mentioned in `beat_text`, searches for that exact person in context!
-    2. If a specific organization/institution/court/university is mentioned (e.g. 'Amnesty International',
-       'Chalmers University of Technology', 'World Health Organization', 'New Cairo Court', 'Mada Masr'),
-       searches for that exact entity's real-world photo!
-    3. Otherwise builds a high-precision visual query from the exact subject & action of `beat_text`!
+    V10 POINT-TO-POINT PERSON, LAWYER, JUDGE, COURTROOM, INSTITUTION & SCENE VISUAL MATCHER:
+    Fixes the bug where mentioning the main subject ('Attalah') in every sentence caused every beat
+    to search for the same portrait instead of the Lawyer ('Azhari'), Courtroom, Judge, or Organization!
+    1. If a secondary person/lawyer/official (e.g. 'Azhari', 'Hassan al-Azhari') is spoken in `beat_text`,
+       immediately searches for THAT exact person + role!
+    2. If the sentence describes a Lawyer / Defense Team / Legal Appeal, searches for the lawyer/defense team photo!
+    3. If the sentence describes a Courtroom / Judge / Trial / Conviction / Security Detention, searches for
+       the actual Courtroom / Judge / Courthouse scene in that country/city!
+    4. If a specific Organization (e.g. 'Reporters Without Borders', 'PEN America', 'Mada Masr') is spoken,
+       searches for that exact organization's press photo!
+    5. Only searches for the primary headline person on Beat 0 (or when no other role/setting is in the sentence).
     """
     low = beat_text.lower()
     pillar = dossier.get("pillar", "WORLD")
@@ -3321,36 +3407,89 @@ def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     p_cfg = CATEGORY_FEEDS.get(pillar, CATEGORY_FEEDS["WORLD"])
     domain_ctx = p_cfg.get("domain_context", "")
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
+    c_prof = dossier.get("country_profile", {})
+    geo_name = "" if c_prof.get("is_global_topic") else c_prof.get("name", "").title()
+    cap_city = "" if c_prof.get("is_global_topic") else c_prof.get("capital", "")
 
-    # 1. Check concrete technical/scientific/military props first
-    for word_key, (prop_badge, wiki_exact, news_q) in CONCRETE_WIKI_PROPS.items():
-        if re.search(rf"\b{re.escape(word_key)}\b", low):
-            return prop_badge, wiki_exact, f"{news_q} {domain_ctx}", False
+    # 0. Outro / Subscribe beat -> never search for 'subscribe' or 'case studies'!
+    if "subscribe to world talk brief" in low or "watch the full documentary" in low:
+        return f"CASE STUDY • {fit_whole_words_limit(topic_anchor.upper(), 16)}", topic_anchor, f"{topic_anchor} {geo_name} editorial press photojournalism".strip(), False
 
-    # 2. Check if a specific Person is named in this sentence -> fetch scene photo of that person/event!
-    person_hit = detect_person_in_narration_text(beat_text)
-    if person_hit:
-        p_wiki, p_disp, p_role = person_hit
-        return f"{p_disp.upper()[:18]} • {p_role[:12]}", p_wiki, f"{p_disp} {topic_anchor} press conference photo", True
+    # 1. Check if a secondary person (e.g., Lawyer 'Azhari', Judge, Official, Researcher) is spoken in this sentence!
+    sec_person = detect_person_in_narration_text(beat_text, story_title=dossier.get("title", ""), prefer_secondary=(beat_idx > 0), primary_anchor=topic_anchor)
+    if sec_person:
+        p_wiki, p_disp, p_role = sec_person
+        is_primary_repeat = (beat_idx > 0) and (p_disp.lower() in topic_anchor.lower() or topic_anchor.lower() in p_disp.lower())
+        if not is_primary_repeat:
+            role_q_word = "lawyer courtroom" if "LAWYER" in p_role.upper() else ("judge court" if "JUDGE" in p_role.upper() else "press photo")
+            return f"{p_disp.upper()[:18]} • {p_role[:12]}", p_wiki, f"{p_disp} {role_q_word} {geo_name} {topic_anchor}".strip(), True
 
-    # 3. Check if a specific named Organization / University / Court / Agency is in this sentence
+    # 2. Check for LAWYER / DEFENSE TEAM / LEGAL COUNSEL / APPEAL in the sentence!
+    if any(lw in low for lw in ["lawyer", "lawyers", "defence team", "defense team", "legal team", "attorney", "defense counsel", "appealed"]):
+        # Check if we discovered a named lawyer in `person_role_directory`
+        p_dir = dossier.get("person_role_directory") or {}
+        named_lawyer = None
+        for _, (w_n, d_n, r_l) in p_dir.items():
+            if "LAWYER" in r_l.upper() or "COUNSEL" in r_l.upper():
+                named_lawyer = d_n
+                break
+        if named_lawyer:
+            return f"LEGAL COUNSEL • {named_lawyer.upper()[:16]}", named_lawyer, f"{named_lawyer} defense lawyer {cap_city} {geo_name} court press photo".strip(), True
+        return f"LEGAL DEFENSE • {fit_whole_words_limit(topic_anchor.upper(), 14)}", f"{cap_city} Court".strip(), f"{topic_anchor} defense lawyer legal team {cap_city} {geo_name} courthouse press photo".strip(), False
+
+    # 3. Check for COURTROOM / JUDGE / TRIAL / HEARING / CONVICTION / DETENTION in the sentence!
+    if any(cw in low for cw in ["courtroom", "court appearance", "court hearing", "cairo court", "convicts", "convicted", "judge", "trial", "retrial", "ruling", "verdict", "detained her in the courtroom", "magistrate", "tribunal"]):
+        court_loc = f"{cap_city} {geo_name}".strip() or topic_anchor
+        return f"COURTROOM • {fit_whole_words_limit(court_loc.upper(), 16)}", f"Judiciary of {geo_name}".strip(), f"{court_loc} courtroom judge court trial hearing {topic_anchor} press photo".strip(), False
+
+    # 4. Check for POLICE / SECURITY PERSONNEL / ARREST / DETENTION in the sentence!
+    if any(pw in low for pw in ["security personnel", "police", "detained", "arrested", "custody", "security forces", "authorities have leveraged"]):
+        loc_str = f"{cap_city} {geo_name}".strip() or topic_anchor
+        return f"SECURITY • {fit_whole_words_limit(loc_str.upper(), 16)}", loc_str, f"{loc_str} security police authorities courthouse press photo".strip(), False
+
+    # 5. Check for specific named Organizations / Watchdogs / News Outlets (Reporters Without Borders, PEN America, Mada Masr, Amnesty, etc.)
+    known_orgs = [
+        ("reporters without borders", "Reporters Without Borders", "REPORTERS WITHOUT BORDERS", "Reporters Without Borders RSF press freedom conference photo"),
+        ("writers' association", "PEN America", "WRITERS ASSOCIATION", "PEN America press freedom journalists conference photo"),
+        ("writers association", "PEN America", "WRITERS ASSOCIATION", "PEN America press freedom journalists conference photo"),
+        ("mada masr", "Mada Masr", "MADA MASR NEWSROOM", "Mada Masr Cairo Egypt independent newsroom journalists photo"),
+        ("amnesty international", "Amnesty International", "AMNESTY INTERNATIONAL", "Amnesty International human rights press conference photo"),
+        ("committee to protect journalists", "Committee to Protect Journalists", "PRESS FREEDOM WATCH", "Committee to Protect Journalists CPJ press conference photo")
+    ]
+    for org_k, wiki_o, badge_o, q_o in known_orgs:
+        if org_k in low:
+            return badge_o, wiki_o, q_o, False
+
     org_match = re.search(
-        r"\b([A-Z][A-Za-z]+(?:\s+(?:of|for|and|the))?(?:\s+[A-Z][A-Za-z]+){1,4}\s+"
-        r"(?:University|Institute|Academy|Organization|International|Court|Ministry|Council|Foundation|Agency|Syndicate|Brotherhood|Lab))\b",
+        r"\b([A-Z][A-Za-z]+(?:\s+(?:of|for|and|the|Without))?(?:\s+[A-Z][A-Za-z]+){1,4}\s+"
+        r"(?:University|Institute|Academy|Organization|International|Court|Ministry|Council|Foundation|Agency|Syndicate|Brotherhood|Lab|Borders|Association))\b",
         beat_text
     )
     if org_match:
         org_name = org_match.group(1).strip()
-        return f"INSTITUTION • {fit_whole_words_limit(org_name.upper(), 18)}", org_name, f"{org_name} headquarters building official photo", False
+        return f"INSTITUTION • {fit_whole_words_limit(org_name.upper(), 18)}", org_name, f"{org_name} official press photo", False
 
-    # 4. Extract exact concrete nouns from the sentence
+    # 6. Check concrete technical/scientific/military props
+    for word_key, (prop_badge, wiki_exact, news_q) in CONCRETE_WIKI_PROPS.items():
+        if re.search(rf"\b{re.escape(word_key)}\b", low):
+            return prop_badge, wiki_exact, f"{news_q} {domain_ctx}", False
+
+    # 7. If Beat 0 and primary person is in sentence, show primary person!
+    if beat_idx == 0 and sec_person:
+        p_wiki, p_disp, p_role = sec_person
+        return f"{p_disp.upper()[:18]} • {p_role[:12]}", p_wiki, f"{p_disp} {topic_anchor} press photo", True
+
+    # 8. Extract exact concrete nouns from the sentence (excluding the repeated main person name if beat_idx > 0)
+    anchor_words_low = {w.lower() for w in re.findall(r"[A-Za-z]{3,}", topic_anchor)} if beat_idx > 0 else set()
     beat_words = [
         w for w in re.findall(r"[A-Za-z]{4,}", beat_text)
-        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in {"their", "there", "which", "would", "could", "should", "about", "these", "those", "where", "heres", "telling", "subscribe", "daily", "original"}
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS
+        and w.lower() not in anchor_words_low
+        and w.lower() not in {"their", "there", "which", "would", "could", "should", "about", "these", "those", "where", "heres", "telling", "subscribe", "daily", "original", "verified", "data"}
     ]
     sentence_exact_phrase = " ".join(beat_words[:4]) if beat_words else entities[beat_idx % len(entities)]
     chosen_ent = " ".join(beat_words[:2]).title() if beat_words else entities[beat_idx % len(entities)]
-    return f"{sub_pillar.replace('_', ' ')} • {fit_whole_words_limit(topic_anchor.upper(), 16)}", chosen_ent, f"{sentence_exact_phrase} {topic_anchor} {domain_ctx}", False
+    return f"{sub_pillar.replace('_', ' ')} • {fit_whole_words_limit(chosen_ent.upper(), 16)}", chosen_ent, f"{sentence_exact_phrase} {topic_anchor} {geo_name} press photo".strip(), False
 
 METAPHOR_NOISE_WORDS = {
     "loophole", "messy", "cluttered", "room", "bedroom", "kitchen", "cook", "cooking", "bake",
@@ -3359,40 +3498,35 @@ METAPHOR_NOISE_WORDS = {
     "disney", "fairy", "tale", "magic", "spell", "metaphor", "imagine", "picture", "suppose",
     "curtain", "lifting", "hunting", "sticky", "bolthole", "dustbin", "lobbed", "pile", "weight",
     "carry", "blanket", "door", "sunbed", "party", "mansion", "oak", "bunch", "hands", "light",
-    "lite", "unsung", "hero", "giant", "leap", "silence", "break", "dry", "vital", "routine"
+    "lite", "unsung", "hero", "giant", "leap", "silence", "break", "dry", "vital", "routine",
+    "subscribe", "world", "talk", "brief", "channel", "comment", "below"
 }
 
 def sanitize_visual_search_query(raw_q, dossier):
     """
-    POINT-TO-POINT ENTITY-LOCKED VISUAL QUERY BUILDER (Audit Gate #1 Pre-Filter):
-    1. Strips conversational idioms & metaphors ('lifting the curtain', 'hunting', 'sticky', 'dustbin')
-       that previously caused Bing to return Pixar girls, street dogs, or stock graphics!
-    2. Always anchors the search query to the story's exact Named Entity / Subject (`topic_anchor` + headline nouns)
-       so every single photo is 100% about the exact topic being discussed!
+    V10 POINT-TO-POINT SCENE & ENTITY VISUAL QUERY BUILDER:
+    1. Preserves specific scene nouns ('courtroom', 'lawyer', 'judge', 'Azhari', 'Reporters Without Borders', 'newsroom')
+       WITHOUT overwriting them with headline verbs like 'Egypt fines prominent editor'!
+    2. Anchors the query with the concise `topic_anchor` or country/city name so every sentence gets its own distinct,
+       100% relevant real-world press photo!
     """
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
-    pillar = dossier.get("pillar", "WORLD")
     title_str = dossier.get("title", "")
     title_low = title_str.lower()
-
-    # Extract concrete headline subject tokens
-    title_nouns = [
-        w for w in re.findall(r"[A-Za-z0-9\-]{3,}", title_str)
-        if w.lower() not in METAPHOR_NOISE_WORDS and w.lower() not in HEADLINE_STOP_VERBS_ADJS
-    ][:4]
-    title_prefix = " ".join(title_nouns)
+    c_prof = dossier.get("country_profile", {})
+    geo_name = "" if c_prof.get("is_global_topic") else c_prof.get("name", "").title()
 
     words = [
         w for w in re.findall(r"[A-Za-z0-9\-]{3,}", str(raw_q or ""))
         if w.lower() not in METAPHOR_NOISE_WORDS and w.lower() not in HEADLINE_STOP_VERBS_ADJS
+        and w.lower() not in {"fines", "prominent", "shuts", "independent", "warnings", "escalating"}
     ]
-    cleaned = " ".join(words[:5]).strip()
+    cleaned = " ".join(words[:7]).strip()
 
-    # Ensure the core subject from the headline is ALWAYS present in the visual search query!
-    if title_nouns and not any(tn.lower() in cleaned.lower() for tn in title_nouns[:2]):
-        cleaned = f"{title_prefix} {cleaned}".strip()
+    anchor_tokens = [w for w in re.findall(r"[A-Za-z0-9\-]{3,}", f"{topic_anchor} {geo_name}") if w.lower() not in HEADLINE_STOP_VERBS_ADJS]
+    if anchor_tokens and not any(at.lower() in cleaned.lower() for at in anchor_tokens):
+        cleaned = f"{cleaned} {' '.join(anchor_tokens[:2])}".strip()
 
-    # Disambiguate known tricky entities (e.g. 'Saint-Jacques' -> 'David Saint-Jacques astronaut NASA', 'Anthropic' -> 'Dario Amodei Anthropic')
     if "saint-jacques" in cleaned.lower() and "astronaut" not in cleaned.lower():
         cleaned = f"David Saint-Jacques Canadian astronaut NASA {cleaned}"
     if "anthropic" in title_low and not any(k in cleaned.lower() for k in ["dario", "amodei", "anthropic", "claude"]):
@@ -3401,16 +3535,15 @@ def sanitize_visual_search_query(raw_q, dossier):
         cleaned = f"NASA International Space Station astronaut spacewalk {cleaned}"
 
     if len(cleaned) < 6:
-        cleaned = f"{topic_anchor} {title_prefix} press photo".strip()
-    return cleaned[:75]
+        cleaned = f"{topic_anchor} {geo_name} press photo".strip()
+    return cleaned[:80]
 
 def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, query_str):
     """
-    DOUBLE-AUDIT GATE #1 (Metadata, Caption & URL Semantic Relevance Check):
-    Inspects the candidate image's URL and Bing title/caption BEFORE downloading:
-    1. Rejects any URL or caption containing cartoons, Pixar, Minions, Minecraft, 3D renders,
-       cats/dogs (unless an animal story), vector graphics, or stock agencies.
-    2. Requires the caption/URL to match at least 1 core keyword from the story or query!
+    V10 DOUBLE-AUDIT GATE #1 (Strict Metadata, Caption, Anti-Selfie, Anti-Crypto-Cartoon & Core Subject Check):
+    1. Rejects any URL or caption containing cartoons, Bitcoin/crypto illustrations, Pixar, Minions, Minecraft,
+       stadium selfies (in non-sports stories), cats/dogs, vector graphics, or stock agencies.
+    2. Requires the caption/URL to match at least 1 SPECIFIC SUBJECT/SCENE NOUN (not generic words like 'first', 'step', 'years')!
     """
     comb_meta = f"{img_url} {img_title_or_desc}".lower()
     if any(b in comb_meta for b in BANNED_IMAGE_SOURCES) or any(nf in comb_meta for nf in ADULT_NSFW_BANNED_TERMS):
@@ -3418,12 +3551,32 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
     if any(bad_w in comb_meta for bad_w in BANNED_CAPTION_AND_TITLE_WORDS):
         return False
 
+    pillar = dossier.get("pillar", "WORLD")
+    title_low = dossier.get("title", "").lower()
+    # Block random football stadium selfies & sports fan photos in non-sports news stories (like 00:54 of bW0UbwgmMIc)!
+    if pillar != "SPORTS" and not any(sp in title_low for sp in ["football", "soccer", "stadium", "olympic", "champion", "league", "match", "player", "cricket", "tennis"]):
+        sports_selfie_noise = ["stadium", "selfie", "world cup", "fifa", "uefa", "premier league", "champions league", "bleachers", "grandstand", "fan Zone", "supporter", "football fan", "soccer fan"]
+        if any(sn in comb_meta for sn in sports_selfie_noise):
+            return False
+
+    # Block crypto/bitcoin/pharaoh cartoons in non-crypto stories (like 01:42 of bW0UbwgmMIc)!
+    if not any(ck in title_low for ck in ["bitcoin", "crypto", "blockchain", "ethereum", "token"]):
+        if any(cb in comb_meta for cb in ["bitcoin", "crypto", "cryptocurrency", "blockchain", "nft", "pharaoh", "memecoin", "altcoin", "mining rig"]):
+            return False
+
     if img_title_or_desc:
+        generic_weak_words = {
+            "first", "second", "third", "sixth", "years", "year", "time", "step", "steps", "case", "cases",
+            "nature", "read", "clear", "intent", "once", "after", "before", "under", "over", "between",
+            "through", "during", "without", "within", "states", "state", "national", "global", "world",
+            "daily", "original", "deep", "dive", "studies", "study", "brief", "subscribe", "report", "reports",
+            "decision", "ruling", "action", "actions", "group", "groups", "team", "teams", "space", "remains"
+        }
         story_tokens = {
             w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {query_str}")
-            if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS
+            if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS and w.lower() not in generic_weak_words
         }
-        caption_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", img_title_or_desc)}
+        caption_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{img_title_or_desc} {img_url}")}
         if story_tokens and caption_tokens and len(story_tokens.intersection(caption_tokens)) == 0:
             return False
     return True
@@ -3487,7 +3640,32 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     raw_candidates = []
     seen_cand_urls = set()
 
-    # 1. Seed with direct article inline images & lead image
+    # 0. Add dedicated search angles for any discovered Lawyers, Judges, Courtrooms, or Secondary People!
+    p_dir = dossier.get("person_role_directory") or {}
+    for _, (w_n, d_n, r_lbl) in list(p_dir.items())[:4]:
+        q_p = f"{d_n} {r_lbl.split()[0].lower()} {geo_tag} press photo".strip()
+        if q_p not in search_angles:
+            search_angles.insert(1, q_p)
+    full_script_low = " ".join(sec.get("narration", "") for sec in (sections_list or [])).lower()
+    if any(k in full_script_low for k in ["court", "courtroom", "judge", "lawyer", "trial", "hearing", "convict", "ruling"]):
+        court_q = f"{geo_tag} {topic_anchor} courtroom judge court hearing trial photo".strip()
+        if court_q not in search_angles:
+            search_angles.insert(1, court_q)
+    search_angles = search_angles[:11]
+
+    # 1. Seed with direct multi-site scraped original article photos (Highest Priority = 65!)
+    for cap_obj in (dossier.get("article_captioned_photos") or []):
+        cu = cap_obj.get("url", "")
+        ccap = cap_obj.get("caption", "")
+        if cu and cu not in seen_cand_urls:
+            seen_cand_urls.add(cu)
+            raw_candidates.append({
+                "url": cu,
+                "caption": f"{ccap} {story_title} {topic_anchor}",
+                "media_type": "image",
+                "source_angle": "multi_site_original_article",
+                "base_priority": 65
+            })
     for a_u in ([dossier.get("lead_img")] if dossier.get("lead_img") else []) + list(dossier.get("article_inline_images") or []):
         if a_u and a_u not in seen_cand_urls:
             seen_cand_urls.add(a_u)
@@ -3496,7 +3674,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                 "caption": f"{story_title} {topic_anchor} primary article photo",
                 "media_type": "image",
                 "source_angle": "direct_article",
-                "base_priority": 40
+                "base_priority": 55
             })
 
     # 2. Parallel Multi-Angle Bing Photojournalism Discovery (9 angles x 38 results = 250 to 340+ candidates!)
@@ -3616,7 +3794,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
         return None
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
-        futs2 = [ex.submit(download_and_run_audits_3_4_5, c) for c in audit12_passed[:52]]
+        futs2 = [ex.submit(download_and_run_audits_3_4_5, c) for c in audit12_passed[:72]]
         for ft in concurrent.futures.as_completed(futs2):
             res = ft.result()
             if res is not None:
@@ -5276,7 +5454,10 @@ class VoiceAndSubtitleEngine:
         r"\bAl-Turba\b": "Al-Toor-bah",
         r"\bHodeidah\b": "Ho-day-dah",
         r"\bMarib\b": "Mah-rib",
-        r"\bKurzgesagt\b": "Koorts-geh-zahgt"
+        r"\bKurzgesagt\b": "Koorts-geh-zahgt",
+        r"\bAttalah\b": "Ah-tah-lah",
+        r"\bMada Masr\b": "Mah-dah Mah-ser",
+        r"\bAzhari\b": "Ahz-hah-ree"
     }
 
     async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD", is_short=False):
@@ -5304,7 +5485,7 @@ class VoiceAndSubtitleEngine:
                         elif chunk["type"] == "WordBoundary":
                             w_start = chunk["offset"] / 10_000_000.0
                             w_dur = chunk["duration"] / 10_000_000.0
-                            disp_w = chunk["text"].replace("Tah-eez", "Taiz").replace("tah-eez", "Taiz").replace("Hoo-theez", "Houthis").replace("Hoo-thee", "Houthi").replace("Sah-naa", "Sanaa").replace("Al-Toor-bah", "Al-Turba")
+                            disp_w = chunk["text"].replace("Tah-eez", "Taiz").replace("tah-eez", "Taiz").replace("Hoo-theez", "Houthis").replace("Hoo-thee", "Houthi").replace("Sah-naa", "Sanaa").replace("Al-Toor-bah", "Al-Turba").replace("Ah-tah-lah", "Attalah").replace("Mah-dah", "Mada").replace("Mah-ser", "Masr").replace("Ahz-hah-ree", "Azhari")
                             word_timings.append({"word": disp_w, "start": round(w_start, 3), "end": round(w_start + max(w_dur, 0.08), 3)})
                 if os.path.exists(raw_mp3) and os.path.getsize(raw_mp3) > 1000:
                     break
@@ -5331,10 +5512,10 @@ class VoiceAndSubtitleEngine:
             gTTS(text=tts_spoken_text, lang="en").save(raw_mp3)
 
         try:
-            # Studio Human Podcast Voice Mastering: Warm 175Hz chest resonance + 3.2kHz clarity + smooth broadcast compressor
+            # Studio Broadcast Loudness Mastering (-12 LUFS Equivalent): Warm 175Hz chest presence + 3.1kHz vocal clarity + +5dB makeup gain + 1.55x clean loudness boost + brickwall limiter at 0.96
             cmd = [
                 "ffmpeg", "-y", "-i", raw_mp3,
-                "-af", "equalizer=f=175:width_type=o:width=1.2:g=2.4,equalizer=f=3100:width_type=o:width=1.4:g=1.6,acompressor=threshold=-16dB:ratio=2.2:attack=12:release=160,apad=pad_dur=0.16",
+                "-af", "equalizer=f=175:width_type=o:width=1.2:g=2.6,equalizer=f=3100:width_type=o:width=1.4:g=2.2,acompressor=threshold=-18dB:ratio=2.4:attack=10:release=150:makeup=5dB,volume=1.55,alimiter=limit=0.96,apad=pad_dur=0.16",
                 "-ar", "44100", "-ac", "2", "-b:a", "192k", out_path
             ]
             subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
@@ -5621,13 +5802,21 @@ def build_long_documentary_script(dossier):
 
 def enrich_dossier_with_deep_research_and_proofs(dossier):
     """
-    PHASE 1 — NITISH RAJPUT / ABHI & NIYU DEEP MULTI-SOURCE RESEARCH & PROOF HARVESTER:
-    Before writing a single word of the script, cross-references the story with Wikipedia
-    and Bing News multi-source wires to lock in verified dates, numbers, institutions,
-    and primary proof citations (`research_proof_bank`)!
+    V10 PHASE 1 — ALL-SOURCE MULTI-SITE RESEARCH, PERSON/LAWYER DIRECTORY & ORIGINAL ARTICLE PHOTO HARVESTER:
+    1. Discovers 10–14 news articles across all available news websites (Reuters, BBC, AP, The Guardian,
+       Al Jazeera, France24, DW, CPJ, RSF, The Hindu, etc.) covering this exact topic.
+    2. Scrapes EVERY site in parallel to gather:
+       - Comprehensive multi-source facts, numbers, quotes & context (`verified_claims`) so the script is written
+         from ALL sources and explains the complete story clearly to the public.
+       - All original press photos embedded inside those news websites (`article_inline_images` & `article_captioned_photos`).
+       - A complete Cross-Site Person & Role Directory (`person_role_directory`) mapping every lawyer (e.g. 'Azhari' -> 'Hassan al-Azhari'),
+         judge, journalist, and official mentioned across any site!
     """
     if dossier.get("_research_enriched"):
+        GLOBAL_ACTIVE_DOSSIER_PERSONS.clear()
+        GLOBAL_ACTIVE_DOSSIER_PERSONS.update(dossier.get("person_role_directory") or {})
         return dossier
+
     title_str = dossier.get("title", "")
     claims = list(dossier.get("verified_claims") or [])
     if not claims:
@@ -5646,12 +5835,136 @@ def enrich_dossier_with_deep_research_and_proofs(dossier):
     dossier["raw_facts"] = [c["text"] for c in claims]
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
 
-    # Enrich with Wikipedia factual background extract if available
+    person_dir = dict(dossier.get("person_role_directory") or {})
+    for c_item in claims:
+        register_persons_from_text_into_directory(c_item.get("text", ""), person_dir)
+
+    inline_imgs = list(dossier.get("article_inline_images") or [])
+    captioned_photos = list(dossier.get("article_captioned_photos") or [])
+
+    generic_geo_words = {c.lower() for c in COUNTRY_GEO_DB.keys()} | set(DEMONYM_TO_COUNTRY.keys()) | {"the", "and", "for", "with", "from", "that", "this", "news"}
+    headline_specific_tokens = {
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{title_str} {topic_anchor}")
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in generic_geo_words
+    }
+
+    # 1. Discover multi-site news articles across Bing News RSS & Google News RSS
+    multi_site_links = []
+    seen_links = {dossier.get("source_url", "")}
+    kw_query = " ".join(re.findall(r"[A-Za-z0-9]{4,}", f"{topic_anchor} {title_str}")[:5])
+    if kw_query:
+        for rss_u in [
+            f"https://www.bing.com/news/search?q={urllib.parse.quote(kw_query)}&format=rss",
+            f"https://news.google.com/rss/search?q={urllib.parse.quote(kw_query)}&hl=en-US&gl=US&ceid=US:en"
+        ]:
+            try:
+                rr = requests.get(rss_u, headers=HEADERS_WEB, timeout=5)
+                if rr.status_code == 200:
+                    f_parsed = feedparser.parse(rr.content)
+                    for ent in f_parsed.entries[:10]:
+                        e_link = getattr(ent, "link", "").strip()
+                        if "url=" in e_link:
+                            m_u = re.search(r"url=([^&]+)", e_link)
+                            if m_u:
+                                e_link = urllib.parse.unquote(m_u.group(1))
+                        e_title = clean_fact(getattr(ent, "title", "").rsplit(" - ", 1)[0])
+                        e_src = getattr(ent, "source", {}).get("title", "") if hasattr(ent, "source") and isinstance(getattr(ent, "source"), dict) else (getattr(ent, "title", "").rsplit(" - ", 1)[-1] if " - " in getattr(ent, "title", "") else "International Press")
+                        e_pub = normalize_pub_date(getattr(ent, "published", ""))
+                        e_sum = clean_fact(BeautifulSoup(getattr(ent, "summary", ""), "html.parser").get_text(" "))
+                        register_persons_from_text_into_directory(f"{e_title}. {e_sum}", person_dir)
+
+                        for bs in split_into_complete_sentences(e_sum):
+                            cbs = clean_fact(bs)
+                            s_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", cbs)}
+                            if 45 <= len(cbs) <= 210 and (not headline_specific_tokens or len(s_toks.intersection(headline_specific_tokens)) >= 1) and not is_semantically_similar_claim(cbs, claims, headline_title=title_str):
+                                claims.append({
+                                    "text": cbs if cbs[-1] in ".!?" else f"{cbs}.",
+                                    "source_url": e_link or dossier.get("source_url", ""),
+                                    "source_name": e_src[:26],
+                                    "published_date": e_pub
+                                })
+                        if hasattr(ent, "media_thumbnail") and ent.media_thumbnail:
+                            t_url = ent.media_thumbnail[0].get("url", "")
+                            if t_url and t_url not in inline_imgs:
+                                inline_imgs.append(t_url)
+                                captioned_photos.append({"url": t_url, "caption": f"{e_title} {topic_anchor}"})
+                        if e_link and e_link not in seen_links and "news.google.com" not in e_link:
+                            seen_links.add(e_link)
+                            multi_site_links.append((e_link, e_src[:26], e_pub, e_title))
+            except Exception:
+                pass
+
+    # 2. Scrape discovered news websites in parallel for full-article facts, original photos (`og:image`, `<figure> <img>`), and lawyer/person names!
+    def scrape_external_news_site(item_tuple):
+        s_url, s_name, s_pub, s_title = item_tuple
+        site_facts = []
+        site_photos = []
+        site_texts_for_persons = []
+        try:
+            r = requests.get(s_url, headers=HEADERS_WEB, timeout=5)
+            if r.status_code == 200 and "permission to access" not in r.text.lower():
+                soup = BeautifulSoup(r.text, "html.parser")
+                for m_tag in [soup.find("meta", property="og:image"), soup.find("meta", attrs={"name": "twitter:image"})]:
+                    if m_tag and m_tag.get("content"):
+                        iu = m_tag["content"].strip()
+                        if iu.startswith("https://") and not any(b in iu.lower() for b in BANNED_IMAGE_SOURCES + ["logo", "icon", "avatar"]):
+                            site_photos.append({"url": iu, "caption": f"{s_title} {topic_anchor} original article photo"})
+                for fig in soup.find_all(["figure", "article"])[:8]:
+                    fcap = fig.find("figcaption")
+                    cap_txt = clean_fact(fcap.get_text(" ")) if fcap else f"{s_title} {topic_anchor}"
+                    for im_t in fig.find_all("img")[:4]:
+                        iu = im_t.get("src") or im_t.get("data-src") or ""
+                        alt_t = im_t.get("alt") or ""
+                        if iu.startswith("https://") and any(ext in iu.lower() for ext in [".jpg", ".jpeg", ".png", ".webp"]):
+                            if not any(b in iu.lower() for b in BANNED_IMAGE_SOURCES + ["logo", "icon", "avatar", "sprite", "1x1", "pixel"]):
+                                if "bbci.co.uk" in iu:
+                                    iu = re.sub(r"/standard/\d+/", "/standard/1024/", iu)
+                                site_photos.append({"url": iu, "caption": f"{alt_t} {cap_txt} {s_title}".strip()})
+                for p_tag in soup.find_all("p")[:18]:
+                    if p_tag.find_parent(["figcaption", "footer", "aside", "nav"]):
+                        continue
+                    pt = clean_fact(p_tag.get_text(" "))
+                    if 45 <= len(pt) <= 220:
+                        site_texts_for_persons.append(pt)
+                        for s_sent in split_into_complete_sentences(pt):
+                            cs = clean_fact(s_sent)
+                            s_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", cs)}
+                            if 45 <= len(cs) <= 210 and (not headline_specific_tokens or len(s_toks.intersection(headline_specific_tokens)) >= 1):
+                                site_facts.append({
+                                    "text": cs if cs[-1] in ".!?" else f"{cs}.",
+                                    "source_url": s_url,
+                                    "source_name": s_name,
+                                    "published_date": s_pub
+                                })
+        except Exception:
+            pass
+        return site_facts, site_photos, " ".join(site_texts_for_persons)
+
+    if multi_site_links:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
+            futs = [ex.submit(scrape_external_news_site, lnk) for lnk in multi_site_links[:8]]
+            for ft in concurrent.futures.as_completed(futs):
+                try:
+                    s_facts, s_photos, s_person_txt = ft.result()
+                    register_persons_from_text_into_directory(s_person_txt, person_dir)
+                    for ph in s_photos:
+                        if ph["url"] not in inline_imgs:
+                            inline_imgs.append(ph["url"])
+                            captioned_photos.append(ph)
+                    for fc in s_facts:
+                        if len(claims) < 24 and not is_semantically_similar_claim(fc["text"], claims, headline_title=title_str):
+                            claims.append(fc)
+                except Exception:
+                    pass
+
+    # 3. Enrich with Wikipedia factual background extract if available
     try:
         w_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(topic_anchor)}"
         wr = requests.get(w_url, headers=HEADERS_WIKI, timeout=4)
         if wr.status_code == 200:
-            w_ext = clean_fact(wr.json().get("extract", ""))
+            w_json = wr.json()
+            w_ext = clean_fact(w_json.get("extract", ""))
+            register_persons_from_text_into_directory(w_ext, person_dir)
             for ws in split_into_complete_sentences(w_ext)[:2]:
                 c_ws = clean_fact(ws)
                 if 45 <= len(c_ws) <= 200 and not is_semantically_similar_claim(c_ws, claims, headline_title=title_str):
@@ -5666,8 +5979,18 @@ def enrich_dossier_with_deep_research_and_proofs(dossier):
 
     dossier["verified_claims"] = claims
     dossier["raw_facts"] = [c["text"] for c in claims]
+    dossier["article_inline_images"] = inline_imgs[:24]
+    dossier["article_captioned_photos"] = captioned_photos[:28]
+    dossier["person_role_directory"] = person_dir
+    GLOBAL_ACTIVE_DOSSIER_PERSONS.clear()
+    GLOBAL_ACTIVE_DOSSIER_PERSONS.update(person_dir)
     dossier["_research_enriched"] = True
-    print(f"📚 [Phase 1 Research Complete] '{title_str[:48]}' | Verified Proof Claims Locked: {len(claims)}", flush=True)
+    print(
+        f"📚 [V10 All-Source Research Complete] '{title_str[:44]}' | "
+        f"Multi-Site Claims: {len(claims)} | Original Article Photos: {len(inline_imgs)} | "
+        f"Discovered People/Lawyers/Officials: {len(person_dir)}",
+        flush=True
+    )
     return dossier
 
 def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
@@ -5705,18 +6028,31 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
         final_sents = [s.strip() for s in split_into_complete_sentences(clean_nar) if len(s.strip()) > 8]
         existing_bvs = sec.get("beat_visuals") if isinstance(sec.get("beat_visuals"), list) else []
         locked_bvs = []
+        ents_for_bp = extract_story_entities(dossier)
         for s_i, s_txt in enumerate(final_sents):
+            global_s_idx = idx * 3 + s_i
             prev_bv = existing_bvs[s_i] if (s_i < len(existing_bvs) and isinstance(existing_bvs[s_i], dict)) else {}
-            raw_pq = prev_bv.get("photo_query") or s_txt
+            _, wiki_t, role_scene_q, is_p_focus = extract_speaker_or_prop_for_beat(s_txt, dossier, ents_for_bp, global_s_idx)
+            # If the sentence mentions a lawyer, courtroom, judge, security, or organization, prioritize `role_scene_q`!
+            s_low = s_txt.lower()
+            has_specific_role_or_scene = any(kw in s_low for kw in [
+                "lawyer", "lawyers", "defence", "defense", "legal team", "court", "courtroom", "judge",
+                "trial", "hearing", "detained", "security", "police", "reporters without borders",
+                "association", "amnesty", "azhari"
+            ])
+            raw_pq = role_scene_q if (has_specific_role_or_scene or not prev_bv.get("photo_query")) else prev_bv.get("photo_query")
             exact_pq = sanitize_visual_search_query(raw_pq, dossier)
-            pt_hl, _ = extract_key_point_from_sentence(s_txt, beat_num=(idx * 3 + s_i + 1), fallback_stat=prev_bv.get("point_highlight", ""))
-            p_hit = detect_person_in_narration_text(s_txt, ai_person=prev_bv.get("mentioned_person", ""), ai_role=prev_bv.get("person_role", ""), story_title=dossier.get("title", ""))
+            pt_hl, _ = extract_key_point_from_sentence(s_txt, beat_num=(global_s_idx + 1), fallback_stat=prev_bv.get("point_highlight", ""))
+            p_hit = detect_person_in_narration_text(
+                s_txt, ai_person=prev_bv.get("mentioned_person", ""), ai_role=prev_bv.get("person_role", ""),
+                story_title=dossier.get("title", ""), prefer_secondary=(global_s_idx > 0), primary_anchor=topic_anchor
+            )
             locked_bvs.append({
                 "point_highlight": pt_hl,
                 "mentioned_person": p_hit[1] if p_hit else "",
                 "person_role": p_hit[2] if p_hit else "",
                 "photo_query": exact_pq,
-                "ai_prompt": f"{topic_anchor} {exact_pq} real editorial press photo"
+                "ai_prompt": f"{exact_pq} real editorial press photo"
             })
         sec["beat_visuals"] = locked_bvs
         audited_sections.append(sec)
