@@ -8,11 +8,11 @@ on:
         required: false
         default: 'false'
       pairs_per_run:
-        description: 'Number of Long+Short video pairs per run (1 = fast ~12 min run, 0 exit-143 risk)'
+        description: 'Number of Long+Short video pairs per run (2 = 2 Long + 2 Linked Shorts = 4 Videos)'
         required: false
-        default: '1'
+        default: '2'
   schedule:
-    # Runs every 30 minutes across the 24h clock (1 Long + 1 Short every 30m = 96 Videos/Day!)
+    # Runs every 30 minutes across the 24h clock (2 Long + 2 Linked Shorts = 4 Videos per run!)
     - cron: '*/30 * * * *'
     # Dedicated 6:00 PM USA Eastern Time (22:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
     - cron: '0 22 * * *'
@@ -81,7 +81,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FORCE_MEGA_NEWS: ${{ github.event.inputs.force_mega_news || 'false' }}
-          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || '1' }}
+          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || '2' }}
         run: |
           python3 -u wtb_engine.py
 
@@ -93,7 +93,7 @@ jobs:
             git config user.email "bot@worldtalkbrief.org"
             git pull --rebase origin main || true
             git add published_history.json
-            git diff --staged --quiet || git commit -m "Update published_history.json [skip ci]"
+            git diff --staged --quiet || git commit -m "Auto-sync published_history.json"
             git push || true
           fi
 
@@ -108,4 +108,3 @@ jobs:
             output/wtb_1080p_report.json
           if-no-files-found: ignore
           retention-days: 3
-          
