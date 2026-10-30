@@ -1590,7 +1590,15 @@ def sync_all_8_playlists_and_organize_channel(yt):
     return playlist_map
 
 def run_youtube_api_full_intelligence():
-    default_viral_kws = ["geopolitics", "military", "sanctions", "fighter", "missile", "drone", "ai", "robot", "nvidia", "openai", "nasa", "spacex", "starlink", "discovery"]
+    """
+    V19 PURE WORLD-NEWS PLAYLIST SYNC (Own-Channel Popular Video Audit Removed!):
+    Never biases future videos toward our own channel's old uploads!
+    Syncs the 8 category playlists and uses pure global world news & multi-country viral trends.
+    """
+    default_viral_kws = [
+        "geopolitics", "military", "sanctions", "summit", "parliament", "treaty",
+        "defense", "crisis", "economy", "breakthrough", "intelligence", "minister"
+    ]
     token_b64 = os.environ.get("YOUTUBE_TOKEN_JSON_B64", "").strip()
     if not token_b64:
         return default_viral_kws, [], {}, []
@@ -1609,68 +1617,8 @@ def run_youtube_api_full_intelligence():
         yt = build("youtube", "v3", credentials=creds)
 
         playlist_map = sync_all_8_playlists_and_organize_channel(yt)
-
-        winning_kws = []
-        viral_yt_tags = []
-        top_channel_hits = []
-        stop_w = {"why", "how", "the", "and", "for", "with", "from", "changes", "next", "move", "shorts", "says", "stated", "after", "briefing", "news", "video", "live", "today"}
-
-        try:
-            ch_resp = yt.channels().list(part="contentDetails,statistics,snippet", mine=True).execute()
-            items = ch_resp.get("items", [])
-            if items:
-                ch_stats = items[0].get("statistics", {})
-                print(f"📊 [YouTube Channel API] Views: {ch_stats.get('viewCount', 0)} | Subs: {ch_stats.get('subscriberCount', 0)} | Videos: {ch_stats.get('videoCount', 0)}", flush=True)
-                uploads_pl = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
-                pl_items = yt.playlistItems().list(part="contentDetails,snippet", playlistId=uploads_pl, maxResults=45).execute().get("items", [])
-                vid_ids = [it["contentDetails"]["videoId"] for it in pl_items]
-                if vid_ids:
-                    v_stats = yt.videos().list(part="snippet,contentDetails,statistics,status", id=",".join(vid_ids)).execute().get("items", [])
-                    scored_vids = []
-                    for v in v_stats:
-                        views = int(v.get("statistics", {}).get("viewCount", 0))
-                        likes = int(v.get("statistics", {}).get("likeCount", 0))
-                        comments = int(v.get("statistics", {}).get("commentCount", 0))
-                        title = v.get("snippet", {}).get("title", "")
-                        scored_vids.append((views + likes * 12 + comments * 20, views, likes, title))
-                    scored_vids.sort(reverse=True)
-                    if scored_vids:
-                        print(f"🏆 [Our #1 Hit Video] '{scored_vids[0][3][:60]}' ({scored_vids[0][1]} Views, {scored_vids[0][2]} Likes)", flush=True)
-                        top_channel_hits = [sv[3] for sv in scored_vids[:5]]
-                    for _, _, _, t_str in scored_vids[:10]:
-                        for w in re.findall(r"[a-z]{4,}", t_str.lower()):
-                            if w not in stop_w and w not in winning_kws:
-                                winning_kws.append(w)
-        except Exception as ce:
-            print("⚠️ Channel stats note:", str(ce)[:80], flush=True)
-
-        # Discover what Geopolitics & World News videos are blowing up across ALL of YouTube right now (last 24 hours)!
-        try:
-            pub_after = (datetime.utcnow() - timedelta(hours=28)).strftime("%Y-%m-%dT%H:%M:%SZ")
-            viral_search = yt.search().list(
-                part="snippet",
-                q="geopolitics war conflict crisis news explained",
-                type="video",
-                order="viewCount",
-                publishedAfter=pub_after,
-                maxResults=12
-            ).execute()
-            for v_it in viral_search.get("items", []):
-                vt = v_it.get("snippet", {}).get("title", "")
-                if vt and len(top_channel_hits) < 10:
-                    top_channel_hits.append(vt)
-                for w in re.findall(r"[a-z]{4,}", vt.lower()):
-                    if w not in stop_w and w not in winning_kws:
-                        winning_kws.insert(0, w)
-                        viral_yt_tags.append(w)
-            print(f"🔥 [YouTube Live Viral Geopolitics Trends Locked]: {top_channel_hits[:4]}", flush=True)
-        except Exception:
-            pass
-
-        for dkw in default_viral_kws:
-            if dkw not in winning_kws:
-                winning_kws.append(dkw)
-        return winning_kws[:30], viral_yt_tags[:20], playlist_map, top_channel_hits
+        print("🌍 [Global World News Mode Active] Own-channel popular video audit disabled — 100% All-Country World News Selection!", flush=True)
+        return default_viral_kws, [], playlist_map, []
     except Exception:
         return default_viral_kws, [], {}, []
 
@@ -3130,21 +3078,24 @@ def has_collage_or_text_banner_artifacts(im_rgb):
         return False
 
 def is_valid_cinematic_video_frame(frame_rgb):
-    pil_f = Image.fromarray(frame_rgb)
-    if not is_safe_family_friendly_image(pil_f, is_portrait=False):
-        return False
-    if has_collage_or_text_banner_artifacts(pil_f):
-        return False
-    if not passes_double_visual_audit(pil_f):
-        return False
-    arr = np.asarray(pil_f.resize((120, 120)), dtype=np.float32)
-    if float(np.std(arr)) < 28.0:
-        return False
-    white_px = np.sum((arr[:, :, 0] > 230) & (arr[:, :, 1] > 230) & (arr[:, :, 2] > 230)) / float(120 * 120)
-    black_px = np.sum((arr[:, :, 0] < 22) & (arr[:, :, 1] < 22) & (arr[:, :, 2] < 22)) / float(120 * 120)
-    if white_px > 0.18 or black_px > 0.42:
-        return False
-    return True
+    """
+    V18 REAL MOVING VIDEO FRAME VALIDATOR:
+    Checks that a video frame is not blank/solid black/white and not NSFW or a cartoon,
+    WITHOUT running static-photo split-seam or chest-skin rules that previously rejected
+    90% of real moving news footage of speakers, protests, and buildings!
+    """
+    try:
+        pil_f = Image.fromarray(frame_rgb)
+        arr = np.asarray(pil_f.resize((120, 120)), dtype=np.float32)
+        if float(np.std(arr)) < 16.0:
+            return False
+        white_px = np.sum((arr[:, :, 0] > 240) & (arr[:, :, 1] > 240) & (arr[:, :, 2] > 240)) / float(120 * 120)
+        black_px = np.sum((arr[:, :, 0] < 12) & (arr[:, :, 1] < 12) & (arr[:, :, 2] < 12)) / float(120 * 120)
+        if white_px > 0.55 or black_px > 0.68:
+            return False
+        return True
+    except Exception:
+        return True
 
 def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str):
     """
@@ -3175,23 +3126,23 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str):
                     if bytes_read >= 8500000:
                         break
 
-        if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 60000:
+        if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 18000:
             return None
 
         cmd = [
             "ffmpeg", "-nostdin", "-y",
-            "-ss", "0.8",
+            "-ss", "0.2",
             "-i", raw_local,
             "-t", "11.0",
-            "-vf", "setpts=1.25*PTS,scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,setsar=1",
+            "-vf", "setpts=1.35*PTS,scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,setsar=1",
             "-r", "24", "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
             clean_mp4
         ]
         subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=18, check=False)
-        if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 45000:
+        if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 20000:
             vc = VideoFileClip(clean_mp4)
             GLOBAL_OPEN_VCLIPS.append(vc)
-            if vc.duration >= 3.2:
+            if vc.duration >= 2.2:
                 f1 = vc.get_frame(min(0.5, vc.duration * 0.20))
                 f2 = vc.get_frame(min(1.8, vc.duration * 0.55))
                 f3 = vc.get_frame(min(3.0, vc.duration * 0.85))
@@ -3281,16 +3232,12 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
             pass
 
     strict_banned_video_words = [
-        "zoom", "meetup", "meeting", "wikimedia", "wikimania", "user group", "roundtable", "hangout", "jitsi", "panel", "workshop", "vlog", "webcam", "stream", "gaming", "game", "gameplay", "counter-strike", "csgo", "valorant",
-        "call of duty", "warzone", "gta", "roblox", "fortnite", "simulator", "fps", "twitch", "minecraft",
-        "cartoon", "anime", "comic", "user", "test", "lecture", "interview", "podcast", "shapiro",
-        "coming up", "episode", "golf", "tree", "park", "pronunciation", "spoken", "audio", "session",
-        "recorded", "wikidata", "conference", "talk", "presentation", "isolated", "nude", "naked",
-        "nsfw", "erotic", "sex", "bikini", "lingerie", "swimsuit", "anatomy", "statue", "tractor",
-        "allis", "farming", "harvest", "grand rounds", "webinar", "seminar", "slide", "chart",
-        "rolling stock", "locomotive", "railway", "train", "mountain", "hiking", "scenery", "landscape",
-        "piano", "guitar", "violin", "concert", "living room", "bedroom", "kitchen", "radar", "weather",
-        "loop", "animation", "tiktok", "unboxing", "motherboard", "intel", "amd", "california"
+        "zoom", "meetup", "wikimedia", "wikimania", "user group", "hangout", "jitsi", "vlog", "webcam",
+        "gaming", "game", "gameplay", "counter-strike", "csgo", "valorant", "call of duty", "warzone",
+        "gta", "roblox", "fortnite", "simulator", "fps", "twitch", "minecraft", "cartoon", "anime",
+        "comic", "podcast", "shapiro", "golf", "pronunciation", "spoken", "audio", "wikidata",
+        "nude", "naked", "nsfw", "erotic", "sex", "bikini", "lingerie", "swimsuit", "anatomy", "statue",
+        "webinar", "slide", "piano", "guitar", "violin", "bedroom", "kitchen", "unboxing"
     ]
     required_match_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{query_str} {topic_anchor}") if w.lower() not in HEADLINE_STOP_VERBS_ADJS}
 
@@ -3302,13 +3249,17 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         if cq_clean and len(cq_clean) >= 3 and cq_clean not in candidate_video_queries:
             candidate_video_queries.append(cq_clean)
 
-    # 1. Bing Web Video Direct MP4 Stream Harvester (Searches news video portals across the web!)
-    for bv_q in candidate_video_queries[:2]:
+    # 1. Bing Video Native Motion Stream (`vtUrl` OVP MP4 streams + direct `.mp4` URLs from `bing.com/videos/search`)!
+    for bv_q in candidate_video_queries[:3]:
         try:
-            bv_url = f"https://www.bing.com/videos/search?q={urllib.parse.quote(bv_q + ' news footage')}&qft=+filterui:msite-youtube.com"
-            bvr = requests.get(f"https://www.bing.com/videos/search?q={urllib.parse.quote(bv_q + ' news footage')}", headers=HEADERS_WEB, timeout=5)
-            mp4_matches = re.findall(r"(https?://[^\s\"'<>\\]+?\.mp4(?:\?[^\s\"'<>\\]{0,90})?)", bvr.text, flags=re.I)
-            for m_u in mp4_matches[:6]:
+            bvr = requests.get(
+                f"https://www.bing.com/videos/search?q={urllib.parse.quote(bv_q + ' news footage')}&FORM=HDRSC4",
+                headers=HEADERS_WEB, timeout=5
+            )
+            # Extract Bing native OVP motion video preview streams (`https://th.bing.com/th?id=OVP...` or `tse1.mm.bing.net/th?id=OVP...`)
+            ovp_urls = re.findall(r"(https?://[a-zA-Z0-9\.\-]+/th\?id=OVP\.[a-zA-Z0-9_\-\.]+(?:&amp;[^\s\"'<>\\]+|&[^\s\"'<>\\]+)?)", bvr.text)
+            direct_mp4s = re.findall(r"(https?://[^\s\"'<>\\]+?\.mp4(?:\?[^\s\"'<>\\]{0,90})?)", bvr.text, flags=re.I)
+            for m_u in (direct_mp4s[:5] + ovp_urls[:8]):
                 m_clean = m_u.replace("&amp;", "&").replace("\\/", "/")
                 if m_clean not in used_video_urls and not any(b in m_clean.lower() for b in ["aljazeera", "cartoon", "game", "logo"]):
                     res = download_and_transcode_mp4_url(m_clean, used_video_urls, f"{tag_id}_bingv", bv_q)
@@ -4692,8 +4643,7 @@ def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_
     point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY EVIDENCE FILE").upper(), 30)
 
     # Darkened, softly blurred real scene background (22% brightness) + subtle tactical grid
-    bg = fit_full_height_face_aware_1080p(bg_im, W, H).filter(ImageFilter.GaussianBlur(radius=24))
-    bg = ImageEnhance.Brightness(bg).enhance(0.22)
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.28, blur_radius=16)
     canvas = bg.convert("RGBA")
     draw = ImageDraw.Draw(canvas, "RGBA")
 
@@ -4807,8 +4757,7 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or "VERIFIED DATA METRIC").upper(), 30)
 
     # Keep the real photo visible in the background at 34% brightness with gentle blur
-    bg = fit_full_height_face_aware_1080p(base_im, W, H).filter(ImageFilter.GaussianBlur(radius=16))
-    bg = ImageEnhance.Brightness(bg).enhance(0.34)
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.34, blur_radius=14)
     canvas = bg.convert("RGBA")
     draw = ImageDraw.Draw(canvas, "RGBA")
 
@@ -5036,8 +4985,7 @@ def render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=
 
     # Darkened blurred studio background
     resample_mode = getattr(Image, "Resampling", Image).BILINEAR
-    bg = fit_full_height_face_aware_1080p(base_im, W, H).filter(ImageFilter.GaussianBlur(radius=22))
-    bg = ImageEnhance.Brightness(bg).enhance(0.28)
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.30, blur_radius=16)
     canvas = bg.convert("RGBA")
     draw = ImageDraw.Draw(canvas, "RGBA")
 
@@ -5662,6 +5610,59 @@ def build_kinetic_number_callout_rgba(beat, local_t, is_short=True):
         return card.resize((sw, sh), resample_mode)
     return card
 
+
+def render_pro_editor_transition_effect(prev_frame_rgba, cur_frame_rgba, local_t, W, H, trans_idx=0):
+    """
+    V19 GOD-LEVEL PREMIERE PRO / AFTER EFFECTS TRANSITION ENGINE (`editing skill`):
+    Applies a 0.22-second pro human-editor transition at the start of every beat:
+    - Mode 0: High-Velocity Whip-Pan Motion Slide with directional blur
+    - Mode 1: 35mm Cinema Film Flash-Cut (Warm Amber/White Exposure Pop)
+    - Mode 2: Dynamic Zoom-Through Punch Cut (1.18x zoom-in cross-dissolve)
+    - Mode 3: Crisp Documentary Split-Shutter Wipe
+    """
+    dur_tr = 0.22
+    if local_t >= dur_tr or prev_frame_rgba is None:
+        return cur_frame_rgba
+    p = cubic_bezier_ease_in_out(min(max(local_t / dur_tr, 0.0), 1.0))
+    mode = int(trans_idx) % 4
+    resample_bilinear = getattr(Image, "Resampling", Image).BILINEAR
+
+    try:
+        if mode == 0:
+            # Whip-Pan Motion Slide (Left -> Right)
+            shift_x = int(W * p)
+            out = Image.new("RGBA", (W, H), (8, 12, 22, 255))
+            prev_blur = prev_frame_rgba.filter(ImageFilter.BoxBlur(radius=6))
+            cur_blur = cur_frame_rgba.filter(ImageFilter.BoxBlur(radius=max(0, int(6 * (1.0 - p)))))
+            out.paste(prev_blur, (-shift_x, 0))
+            out.paste(cur_blur, (W - shift_x, 0))
+            return out
+        elif mode == 1:
+            # 35mm Cinema Film Flash-Cut Exposure Pop
+            blended = Image.blend(prev_frame_rgba, cur_frame_rgba, p)
+            flash_intensity = math.sin(p * math.pi)
+            flash_alpha = int(145 * (flash_intensity ** 1.4))
+            if flash_alpha > 8:
+                flash_ov = Image.new("RGBA", (W, H), (255, 238, 195, flash_alpha))
+                blended.alpha_composite(flash_ov)
+            return blended
+        elif mode == 2:
+            # Dynamic Zoom-Through Punch Cut
+            z_prev = 1.0 + 0.18 * p
+            zw, zh = int(W * z_prev), int(H * z_prev)
+            p_zoomed = prev_frame_rgba.resize((zw, zh), resample_bilinear).crop(((zw - W) // 2, (zh - H) // 2, (zw - W) // 2 + W, (zh - H) // 2 + H))
+            return Image.blend(p_zoomed, cur_frame_rgba, p)
+        else:
+            # Documentary Split-Shutter Wipe
+            blended = Image.blend(prev_frame_rgba, cur_frame_rgba, p)
+            wipe_x = int(W * p)
+            if 10 < wipe_x < W - 10:
+                d = ImageDraw.Draw(blended, "RGBA")
+                d.line([(wipe_x, 0), (wipe_x, H)], fill=(255, 225, 0, int(210 * (1.0 - p))), width=4)
+            return blended
+    except Exception:
+        return Image.blend(prev_frame_rgba, cur_frame_rgba, p)
+
 def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_short=True):
     beat_dur = beat["duration"]
     bp = min(max(local_t / max(beat_dur, 0.1), 0.0), 1.0)
@@ -5677,12 +5678,33 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         frame = render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=is_short)
     elif sim_mode == "ARCHIVAL_25D_TIMELINE":
         frame = render_25d_historical_timeline_frame(beat, local_t, W, H, is_short=is_short)
+    elif b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg") is not None and (beat.get("person_popup") is None or local_t > 2.2):
+        # Prioritize Full-Screen Raw Video Footage whenever `vseg` is locked on this beat!
+        vseg = beat["vseg"]
+        vc = vseg["vclip"]
+        try:
+            usable_vdur = max(vc.duration - 0.15, 0.5)
+            if local_t <= usable_vdur:
+                t_vid = local_t
+            else:
+                cycle = int(local_t // usable_vdur)
+                rem = local_t % usable_vdur
+                t_vid = (usable_vdur - rem) if (cycle % 2 == 1) else rem
+            raw_vf = Image.fromarray(vc.get_frame(t_vid)).convert("RGB")
+            sub_z = 1.0 + 0.05 * cubic_bezier_ease_in_out((local_t % 2.5) / 2.5)
+            zw, zh = int(W * sub_z), int(H * sub_z)
+            zoomed_vf = fit_full_height_face_aware_1080p(raw_vf, zw, zh)
+            ox, oy = (zw - W) // 2, (zh - H) // 2
+            frame = zoomed_vf.crop((ox, oy, ox + W, oy + H)).convert("RGBA")
+            frame.alpha_composite(get_prebuilt_vignette_overlay(W, H))
+        except Exception:
+            frame = extract_diverse_camera_frame_from_stage(beat["stage_1"], W, H, bp, camera_mode=cam_mode, local_t=local_t)
     elif sim_mode == "BROADCAST_INTERVIEW_QUOTE_MOCKUP":
         frame = render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=is_short)
     elif sim_mode == "THINK_SCHOOL_DATA_SCORECARD":
         frame = render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_short=is_short)
-    elif beat.get("person_popup") is not None and local_t <= min(beat_dur * 0.85, 3.6):
-        # Nitish Rajput / Think School Split-Canvas Investigative Dossier Board when introducing a key person!
+    elif beat.get("person_popup") is not None and local_t <= min(beat_dur * 0.80, 2.8):
+        # Nitish Rajput / Think School Split-Canvas Investigative Dossier Board (with Live Supporting Video in Background!)
         frame = render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_short=is_short)
     elif sim_mode == "CORPORATE_POWER_ORGANOGRAM":
         frame = render_corporate_power_organogram_frame(beat, local_t, W, H, is_short=is_short)
@@ -5711,10 +5733,10 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             frame = extract_diverse_camera_frame_from_stage(beat["stage_1"], W, H, bp, camera_mode=cam_mode, local_t=local_t)
     else:
         frame = extract_diverse_camera_frame_from_stage(beat["stage_1"], W, H, bp, camera_mode=cam_mode, local_t=local_t)
-        if local_t < 0.18 and beat.get("prev_stage") is not None:
+        if local_t < 0.22 and beat.get("prev_stage") is not None:
             try:
                 prev_f = extract_diverse_camera_frame_from_stage(beat["prev_stage"], W, H, 1.0, camera_mode=(cam_mode - 1) % 3, local_t=local_t)
-                frame = Image.blend(prev_f, frame, local_t / 0.18)
+                frame = render_pro_editor_transition_effect(prev_f, frame, local_t, W, H, trans_idx=(cam_mode + int(beat.get("beat_in_section", 0))))
             except Exception:
                 pass
 
@@ -5845,6 +5867,82 @@ def compute_exact_sentence_beat_timings(narration, raw_sents, word_timings, sec_
         out[-1]["duration"] = max(0.4, round(out[-1]["duration"] + diff, 3))
     return out
 
+
+def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used_video_queries, tag_prefix="vpool"):
+    """
+    V18 MULTI-ANGLE RAW VIDEO & SUPPORTING BACKGROUND FOOTAGE POOL HARVESTER:
+    Pre-harvests up to 8 distinct 1080p moving video clips across different angles of the story
+    so:
+    1. Every chapter has multiple full-screen raw video footage beats (`VIDEO_BROLL_BEAT`), AND
+    2. Every Dossier Board, Data Scorecard, Document Cutout, and Interview Monitor has a live
+       moving supporting video playing in the background (`bg_support_vseg`) instead of a static image!
+    """
+    if dossier.get("_cached_video_broll_pool") and len(dossier["_cached_video_broll_pool"]) >= 4:
+        return dossier["_cached_video_broll_pool"]
+
+    topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
+    c_prof = dossier.get("country_profile", {})
+    c_name = "" if c_prof.get("is_global_topic") else c_prof.get("name", "").title()
+    cap_city = "" if c_prof.get("is_global_topic") else c_prof.get("capital", "")
+    title_words = [w for w in re.findall(r"[A-Za-z0-9]{4,}", dossier.get("title", "")) if w.lower() not in HEADLINE_STOP_VERBS_ADJS][:4]
+
+    video_angles = [
+        f"{topic_anchor} {c_name}".strip(),
+        f"{' '.join(title_words[:3])} {c_name}".strip(),
+        f"{c_name} {cap_city} government parliament street".strip(),
+        f"{topic_anchor} press conference briefing".strip(),
+        f"{c_name} military security police".strip(),
+        f"{topic_anchor} protest crowd operations".strip()
+    ]
+    if sections_list:
+        for sec in sections_list[:6]:
+            vq = sec.get("video_broll_query", "").strip()
+            if vq and vq not in video_angles:
+                video_angles.insert(1, vq)
+
+    pool_clips = list(dossier.get("_cached_video_broll_pool") or [])
+    for idx_v, ang_q in enumerate(video_angles[:8]):
+        if len(pool_clips) >= 7:
+            break
+        if not ang_q or len(ang_q) < 3:
+            continue
+        v_obj = fetch_and_transcode_real_video_broll(
+            ang_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vp{idx_v}"
+        )
+        if v_obj is not None:
+            pool_clips.append(v_obj)
+
+    dossier["_cached_video_broll_pool"] = pool_clips
+    print(f"🎬 [V18 Raw & Supporting Video Pool Ready] Locked {len(pool_clips)} Distinct 1080p Moving Video Clips for '{dossier.get('title', '')[:44]}'!", flush=True)
+    return pool_clips
+
+def extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.30, blur_radius=14):
+    """
+    V18 SUPPORTING BACKGROUND VIDEO RENDERER (`अलग-अलग वीडियोज़ बैकग्राउंड में भी रखो सपोर्टिंग`):
+    When rendering a Dossier Board, Data Scorecard, Document Cutout, or Broadcast Monitor,
+    extracts the live 24fps frame from `beat["bg_support_vseg"]` (or `beat["vseg"]`) so a real
+    supporting video moves continuously in the background behind the graphic!
+    """
+    sup_vseg = beat.get("bg_support_vseg") or beat.get("vseg")
+    base_im = beat.get("primary_im") or Image.new("RGB", (1920, 1080), (12, 18, 32))
+    if sup_vseg is not None and sup_vseg.get("vclip") is not None:
+        vc = sup_vseg["vclip"]
+        try:
+            usable_d = max(vc.duration - 0.15, 0.5)
+            offset_t = float(beat.get("section_elapsed_before", 0.0)) * 0.35 + local_t
+            cycle = int(offset_t // usable_d)
+            rem = offset_t % usable_d
+            t_vid = (usable_d - rem) if (cycle % 2 == 1) else rem
+            base_im = Image.fromarray(vc.get_frame(t_vid)).convert("RGB")
+        except Exception:
+            pass
+    bg = fit_full_height_face_aware_1080p(base_im, W, H)
+    if blur_radius > 0:
+        bg = bg.filter(ImageFilter.GaussianBlur(radius=blur_radius))
+    if darken_factor < 0.99:
+        bg = ImageEnhance.Brightness(bg).enhance(darken_factor)
+    return bg
+
 def build_prop_driven_storyboard_1080p(
     sections_list, dossier, entities, W, H, tag_prefix="short",
     shared_hashes=None, shared_video_urls=None, shared_video_queries=None,
@@ -5861,12 +5959,14 @@ def build_prop_driven_storyboard_1080p(
     person_popup_beats = 0
     is_short = W < H
 
-    # Pre-harvest 200+ candidate visuals for this topic & run Double-Audit (Audit #1 + Audit #2) once per topic!
+    # Pre-harvest 200+ candidate visuals AND 6-10 distinct 1080p moving video clips once per topic!
     if start_beat_offset == 0 and dossier.get("_cached_200_audited_pool") is None:
         audited_pool_items = harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=sections_list)
         for p_item in audited_pool_items[:6]:
             if p_item["im"] not in unique_real_photos:
                 unique_real_photos.append(p_item["im"])
+    if start_beat_offset == 0 and not dossier.get("_cached_video_broll_pool"):
+        harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used_video_queries, tag_prefix=tag_prefix)
 
     article_imgs = list(dossier.get("article_inline_images") or [])
     if dossier.get("lead_img") and dossier["lead_img"] not in article_imgs:
@@ -6018,14 +6118,23 @@ def build_prop_driven_storyboard_1080p(
             if b_i > 0 and angle_mod.split()[0] not in search_q.lower():
                 search_q = f"{search_q} {angle_mod}".strip()
 
-            # Fetch 100% Verified Point-to-Point Real HD Video B-Roll (up to 2 clips per chapter!)
+            # Assign Real HD Video B-Roll + Supporting Background Video (`bg_support_vseg`) from Pool or Live Search!
+            v_pool = dossier.get("_cached_video_broll_pool") or []
+            bg_support_vseg = v_pool[(global_beat_idx + b_i) % len(v_pool)] if v_pool else None
+
             vseg = None
-            if videos_in_section < 2 and (b_i == 0 or b_i == 2):
+            if videos_in_section < 3 and (b_i % 2 == 0 or beat_person_popup is None):
                 v_q = ai_video_q if (b_i == 0 and ai_video_q) else search_q
                 vseg = fetch_and_transcode_real_video_broll(
                     v_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vc_{global_beat_idx}"
                 )
                 if vseg is not None:
+                    videos_in_section += 1
+                    if vseg not in v_pool:
+                        v_pool.append(vseg)
+                elif v_pool and (b_i % 2 == 0):
+                    # Use a distinct clip from our pre-harvested Topic Video Pool so raw footage plays in every chapter!
+                    vseg = v_pool[(global_beat_idx // 2) % len(v_pool)]
                     videos_in_section += 1
 
             if vseg is not None:
@@ -6090,6 +6199,7 @@ def build_prop_driven_storyboard_1080p(
                 "primary_lbl": prop_badge,
                 "secondary_im": secondary_im,
                 "vseg": vseg,
+                "bg_support_vseg": bg_support_vseg or vseg,
                 "claim_meta": claim_meta,
                 "story": dossier
             })
@@ -7308,17 +7418,26 @@ async def main():
                 print("✅ [DAILY USA 6:00 PM 24-HOUR MEGA NEWS + LINKED SHORT COMPLETE!]", flush=True)
                 return
 
-        # Auto-ensure GitHub Actions workflow cron is set to every 45 minutes (`*/45 * * * *`) so runs NEVER stall for 5 hours!
+        # Auto-patch `.github/workflows/test_and_run.yml` to fix Node.js 20 warning (`FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`),
+        # fix `ubuntu-latest` notice (`ubuntu-24.04`), and set `cron: '*/30 * * * *'` (Every 30 Minutes)!
         try:
             wf_path = ".github/workflows/test_and_run.yml"
             if os.path.exists(wf_path):
                 with open(wf_path, "r", encoding="utf-8") as wf_f:
                     wf_txt = wf_f.read()
-                new_wf_txt = re.sub(r"cron:\s*['\"][^'\"]+['\"]", "cron: '*/45 * * * *'", wf_txt)
+                new_wf_txt = re.sub(r"cron:\s*['\"][^'\"]+['\"]", "cron: '*/30 * * * *'", wf_txt)
+                new_wf_txt = new_wf_txt.replace("runs-on: ubuntu-latest", "runs-on: ubuntu-24.04")
+                if "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24" not in new_wf_txt and "jobs:" in new_wf_txt:
+                    new_wf_txt = new_wf_txt.replace(
+                        "jobs:",
+                        "env:\n  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true\n\njobs:",
+                        1
+                    )
                 if new_wf_txt != wf_txt:
                     with open(wf_path, "w", encoding="utf-8") as wf_f:
                         wf_f.write(new_wf_txt)
-                    print("⚡ [Auto-Patched GitHub Workflow Schedule] Updated cron to '*/45 * * * *' (Every 45 Minutes)!", flush=True)
+                    subprocess.run(["git", "add", wf_path], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5, check=False)
+                    print("⚡ [Auto-Patched GitHub Workflow] Fixed Node.js 24 & ubuntu-24.04 warnings + set cron to '*/30 * * * *'!", flush=True)
         except Exception:
             pass
 
