@@ -1,95 +1,93 @@
-name: World Talk Brief 1080p Cloud Engine (God-Level Edit + 24x7 Auto + USA 6PM Mega News)
+name: WTB News Engine V21 (God-Level Documentary Production)
 
 on:
-  workflow_dispatch:
-    inputs:
-      force_mega_news:
-        description: 'Force 9-10 Min 24h Global News Mega Video (true/false)'
-        required: false
-        default: 'false'
   schedule:
-    # Runs automatically every 1.5 hours (90 minutes) 24x7 across the clock (16 runs/day)
-    - cron: '5 0,3,6,9,12,15,18,21 * * *'
-    - cron: '35 1,4,7,10,13,16,19,22 * * *'
-    # Dedicated 6:00 PM USA Eastern Time (22:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
-    - cron: '0 22 * * *'
-
-permissions:
-  contents: write
-  actions: write
+    # Run every 30 minutes automatically (24x7 Global News Coverage)
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 concurrency:
-  group: wtb-production-${{ github.event_name }}
+  group: wtb-v21-production-group
   cancel-in-progress: false
 
+env:
+  # Silence Node.js 20 deprecation warnings on GitHub Actions runners
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  PYTHONUNBUFFERED: "1"
+
 jobs:
-  build-1080p-videos:
-    runs-on: ubuntu-latest
-    timeout-minutes: 85
+  build_and_publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
-      - name: Fast Install System FFmpeg (No-Hang + No-Bloat Mode)
+      - name: Install System Multimedia, Cairo & Font Dependencies
         run: |
-          if ! command -v ffmpeg &> /dev/null; then
-            sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" update
-            sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" install -y --no-install-recommends ffmpeg fonts-dejavu-core
-          else
-            echo "✅ FFmpeg is already installed!"
-          fi
-          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout="10" install -y --no-install-recommends fonts-dejavu-core || true
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            ffmpeg \
+            libcairo2-dev \
+            pkg-config \
+            python3-dev \
+            fonts-dejavu-core \
+            fonts-liberation \
+             fonts-freefont-ttf
 
-      - name: Install Python Dependencies
+      - name: Install Python V21 Documentary & Motion-Graphics Libraries
         run: |
-          pip install --upgrade pip
-          pip install edge-tts gTTS feedparser requests pillow "moviepy<2.0" numpy beautifulsoup4 opencv-python-headless google-api-python-client google-auth-oauthlib
+          python -m pip install --upgrade pip
+          pip install \
+            requests \
+            feedparser \
+            beautifulsoup4 \
+            lxml \
+            edge-tts \
+            pillow \
+            numpy \
+            scipy \
+            matplotlib \
+            pycairo \
+            opencv-python-headless \
+            ddgs \
+            yt-dlp \
+            google-api-python-client \
+            google-auth-oauthlib \
+            google-auth-httplib2 \
+            pytrends \
+            curl_cffi
 
-      - name: Run World Talk Brief God-Level AI Documentary Factory
+      - name: Run WTB V21 Documentary News Engine
         env:
-          YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          DEEPGRAM_API_KEY: ${{ secrets.DEEPGRAM_API_KEY }}
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          FORCE_MEGA_NEWS: ${{ github.event.inputs.force_mega_news || 'false' }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          python3 -u wtb_engine.py
+          python wtb_engine.py
 
-      - name: Save Non-Repeating Topic & Category History to GitHub (Keep Cron Active!)
-        if: always()
-        run: |
-          if [ -f published_history.json ]; then
-            git config user.name "WorldTalkBrief-Bot"
-            git config user.email "bot@worldtalkbrief.org"
-            git pull --rebase origin main || true
-            git add published_history.json
-            git diff --staged --quiet || git commit -m "Auto-update published_history.json ($(date -u +'%Y-%m-%d %H:%M UTC'))"
-            git push origin HEAD:main || true
-          fi
-
-      - name: Ensure Workflow Remains Enabled & Active 24x7
-        if: always()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh workflow enable "test_and_run.yml" || true
-
-      - name: Upload Generated 1080p Videos & Thumbnails to GitHub Artifacts
+      - name: Upload Generated Video & Audit Report Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: World-Talk-Brief-1080p-Output-${{ github.run_number }}
+          name: wtb-v21-video-output-${{ github.run_number }}
           path: |
             output/*.mp4
             output/*.jpg
-            output/wtb_1080p_report.json
-          retention-days: 2
+            output/*.json
+            *.mp4
+          if-no-files-found: ignore
+          retention-days: 7
