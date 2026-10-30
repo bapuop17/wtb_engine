@@ -516,7 +516,7 @@ BANNED_CAPTION_AND_TITLE_WORDS = [
     "feline", "dog ", "dogs ", "puppy", "canine", "pet ", "pets ", "cute animal", "dinosaur",
     "dragon", "monster", "fantasy", "fairy", "magic", "stock illustration", "recorded future",
     "infographic", "chart", "diagram", "logo", "icon", "banner", "poster", "thumbnail",
-    "t-shirt", "mug", "merchandise", "gift", "sale", "promo", "coupon", "bunk bed", "bunk beds", "twin bed", "loft bed", "mattress", "bed frame", "furniture", "headboard", "dresser", "nightstand", "wayfair", "ikea", "overstock", "ashley furniture", "finding dory", "finding nemo", "dory", "nemo", "dreamworks", "illumination", "periscopefilm", "periscope film", "stock footage", "archive footage watermark", "mount rushmore", "rushmore", "anatomy", "skeleton", "skull", "brain illustration", "3d brain", "medical illustration", "xray", "x-ray"
+    "t-shirt", "mug", "merchandise", "gift", "sale", "promo", "coupon", "bunk bed", "bunk beds", "twin bed", "loft bed", "mattress", "bed frame", "furniture", "headboard", "dresser", "nightstand", "wayfair", "ikea", "overstock", "ashley furniture", "finding dory", "finding nemo", "dory", "nemo", "dreamworks", "illumination", "periscopefilm", "periscope film", "stock footage", "archive footage watermark", "mount rushmore", "rushmore", "anatomy", "skeleton", "skull", "brain illustration", "3d brain", "medical illustration", "xray", "x-ray", "baptist church", "metropolitan baptist", "go out and vote", "vote sign", "church sign", "cocoa", "cote d'ivoire", "côte d'ivoire", "ivory coast", "atmospheric river", "noaa satellite", "rath yatra", "chariot festival", "orthographic projection", "location map", "locator map", "relief map", "political map", "map of ", "cia wfb", "blank map", "administrative map"
 ]
 
 BANNED_IMAGE_SOURCES = [
@@ -542,7 +542,7 @@ BANNED_IMAGE_SOURCES = [
     "emblem", "insignia", "seal", "badge", "coat_of_arms", "3d-render", "3d_render",
     "illustration", "vector", "futuristic", "cyberpunk", "sci-fi", "scifi",
     "nude", "naked", "nsfw", "erotic", "bikini", "lingerie", "swimsuit", "underwear",
-    "playboy", "onlyfans", "statue_of_venus", "aphrodite", "nymph", "odalisque", "boudoir", "strip", "adult", "hermes.media.static.aol.com", "static.aol.com", "yimg.com/uu/api", "wayfair.com", "wfcdn.com", "ikea.com", "homedepot.com", "lowes.com", "walmartimages.com", "target.scene7.com", "overstock.com", "ostkcdn.com", "periscopefilm", "123rf", "shutterstock", "getty", "alamy", "istock"
+    "playboy", "onlyfans", "statue_of_venus", "aphrodite", "nymph", "odalisque", "boudoir", "strip", "adult", "hermes.media.static.aol.com", "static.aol.com", "yimg.com/uu/api", "wayfair.com", "wfcdn.com", "ikea.com", "homedepot.com", "lowes.com", "walmartimages.com", "target.scene7.com", "overstock.com", "ostkcdn.com", "periscopefilm", "123rf", "shutterstock", "getty", "alamy", "istock", "orthographic", "location_map", "locator_map", "relief_map", "map_of_", "cia_wfb", "baptist", "cocoa"
 ]
 
 PERSON_WIKI_MAP = {
@@ -1582,7 +1582,7 @@ def sync_all_8_playlists_and_organize_channel(yt):
                     pl_id = create_resp.get("id")
                     if pl_id:
                         playlist_map[target_pl_title.lower()] = pl_id
-                        print(f"📂 [YouTube API Auto-Created Playlist] '{target_pl_title}' -> ID: {pl_id}", flush=True)
+                        print(f"[+] [YouTube API Auto-Created Playlist] '{target_pl_title}' -> ID: {pl_id}", flush=True)
                 except Exception as ce:
                     print(f"⚠️ Playlist creation note ({target_pl_title}): {str(ce)[:80]}", flush=True)
     except Exception as e:
@@ -2548,7 +2548,7 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
     return chosen
 
 def build_daily_24h_mega_news_dossier():
-    print("\n🌐 [USA 6:00 PM MEGA-BROADCAST] Harvesting Top 24-Hour Breaking News Across the Globe...", flush=True)
+    print("\n:: [USA 6:00 PM MEGA-BROADCAST] Harvesting Top 24-Hour Breaking News Across the Globe...", flush=True)
     mega_claims = []
     visual_anchors = []
     lead_img = None
@@ -3021,7 +3021,7 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
     cdraw.rounded_rectangle([(28, plate_y + 8), (card_w - 20, plate_y + plate_h + 8)], radius=24, fill=(0, 0, 0, 215))
     cdraw.rounded_rectangle([(22, plate_y), (card_w - 26, plate_y + plate_h)], radius=24, fill=(8, 14, 28, 250), outline=(255, 215, 0, 255), width=4)
 
-    tag_txt = "⚡ KEY FIGURE IN FOCUS" if style_idx % 2 == 0 else "📂 KEY SUBJECT IN FOCUS"
+    tag_txt = ">> KEY FIGURE IN FOCUS" if style_idx % 2 == 0 else "[+] KEY SUBJECT IN FOCUS"
     f_tag = get_font(20 if is_short else 18)
     tw_tag = cdraw.textbbox((0, 0), tag_txt, font=f_tag)[2] + 40
     cdraw.rounded_rectangle([(cx - tw_tag // 2, plate_y - 18), (cx + tw_tag // 2, plate_y + 18)], radius=12, fill=(220, 20, 45, 255), outline=(255, 255, 255, 240), width=2)
@@ -3071,17 +3071,23 @@ def has_collage_or_text_banner_artifacts(im_rgb):
         if int(np.sum(col_stds_all < 2.8)) >= 2 and np.max(col_jumps_all) > 45.0:
             return True
 
-        # 3. Detect Burned-In TV News Lower-Third Chyron Ticker (`FOX NEWS`, `FOX BUSINESS` at y = 138..176)
+        # 3. Detect Burned-In Subtitles / Lower-Third Chyrons ('Cocoa in Côte d'Ivoire...', 'FOX NEWS' at y = 128..176)
         kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 3))
         grad = cv2.morphologyEx(small_g, cv2.MORPH_GRADIENT, kernel_rect)
-        bottom_chyron_strokes = float(np.mean(grad[138:175, 15:305] > 130))
-        bottom_white_box = float(np.mean((arr_c[138:175, :, 0] > 225) & (arr_c[138:175, :, 1] > 225) & (arr_c[138:175, :, 2] > 225)))
-        if bottom_chyron_strokes > 0.26 and bottom_white_box > 0.25:
+        bottom_chyron_strokes = float(np.mean(grad[128:176, 20:300] > 125))
+        bottom_bright_px = float(np.mean((arr_c[128:176, 20:300, 0] > 215) & (arr_c[128:176, 20:300, 1] > 215) & (arr_c[128:176, 20:300, 2] > 200)))
+        if (bottom_chyron_strokes > 0.17 and bottom_bright_px > 0.08) or bottom_chyron_strokes > 0.25:
             return True
 
-        # 4. Detect Giant Poster / Meme Text covering >32% of the frame (without rejecting sharp crowd/building photos!)
-        full_text_strokes = float(np.mean(grad[25:155, 25:295] > 142))
-        if full_text_strokes > 0.32:
+        # 3B. Detect Top Burned-In Text Captions ('After tracking a series of atmospheric rivers...', 'METROPOLITAN BAPTIST CHURCH' at y = 4..54)
+        top_text_strokes = float(np.mean(grad[4:54, 18:302] > 125))
+        top_bright_px = float(np.mean((arr_c[4:54, 18:302, 0] > 210) & (arr_c[4:54, 18:302, 1] > 210) & (arr_c[4:54, 18:302, 2] > 210)))
+        if top_text_strokes > 0.19 and top_bright_px > 0.10:
+            return True
+
+        # 4. Detect Giant Poster / LED Sign / Static Textbook Map Text covering >26% of the frame
+        full_text_strokes = float(np.mean(grad[20:160, 20:300] > 135))
+        if full_text_strokes > 0.26:
             return True
 
         return False
@@ -3309,8 +3315,13 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
                     post_title_low = str(post.get("title", "")).lower()
                     if any(bw in post_title_low for bw in strict_banned_video_words):
                         continue
+                    c_parts_rd = [p.lower() for p in re.split(r"[\s\-]+", c_name) if len(p) >= 4] if c_name else []
+                    if c_parts_rd and not any(cp in post_title_low for cp in c_parts_rd):
+                        continue
                     post_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", post_title_low)}
-                    if required_match_tokens and len(post_tokens.intersection(required_match_tokens)) < 1:
+                    if required_match_tokens and len(post_tokens.intersection(required_match_tokens)) < 2:
+                        continue
+                    if not ai_audit_caption_and_scene_match(post_title_low, "", dossier.get("title", ""), rd_q):
                         continue
                     rv = (post.get("secure_media") or post.get("media") or {}).get("reddit_video", {})
                     fb_u = rv.get("fallback_url", "")
@@ -3322,7 +3333,8 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
             except Exception:
                 pass
 
-    # 3. Wikimedia Commons HD Video Archive — Progressive Multi-Query Search (Scene -> Topic Anchor -> Country)
+    # 3. Wikimedia Commons HD Video Archive — Strict Country & Topic Title Verification!
+    c_parts_vid = [p.lower() for p in re.split(r"[\s\-]+", c_name) if len(p) >= 4] if c_name else []
     for wm_q in candidate_video_queries[:3]:
         try:
             api = "https://commons.wikimedia.org/w/api.php"
@@ -3335,7 +3347,14 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
             r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=5).json()
             for pg in r.get("query", {}).get("pages", {}).values():
                 v_title = pg.get("title", "").lower()
-                if any(bw in v_title for bw in strict_banned_video_words):
+                if any(bw in v_title for bw in strict_banned_video_words + BANNED_CAPTION_AND_TITLE_WORDS):
+                    continue
+                if c_parts_vid and not any(cp in v_title for cp in c_parts_vid):
+                    continue
+                v_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", v_title)}
+                if required_match_tokens and len(v_toks.intersection(required_match_tokens)) < 1:
+                    continue
+                if not ai_audit_caption_and_scene_match(v_title, "", dossier.get("title", ""), wm_q):
                     continue
                 vi = (pg.get("videoinfo") or pg.get("imageinfo") or [{}])[0]
                 for d in vi.get("derivatives", []):
@@ -4140,24 +4159,29 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     # 2. Parallel Multi-Angle Bing Photojournalism Discovery (9 angles x 38 results = 250 to 340+ candidates!)
     def fetch_angle_candidates(angle_q):
         found = []
+        # 2A. Bing Images `/images/async` (parses `m` JSON including `t`, `desc`, AND `purl` article slug!)
         try:
             b_url = (
                 f"https://www.bing.com/images/async?q={urllib.parse.quote(angle_q + ' ' + neg_guard)}"
                 f"&first=0&count=40&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
             )
             r = requests.get(b_url, headers=HEADERS_WEB, timeout=5)
-            # Parse each individual `m="{...}"` JSON card so `murl` and `t` never cross-match across cards,
-            # and NEVER append `angle_q` to `caption` (so genuine image captions are audited strictly!).
-            m_cards = re.findall(r'm="(\{[^"<>]+\})"', r.text)
+            m_cards = re.findall(r'm="(\{.*?\})"', r.text)
             for mc in m_cards[:36]:
-                mc_unesc = mc.replace("&quot;", '"').replace("&amp;", "&")
+                mc_unesc = mc.replace("&quot;", '"').replace("&amp;", "&").replace("\\u003cb\\u003e", "").replace("\\u003c/b\\u003e", "")
                 u_m = re.search(r'"murl"\s*:\s*"(https?://[^"]+)"', mc_unesc)
-                t_m = re.search(r'"t"\s*:\s*"([^"]+)"', mc_unesc)
-                desc_m = re.search(r'"desc"\s*:\s*"([^"]+)"', mc_unesc)
-                if not u_m or not t_m:
+                if not u_m:
                     continue
                 u_clean = u_m.group(1)
-                cap_real = f"{t_m.group(1)} {desc_m.group(1) if desc_m else ''}".strip()
+                t_m = re.search(r'"t"\s*:\s*"([^"]+)"', mc_unesc)
+                desc_m = re.search(r'"desc"\s*:\s*"([^"]+)"', mc_unesc)
+                purl_m = re.search(r'"purl"\s*:\s*"(https?://[^"]+)"', mc_unesc)
+                purl_slug = ""
+                if purl_m:
+                    purl_path = urllib.parse.urlparse(purl_m.group(1)).path
+                    purl_slug = re.sub(r"[^a-zA-Z0-9]+", " ", purl_path).strip()
+                u_slug = re.sub(r"[^a-zA-Z0-9]+", " ", urllib.parse.urlparse(u_clean).path).strip()
+                cap_real = f"{t_m.group(1) if t_m else ''} {desc_m.group(1) if desc_m else ''} {purl_slug} {u_slug}".strip()
                 if len(cap_real) < 6:
                     continue
                 found.append({
@@ -4165,8 +4189,27 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                     "caption": cap_real,
                     "media_type": "image",
                     "source_angle": angle_q,
-                    "base_priority": 22
+                    "base_priority": 24
                 })
+        except Exception:
+            pass
+
+        # 2B. DuckDuckGo Editorial Photo Search (`ddgs`) for extra diversity!
+        try:
+            from ddgs import DDGS
+            with DDGS() as ddgs_client:
+                ddg_res = list(ddgs_client.images(f"{angle_q} press photo", safesearch="on", size="Large", type_image="photo", layout="Wide", max_results=18))
+                for dr in ddg_res:
+                    du = dr.get("image") or ""
+                    dt = f"{dr.get('title') or ''} {dr.get('url') or ''}".strip()
+                    if du.startswith("https://") and len(dt) >= 8:
+                        found.append({
+                            "url": du,
+                            "caption": dt,
+                            "media_type": "image",
+                            "source_angle": angle_q,
+                            "base_priority": 25
+                        })
         except Exception:
             pass
         return found
@@ -4215,22 +4258,26 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
         if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS
     }
 
-    audit12_passed = []
+    pre_passed = []
     for cand in raw_candidates:
         u = cand["url"]
         cap = cand["caption"]
         if not passes_audit_gate_1_caption_and_url(u, cap, dossier, cand["source_angle"]):
-            continue
-        if not ai_audit_caption_and_scene_match(cap, u, story_title, cand["source_angle"]):
             continue
         cap_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{cap} {u}")}
         h_hits = len(cap_tokens.intersection(headline_tokens))
         s_hits = len(cap_tokens.intersection(story_tokens))
         cand["relevance_score"] = cand["base_priority"] + (h_hits * 14) + (s_hits * 6)
         cand["tokens"] = cap_tokens
-        audit12_passed.append(cand)
+        pre_passed.append(cand)
 
-    audit12_passed.sort(key=lambda x: x["relevance_score"], reverse=True)
+    pre_passed.sort(key=lambda x: x["relevance_score"], reverse=True)
+    audit12_passed = []
+    for cand in pre_passed[:56]:
+        if ai_audit_caption_and_scene_match(cand["caption"], cand["url"], story_title, cand["source_angle"]):
+            audit12_passed.append(cand)
+            if len(audit12_passed) >= 36:
+                break
 
     # 5. Run VISUAL AUDIT #3 (Pixel Physics & Sharpness), AUDIT #4 (OpenCV Cat/Collage/Face),
     #    and AUDIT #5 (Live AI Vision Auditor + dHash Deduplication) in parallel across the top 52 candidates!
@@ -4276,7 +4323,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
 
     verified_pool.sort(key=lambda x: x["relevance_score"], reverse=True)
     print(
-        f"🔍 [250–300+ VISUAL POOL & 5-STAGE AUDIT] Topic: '{story_title[:46]}' | "
+        f">> [250–300+ VISUAL POOL & 5-STAGE AUDIT] Topic: '{story_title[:46]}' | "
         f"Harvested: {len(raw_candidates)} Raw Visuals -> Audit #1&#2 Passed: {len(audit12_passed)} -> "
         f"Audit #3,#4&#5 Locked: {len(verified_pool)} 100% Verified 1080p Visuals!",
         flush=True
@@ -4338,9 +4385,10 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     story_title = dossier.get("title", "")
     news_query = sanitize_visual_search_query(news_query, dossier)
 
-    # 1. First check if Wikipedia has an exact high-res article/entity photo for `wiki_exact_title`!
+    # 1. First check if Wikipedia has an exact high-res article/entity photo for `wiki_exact_title` (excluding country maps & generic nouns)!
+    generic_wiki_skip = {c.lower() for c in COUNTRY_GEO_DB.keys()} | {"vote", "voting", "election", "elections", "gold", "mining", "city", "police", "government", "court", "africa", "europe", "asia", "world", "global"}
     for w_cand in [wiki_exact_title, topic_anchor]:
-        if w_cand and len(w_cand) >= 4:
+        if w_cand and len(w_cand) >= 4 and w_cand.lower().strip() not in generic_wiki_skip:
             try:
                 w_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(w_cand)}"
                 wr = requests.get(w_url, headers=HEADERS_WIKI, timeout=5)
@@ -4348,7 +4396,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                     wdata = wr.json()
                     w_desc = f"{wdata.get('title', '')} {wdata.get('description', '')} {wdata.get('extract', '')[:120]}"
                     w_img = wdata.get("originalimage", {}).get("source") or wdata.get("thumbnail", {}).get("source")
-                    if w_img and w_img not in used_image_urls and not w_img.lower().endswith(".svg"):
+                    if w_img and w_img not in used_image_urls and not w_img.lower().endswith(".svg") and not any(mp in w_img.lower() for mp in ["map", "orthographic", "locator", "location", "church", "baptist", "flag", "coat_of_arms"]):
                         if passes_audit_gate_1_caption_and_url(w_img, w_desc, dossier, news_query):
                             ir = requests.get(w_img, headers=HEADERS_WIKI, timeout=5)
                             if ir.status_code == 200 and len(ir.content) > 25000:
@@ -4405,11 +4453,19 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         try:
             b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + ' ' + neg_guard)}&first=0&count=28&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
             r = requests.get(b_url, headers=HEADERS_WEB, timeout=6)
-            # Extract both murl (image URL) and t (title/caption) from each Bing result block!
-            blocks = re.findall(r"murl&quot;:&quot;(https?://[^&]+?)&quot;.*?t&quot;:&quot;([^&]*?)&quot;", r.text)
-            if not blocks:
-                blocks = [(u, "") for u in re.findall(r"murl&quot;:&quot;(https?://[^&]+?)&quot;", r.text)]
-            for u, cap_t in blocks[:16]:
+            # Extract murl + (t, desc, purl slug) from each Bing `m="{...}"` card!
+            blocks = []
+            for mc in re.findall(r'm="(\{.*?\})"', r.text)[:24]:
+                mc_u = mc.replace("&quot;", '"').replace("&amp;", "&").replace("\\u003cb\\u003e", "").replace("\\u003c/b\\u003e", "")
+                um = re.search(r'"murl"\s*:\s*"(https?://[^"]+)"', mc_u)
+                if not um:
+                    continue
+                tm = re.search(r'"t"\s*:\s*"([^"]+)"', mc_u)
+                pm = re.search(r'"purl"\s*:\s*"(https?://[^"]+)"', mc_u)
+                p_slug = re.sub(r"[^a-zA-Z0-9]+", " ", urllib.parse.urlparse(pm.group(1)).path).strip() if pm else ""
+                u_slug = re.sub(r"[^a-zA-Z0-9]+", " ", urllib.parse.urlparse(um.group(1)).path).strip()
+                blocks.append((um.group(1), f"{tm.group(1) if tm else ''} {p_slug} {u_slug}".strip()))
+            for u, cap_t in blocks[:18]:
                 u_clean = u.replace("&amp;", "&")
                 if u_clean in used_image_urls:
                     continue
@@ -4565,18 +4621,21 @@ def draw_frosted_glass_panel(canvas_rgba, x0, y0, x1, y1, radius=20, tint_rgb=(1
     mask = Image.new("L", (pw, ph), 0)
     ImageDraw.Draw(mask).rounded_rectangle([(0, 0), (pw - 1, ph - 1)], radius=radius, fill=255)
 
-    # Soft outer drop shadow / bloom halo
-    draw_c = ImageDraw.Draw(canvas_rgba, "RGBA")
-    draw_c.rounded_rectangle([(x0 + 8, y0 + 10), (x1 + 8, y1 + 10)], radius=radius + 2, fill=(0, 0, 0, 165))
+    # Composite soft outer drop shadow & neon bloom on a separate RGBA overlay so canvas alpha stays 255!
+    ov_glass = Image.new("RGBA", canvas_rgba.size, (0, 0, 0, 0))
+    ov_draw = ImageDraw.Draw(ov_glass, "RGBA")
+    ov_draw.rounded_rectangle([(x0 + 8, y0 + 10), (x1 + 8, y1 + 10)], radius=radius + 2, fill=(0, 0, 0, 165))
     if glow_radius > 0 and border_col:
         for gr in range(glow_radius, 0, -3):
-            ga = int(42 * (1.0 - gr / float(glow_radius + 1)))
-            draw_c.rounded_rectangle(
+            ga = int(48 * (1.0 - gr / float(glow_radius + 1)))
+            ov_draw.rounded_rectangle(
                 [(x0 - gr, y0 - gr), (x1 + gr, y1 + gr)],
                 radius=radius + gr,
                 outline=(border_col[0], border_col[1], border_col[2], ga),
                 width=2
             )
+    canvas_rgba.alpha_composite(ov_glass)
+    draw_c = ImageDraw.Draw(canvas_rgba, "RGBA")
 
     canvas_rgba.paste(glass_im, (x0, y0), mask)
     if border_w > 0 and border_col:
@@ -4620,16 +4679,39 @@ def render_motion_canvas_power_network_frame(beat, local_t, W, H, is_short=True)
 
     b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
     point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or "SYSTEMIC POWER NETWORK").upper(), 28)
-    topic_anc = fit_whole_words_limit(str(beat["story"].get("topic_anchor") or "CENTRAL NEXUS").upper(), 20)
+    story_obj = beat["story"]
+    c_prof_pn = story_obj.get("country_profile", {})
+    c_name_pn = fit_whole_words_limit(str(c_prof_pn.get("name", "GLOBAL")).upper(), 18)
+    topic_anc = fit_whole_words_limit(str(story_obj.get("topic_anchor") or "CENTRAL NEXUS").upper(), 20)
 
-    # Extract 4 crisp phrase nodes from the spoken sentence
-    words_all = [w for w in re.sub(r"[^\x20-\x7E]", "", b_txt).split() if w]
-    step_w = max(2, len(words_all) // 4)
+    # Extract 4 COMPLETE, self-contained investigative points from distinct story facts (NEVER slicing 1 sentence into broken 2-word chunks!)
+    raw_facts_pn = list(story_obj.get("raw_facts") or [])
+    fact_candidates = [b_txt] + [f for f in raw_facts_pn if f != b_txt]
+    extracted_pts = []
+    for fc_i, fc_txt in enumerate(fact_candidates[:8]):
+        pt_head, _ = extract_key_point_from_sentence(fc_txt, beat_num=fc_i + 1)
+        pt_clean = fit_whole_words_limit(pt_head, 24)
+        # Also build a clean 4-word subtitle line from the fact's meaningful words
+        sub_words = [w for w in re.findall(r"[A-Za-z0-9$%\-]+", fc_txt) if len(w) >= 4 and w.lower() not in HEADLINE_STOP_VERBS_ADJS][:5]
+        sub_line = fit_whole_words_limit(" ".join(sub_words).upper(), 28)
+        if pt_clean and pt_clean not in [x[0] for x in extracted_pts]:
+            extracted_pts.append((pt_clean, sub_line))
+        if len(extracted_pts) >= 4:
+            break
+    while len(extracted_pts) < 4:
+        defaults_pn = [
+            (point_hl, f"{c_name_pn} PRIMARY DRIVER"),
+            (f"{c_name_pn} STRUCTURAL SHIFT", "SYSTEMIC PRESSURE POINT"),
+            ("ECONOMIC & SOCIAL IMPACT", "LONG-TERM INFRASTRUCTURE RISK"),
+            ("GOVERNANCE & OVERSIGHT", "CRITICAL POLICY FLASHPOINT")
+        ]
+        extracted_pts.append(defaults_pn[len(extracted_pts)])
+
     node_labels = [
-        ("01 // CATALYST", " ".join(words_all[:step_w])[:26] or "STRATEGIC TRIGGER", (0, 240, 255, 255)),
-        ("02 // CAPITAL FLOW", " ".join(words_all[step_w:step_w*2])[:26] or "FINANCIAL LEVERAGE", (255, 220, 0, 255)),
-        ("03 // MECHANISM", " ".join(words_all[step_w*2:step_w*3])[:26] or "INSTITUTIONAL SHIFT", (255, 75, 95, 255)),
-        ("04 // OUTCOME", " ".join(words_all[step_w*3:step_w*4])[:26] or "GLOBAL FALLOUT", (50, 245, 175, 255))
+        ("01 // ROOT CATALYST", extracted_pts[0][0], extracted_pts[0][1], (0, 240, 255, 255)),
+        ("02 // KEY MECHANISM", extracted_pts[1][0], extracted_pts[1][1], (255, 220, 0, 255)),
+        ("03 // SYSTEMIC IMPACT", extracted_pts[2][0], extracted_pts[2][1], (255, 75, 95, 255)),
+        ("04 // STRATEGIC FALLOUT", extracted_pts[3][0], extracted_pts[3][1], (50, 245, 175, 255))
     ]
 
     if is_short:
@@ -4645,58 +4727,77 @@ def render_motion_canvas_power_network_frame(beat, local_t, W, H, is_short=True)
         node_prog = spring_physics_ease(min(max((local_t - idx_n * 0.14) / 0.50, 0.0), 1.0))
         if node_prog <= 0.02:
             continue
-        col_n = node_labels[idx_n][2]
+        col_n = node_labels[idx_n][3]
         ctrl_pt = (cx + int(dx * 0.48), cy - int(dy * 0.15))
         draw_manim_glowing_bezier_arc(
             draw, (cx, cy), ctrl_pt, (nx, ny), min(1.0, node_prog),
             main_col=col_n, glow_col=(col_n[0], col_n[1], col_n[2], 70), width=4
         )
-        # Traveling energy pulse packet along the Bezier conduit
         u_pkt = ((local_t * 0.85 + idx_n * 0.25) % 1.0)
         omt = 1.0 - u_pkt
         px_p = omt * omt * cx + 2.0 * omt * u_pkt * ctrl_pt[0] + u_pkt * u_pkt * nx
         py_p = omt * omt * cy + 2.0 * omt * u_pkt * ctrl_pt[1] + u_pkt * u_pkt * ny
         draw.ellipse([(px_p - 9, py_p - 9), (px_p + 9, py_p + 9)], fill=(255, 255, 255, 240), outline=col_n, width=3)
 
-    # 2. Draw Satellite Frosted-Glass Evidence Nodes with Spring Pop-In
+    # 2. Draw Satellite Frosted-Glass Evidence Nodes with 2 Clean Lines (Headline + Sub-Point, Zero Chopped Words!)
     for idx_n, (dx, dy) in enumerate(offsets):
         node_prog = spring_physics_ease(min(max((local_t - idx_n * 0.14) / 0.48, 0.0), 1.0))
         if node_prog <= 0.05:
             continue
-        tag_s, body_s, col_n = node_labels[idx_n]
-        cur_w, cur_h = int(nw * min(1.04, node_prog)), int(nh * min(1.04, node_prog))
+        tag_s, body_s, sub_s, col_n = node_labels[idx_n]
+        cur_w, cur_h = int(nw * min(1.04, node_prog)), int((nh + 18) * min(1.04, node_prog))
         x0 = (cx + dx) - cur_w // 2
         y0 = (cy + dy) - cur_h // 2
         draw_frosted_glass_panel(
             bg, x0, y0, x0 + cur_w, y0 + cur_h, radius=18,
-            tint_rgb=(10, 18, 34), tint_alpha=0.84, border_col=col_n, border_w=3, glow_radius=9
+            tint_rgb=(10, 18, 34), tint_alpha=0.86, border_col=col_n, border_w=3, glow_radius=9
         )
-        draw.text((x0 + 22, y0 + 18), tag_s, fill=col_n, font=get_font(18))
-        draw.text((x0 + 22, y0 + 54), body_s.upper()[:24], fill=(255, 255, 255, 255), font=get_font(25))
+        draw.text((x0 + 22, y0 + 14), tag_s, fill=col_n, font=get_font(17))
+        draw.text((x0 + 22, y0 + 44), fit_whole_words_limit(body_s.upper(), 22), fill=(255, 255, 255, 255), font=get_font(23))
+        draw.text((x0 + 22, y0 + 82), fit_whole_words_limit(sub_s.upper(), 28), fill=(185, 215, 245, 235), font=get_font(16))
 
-    # 3. Draw Central Glowing Core Hub (with Portrait or Core Subject Emblem)
+    # 3. Draw Central Glowing Core Hub (Tactical Radar Core + Verified Portrait ONLY if a real person is in focus!)
     hub_r = 122 if is_short else 132
-    for gr in range(hub_r + 36, hub_r, -5):
-        ga = int(75 * (1.0 - (gr - hub_r) / 36.0))
-        draw.ellipse([(cx - gr, cy - gr), (cx + gr, cy + gr)], fill=(255, 215, 0, ga))
-    draw.ellipse([(cx - hub_r - 6, cy - hub_r - 6), (cx + hub_r + 6, cy + hub_r + 6)], fill=(10, 16, 30, 255), outline=(255, 220, 0, 255), width=5)
+    ov_hub = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ov_hdraw = ImageDraw.Draw(ov_hub, "RGBA")
+    for gr in range(hub_r + 34, hub_r, -4):
+        ga = int(85 * ((1.0 - (gr - hub_r) / 34.0) ** 1.5))
+        ov_hdraw.ellipse([(cx - gr, cy - gr), (cx + gr, cy + gr)], outline=(0, 225, 255, ga), width=4)
+    bg.alpha_composite(ov_hub)
+    draw = ImageDraw.Draw(bg, "RGBA")
+    draw.ellipse([(cx - hub_r - 6, cy - hub_r - 6), (cx + hub_r + 6, cy + hub_r + 6)], fill=(8, 16, 32, 255), outline=(0, 235, 255, 255), width=4)
 
-    pop_im = (beat.get("person_popup") or {}).get("portrait_im") or beat.get("primary_im")
+    # Concentric rotating radar rings inside central hub
+    for rr in [hub_r - 22, hub_r - 52, hub_r - 82]:
+        if rr > 15:
+            draw.ellipse([(cx - rr, cy - rr), (cx + rr, cy + rr)], outline=(0, 235, 255, 75), width=2)
+
+    pop_im = (beat.get("person_popup") or {}).get("portrait_im")
     if pop_im is not None:
-        resample_m = getattr(Image, "Resampling", Image).LANCZOS
         p_sq = fit_full_height_face_aware_1080p(pop_im, hub_r * 2, hub_r * 2).convert("RGBA")
         mask_c = Image.new("L", (hub_r * 2, hub_r * 2), 0)
         ImageDraw.Draw(mask_c).ellipse([(0, 0), (hub_r * 2 - 1, hub_r * 2 - 1)], fill=255)
         bg.paste(p_sq, (cx - hub_r, cy - hub_r), mask_c)
+    else:
+        # Draw Country Flag + Country Name + SYSTEM NEXUS inside the Tactical Hub (NEVER a random scene/map crop!)
+        if c_prof_pn.get("flag_img"):
+            fl_big = c_prof_pn["flag_img"].resize((96, 64))
+            bg.paste(fl_big, (cx - 48, cy - 68), fl_big)
+        f_cn = get_font(22)
+        tw_cn = draw.textbbox((0, 0), c_name_pn, font=f_cn)[2]
+        draw.text((cx - tw_cn // 2, cy + 8), c_name_pn, fill=(255, 225, 0, 255), font=f_cn)
+        f_nx = get_font(15)
+        tw_nx = draw.textbbox((0, 0), "CORE NEXUS", font=f_nx)[2]
+        draw.text((cx - tw_nx // 2, cy + 38), "CORE NEXUS", fill=(0, 240, 255, 230), font=f_nx)
 
     # Central Hub Label Plate
-    pw_lbl = 360
+    pw_lbl = 380
     draw_frosted_glass_panel(
         bg, cx - pw_lbl // 2, cy + hub_r - 18, cx + pw_lbl // 2, cy + hub_r + 54,
         radius=14, tint_rgb=(180, 18, 42), tint_alpha=0.92, border_col=(255, 255, 255, 245), border_w=2, glow_radius=6
     )
-    tw_a = draw.textbbox((0, 0), topic_anc, font=get_font(23))[2]
-    draw.text((cx - tw_a // 2, cy + hub_r + 4), topic_anc, fill=(255, 255, 255, 255), font=get_font(23))
+    tw_a = draw.textbbox((0, 0), topic_anc, font=get_font(22))[2]
+    draw.text((cx - tw_a // 2, cy + hub_r + 4), topic_anc, fill=(255, 255, 255, 255), font=get_font(22))
 
     bg.alpha_composite(get_prebuilt_vignette_overlay(W, H))
     return bg
@@ -4990,7 +5091,7 @@ def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_
         draw.rounded_rectangle([(np_x, np_y), (np_x + np_w, np_y + np_h)], radius=18, fill=(10, 16, 32, 248), outline=(0, 235, 255, 240), width=3)
         draw.rectangle([(np_x, np_y), (np_x + 12, np_y + np_h)], fill=(225, 25, 50, 255))
         draw.text((np_x + 30, np_y + 16), disp_name, fill=(255, 255, 255, 255), font=get_font(40))
-        draw.text((np_x + 30, np_y + 68), f"⚡ {role_lbl}", fill=(255, 225, 0, 255), font=get_font(23))
+        draw.text((np_x + 30, np_y + 68), f">> {role_lbl}", fill=(255, 225, 0, 255), font=get_font(23))
 
         # Lower Evidence Board (y = 795..1395)
         eb_x, eb_y, eb_w, eb_h = (W - 920) // 2, np_y + np_h + 22, 920, 560
@@ -5008,10 +5109,10 @@ def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_
 
         # Red Classified Stamp Badge at top-left of portrait
         draw.rounded_rectangle([(px + 18, py + 18), (px + 255, py + 54)], radius=8, fill=(220, 20, 45, 245))
-        draw.text((px + 30, py + 25), "📂 PROFILE IN FOCUS", fill=(255, 255, 255, 255), font=get_font(18))
+        draw.text((px + 30, py + 25), "[+] PROFILE IN FOCUS", fill=(255, 255, 255, 255), font=get_font(18))
 
         draw.text((px + 24, py + ph + 18), disp_name, fill=(255, 255, 255, 255), font=get_font(36))
-        draw.text((px + 24, py + ph + 68), f"⚡ {role_lbl}", fill=(255, 225, 0, 255), font=get_font(21))
+        draw.text((px + 24, py + ph + 68), f">> {role_lbl}", fill=(255, 225, 0, 255), font=get_font(21))
 
         eb_x, eb_y, eb_w, eb_h = px + pw + 48, 165, W - (px + pw + 120), 696
 
@@ -5019,7 +5120,7 @@ def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_
     draw.rounded_rectangle([(eb_x + 12, eb_y + 14), (eb_x + eb_w + 12, eb_y + eb_h + 14)], radius=24, fill=(0, 0, 0, 210))
     draw.rounded_rectangle([(eb_x, eb_y), (eb_x + eb_w, eb_y + eb_h)], radius=24, fill=(12, 19, 36, 246), outline=(0, 235, 255, 220), width=3)
     draw.rounded_rectangle([(eb_x, eb_y), (eb_x + eb_w, eb_y + 66)], radius=22, fill=(18, 28, 52, 255))
-    draw.text((eb_x + 28, eb_y + 18), f"🔍 CASE DOSSIER // {beat.get('section_headline', 'KEY EVIDENCE')[:28]}", fill=(0, 240, 255, 255), font=get_font(24))
+    draw.text((eb_x + 28, eb_y + 18), f">> CASE DOSSIER // {beat.get('section_headline', 'KEY EVIDENCE')[:28]}", fill=(0, 240, 255, 255), font=get_font(24))
 
     # Animated Yellow Marker Bar on Main Point Highlight
     hl_p = cubic_bezier_ease_in_out(min(max((local_t - 0.10) / 0.45, 0.0), 1.0))
@@ -5078,9 +5179,9 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     canvas = bg.convert("RGBA")
     draw = ImageDraw.Draw(canvas, "RGBA")
 
-    # Extract all numbers/percentages/money figures from the sentence
+    # Extract both digit figures AND word-number quantities ('hundreds of millions of gallons', 'millions of tons', 'a third of all gold')
     num_matches = re.findall(
-        r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|thousand|tons|hours|years|days|states|countries|people|arrests|marches|sites|feet))?)",
+        r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|thousand|tons|tonnes|gallons|hours|years|days|states|countries|people))?)",
         b_txt, flags=re.I
     )
     cleaned_nums = []
@@ -5088,8 +5189,17 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
         nm_c = nm.strip().upper().replace("PERCENT", "%")
         if nm_c and nm_c not in cleaned_nums:
             cleaned_nums.append(nm_c)
+    low_b = b_txt.lower()
+    if "hundreds of millions" in low_b and "100M+ GALLONS" not in cleaned_nums:
+        cleaned_nums.insert(0, "100M+ GALLONS/DAY")
+    elif "millions of gallons" in low_b and "MILLIONS OF GALLONS" not in cleaned_nums:
+        cleaned_nums.insert(0, "MILLIONS OF GALLONS")
+    elif "millions of tons" in low_b and "MILLIONS OF TONS" not in cleaned_nums:
+        cleaned_nums.insert(0, "MILLIONS OF TONS")
+    if ("third of all" in low_b or "one third" in low_b) and "1/3 GLOBAL TOTAL" not in cleaned_nums:
+        cleaned_nums.insert(0, "33.3% GLOBAL SHARE")
     if not cleaned_nums:
-        cleaned_nums = [point_hl[:16]]
+        cleaned_nums = [fit_whole_words_limit(point_hl, 16)]
 
     cw = 880 if is_short else 1140
     ch = 520 if is_short else 470
@@ -5099,42 +5209,50 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     draw.rounded_rectangle([(cx0 + 14, cy0 + 16), (cx0 + cw + 14, cy0 + ch + 16)], radius=26, fill=(0, 0, 0, 210))
     draw.rounded_rectangle([(cx0, cy0), (cx0 + cw, cy0 + ch)], radius=26, fill=(10, 17, 34, 244), outline=(255, 215, 0, 255), width=4)
     draw.rounded_rectangle([(cx0, cy0), (cx0 + cw, cy0 + 68)], radius=24, fill=(18, 28, 52, 255))
-    draw.text((cx0 + 32, cy0 + 18), f"📊 DATA & MONEY TRAIL // {point_hl}", fill=(255, 225, 0, 255), font=get_font(25))
+    draw.text((cx0 + 32, cy0 + 18), f">> DATA & MONEY TRAIL // {point_hl}", fill=(255, 225, 0, 255), font=get_font(25))
 
-    # Render 1 or 2 Giant Metric Callout Cards inside the board
-    cards_to_show = cleaned_nums[:2]
-    num_c = len(cards_to_show)
-    box_w = (cw - 96) // num_c
-    for idx_n, val_str in enumerate(cards_to_show):
-        bx = cx0 + 32 + idx_n * (box_w + 32)
-        by = cy0 + 96
-        bh = 195
-        col_accent = (255, 225, 0, 255) if idx_n == 0 else (0, 240, 255, 255)
-        draw.rounded_rectangle([(bx, by), (bx + box_w, by + bh)], radius=18, fill=(16, 26, 48, 250), outline=col_accent, width=3)
-        f_big = get_font(64 if len(val_str) <= 10 else 48)
-        tw_v = draw.textbbox((0, 0), val_str, font=f_big)[2]
-        draw.text((bx + max(18, (box_w - tw_v) // 2), by + 36), val_str, fill=col_accent, font=f_big)
+    # Left Panel: Giant Primary KPI Metric Card | Right Panel: Think School / Manim Multi-Bar + Spline Chart
+    val_str = cleaned_nums[0]
+    left_w = int((cw - 96) * 0.48)
+    right_w = (cw - 96) - left_w - 28
+    bx = cx0 + 32
+    by = cy0 + 90
+    bh = 206
+    draw.rounded_rectangle([(bx, by), (bx + left_w, by + bh)], radius=18, fill=(14, 24, 46, 255), outline=(255, 225, 0, 255), width=3)
+    draw.text((bx + 24, by + 18), "PRIMARY IMPACT METRIC", fill=(0, 240, 255, 255), font=get_font(17))
+    f_big = get_font(52 if len(val_str) <= 10 else (40 if len(val_str) <= 15 else 33))
+    draw.text((bx + 24, by + 58), val_str, fill=(255, 225, 0, 255), font=f_big)
 
-        # Animated progress bar inside metric card
-        p_bar = cubic_bezier_ease_in_out(min(max((local_t - 0.12) / 0.55, 0.0), 1.0))
-        bar_w = max(16, int((box_w - 48) * (0.88 if idx_n == 0 else 0.68) * p_bar))
-        draw.rounded_rectangle([(bx + 24, by + bh - 38), (bx + box_w - 24, by + bh - 20)], radius=8, fill=(30, 42, 68, 255))
-        draw.rounded_rectangle([(bx + 24, by + bh - 38), (bx + 24 + bar_w, by + bh - 20)], radius=8, fill=col_accent)
+    p_bar = cubic_bezier_ease_in_out(min(max((local_t - 0.12) / 0.55, 0.0), 1.0))
+    bar_w = max(16, int((left_w - 48) * 0.88 * p_bar))
+    draw.rounded_rectangle([(bx + 24, by + bh - 46), (bx + left_w - 24, by + bh - 24)], radius=8, fill=(28, 40, 66, 255))
+    draw.rounded_rectangle([(bx + 24, by + bh - 46), (bx + 24 + bar_w, by + bh - 24)], radius=8, fill=(255, 225, 0, 255))
 
-    # Manim-Style Animated Vector Trend Curve inside the Data Board
+    # Right Panel: Animated Bar + Glowing Manim Trend Curve
+    rx0 = bx + left_w + 28
+    draw.rounded_rectangle([(rx0, by), (rx0 + right_w, by + bh)], radius=18, fill=(14, 24, 46, 255), outline=(0, 235, 255, 220), width=2)
+    draw.text((rx0 + 22, by + 14), " ESCALATION TRAJECTORY // MANIM SPLINE", fill=(0, 240, 255, 255), font=get_font(16))
+    bar_heights = [0.28, 0.42, 0.58, 0.76, 0.95]
+    bar_labels = ["T-4", "T-3", "T-2", "T-1", "NOW"]
+    nb = len(bar_heights)
+    slot_w = (right_w - 56) // nb
+    spline_pts = []
     curve_prog = manim_smooth_rate(min(max((local_t - 0.08) / 0.75, 0.0), 1.0))
-    if curve_prog > 0.05:
-        gx0, gy0 = cx0 + 48, cy0 + 282
-        gw_c = int((cw - 96) * curve_prog)
-        curve_pts = []
-        for dx_i in range(0, max(12, gw_c), 8):
-            u_c = dx_i / float(max(1, cw - 96))
-            py_c = gy0 - int(22.0 * (u_c ** 1.6) + 8.0 * math.sin(u_c * 9.0 + local_t * 4.0))
-            curve_pts.append((gx0 + dx_i, py_c))
-        if len(curve_pts) >= 2:
-            draw.line(curve_pts, fill=(0, 240, 255, 195), width=4)
-            hx_c, hy_c = curve_pts[-1]
-            draw.ellipse([(hx_c - 6, hy_c - 6), (hx_c + 6, hy_c + 6)], fill=(255, 225, 0, 255))
+    for b_i, bh_ratio in enumerate(bar_heights):
+        b_x0 = rx0 + 28 + b_i * slot_w + 8
+        b_x1 = b_x0 + slot_w - 18
+        max_bh = bh - 76
+        cur_bh = int(max_bh * bh_ratio * curve_prog)
+        b_y1 = by + bh - 28
+        b_y0 = b_y1 - max(6, cur_bh)
+        b_col = (255, 75, 95, 235) if b_i == nb - 1 else (0, 185, 235, 175)
+        draw.rounded_rectangle([(b_x0, b_y0), (b_x1, b_y1)], radius=5, fill=b_col)
+        draw.text((b_x0 + 4, b_y1 + 4), bar_labels[b_i], fill=(180, 205, 235, 255), font=get_font(13))
+        spline_pts.append(((b_x0 + b_x1) // 2, b_y0))
+    if len(spline_pts) >= 2:
+        draw.line(spline_pts, fill=(255, 225, 0, 255), width=4)
+        for spx, spy in spline_pts:
+            draw.ellipse([(spx - 5, spy - 5), (spx + 5, spy + 5)], fill=(255, 255, 255, 255), outline=(255, 225, 0, 255), width=2)
 
     # Bottom Explanation Strip showing the exact context of the numbers
     words_ex = [w for w in re.sub(r"[^\x20-\x7E]", "", b_txt).split() if w]
@@ -5162,23 +5280,30 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     if "subscribe to world talk brief" in low or "watch the full documentary" in low:
         return None
 
-    # 1. V21 True 3D Rotating Orthographic World Globe Beat (always on Beat 1 or when countries/routes/borders are discussed)
+    # 0. Historical Era / Chronology Beat (1884, 1970s, 2007, century, decades) -> 2.5D Archival Timeline!
+    if bool(re.search(r"\b(18\d{2}|19\d{2}s?|200\d|201\d|century|decades)\b", low)) and (beat_idx % 3 == 1):
+        return "ARCHIVAL_25D_TIMELINE"
+
+    # 1. V21 True 3D Rotating Orthographic World Globe Beat (on Beat 1 or geographic/corridor beats)
     if beat_idx == 1 or (any(mw in low for mw in [
         "strait", "sea", "border", "corridor", "airspace", "flight", "route", "journey", "abroad",
-        "europe", "africa", "asia", "middle east", "island", "peninsula", "suez", "taiwan", "capital", "nation", "country"
-    ]) and (beat_idx % 4 == 1)):
+        "europe", "africa", "asia", "middle east", "island", "peninsula", "suez", "taiwan"
+    ]) and (beat_idx % 5 == 1)):
         return "TACTICAL_GEOPOLITICAL_SIEGE_MAP"
 
-    # 2. Think School + Manim Data Scorecard Beat (whenever concrete numbers, currencies, or percentages are spoken!)
-    has_strong_stat = bool(re.search(r"(\d+(?:[.,]\d+)?\s*(?:%|percent|billion|million|trillion|thousand|francs|dollars|euros|pounds|years|motels|hotels)|(?:\$|£|€|₹)\d+)", low))
+    # 2. Think School + Manim Data Scorecard Beat (triggers on digit stats AND word-numbers like 'millions of tons', 'hundreds of millions of gallons', 'third of all gold'!)
+    has_strong_stat = bool(re.search(
+        r"(\d+(?:[.,]\d+)?\s*(?:%|percent|billion|million|trillion|thousand|tons|tonnes|gallons|francs|dollars|euros|pounds|years|motels|hotels)|"
+        r"(?:\$|£|€|₹)\d+|\b(?:millions|billions|trillions|hundreds of millions|thousands|a third|one third|half of all)\b)",
+        low
+    ))
     if has_strong_stat:
         return "THINK_SCHOOL_DATA_SCORECARD"
 
-    # 2B. Motion-Canvas / Nitish Rajput Power Network Graph Beat (on systemic/network/scheme/crackdown/alliance beats)
-    if beat_idx == 2 or (beat_idx > 0 and (beat_idx % 4 == 2) and any(nw in low for nw in [
-        "system", "network", "networks", "scheme", "schemes", "alliance", "supply chain", "government",
-        "strategy", "power", "control", "influence", "crisis", "economy", "industry", "operations",
-        "crackdown", "officials", "corruption", "surveillance", "security", "organization"
+    # 2B. Motion-Canvas / Nitish Rajput Power Network Graph Beat (at most twice per video on systemic/mechanism beats)
+    if beat_idx in [2, 11] or (beat_idx > 4 and (beat_idx % 7 == 0) and any(nw in low for nw in [
+        "system", "network", "networks", "scheme", "schemes", "alliance", "supply chain",
+        "mechanism", "culprit", "scapegoat", "crackdown", "corruption", "surveillance"
     ])):
         return "MOTION_CANVAS_POWER_NETWORK"
 
@@ -5186,7 +5311,7 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     if beat_idx > 0 and (beat_idx % 4 == 3) and any(kw in low for kw in [
         "interview", "speaking", "statement", "stated", "warned", "warns", "declared", "testified",
         "press conference", "explained", "argued", "confirmed", "announced", "called on", "urged",
-        "criticizes", "according to", "reported", "signed", "legislation", "investigation"
+        "criticizes", "according to", "reported", "admitted", "claims", "blame", "blamed"
     ]):
         return "BROADCAST_INTERVIEW_QUOTE_MOCKUP"
 
@@ -5214,26 +5339,21 @@ def render_25d_historical_timeline_frame(beat, local_t, W, H, is_short=True):
     for gy in range(150, H - 150, 90):
         draw.line([(60, gy), (W - 60, gy)], fill=(255, 235, 190, 18), width=1)
 
-    # Extract years mentioned in the story or use canonical era milestones
-    found_years = re.findall(r"\b(18\d{2}|19\d{2}|20\d{2})\b", f"{story.get('title', '')} {' '.join(story.get('raw_facts', [])[:6])}")
-    if is_man_utd:
-        milestones = [
-            ("1945–1969", "SIR MATT BUSBY ERA", "GOLDEN DYNASTY", True),
-            ("1972–1985", "POST-BUSBY VACUUM", "5-0 SELHURST COLLAPSE", False),
-            ("1986–2013", "SIR ALEX FERGUSON", "13 PREMIER LEAGUE TITLES", True),
-            ("2013–2026", "THE MANAGERIAL DUSTBIN", "6+ SACKINGS & ANARCHY", False)
-        ]
-    else:
-        y1 = found_years[0] if len(found_years) > 0 else "1972"
-        y2 = found_years[1] if len(found_years) > 1 else "1986"
-        y3 = found_years[2] if len(found_years) > 2 else "2013"
-        t_anc = (story.get("topic_anchor") or "INSTITUTION").upper()[:18]
-        milestones = [
-            (y1, "FOUNDATION ERA", f"{t_anc} ORIGINS", True),
-            (y2, "FIRST FRACTURE", "STRUCTURAL SHIFT", False),
-            (y3, "THE TURNING POINT", "SYSTEMIC PRESSURE", True),
-            ("PRESENT", "MODERN CRISIS", "CRITICAL INFLECTION", False)
-        ]
+    # Extract and chronologically sort unique years mentioned in the story!
+    raw_yr_matches = re.findall(r"\b(18\d{2}|19\d{2}|20\d{2})\b", f"{b_txt} {story.get('title', '')} {' '.join(story.get('raw_facts', [])[:8])}")
+    sorted_yrs = sorted(list({int(y) for y in raw_yr_matches}))
+    found_years = [str(y) for y in sorted_yrs]
+    y1 = found_years[0] if len(found_years) > 0 else "1970"
+    y2 = found_years[1] if len(found_years) > 1 else "1995"
+    y3 = found_years[2] if len(found_years) > 2 else "2015"
+    t_anc = fit_whole_words_limit((story.get("topic_anchor") or "CASE STUDY").upper(), 16)
+    c_name_tl = fit_whole_words_limit(str(story.get("country_profile", {}).get("name", "GLOBAL")).upper(), 16)
+    milestones = [
+        (y1, "HISTORICAL ORIGIN", fit_whole_words_limit(f"{t_anc} BEGINS", 20), True),
+        (y2, "PEAK EXPANSION", fit_whole_words_limit(f"{c_name_tl} SCALE", 20), False),
+        (y3, "TURNING POINT", "SYSTEMIC STRAIN", True),
+        ("PRESENT", "MODERN FLASHPOINT", "CRITICAL COLLAPSE", False)
+    ]
 
     tl_y = int(H * (0.54 if is_short else 0.56))
     margin_x = 95 if is_short else 155
@@ -5301,11 +5421,11 @@ def render_25d_historical_timeline_frame(beat, local_t, W, H, is_short=True):
         draw.text((cx_left + 12, cy_top + card_h - 64), m_title[:20], fill=txt_col, font=get_font(18))
         draw.text((cx_left + 12, cy_top + card_h - 36), m_sub[:24], fill=sub_col, font=get_font(15))
 
-    # Top Header Banner
+    # Top Header Banner (Dynamic Story Topic & Country — never hardcoded!)
     hdr_x, hdr_y = 42, (285 if is_short else 150)
-    draw.rounded_rectangle([(hdr_x, hdr_y), (hdr_x + 610, hdr_y + 68)], radius=12, fill=(10, 16, 30, 240), outline=(255, 215, 0, 235), width=2)
-    draw.text((hdr_x + 18, hdr_y + 10), "⏳ 2.5D ARCHIVAL TIMELINE // THE GREAT MAN THEORY", fill=(255, 225, 0, 255), font=get_font(19))
-    draw.text((hdr_x + 18, hdr_y + 38), "100 YEARS OF LEADERSHIP VS STRUCTURAL COLLAPSE", fill=(215, 235, 255, 255), font=get_font(16))
+    draw.rounded_rectangle([(hdr_x, hdr_y), (hdr_x + 650, hdr_y + 68)], radius=12, fill=(10, 16, 30, 245), outline=(255, 215, 0, 235), width=2)
+    draw.text((hdr_x + 18, hdr_y + 10), f">> ARCHIVAL CHRONOLOGY // {t_anc}", fill=(255, 225, 0, 255), font=get_font(19))
+    draw.text((hdr_x + 18, hdr_y + 38), f"{c_name_tl} HISTORICAL TRAJECTORY ({y1} -> PRESENT)", fill=(215, 235, 255, 255), font=get_font(16))
 
     canvas.alpha_composite(get_prebuilt_vignette_overlay(W, H))
     return canvas
@@ -5580,7 +5700,7 @@ def render_data_contrast_outro_infographic_frame(beat, local_t, W, H, is_short=T
     # Top Title Banner
     hdr_y = 275 if is_short else 150
     draw.rounded_rectangle([(cx - 420, hdr_y), (cx + 420, hdr_y + 68)], radius=14, fill=(12, 20, 38, 242), outline=(0, 235, 255, 235), width=2)
-    draw.text((cx - 395, hdr_y + 18), f"📊 {chart_title}", fill=(255, 255, 255, 255), font=get_font(23))
+    draw.text((cx - 395, hdr_y + 18), f">> {chart_title}", fill=(255, 255, 255, 255), font=get_font(23))
 
     canvas.alpha_composite(get_prebuilt_vignette_overlay(W, H))
     return canvas
@@ -5786,11 +5906,50 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     cam_lat = target_lat * 0.75
     cam_lon = (target_lon - 22.0) + 22.0 * manim_smooth_rate(min(local_t / 2.2, 1.0))
 
-    # 2. Atmospheric Outer Rim Glow & 3D Ocean Sphere
-    for gr in range(globe_r + 54, globe_r, -5):
-        alpha_g = int(68 * ((1.0 - (gr - globe_r) / 54.0) ** 1.6))
-        draw.ellipse([(cx - gr, cy - gr), (cx + gr, cy + gr)], fill=(0, 195, 255, alpha_g))
-    draw.ellipse([(cx - globe_r, cy - globe_r), (cx + globe_r, cy + globe_r)], fill=(7, 18, 38, 242), outline=(0, 235, 255, 230), width=3)
+    # 2. Atmospheric Outer Rim Glow & 3D Ocean Sphere (composited via RGBA layer so alpha stays 255!)
+    ov_atm = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ov_adraw = ImageDraw.Draw(ov_atm, "RGBA")
+    for gr in range(globe_r + 46, globe_r, -4):
+        alpha_g = int(95 * ((1.0 - (gr - globe_r) / 46.0) ** 1.6))
+        ov_adraw.ellipse([(cx - gr, cy - gr), (cx + gr, cy + gr)], outline=(0, 205, 255, alpha_g), width=5)
+    bg.alpha_composite(ov_atm)
+    draw = ImageDraw.Draw(bg, "RGBA")
+    draw.ellipse([(cx - globe_r, cy - globe_r), (cx + globe_r, cy + globe_r)], fill=(7, 18, 38, 255), outline=(0, 235, 255, 255), width=3)
+
+    # 2B. Render Real 3D Projected Continental Landmass Polygons on the Sphere (Africa, Eurasia, Americas, Australia)!
+    continent_polys = [
+        # Africa
+        [(37, -6), (37, 10), (32, 32), (12, 51), (-2, 41), (-15, 40), (-26, 33), (-35, 20), (-34, 18), (-18, 12), (-5, 9), (4, 7), (5, -8), (15, -17), (28, -13)],
+        # Europe
+        [(36, -9), (43, -9), (48, -4), (54, 8), (60, 5), (70, 20), (70, 40), (60, 60), (45, 40), (41, 29), (38, 24), (40, 18), (44, 12), (43, 3)],
+        # Asia & Middle East
+        [(32, 35), (13, 45), (24, 58), (28, 50), (25, 67), (8, 77), (22, 88), (14, 100), (1, 104), (22, 114), (31, 121), (40, 124), (55, 138), (66, 170), (70, 100), (60, 60), (45, 40)],
+        # North America
+        [(70, -160), (70, -75), (50, -55), (42, -70), (25, -80), (30, -88), (20, -105), (32, -117), (48, -124), (60, -140)],
+        # South America
+        [(11, -75), (7, -60), (-5, -35), (-23, -43), (-35, -54), (-54, -68), (-42, -74), (-18, -71), (-5, -81)],
+        # Australia
+        [(-12, 131), (-12, 142), (-28, 153), (-38, 145), (-34, 115), (-22, 114)],
+        # Madagascar
+        [(-12, 49), (-25, 47), (-25, 44), (-15, 46)]
+    ]
+    for c_poly in continent_polys:
+        proj_pts = []
+        vis_cnt = 0
+        for plat, plon in c_poly:
+            px_c, py_c, pz_c = project_3d_globe_point(plat, plon, cam_lat, cam_lon, cx, cy, globe_r - 2)
+            if pz_c > -0.05:
+                if pz_c > 0.02:
+                    vis_cnt += 1
+                # Clamp slightly beyond horizon to sphere rim
+                dx_r, dy_r = px_c - cx, py_c - cy
+                dist_r = math.hypot(dx_r, dy_r)
+                if dist_r > globe_r - 3 and dist_r > 0:
+                    px_c = cx + dx_r * ((globe_r - 3) / dist_r)
+                    py_c = cy + dy_r * ((globe_r - 3) / dist_r)
+                proj_pts.append((px_c, py_c))
+        if vis_cnt >= 3 and len(proj_pts) >= 3:
+            draw.polygon(proj_pts, fill=(14, 72, 88, 210), outline=(0, 240, 255, 225))
 
     # 3. Render 3D Spherical Latitude & Longitude Graticule Curves across the Front Hemisphere
     for lat_g in range(-60, 75, 20):
@@ -5857,15 +6016,15 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     )
     # Leader line from Target Pin to Telemetry Card
     draw.line([(tx, ty), (px0, py0 + 68)], fill=(255, 220, 0, 210), width=3)
-    draw.text((px0 + 28, py0 + 24), "🛰️ ORBITAL GEOSPATIAL TELEMETRY", fill=(0, 240, 255, 255), font=get_font(20))
+    draw.text((px0 + 28, py0 + 24), ">> ORBITAL GEOSPATIAL TELEMETRY", fill=(0, 240, 255, 255), font=get_font(20))
     draw.text((px0 + 28, py0 + 60), c_name[:22], fill=(255, 255, 255, 255), font=get_font(38))
-    draw.text((px0 + 28, py0 + 110), f"📍 EPICENTER: {cap_name[:22]}", fill=(255, 220, 0, 255), font=get_font(21))
-    draw.text((px0 + 28, py0 + 146), f"🌐 COORDS: {abs(target_lat):.1f}°{'N' if target_lat>=0 else 'S'} // {abs(target_lon):.1f}°{'E' if target_lon>=0 else 'W'}", fill=(180, 220, 255, 255), font=get_font(19))
+    draw.text((px0 + 28, py0 + 110), f"// EPICENTER: {cap_name[:22]}", fill=(255, 220, 0, 255), font=get_font(21))
+    draw.text((px0 + 28, py0 + 146), f":: COORDS: {abs(target_lat):.1f}°{'N' if target_lat>=0 else 'S'} // {abs(target_lon):.1f}°{'E' if target_lon>=0 else 'W'}", fill=(180, 220, 255, 255), font=get_font(19))
 
     if not is_short:
         draw.line([(px0 + 28, py0 + 188), (px1 - 28, py0 + 188)], fill=(0, 235, 255, 110), width=2)
-        draw.text((px0 + 28, py0 + 206), "⚡ ACTIVE VECTOR:", fill=(255, 75, 95, 255), font=get_font(19))
-        draw.text((px0 + 28, py0 + 238), point_hl[:24], fill=(255, 255, 255, 255), font=get_font(26))
+        draw.text((px0 + 28, py0 + 206), ">> ACTIVE VECTOR:", fill=(255, 75, 95, 255), font=get_font(19))
+        draw.text((px0 + 28, py0 + 238), fit_whole_words_limit(point_hl, 24), fill=(255, 255, 255, 255), font=get_font(25))
         b_words = strip_news_publisher_mentions(beat.get("beat_excerpt", "")).split()
         for l_i in range(4):
             seg = " ".join(b_words[l_i * 6:(l_i + 1) * 6])
@@ -5908,11 +6067,16 @@ def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
         d.line([(24, ny), (cw - 36, ny)], fill=(205, 198, 182, 95), width=1)
 
     topic_tag = fit_whole_words_limit(str(beat["story"].get("topic_anchor") or "INVESTIGATIVE FILE").upper(), 24)
-    doc_header = f"📂 OFFICIAL CASE EVIDENCE // {topic_tag}"
+    doc_header = f"[+] OFFICIAL CASE EVIDENCE // {topic_tag}"
     d.text((24, 12), doc_header, fill=(255, 225, 0, 255), font=get_font(21))
 
-    point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY FACT HIGHLIGHTED").upper(), 30)
-    words_ex = re.sub(r"[^\x20-\x7E]", "", b_txt).strip().split()
+    point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY FACT HIGHLIGHTED").upper(), 28)
+    full_claim_txt = str((beat.get("claim_meta") or {}).get("text") or b_txt)
+    clean_ex = strip_news_publisher_mentions(re.sub(r"[^\x20-\x7E]", "", full_claim_txt)).strip()
+    clean_ex = re.sub(r"^[a-z]+,\s*", "", clean_ex)
+    if clean_ex:
+        clean_ex = clean_ex[0].upper() + clean_ex[1:]
+    words_ex = clean_ex.split()
     line1_ex = " ".join(words_ex[:9])
     line2_ex = " ".join(words_ex[9:18])
 
@@ -5981,7 +6145,7 @@ def build_kinetic_number_callout_rgba(beat, local_t, is_short=True):
 
     d.rounded_rectangle([(6, 8), (bw - 2, bh - 2)], radius=16, fill=(0, 0, 0, 195))
     d.rounded_rectangle([(0, 0), (bw - 8, bh - 8)], radius=16, fill=(12, 18, 34, 248), outline=(255, 220, 0, 255), width=3)
-    d.text((20, 12), f"⚡ {sub_lbl}", fill=(0, 235, 255, 255), font=get_font(15))
+    d.text((20, 12), f">> {sub_lbl}", fill=(0, 235, 255, 255), font=get_font(15))
     d.text((20, 38), stat_str, fill=(255, 230, 0, 255), font=get_font(40))
 
     if abs(bez_s - 1.0) > 0.005:
@@ -6494,9 +6658,13 @@ def build_prop_driven_storyboard_1080p(
                     if vseg not in v_pool:
                         v_pool.append(vseg)
                 elif v_pool and (b_i % 2 == 0):
-                    # Use a distinct clip from our pre-harvested Topic Video Pool so raw footage plays in every chapter!
-                    vseg = v_pool[(global_beat_idx // 2) % len(v_pool)]
-                    videos_in_section += 1
+                    # Pick an UNUSED clip from `v_pool` (NEVER repeat the same video clip 10 times across a video!)
+                    used_vclip_objs = {pb.get("vseg", {}).get("vclip") for pb in planned_beats if pb.get("vseg")}
+                    for cand_vp in v_pool:
+                        if cand_vp.get("vclip") not in used_vclip_objs:
+                            vseg = cand_vp
+                            videos_in_section += 1
+                            break
 
             if vseg is not None:
                 b_type = "VIDEO_BROLL_BEAT"
@@ -6574,7 +6742,7 @@ def build_prop_driven_storyboard_1080p(
         "person_popup_beats": person_popup_beats,
         "failed_queries_count": len(failed_queries)
     }
-    print(f"📊 [AUDIT] {tag_prefix.upper()} | Sentence-Locked Beats: {stats['total_beats']} | Photos: {stats['unique_real_photos']} | HD Video Clips: {moving_video_beats} | Center Person Pop-Ups: {person_popup_beats}", flush=True)
+    print(f">> [AUDIT] {tag_prefix.upper()} | Sentence-Locked Beats: {stats['total_beats']} | Photos: {stats['unique_real_photos']} | HD Video Clips: {moving_video_beats} | Center Person Pop-Ups: {person_popup_beats}", flush=True)
     return planned_beats, unique_real_photos, stats
 
 # ==============================================================================
@@ -7479,7 +7647,7 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     draw.text((82, 810), hook_line_2, fill=(255, 235, 0, 255), font=f_sub, stroke_width=6, stroke_fill=(0, 0, 0, 255))
 
     sub_teaser = make_clean_context_headline(dossier["original_yt_title"], max_words=7)
-    draw.text((58, 952), f"⚡ {sub_teaser}", fill=accent_col + (255,), font=get_font(34), stroke_width=3, stroke_fill=(0, 0, 0, 255))
+    draw.text((58, 952), f">> {sub_teaser}", fill=accent_col + (255,), font=get_font(34), stroke_width=3, stroke_fill=(0, 0, 0, 255))
 
     canvas.convert("RGB").save(out_path, quality=96)
 
@@ -7667,8 +7835,9 @@ async def render_and_upload_short_unit(
         sec["duration"] = dur
         sec["word_timings"] = w_timings
 
-    # Ensure the Short Video ALSO has the full 250–300+ 5x-Audited Visual Pool mapped to its finalized script!
-    harvest_200_plus_visual_candidates_for_topic(short_dossier, sections_list=short_sections)
+    # Reuse the already 5x-Audited 200+ Visual Pool from the Paired Long Documentary (saves 5+ minutes per pair!)
+    if not short_dossier.get("_cached_200_audited_pool"):
+        harvest_200_plus_visual_candidates_for_topic(short_dossier, sections_list=short_sections)
     seed_photos = list(preloaded_photos[:4]) if preloaded_photos else []
     s_beats, s_unique_photos, s_stats = build_prop_driven_storyboard_1080p(
         short_sections, short_dossier, short_entities, 1080, 1920,
@@ -7812,7 +7981,7 @@ async def main():
                     with open(wf_path, "w", encoding="utf-8") as wf_f:
                         wf_f.write(new_wf_txt)
                     subprocess.run(["git", "add", wf_path], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5, check=False)
-                    print("⚡ [Auto-Patched GitHub Workflow] Fixed Node.js 24 & ubuntu-24.04 warnings + set cron to '*/30 * * * *'!", flush=True)
+                    print(">> [Auto-Patched GitHub Workflow] Fixed Node.js 24 & ubuntu-24.04 warnings + set cron to '*/30 * * * *'!", flush=True)
         except Exception:
             pass
 
@@ -7863,11 +8032,11 @@ async def main():
 
         import gc
         run_start_wall = time.time()
-        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "1"))
+        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "2"))
         active_dossiers = selected_dossiers[:pairs_to_build]
         built_results = []
         for p_idx, st_d in enumerate(active_dossiers, 1):
-            if p_idx > 1 and (time.time() - run_start_wall) > 22 * 60:
+            if p_idx > 2 and (time.time() - run_start_wall) > 38 * 60:
                 print(f"⏱️ [Time-Guard] {round((time.time() - run_start_wall)/60.0, 1)}m elapsed; stopping cleanly after Pair #{p_idx-1} so exit code 143 never occurs!", flush=True)
                 break
             AI_VISION_AUDIT_BUDGET["calls"] = 0
@@ -7922,7 +8091,7 @@ async def main():
                 pass
 
 def _graceful_signal_cleanup(signum, frame):
-    print(f"\n⚡ [Signal {signum} Received] Cleaning up open video/audio pipes & child ffmpeg processes cleanly...", flush=True)
+    print(f"\n>> [Signal {signum} Received] Cleaning up open video/audio pipes & child ffmpeg processes cleanly...", flush=True)
     for vc in list(GLOBAL_OPEN_VCLIPS):
         try:
             vc.close()
