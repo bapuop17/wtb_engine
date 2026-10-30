@@ -7,8 +7,12 @@ on:
         description: 'Force 9-10 Min 24h Global News Mega Video (true/false)'
         required: false
         default: 'false'
+      pairs_per_run:
+        description: 'Number of Long+Short video pairs per run (1 = fast ~12 min run, 0 exit-143 risk)'
+        required: false
+        default: '1'
   schedule:
-    # Runs every 30 minutes across the 24h clock for continuous global coverage
+    # Runs every 30 minutes across the 24h clock (1 Long + 1 Short every 30m = 96 Videos/Day!)
     - cron: '*/30 * * * *'
     # Dedicated 6:00 PM USA Eastern Time (22:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
     - cron: '0 22 * * *'
@@ -77,6 +81,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FORCE_MEGA_NEWS: ${{ github.event.inputs.force_mega_news || 'false' }}
+          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || '1' }}
         run: |
           python3 -u wtb_engine.py
 
@@ -103,3 +108,4 @@ jobs:
             output/wtb_1080p_report.json
           if-no-files-found: ignore
           retention-days: 3
+          
