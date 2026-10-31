@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-31T18:46:46.757705",
+  "updated_at": "2026-10-31T22:24:49.609143",
   "round_robin_idx": 15,
   "country_rot_idx": 24,
-  "bgm_track_counter": 611914595,
-  "last_mega_24h_date": "2026-10-30",
+  "bgm_track_counter": 641827764,
+  "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
     "xbox_s_first_chief_operating_officer",
@@ -318,7 +318,8 @@
     "iran_s_khamenei_orders_military_to",
     "railway_engineering_work_over_christmas_will",
     "uk_s_slavery_apology_the_100b",
-    "iran_s_supreme_leader_orders_unlimited"
+    "iran_s_supreme_leader_orders_unlimited",
+    "mega_24h_2026_10_31"
   ],
   "event_fingerprints": [
     {
@@ -5469,6 +5470,35 @@
         "supreme",
         "unlimited"
       ]
+    },
+    {
+      "title": "24 Hours in 10 Minutes: Global Geopolitics & World News Briefing (October 31, 2026)",
+      "tokens": [
+        "back",
+        "briefing",
+        "came",
+        "city",
+        "couple",
+        "crossed",
+        "emotional",
+        "evacuated",
+        "food",
+        "front",
+        "geopolitics",
+        "hell",
+        "hours",
+        "line",
+        "minefields",
+        "minutes",
+        "occupied",
+        "october",
+        "oleshky",
+        "russia",
+        "search",
+        "they",
+        "ukrainians",
+        "years"
+      ]
     }
   ],
   "last_categories": [
@@ -5507,7 +5537,8 @@
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
-    "DEFENSE_MILITARY"
+    "DEFENSE_MILITARY",
+    "DAILY_24H_MEGA_NEWS"
   ],
   "last_sources": [
     "TechCrunch AI",
@@ -5545,7 +5576,8 @@
     "Country Documentary Wire [EGYPT]",
     "Country Documentary Wire [QATAR]",
     "Top Viral News [UNITED KINGDOM]",
-    "Top Viral News [IRAN]"
+    "Top Viral News [IRAN]",
+    "Global Wire Services"
   ],
   "last_countries": [
     "UNITED STATES",
