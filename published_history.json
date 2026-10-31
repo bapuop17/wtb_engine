@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-31T15:13:16.722932",
+  "updated_at": "2026-10-31T15:13:24.620297",
   "round_robin_idx": 12,
   "country_rot_idx": 30,
   "bgm_track_counter": 502500017,
@@ -299,7 +299,8 @@
     "flavio_bolsonaro_s_shocking_leader_of",
     "is_india_s_food_poisoning_you",
     "beijing_queer_film_festival_cancelled_after",
-    "sinkholes_scarred_land_and_scapegoats_the"
+    "sinkholes_scarred_land_and_scapegoats_the",
+    "oh_captain_our_captain_ars_staff"
   ],
   "event_fingerprints": [
     {
@@ -4945,6 +4946,27 @@
         "zama",
         "zamas"
       ]
+    },
+    {
+      "title": "Oh captain, our captain: Ars staff remembers Patrick Stewart",
+      "tokens": [
+        "break",
+        "british",
+        "came",
+        "captain",
+        "late",
+        "patrick",
+        "regularly",
+        "released",
+        "remembers",
+        "representatives",
+        "staff",
+        "statement",
+        "stewart",
+        "television",
+        "theater",
+        "worked"
+      ]
     }
   ],
   "last_categories": [
@@ -5024,6 +5046,7 @@
     "LIBYA",
     "BELARUS",
     "CHINA",
-    "SOUTH AFRICA"
+    "SOUTH AFRICA",
+    "GLOBAL TECH & AI"
   ]
 }
