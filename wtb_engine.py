@@ -461,7 +461,14 @@ COUNTRY_GEO_DB = {
     "EGYPT": ("EG", "EGY", "Cairo", "112 million", "North Africa", 30.044, 31.235),
     "SOUTH AFRICA": ("ZA", "ZAF", "Pretoria", "60 million", "Southern Africa", -25.747, 28.229),
     "NIGERIA": ("NG", "NGA", "Abuja", "223 million", "West Africa", 9.076, 7.398),
-    "KENYA": ("KE", "KEN", "Nairobi", "55 million", "East Africa", -1.292, 36.821)
+    "KENYA": ("KE", "KEN", "Nairobi", "55 million", "East Africa", -1.292, 36.821),
+    "BELARUS": ("BY", "BLR", "Minsk", "9.2 million", "Eastern Europe", 53.900, 27.566),
+    "TUNISIA": ("TN", "TUN", "Tunis", "12.4 million", "North Africa", 36.806, 10.181),
+    "MYANMAR": ("MM", "MMR", "Naypyidaw", "54.5 million", "Southeast Asia", 19.763, 96.078),
+    "GEORGIA": ("GE", "GEO", "Tbilisi", "3.7 million", "Caucasus", 41.715, 44.827),
+    "ARMENIA": ("AM", "ARM", "Yerevan", "2.8 million", "Caucasus", 40.179, 44.499),
+    "AZERBAIJAN": ("AZ", "AZE", "Baku", "10.1 million", "Caucasus", 40.409, 49.867),
+    "MOLDOVA": ("MD", "MDA", "Chisinau", "2.5 million", "Eastern Europe", 47.010, 28.863)
 }
 
 DEMONYM_TO_COUNTRY = {
@@ -493,7 +500,19 @@ DEMONYM_TO_COUNTRY = {
     "brazilian": "BRAZIL", "brasilia": "BRAZIL", "lula": "BRAZIL", "brazil": "BRAZIL",
     "palestinian": "PALESTINE", "gaza": "GAZA",
     "japanese": "JAPAN", "tokyo": "JAPAN",
-    "taiwan": "TAIWAN", "taipei": "TAIWAN"
+    "taiwan": "TAIWAN", "taipei": "TAIWAN",
+    "belarus": "BELARUS", "belarusian": "BELARUS", "minsk": "BELARUS", "lukashenko": "BELARUS", "tsikhanouski": "BELARUS", "tsikhanouskaya": "BELARUS",
+    "libya": "LIBYA", "libyan": "LIBYA", "tripoli": "LIBYA", "benghazi": "LIBYA", "tobruk": "LIBYA", "haftar": "LIBYA",
+    "tunisia": "TUNISIA", "tunisian": "TUNISIA", "tunis": "TUNISIA",
+    "myanmar": "MYANMAR", "burmese": "MYANMAR", "yangon": "MYANMAR",
+    "sudanese": "SUDAN", "khartoum": "SUDAN", "darfur": "SUDAN",
+    "ethiopian": "ETHIOPIA", "addis ababa": "ETHIOPIA",
+    "moroccan": "MOROCCO", "rabat": "MOROCCO",
+    "algerian": "ALGERIA", "algiers": "ALGERIA",
+    "hungarian": "HUNGARY", "budapest": "HUNGARY", "orban": "HUNGARY",
+    "polish": "POLAND", "warsaw": "POLAND",
+    "greek": "GREECE", "athens": "GREECE",
+    "turkish": "TURKEY", "ankara": "TURKEY", "istanbul": "TURKEY", "erdogan": "TURKEY"
 }
 
 BANNED_CAPTION_AND_TITLE_WORDS = [
@@ -516,7 +535,7 @@ BANNED_CAPTION_AND_TITLE_WORDS = [
     "feline", "dog ", "dogs ", "puppy", "canine", "pet ", "pets ", "cute animal", "dinosaur",
     "dragon", "monster", "fantasy", "fairy", "magic", "stock illustration", "recorded future",
     "infographic", "chart", "diagram", "logo", "icon", "banner", "poster", "thumbnail",
-    "t-shirt", "mug", "merchandise", "gift", "sale", "promo", "coupon", "bunk bed", "bunk beds", "twin bed", "loft bed", "mattress", "bed frame", "furniture", "headboard", "dresser", "nightstand", "wayfair", "ikea", "overstock", "ashley furniture", "finding dory", "finding nemo", "dory", "nemo", "dreamworks", "illumination", "periscopefilm", "periscope film", "stock footage", "archive footage watermark", "mount rushmore", "rushmore", "anatomy", "skeleton", "skull", "brain illustration", "3d brain", "medical illustration", "xray", "x-ray", "baptist church", "metropolitan baptist", "go out and vote", "vote sign", "church sign", "cocoa", "cote d'ivoire", "côte d'ivoire", "ivory coast", "atmospheric river", "noaa satellite", "rath yatra", "chariot festival", "orthographic projection", "location map", "locator map", "relief map", "political map", "map of ", "cia wfb", "blank map", "administrative map"
+    "t-shirt", "mug", "merchandise", "gift", "sale", "promo", "coupon", "bunk bed", "bunk beds", "twin bed", "loft bed", "mattress", "bed frame", "furniture", "headboard", "dresser", "nightstand", "wayfair", "ikea", "overstock", "ashley furniture", "finding dory", "finding nemo", "dory", "nemo", "dreamworks", "illumination", "periscopefilm", "periscope film", "stock footage", "archive footage watermark", "mount rushmore", "rushmore", "anatomy", "skeleton", "skull", "brain illustration", "3d brain", "medical illustration", "xray", "x-ray", "baptist church", "metropolitan baptist", "go out and vote", "vote sign", "church sign", "cocoa", "cote d'ivoire", "côte d'ivoire", "ivory coast", "atmospheric river", "noaa satellite", "rath yatra", "chariot festival", "orthographic projection", "location map", "locator map", "relief map", "political map", "map of ", "cia wfb", "blank map", "administrative map", "voice of america", "voa news", "voanews", "chalkboard", "blackboard", "2 + 2", "2+2", "biggest producer of", "mapporn", "terriblemaps", "shittymapporn", "cira", "geocolor"
 ]
 
 BANNED_IMAGE_SOURCES = [
@@ -546,62 +565,47 @@ BANNED_IMAGE_SOURCES = [
 ]
 
 PERSON_WIKI_MAP = {
-    # Historical Conquerors, Emperors, Philosophers & Icons (Single & Full Name Triggers!)
+    # Verified Full-Name Historical & Modern Political Leaders (Zero Ambiguous First-Name Collisions!)
     "alexander the great": ("Alexander the Great", "Alexander the Great", "KING OF MACEDON & CONQUEROR"),
-    "alexander": ("Alexander the Great", "Alexander the Great", "KING OF MACEDON & CONQUEROR"),
+    "alexander lukashenko": ("Alexander Lukashenko", "Alexander Lukashenko", "PRESIDENT OF BELARUS"),
+    "lukashenko": ("Alexander Lukashenko", "Alexander Lukashenko", "PRESIDENT OF BELARUS"),
+    "sviatlana tsikhanouskaya": ("Sviatlana Tsikhanouskaya", "Sviatlana Tsikhanouskaya", "BELARUSIAN OPPOSITION LEADER"),
+    "tsikhanouskaya": ("Sviatlana Tsikhanouskaya", "Sviatlana Tsikhanouskaya", "BELARUSIAN OPPOSITION LEADER"),
+    "siarhei tsikhanouski": ("Siarhei Tsikhanouski", "Siarhei Tsikhanouski", "BELARUSIAN DISSIDENT & ACTIVIST"),
+    "tsikhanouski": ("Siarhei Tsikhanouski", "Siarhei Tsikhanouski", "BELARUSIAN OPPOSITION FIGURE"),
+    "khalifa haftar": ("Khalifa Haftar", "General Khalifa Haftar", "LIBYAN NATIONAL ARMY COMMANDER"),
+    "haftar": ("Khalifa Haftar", "General Khalifa Haftar", "LIBYAN MILITARY COMMANDER"),
+    "abdul hamid dbeibeh": ("Abdul Hamid Dbeibeh", "Abdul Hamid Dbeibeh", "PRIME MINISTER OF LIBYA"),
+    "giorgia meloni": ("Giorgia Meloni", "Giorgia Meloni", "PRIME MINISTER OF ITALY"),
+    "meloni": ("Giorgia Meloni", "Giorgia Meloni", "PRIME MINISTER OF ITALY"),
+    "ursula von der leyen": ("Ursula von der Leyen", "Ursula von der Leyen", "EUROPEAN COMMISSION PRESIDENT"),
+    "von der leyen": ("Ursula von der Leyen", "Ursula von der Leyen", "EUROPEAN COMMISSION PRESIDENT"),
+    "viktor orban": ("Viktor Orbán", "Viktor Orban", "PRIME MINISTER OF HUNGARY"),
+    "orban": ("Viktor Orbán", "Viktor Orban", "PRIME MINISTER OF HUNGARY"),
     "king porus": ("Porus", "King Porus", "INDIAN MONARCH OF PAURAVA"),
-    "porus": ("Porus", "King Porus", "INDIAN MONARCH OF PAURAVA"),
-    "aristotle": ("Aristotle", "Aristotle", "GREEK PHILOSOPHER & POLYMATH"),
-    "socrates": ("Socrates", "Socrates", "CLASSICAL GREEK PHILOSOPHER"),
-    "plato": ("Plato", "Plato", "FOUNDER OF THE PLATONIC ACADEMY"),
     "julius caesar": ("Julius Caesar", "Julius Caesar", "ROMAN GENERAL & DICTATOR"),
-    "caesar": ("Julius Caesar", "Julius Caesar", "ROMAN GENERAL & STATESMAN"),
-    "augustus": ("Augustus", "Emperor Augustus", "FIRST ROMAN EMPEROR"),
     "marcus aurelius": ("Marcus Aurelius", "Marcus Aurelius", "ROMAN EMPEROR & STOIC"),
-    "cleopatra": ("Cleopatra", "Queen Cleopatra", "QUEEN OF THE PTOLEMAIC KINGDOM"),
     "napoleon bonaparte": ("Napoleon", "Napoleon Bonaparte", "EMPEROR OF THE FRENCH"),
-    "napoleon": ("Napoleon", "Napoleon Bonaparte", "FRENCH MILITARY LEADER"),
     "genghis khan": ("Genghis Khan", "Genghis Khan", "FOUNDER OF THE MONGOL EMPIRE"),
-    "tutankhamun": ("Tutankhamun", "Pharaoh Tutankhamun", "ANCIENT EGYPTIAN PHARAOH"),
-    "ramesses": ("Ramesses II", "Pharaoh Ramesses II", "PHARAOH OF EGYPT"),
     "cyrus the great": ("Cyrus the Great", "Cyrus the Great", "FOUNDER OF ACHAEMENID EMPIRE"),
-    "darius": ("Darius the Great", "Darius the Great", "PERSIAN KING OF KINGS"),
-    "hannibal": ("Hannibal", "General Hannibal", "CARTHAGINIAN GENERAL"),
-    "constantine": ("Constantine the Great", "Constantine the Great", "ROMAN EMPEROR"),
-    "chanakya": ("Chanakya", "Acharya Chanakya", "ANCIENT INDIAN STRATEGIST"),
-    "kautilya": ("Chanakya", "Acharya Chanakya", "ROYAL ADVISOR & STRATEGIST"),
-    "chandragupta": ("Chandragupta Maurya", "Chandragupta Maurya", "FOUNDER OF MAURYA EMPIRE"),
-    "ashoka": ("Ashoka", "Emperor Ashoka", "MAURYAN EMPEROR"),
-    "akbar": ("Akbar", "Emperor Akbar", "MUGHAL EMPEROR"),
-    "shivaji": ("Shivaji", "Chhatrapati Shivaji Maharaj", "MARATHA EMPIRE FOUNDER"),
     "mahatma gandhi": ("Mahatma Gandhi", "Mahatma Gandhi", "LEADER OF INDIAN INDEPENDENCE"),
-    "gandhi": ("Mahatma Gandhi", "Mahatma Gandhi", "HISTORIC LEADER"),
     "subhas chandra bose": ("Subhas Chandra Bose", "Netaji Subhas Chandra Bose", "INDIAN NATIONALIST LEADER"),
-    "churchill": ("Winston Churchill", "Winston Churchill", "FORMER UK PRIME MINISTER"),
-    "lincoln": ("Abraham Lincoln", "Abraham Lincoln", "16TH U.S. PRESIDENT"),
+    "winston churchill": ("Winston Churchill", "Winston Churchill", "FORMER UK PRIME MINISTER"),
+    "abraham lincoln": ("Abraham Lincoln", "Abraham Lincoln", "16TH U.S. PRESIDENT"),
     "george washington": ("George Washington", "George Washington", "1ST U.S. PRESIDENT"),
-    "roosevelt": ("Franklin D. Roosevelt", "Franklin D. Roosevelt", "32ND U.S. PRESIDENT"),
-    "kennedy": ("John F. Kennedy", "John F. Kennedy", "35TH U.S. PRESIDENT"),
-    # Legendary Scientists, Inventors & Pioneers
+    "franklin d. roosevelt": ("Franklin D. Roosevelt", "Franklin D. Roosevelt", "32ND U.S. PRESIDENT"),
+    "john f. kennedy": ("John F. Kennedy", "John F. Kennedy", "35TH U.S. PRESIDENT"),
+    # Legendary Scientists, Inventors & Pioneers (Full Names Only!)
     "albert einstein": ("Albert Einstein", "Albert Einstein", "THEORETICAL PHYSICIST"),
-    "einstein": ("Albert Einstein", "Albert Einstein", "NOBEL LAUREATE PHYSICIST"),
     "nikola tesla": ("Nikola Tesla", "Nikola Tesla", "ELECTRICAL PIONEER & INVENTOR"),
     "isaac newton": ("Isaac Newton", "Sir Isaac Newton", "PHYSICIST & MATHEMATICIAN"),
-    "newton": ("Isaac Newton", "Sir Isaac Newton", "FATHER OF CLASSICAL MECHANICS"),
     "galileo galilei": ("Galileo Galilei", "Galileo Galilei", "FATHER OF MODERN ASTRONOMY"),
-    "galileo": ("Galileo Galilei", "Galileo Galilei", "ASTRONOMER & PHYSICIST"),
     "charles darwin": ("Charles Darwin", "Charles Darwin", "EVOLUTIONARY BIOLOGIST"),
-    "darwin": ("Charles Darwin", "Charles Darwin", "NATURALIST & BIOLOGIST"),
     "stephen hawking": ("Stephen Hawking", "Stephen Hawking", "THEORETICAL COSMOLOGIST"),
-    "hawking": ("Stephen Hawking", "Stephen Hawking", "ASTROPHYSICIST & AUTHOR"),
-    "oppenheimer": ("J. Robert Oppenheimer", "J. Robert Oppenheimer", "FATHER OF THE ATOMIC BOMB"),
+    "j. robert oppenheimer": ("J. Robert Oppenheimer", "J. Robert Oppenheimer", "FATHER OF THE ATOMIC BOMB"),
     "marie curie": ("Marie Curie", "Marie Curie", "PIONEER IN RADIOACTIVITY"),
     "leonardo da vinci": ("Leonardo da Vinci", "Leonardo da Vinci", "RENAISSANCE POLYMATH"),
-    "da vinci": ("Leonardo da Vinci", "Leonardo da Vinci", "INVENTOR & GENIUS"),
-    "archimedes": ("Archimedes", "Archimedes of Syracuse", "ANCIENT MATHEMATICIAN"),
-    "pythagoras": ("Pythagoras", "Pythagoras", "GREEK MATHEMATICIAN"),
     "alan turing": ("Alan Turing", "Alan Turing", "FATHER OF COMPUTER SCIENCE"),
-    "turing": ("Alan Turing", "Alan Turing", "COMPUTER PIONEER"),
     "carl sagan": ("Carl Sagan", "Carl Sagan", "PLANETARY SCIENTIST"),
     "richard feynman": ("Richard Feynman", "Richard Feynman", "QUANTUM PHYSICIST"),
     "abdul kalam": ("A. P. J. Abdul Kalam", "Dr. A.P.J. Abdul Kalam", "MISSILE MAN & PRESIDENT OF INDIA"),
@@ -640,7 +644,6 @@ PERSON_WIKI_MAP = {
     "carney": ("Mark Carney", "Mark Carney", "CANADIAN PRIME MINISTER"),
     "erdogan": ("Recep Tayyip Erdoğan", "Recep Tayyip Erdogan", "PRESIDENT OF TURKEY"),
     "khamenei": ("Ali Khamenei", "Ali Khamenei", "SUPREME LEADER OF IRAN"),
-    "salman": ("Mohammed bin Salman", "Mohammed bin Salman", "SAUDI CROWN PRINCE"),
     "musk": ("Elon Musk", "Elon Musk", "CEO OF SPACEX & TESLA"),
     "elon musk": ("Elon Musk", "Elon Musk", "CEO OF SPACEX & TESLA"),
     "altman": ("Sam Altman", "Sam Altman", "CEO OF OPENAI"),
@@ -681,11 +684,8 @@ PERSON_WIKI_MAP = {
     "rashad al-alimi": ("Rashad al-Alimi", "Rashad al-Alimi", "CHAIRMAN OF YEMEN PRESIDENTIAL COUNCIL"),
     "abdul-malik al-houthi": ("Abdul-Malik al-Houthi", "Abdul-Malik al-Houthi", "HOUTHI MOVEMENT LEADER"),
     "alex ferguson": ("Alex Ferguson", "Sir Alex Ferguson", "LEGENDARY MAN UTD MANAGER"),
-    "ferguson": ("Alex Ferguson", "Sir Alex Ferguson", "LEGENDARY MAN UTD MANAGER"),
     "matt busby": ("Matt Busby", "Sir Matt Busby", "HISTORIC MAN UTD MANAGER"),
-    "busby": ("Matt Busby", "Sir Matt Busby", "HISTORIC MAN UTD MANAGER"),
     "michael carrick": ("Michael Carrick", "Michael Carrick", "FORMER MIDFIELDER & MANAGER"),
-    "carrick": ("Michael Carrick", "Michael Carrick", "CLUB INSIDER & MANAGER"),
     "bruno fernandes": ("Bruno Fernandes", "Bruno Fernandes", "MANCHESTER UNITED CAPTAIN"),
     "lisandro martinez": ("Lisandro Martínez", "Lisandro Martinez", "MANCHESTER UNITED DEFENDER"),
     "jim ratcliffe": ("Jim Ratcliffe", "Sir Jim Ratcliffe", "INEOS CHAIRMAN & CO-OWNER"),
@@ -1599,11 +1599,14 @@ def sync_all_8_playlists_and_organize_channel(yt):
         print("⚠️ Playlist sync note:", str(e)[:90], flush=True)
     return playlist_map
 
-def run_youtube_api_full_intelligence():
+def run_youtube_api_full_intelligence(hist_obj=None):
     """
-    V19 PURE WORLD-NEWS PLAYLIST SYNC (Own-Channel Popular Video Audit Removed!):
-    Never biases future videos toward our own channel's old uploads!
-    Syncs the 8 category playlists and uses pure global world news & multi-country viral trends.
+    V24 PURE WORLD-NEWS PLAYLIST SYNC + LIVE YOUTUBE CHANNEL DEDUPLICATION LOCK:
+    1. Own-channel popular video audit remains 100% disabled (never biases topic selection).
+    2. Queries the channel's last 50 uploaded videos from the YouTube Data API and registers
+       every uploaded title + fingerprint into `hist_obj` BEFORE topic selection starts,
+       guaranteeing that even across separate GitHub Actions runs, the same news topic
+       can NEVER be made twice!
     """
     default_viral_kws = [
         "geopolitics", "military", "sanctions", "summit", "parliament", "treaty",
@@ -1625,6 +1628,32 @@ def run_youtube_api_full_intelligence():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         yt = build("youtube", "v3", credentials=creds)
+
+        # Sync recent channel uploads into `hist_obj` so no already-uploaded news story is EVER repeated!
+        if hist_obj is not None:
+            try:
+                ch_resp = yt.channels().list(mine=True, part="contentDetails").execute()
+                ch_items = ch_resp.get("items", [])
+                if ch_items:
+                    uploads_pl_id = ch_items[0].get("contentDetails", {}).get("relatedPlaylists", {}).get("uploads")
+                    if uploads_pl_id:
+                        pl_resp = yt.playlistItems().list(playlistId=uploads_pl_id, part="snippet", maxResults=50).execute()
+                        synced_cnt = 0
+                        for item in pl_resp.get("items", []):
+                            sn = item.get("snippet", {})
+                            up_title = str(sn.get("title", "")).strip()
+                            up_desc = str(sn.get("description", ""))[:180]
+                            if up_title:
+                                base_t = up_title.split("|")[0].replace("BREAKING UPDATE:", "").strip()
+                                hist_obj["published_keys"].add(make_story_key(up_title))
+                                hist_obj["published_keys"].add(make_story_key(base_t))
+                                fp_toks = extract_event_fingerprint(base_t, up_desc)
+                                if fp_toks:
+                                    hist_obj["event_fingerprints"].append({"title": base_t, "tokens": fp_toks})
+                                synced_cnt += 1
+                        print(f"🔒 [Live YouTube Deduplication Sync] Locked {synced_cnt} recent channel uploads into anti-duplicate history!", flush=True)
+            except Exception as sync_e:
+                print(f"ℹ️ [Live YouTube Deduplication Note]: {str(sync_e)[:80]}", flush=True)
 
         playlist_map = sync_all_8_playlists_and_organize_channel(yt)
         print("🌍 [Global World News Mode Active] Own-channel popular video audit disabled — 100% All-Country World News Selection!", flush=True)
@@ -1765,12 +1794,16 @@ def save_published_history(hist_obj):
                 "country_rot_idx": int(hist_obj.get("country_rot_idx", 0)),
                 "bgm_track_counter": int(hist_obj.get("bgm_track_counter", 0)),
                 "last_mega_24h_date": str(hist_obj.get("last_mega_24h_date", "")),
-                "published_keys": list(hist_obj["published_keys"])[-500:],
-                "event_fingerprints": hist_obj["event_fingerprints"][-250:],
-                "last_categories": hist_obj["last_categories"][-30:],
-                "last_sources": hist_obj["last_sources"][-30:],
-                "last_countries": hist_obj.get("last_countries", [])[-40:]
+                "published_keys": list(hist_obj["published_keys"])[-600:],
+                "event_fingerprints": hist_obj["event_fingerprints"][-350:],
+                "last_categories": hist_obj["last_categories"][-40:],
+                "last_sources": hist_obj["last_sources"][-40:],
+                "last_countries": hist_obj.get("last_countries", [])[-50:]
             }, f, indent=2)
+        # Immediately commit & push `published_history.json` so subsequent workflow runs NEVER repeat a story!
+        subprocess.run(["git", "add", HISTORY_FILE], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5, check=False)
+        subprocess.run(["git", "commit", "-m", "chore: sync published_history.json [skip ci]"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=6, check=False)
+        subprocess.run(["git", "push"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
     except Exception:
         pass
 
@@ -1786,31 +1819,44 @@ def extract_event_fingerprint(title, first_fact=""):
 
 def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
     """
-    SMART BREAKING UPDATE & DUPLICATE DETECTOR:
-    - Exact headline key or >72% token overlap -> DUPLICATE (skip).
-    - Developing story with a brand-new headline angle (0.38 <= overlap < 0.72) -> FOLLOWUP_UPDATE
-      so when a major update drops on a hot Geopolitics/Science/AI story, we cover the new update!
+    V24 STRICT ZERO-DUPLICATE EVENT LOCK:
+    Blocks ANY story that shares the same news event, subject, or headline angle
+    (e.g. 'Libya Smuggling Empire: The EU Dirty Secret' vs 'Libya Smuggling Empire: The $1B Power Play',
+     or two articles on the 'Tsikhanouski family rift in Belarus')!
+    Never allows a second video on an already-covered news event (`FOLLOWUP_UPDATE` disabled!).
     """
     st_key = make_story_key(title)
     if st_key in hist_obj["published_keys"]:
         return ("DUPLICATE", None)
 
+    # Also check 3-word prefix key (e.g. "libya_smuggling_empire")
+    words_t = re.findall(r"[a-z0-9]+", title.lower())
+    short_prefix_key = "_".join(words_t[:3])
+    if len(words_t) >= 3:
+        for pk in hist_obj["published_keys"]:
+            if pk.startswith(short_prefix_key):
+                return ("DUPLICATE", None)
+
     cur_fp = set(extract_event_fingerprint(title, first_fact))
     if not cur_fp:
         return ("NEW_STORY", None)
 
+    cur_title_toks = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", title) if w.lower() not in HEADLINE_STOP_VERBS_ADJS}
+
     for past in hist_obj["event_fingerprints"]:
         past_fp = set(past.get("tokens", []))
+        past_title = str(past.get("title", ""))
+        past_title_toks = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", past_title) if w.lower() not in HEADLINE_STOP_VERBS_ADJS}
         if not past_fp:
             continue
         inter_cnt = len(cur_fp.intersection(past_fp))
         union_cnt = max(1, len(cur_fp.union(past_fp)))
         jaccard = inter_cnt / float(union_cnt)
         min_ov = inter_cnt / float(min(len(cur_fp), len(past_fp)))
-        if jaccard >= 0.62:
+        title_inter = len(cur_title_toks.intersection(past_title_toks))
+        # Any significant overlap (jaccard >= 0.16, min_ov >= 0.28, or >= 2 shared specific headline nouns) is a DUPLICATE!
+        if jaccard >= 0.16 or min_ov >= 0.28 or title_inter >= 2:
             return ("DUPLICATE", None)
-        if 0.22 <= jaccard < 0.62 or (min_ov >= 0.38 and jaccard < 0.62):
-            return ("FOLLOWUP_UPDATE", past.get("title"))
 
     return ("NEW_STORY", None)
 
@@ -2054,20 +2100,20 @@ HEADLINE_STOP_VERBS_ADJS = {
 }
 
 def extract_primary_topic_anchor(dossier):
-    low = f"{dossier['title']} {' '.join(dossier.get('raw_facts', [])[:2])}".lower()
-    for word_key, (_, wiki_exact, _) in CONCRETE_WIKI_PROPS.items():
-        if re.search(rf"\b{re.escape(word_key)}\b", low):
-            return wiki_exact
+    title_low = str(dossier.get("title", "")).lower()
+    for p_key in sorted(PERSON_WIKI_MAP.keys(), key=len, reverse=True):
+        if re.search(rf"\b{re.escape(p_key)}\b", title_low):
+            return PERSON_WIKI_MAP[p_key][0]
 
-    for p_key, (wiki_page, _, _) in PERSON_WIKI_MAP.items():
-        if re.search(rf"\b{re.escape(p_key)}\b", low):
-            return wiki_page
+    for word_key in sorted(CONCRETE_WIKI_PROPS.keys(), key=len, reverse=True):
+        if len(word_key) >= 4 and re.search(rf"\b{re.escape(word_key)}\b", title_low):
+            return CONCRETE_WIKI_PROPS[word_key][1]
 
     content_nouns = [
         w for w in re.findall(r"[A-Za-z]{4,}", dossier["title"])
         if w.lower() not in HEADLINE_STOP_VERBS_ADJS
     ]
-    return " ".join(content_nouns[:2]).title() if content_nouns else "Global Case Study"
+    return " ".join(content_nouns[:3]).title() if content_nouns else "Global Investigation"
 
 def build_100_percent_original_youtube_title(raw_title, pillar, c_prof, topic_anchor, is_update=False):
     anchor_clean = topic_anchor.strip()
@@ -2348,7 +2394,7 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             is_followup = (dup_status == "FOLLOWUP_UPDATE")
 
             cur_fp_set = set(extract_event_fingerprint(title, summary))
-            if any(len(cur_fp_set.intersection(bfp)) / float(max(1, min(len(cur_fp_set), len(bfp)))) >= 0.38 for bfp in batch_fingerprints):
+            if any(len(cur_fp_set.intersection(bfp)) >= 2 or (len(cur_fp_set.intersection(bfp)) / float(max(1, min(len(cur_fp_set), len(bfp)))) >= 0.22) for bfp in batch_fingerprints):
                 continue
 
             # Extract specific headline subject tokens (excluding generic country names) so sidebar links never pollute claims!
@@ -2549,6 +2595,8 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
     chosen = candidates[0]
     chosen_country = chosen["country_profile"].get("name", "INTERNATIONAL").upper()
     hist_obj.setdefault("last_countries", []).append(chosen_country)
+    hist_obj["published_keys"].add(chosen["story_key"])
+    hist_obj["event_fingerprints"].append({"title": chosen["title"], "tokens": chosen["event_tokens"]})
     print(
         f"🌍 [Global Country & Public Demand Audit] Selected Country: {chosen_country} | "
         f"Topic: '{chosen['title'][:52]}' | Score: {chosen['score']} (Pool Audited: {len(candidates)} Global Stories)",
@@ -3096,6 +3144,31 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
 # ==============================================================================
 # 8. NON-REPEATING HD VIDEO B-ROLL HARVESTER (Max 1 Clip Per Chapter = Fast & Unique!)
 # ==============================================================================
+def has_ocr_meme_poster_or_junk_text(im_rgb):
+    """
+    V24 TESSERACT OCR MEME / MAP-MEME / VOA BUMPER / CHALKBOARD DETECTOR:
+    Rejects any photo or video frame that contains burned-in meme captions, Reddit joke maps
+    ('BIGGEST PRODUCER OF APPLES / HAPPINESS'), VOA / TV network logos ('VOICE OF AMERICA', 'VOA'),
+    chalkboard math ('2 + 2 ='), stock watermarks, or >= 18 words of poster/infographic text!
+    """
+    try:
+        import pytesseract
+        small_ocr = im_rgb.convert("RGB").resize((480, 270))
+        ocr_txt = pytesseract.image_to_string(small_ocr, config="--psm 6").lower()
+        banned_ocr_phrases = [
+            "voice of america", "voanews", "biggest producer", "happiness", "2 + 2", "2+2",
+            "mapporn", "terriblemaps", "shutterstock", "gettyimages", "periscopefilm",
+            "123rf", "alamy", "istock", "fox news", "c-span", "reel america", "cira", "geocolor"
+        ]
+        if any(bp in ocr_txt for bp in banned_ocr_phrases):
+            return True
+        words_found = re.findall(r"[a-zA-Z]{3,}", ocr_txt)
+        if len(words_found) >= 18:
+            return True
+    except Exception:
+        pass
+    return False
+
 def has_collage_or_text_banner_artifacts(im_rgb):
     """
     V14 STRICT ANTI-COLLAGE, ANTI-SPLIT-SCREEN, ANTI-TV-CHYRON & ANTI-POSTER-TEXT DETECTOR:
@@ -3171,6 +3244,8 @@ def is_valid_cinematic_video_frame(frame_rgb, story_title="", query_context=""):
             return False
         if has_collage_or_text_banner_artifacts(pil_f):
             return False
+        if has_ocr_meme_poster_or_junk_text(pil_f):
+            return False
         if not passes_double_visual_audit(pil_f, story_title=story_title, query_context=query_context):
             return False
         return True
@@ -3186,7 +3261,7 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str):
     """
     if not cand_u or cand_u in used_video_urls:
         return None
-    if any(nf in cand_u.lower() for nf in ADULT_NSFW_BANNED_TERMS):
+    if any(nf in cand_u.lower() for nf in ADULT_NSFW_BANNED_TERMS + ["voanews", "voice_of_america", "voice-of-america", "chalkboard", "blackboard", "mapporn", "terriblemaps", "logo", "intro", "bumper"]):
         return None
     try:
         raw_local = f"temp/{tag_id}_raw.mp4"
@@ -3211,7 +3286,7 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str):
 
         cmd = [
             "ffmpeg", "-nostdin", "-y",
-            "-ss", "0.2",
+            "-ss", "1.2",
             "-i", raw_local,
             "-t", "11.0",
             "-vf", "setpts=1.35*PTS,scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,setsar=1",
@@ -3317,7 +3392,10 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         "gta", "roblox", "fortnite", "simulator", "fps", "twitch", "minecraft", "cartoon", "anime",
         "comic", "podcast", "shapiro", "golf", "pronunciation", "spoken", "audio", "wikidata",
         "nude", "naked", "nsfw", "erotic", "sex", "bikini", "lingerie", "swimsuit", "anatomy", "statue",
-        "webinar", "slide", "piano", "guitar", "violin", "bedroom", "kitchen", "unboxing"
+        "webinar", "slide", "piano", "guitar", "violin", "bedroom", "kitchen", "unboxing",
+        "voa", "voice of america", "voanews", "chalkboard", "blackboard", "2+2", "2 + 2", "math class",
+        "cira", "geocolor", "biggest producer", "mapporn", "terriblemaps", "shittymapporn", "meme",
+        "intro", "bumper", "promo", "trailer", "teaser", "opening", "logo"
     ]
     required_match_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{query_str} {topic_anchor}") if w.lower() not in HEADLINE_STOP_VERBS_ADJS}
 
@@ -3727,7 +3805,7 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450, story_
     # Gate 1: Family-Friendly Skin/NSFW Check + Anti-Collage / Anti-Text-Banner Check
     if not is_safe_family_friendly_image(im, is_portrait=False):
         return None
-    if has_collage_or_text_banner_artifacts(im):
+    if has_collage_or_text_banner_artifacts(im) or has_ocr_meme_poster_or_junk_text(im):
         return None
 
     # Gate 2: Double Visual Audit (Blocks Pixar 3D cartoons, glowing blue sci-fi brains, Minions, Minecraft Creepers, & logo banners!)
@@ -4031,7 +4109,9 @@ METAPHOR_NOISE_WORDS = {
     "curtain", "lifting", "hunting", "sticky", "bolthole", "dustbin", "lobbed", "pile", "weight",
     "carry", "blanket", "door", "sunbed", "party", "mansion", "oak", "bunch", "hands", "light",
     "lite", "unsung", "hero", "giant", "leap", "silence", "break", "dry", "vital", "routine",
-    "subscribe", "world", "talk", "brief", "channel", "comment", "below"
+    "subscribe", "world", "talk", "brief", "channel", "comment", "below",
+    "math", "equation", "equations", "arithmetic", "chalkboard", "blackboard", "homework", "classroom",
+    "lesson", "textbook", "apples", "happiness"
 }
 
 def sanitize_visual_search_query(raw_q, dossier):
@@ -5404,7 +5484,7 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     if ("third of all" in low_b or "one third" in low_b) and "1/3 GLOBAL TOTAL" not in cleaned_nums:
         cleaned_nums.insert(0, "33.3% GLOBAL SHARE")
     if not cleaned_nums:
-        cleaned_nums = [fit_whole_words_limit(point_hl, 16)]
+        return extract_diverse_camera_frame_from_stage(beat["stage_1"], W, H, 0.5, camera_mode=beat.get("camera_mode", 0), local_t=local_t)
 
     cw = 880 if is_short else 1140
     ch = 520 if is_short else 470
@@ -5494,50 +5574,44 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
 
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False):
     """
-    V15 6-MODE GOD-LEVEL DOCUMENTARY VISUAL DIRECTOR (Abhi & Niyu + Think School + Nitish Rajput):
-    Dynamically selects the ideal visual presentation mode for each beat based on what is spoken:
-    1. `TACTICAL_GEOPOLITICAL_SIEGE_MAP`: When geographic routes, straits, borders, corridors, or nationwide spread are discussed.
-    2. `THINK_SCHOOL_DATA_SCORECARD`: When concrete percentages (%), billion/million dollar figures, or multi-number stats are spoken.
-    3. `BROADCAST_INTERVIEW_QUOTE_MOCKUP`: When a direct statement, interview, warning, or quote is spoken.
-    4. Otherwise returns None (which renders `NITISH_DOSSIER_SPLIT_BOARD` if a person is introduced,
-       `CENTER_DOCUMENT_HIGHLIGHT` on evidence beats, or `CLEAN_CINEMA_FULLBLEED` on action/footage beats!).
+    V24 REAL-FOOTAGE-FIRST DOCUMENTARY VISUAL DIRECTOR:
+    - 80%+ of beats return `None` so full-screen real HD video B-roll and real press photos
+      take center stage with clean lower-thirds!
+    - Custom motion-graphics boards are strictly capped (at most 1 per chapter, never consecutive,
+      and ONLY when backed by real digits or >= 3 verified chronological years).
     """
     low = str(beat_text or "").lower()
     if "subscribe to world talk brief" in low or "watch the full documentary" in low:
         return None
 
-    # 0. Historical Era / Chronology Beat (1884, 1970s, 2007, century, decades) -> 2.5D Archival Timeline!
-    if bool(re.search(r"\b(18\d{2}|19\d{2}s?|200\d|201\d|century|decades)\b", low)) and (beat_idx % 3 == 1):
-        return "ARCHIVAL_25D_TIMELINE"
-
-    # 1. V21 True 3D Rotating Orthographic World Globe Beat (on Beat 1 or geographic/corridor beats)
-    if beat_idx == 1 or (any(mw in low for mw in [
-        "strait", "sea", "border", "corridor", "airspace", "flight", "route", "journey", "abroad",
-        "europe", "africa", "asia", "middle east", "island", "peninsula", "suez", "taiwan"
-    ]) and (beat_idx % 5 == 1)):
+    # 1. V21 True 3D Rotating World Globe: ONLY once per video on Beat 1 to establish geography!
+    if beat_idx == 1:
         return "TACTICAL_GEOPOLITICAL_SIEGE_MAP"
 
-    # 2. Think School + Manim Data Scorecard Beat (triggers on digit stats AND word-numbers like 'millions of tons', 'hundreds of millions of gallons', 'third of all gold'!)
-    has_strong_stat = bool(re.search(
-        r"(\d+(?:[.,]\d+)?\s*(?:%|percent|billion|million|trillion|thousand|tons|tonnes|gallons|francs|dollars|euros|pounds|years|motels|hotels)|"
-        r"(?:\$|£|€|₹)\d+|\b(?:millions|billions|trillions|hundreds of millions|thousands|a third|one third|half of all)\b)",
+    # 2. Think School Data Scorecard: ONLY when the sentence has a concrete DIGIT statistic (e.g. $1B, 45%, 2,000)
+    #    and spaced out so it never spams back-to-back beats!
+    has_real_digit_stat = bool(re.search(
+        r"((?:\$|£|€|₹)\s*\d+(?:[.,]\d+)?|\b\d+(?:[.,]\d+)?\s*(?:%|percent|billion|million|trillion|thousand|tons|tonnes|barrels|km|miles|troops|ships|aircraft|years)\b)",
         low
     ))
-    if has_strong_stat:
+    if has_real_digit_stat and (beat_idx in [3, 8, 14]):
         return "THINK_SCHOOL_DATA_SCORECARD"
 
-    # 2B. Motion-Canvas / Nitish Rajput Power Network Graph Beat (at most twice per video on systemic/mechanism beats)
-    if beat_idx in [2, 11] or (beat_idx > 4 and (beat_idx % 7 == 0) and any(nw in low for nw in [
-        "system", "network", "networks", "scheme", "schemes", "alliance", "supply chain",
-        "mechanism", "culprit", "scapegoat", "crackdown", "corruption", "surveillance"
-    ])):
+    # 3. 2.5D Archival Timeline: ONLY once per video (beat_idx == 5) AND ONLY if the story actually contains >= 3 distinct years!
+    if beat_idx == 5 and bool(re.search(r"\b(18\d{2}|19\d{2}|200\d|201\d|202\d)\b", low)):
+        all_story_yrs = sorted(list({int(y) for y in re.findall(r"\b(18\d{2}|19\d{2}|20\d{2})\b", f"{low} {dossier.get('title', '')} {' '.join(dossier.get('raw_facts', [])[:8])}")}))
+        if len(all_story_yrs) >= 3:
+            return "ARCHIVAL_25D_TIMELINE"
+
+    # 4. Motion-Canvas Power Network: at most ONCE per video (beat_idx == 7) when discussing a network/system/alliance
+    if beat_idx == 7 and any(nw in low for nw in [
+        "system", "network", "networks", "alliance", "supply chain", "coalition", "corridor", "smuggling", "sanctions", "opposition"
+    ]):
         return "MOTION_CANVAS_POWER_NETWORK"
 
-    # 3. Broadcast Interview / Official Quote Monitor Beat
-    if beat_idx > 0 and (beat_idx % 4 == 3) and any(kw in low for kw in [
-        "interview", "speaking", "statement", "stated", "warned", "warns", "declared", "testified",
-        "press conference", "explained", "argued", "confirmed", "announced", "called on", "urged",
-        "criticizes", "according to", "reported", "admitted", "claims", "blame", "blamed"
+    # 5. Official Statement Monitor: at most ONCE per video (beat_idx == 10) when quoting a direct statement
+    if beat_idx == 10 and any(kw in low for kw in [
+        "interview", "statement", "stated", "warned", "declared", "testified", "press conference", "confirmed", "announced"
     ]):
         return "BROADCAST_INTERVIEW_QUOTE_MOCKUP"
 
@@ -5568,10 +5642,9 @@ def render_25d_historical_timeline_frame(beat, local_t, W, H, is_short=True):
     # Extract and chronologically sort unique years mentioned in the story!
     raw_yr_matches = re.findall(r"\b(18\d{2}|19\d{2}|20\d{2})\b", f"{b_txt} {story.get('title', '')} {' '.join(story.get('raw_facts', [])[:8])}")
     sorted_yrs = sorted(list({int(y) for y in raw_yr_matches}))
-    found_years = [str(y) for y in sorted_yrs]
-    y1 = found_years[0] if len(found_years) > 0 else "1970"
-    y2 = found_years[1] if len(found_years) > 1 else "1995"
-    y3 = found_years[2] if len(found_years) > 2 else "2015"
+    if len(sorted_yrs) < 3:
+        return extract_diverse_camera_frame_from_stage(beat["stage_1"], W, H, 0.5, camera_mode=beat.get("camera_mode", 0), local_t=local_t)
+    y1, y2, y3 = str(sorted_yrs[0]), str(sorted_yrs[1]), str(sorted_yrs[2])
     t_anc = fit_whole_words_limit((story.get("topic_anchor") or "CASE STUDY").upper(), 16)
     c_name_tl = fit_whole_words_limit(str(story.get("country_profile", {}).get("name", "GLOBAL")).upper(), 16)
     milestones = [
@@ -5665,10 +5738,10 @@ def render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=
     """
     base_im = beat.get("primary_im") or Image.new("RGB", (1920, 1080), (14, 20, 34))
     pop_info = beat.get("person_popup")
-    speaker_name = (pop_info["name"] if pop_info else (beat["story"].get("topic_anchor") or "KEY WITNESS")).upper()[:24]
-    speaker_role = (pop_info["role"] if pop_info else "POST-MATCH TV BROADCAST // ARCHIVE").upper()[:30]
+    speaker_name = fit_whole_words_limit((pop_info["name"] if pop_info else (beat["story"].get("topic_anchor") or "OFFICIAL SOURCE")).upper(), 24)
+    speaker_role = fit_whole_words_limit((pop_info["role"] if pop_info else "OFFICIAL STATEMENT // VERIFIED RECORD").upper(), 32)
     b_txt = beat.get("beat_excerpt", "")
-    point_hl = str(beat.get("point_highlight") or "CONTROVERSIAL BROADCAST STATEMENT").upper()
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or "OFFICIAL PRESS STATEMENT").upper(), 28)
 
     # Darkened blurred studio background
     resample_mode = getattr(Image, "Resampling", Image).BILINEAR
@@ -6892,7 +6965,6 @@ def build_prop_driven_storyboard_1080p(
                     if vseg not in v_pool:
                         v_pool.append(vseg)
                 elif v_pool and (b_i % 2 == 0):
-                    # Track used video clips on `dossier` across ALL chapters so a clip NEVER plays in 8 chapters!
                     unit_used_vclips = dossier.setdefault("_unit_used_vclips", set())
                     for cand_vp in v_pool:
                         vc_id = id(cand_vp.get("vclip"))
@@ -6928,11 +7000,19 @@ def build_prop_driven_storyboard_1080p(
                         beat_im = unused_photos[0]
                         unit_used_photos.add(id(beat_im))
                     else:
-                        beat_im = unique_real_photos[global_beat_idx % len(unique_real_photos)]
-                        if special_sim_mode is None:
-                            # Promote fallback beat to a story-driven documentary graphic so static photos NEVER repeat!
-                            fallback_modes = ["BROADCAST_INTERVIEW_QUOTE_MOCKUP", "THINK_SCHOOL_DATA_SCORECARD", "ARCHIVAL_25D_TIMELINE", "MOTION_CANVAS_POWER_NETWORK"]
-                            special_sim_mode = fallback_modes[global_beat_idx % len(fallback_modes)]
+                        # Create a distinct cinematic crop variant (Left-Third / Right-Third / Detail Zoom) of the real photo
+                        # instead of spamming dark template screens!
+                        src_p = unique_real_photos[global_beat_idx % len(unique_real_photos)]
+                        pw, ph = src_p.size
+                        crop_variant = global_beat_idx % 4
+                        if crop_variant == 0:
+                            beat_im = src_p.crop((0, int(ph * 0.06), int(pw * 0.86), int(ph * 0.94)))
+                        elif crop_variant == 1:
+                            beat_im = src_p.crop((int(pw * 0.14), int(ph * 0.06), pw, int(ph * 0.94)))
+                        elif crop_variant == 2:
+                            beat_im = src_p.crop((int(pw * 0.08), 0, int(pw * 0.92), int(ph * 0.86)))
+                        else:
+                            beat_im = src_p.crop((int(pw * 0.10), int(ph * 0.10), int(pw * 0.90), int(ph * 0.90)))
                 elif beat_person_popup is not None and beat_person_popup.get("portrait_im") is not None:
                     # Never show a blank dark blue screen on Beat 0 — build an atmospheric blurred stage from the portrait!
                     p_bg = beat_person_popup["portrait_im"].resize((1920, 1080)).filter(ImageFilter.GaussianBlur(radius=28))
@@ -7544,25 +7624,8 @@ def enrich_dossier_with_deep_research_and_proofs(dossier):
                 except Exception:
                     pass
 
-    # 3. Enrich with Wikipedia factual background extract if available
-    try:
-        w_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(topic_anchor)}"
-        wr = requests.get(w_url, headers=HEADERS_WIKI, timeout=4)
-        if wr.status_code == 200:
-            w_json = wr.json()
-            w_ext = clean_fact(w_json.get("extract", ""))
-            register_persons_from_text_into_directory(w_ext, person_dir)
-            for ws in split_into_complete_sentences(w_ext)[:2]:
-                c_ws = clean_fact(ws)
-                if 45 <= len(c_ws) <= 200 and not is_semantically_similar_claim(c_ws, claims, headline_title=title_str):
-                    claims.append({
-                        "text": c_ws if c_ws[-1] in ".!?" else f"{c_ws}.",
-                        "source_url": w_url,
-                        "source_name": "Wikipedia Research Archive",
-                        "published_date": dossier.get("published_date", "Verified Archive")
-                    })
-    except Exception:
-        pass
+    # 3. NEVER inject Wikipedia encyclopedia biography sentences into breaking news `claims`
+    #    (prevents historical figures like 336 BC Alexander the Great from polluting modern news scripts!).
 
     dossier["verified_claims"] = claims
     dossier["raw_facts"] = [c["text"] for c in claims]
@@ -8307,7 +8370,7 @@ async def main():
         watermark = build_wtb_watermark(width=130, height=76)
         voice_sub_dir = VoiceAndSubtitleEngine()
         hist_obj = load_published_history()
-        winning_keywords, viral_yt_tags, playlist_map, top_channel_hits = run_youtube_api_full_intelligence()
+        winning_keywords, viral_yt_tags, playlist_map, top_channel_hits = run_youtube_api_full_intelligence(hist_obj)
 
         now_utc = datetime.utcnow()
         today_str = now_utc.strftime("%Y-%m-%d")
@@ -8393,12 +8456,12 @@ async def main():
                     if len(selected_dossiers) >= 3:
                         break
 
+        # NEVER clear `published_keys` or `event_fingerprints` — only relax `last_countries` penalty if needed!
         if len(selected_dossiers) < 2:
-            hist_obj["published_keys"].clear()
-            hist_obj["event_fingerprints"].clear()
+            hist_obj["last_countries"] = hist_obj.get("last_countries", [])[-2:]
             for sub_pillar in ORDERED_PILLARS:
                 d = discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fingerprints)
-                if d is not None:
+                if d is not None and d["story_key"] not in [x["story_key"] for x in selected_dossiers]:
                     selected_dossiers.append(d)
                     if len(selected_dossiers) >= 3:
                         break
