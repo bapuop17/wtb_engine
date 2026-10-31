@@ -269,7 +269,14 @@
     "have_man_utd_become_the_unmanageable",
     "will_anyone_end_spain_s_domination",
     "star_trek_strange_new_worlds_was",
-    "medusa_s_eye_halloween_fireballs_and"
+    "medusa_s_eye_halloween_fireballs_and",
+    "libya_s_smuggling_empire_the_eu",
+    "libya_s_smuggling_empire_the_1b",
+    "how_eastern_libya_profits_from_migrant",
+    "eastern_libya_migration_smuggling_tobruk_crete",
+    "what_the_rift_within_the_tsikhanouski",
+    "belarus_opposition_in_exile_tsikhanouski_rift",
+    "siarhei_tsikhanouski_sviatlana_tsikhanouskaya_belarus"
   ],
   "event_fingerprints": [
     {
@@ -4364,6 +4371,39 @@
         "24h",
         "20261030"
       ]
+    },
+    {
+      "title": "Libya's Smuggling Empire: The EU's Dirty Secret / Eastern Libya Migrant Smuggling Tobruk to Crete",
+      "tokens": [
+        "libya",
+        "libyan",
+        "smuggling",
+        "smugglers",
+        "migrants",
+        "migration",
+        "tobruk",
+        "crete",
+        "benghazi",
+        "militias",
+        "mediterranean",
+        "european"
+      ]
+    },
+    {
+      "title": "What the rift within the Tsikhanouski family means for the Belarusian opposition in exile",
+      "tokens": [
+        "rift",
+        "within",
+        "tsikhanouski",
+        "tsikhanouskaya",
+        "family",
+        "means",
+        "belarusian",
+        "belarus",
+        "opposition",
+        "exile",
+        "lukashenko"
+      ]
     }
   ],
   "last_categories": [
@@ -4439,6 +4479,8 @@
     "MIND-BLOWING FACT",
     "FRANCE",
     "SPAIN",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "LIBYA",
+    "BELARUS"
   ]
 }
