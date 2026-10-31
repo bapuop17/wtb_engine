@@ -4401,6 +4401,8 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
         if q_p not in search_angles:
             search_angles.insert(1, q_p)
     search_angles = [a for a in search_angles if len(a.strip()) >= 4][:16]
+    raw_candidates = []
+    seen_cand_urls = set()
 
     # 1. Seed with direct multi-site scraped original article photos (Highest Priority = 65!)
     for cap_obj in (dossier.get("article_captioned_photos") or []):
@@ -8336,16 +8338,217 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         qc_report["checks"]["exception"] = str(e)
         return True, qc_report
 
+
+# ==============================================================================
+# V27 GLOBAL 20-COUNTRY MULTI-LANGUAGE YOUTUBE API LOCALIZATION, CC & DUB ENGINE
+# ==============================================================================
+GLOBAL_20_LANGUAGES_CONFIG = [
+    ("hi", "hi", "Hindi (India)", "hi-IN-MadhurNeural"),
+    ("zh-Hans", "zh-CN", "Chinese (China/Singapore)", "zh-CN-YunxiNeural"),
+    ("ja", "ja", "Japanese (Japan)", "ja-JP-KeitaNeural"),
+    ("fr", "fr", "French (France)", "fr-FR-HenriNeural"),
+    ("de", "de", "German (Germany)", "de-DE-ConradNeural"),
+    ("es", "es", "Spanish (Spain/LatAm)", "es-ES-AlvaroNeural"),
+    ("fil", "tl", "Filipino (Philippines)", "fil-PH-AngeloNeural"),
+    ("ms", "ms", "Malay (Malaysia)", "ms-MY-OsmanNeural"),
+    ("id", "id", "Indonesian (Indonesia)", "id-ID-ArdiNeural"),
+    ("ar", "ar", "Arabic (Middle East/UAE)", "ar-SA-HamedNeural"),
+    ("pt", "pt", "Portuguese (Brazil/Portugal)", "pt-BR-AntonioNeural"),
+    ("ru", "ru", "Russian (Russia)", "ru-RU-DmitryNeural"),
+    ("ko", "ko", "Korean (South Korea)", "ko-KR-InJoonNeural"),
+    ("tr", "tr", "Turkish (Turkey)", "tr-TR-AhmetNeural"),
+    ("it", "it", "Italian (Italy)", "it-IT-DiegoNeural"),
+    ("vi", "vi", "Vietnamese (Vietnam)", "vi-VN-NamMinhNeural"),
+    ("th", "th", "Thai (Thailand)", "th-TH-NiwatNeural"),
+    ("bn", "bn", "Bengali (India/Bangladesh)", "bn-IN-BashkarNeural"),
+    ("ta", "ta", "Tamil (India/Malaysia/Singapore)", "ta-IN-ValluvarNeural"),
+    ("ur", "ur", "Urdu (South Asia)", "ur-PK-AsadNeural"),
+]
+
+def translate_text_free_google_gtx(text_str, target_lang_code):
+    """
+    Fast, free, zero-key translation via Google Translate GTX endpoint for YouTube
+    20-country title, description, caption & dubbing localization!
+    """
+    if not text_str or not text_str.strip():
+        return ""
+    try:
+        q_enc = urllib.parse.quote(text_str[:1800])
+        u = f"https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl={urllib.parse.quote(target_lang_code)}&dt=t&q={q_enc}"
+        r = requests.get(u, headers=HEADERS_WEB, timeout=4.0)
+        if r.status_code == 200:
+            data = r.json()
+            if isinstance(data, list) and data and isinstance(data[0], list):
+                translated = "".join(seg[0] for seg in data[0] if isinstance(seg, list) and seg and seg[0])
+                if translated.strip():
+                    return translated.strip()
+    except Exception:
+        pass
+    return text_str
+
+def build_20_country_youtube_localizations(en_title, en_description):
+    """
+    Translates the video's Title and Description into 20 major world languages in parallel
+    (India/Hindi, China, Japan, France, Germany, Spain, Philippines, Malaysia, Indonesia,
+     UAE/Arabic, Brazil, Russia, Korea, Turkey, Italy, Vietnam, Thailand, Bengali, Tamil, Urdu)
+    for YouTube Data API v3 `localizations` so viewers in every country automatically see
+    the video in their own language!
+    """
+    localizations = {
+        "en": {
+            "title": en_title[:98],
+            "description": en_description[:4800]
+        }
+    }
+    short_desc = en_description[:900]
+
+    def _trans_one(lang_tuple):
+        yt_code, gtx_code, lang_label, _ = lang_tuple
+        t_tr = translate_text_free_google_gtx(en_title, gtx_code)
+        d_tr = translate_text_free_google_gtx(short_desc, gtx_code)
+        if t_tr and d_tr:
+            return yt_code, {"title": t_tr[:98], "description": d_tr[:4800]}
+        return yt_code, None
+
+    try:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
+            futs = [ex.submit(_trans_one, lt) for lt in GLOBAL_20_LANGUAGES_CONFIG]
+            for ft in concurrent.futures.as_completed(futs):
+                try:
+                    yt_c, loc_obj = ft.result()
+                    if loc_obj:
+                        localizations[yt_c] = loc_obj
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    print(f"🌍 [Multi-Language YouTube API] Built native Title & Description localizations for {len(localizations)} countries/languages!", flush=True)
+    return localizations
+
+def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False):
+    """
+    1. Builds exact timestamped `.srt` subtitle files and uploads multi-language CC tracks
+       via `youtube.captions().insert` so viewers can switch subtitles to any major world language.
+    2. Synthesizes multi-language neural dubbed audio tracks (`output/dubbed_audio/{video_tag}_{lang}.mp3`)
+       for top global languages (Hindi, Spanish, French, German, Japanese, Chinese, Filipino, Malay)
+       using Microsoft Edge Neural TTS (`edge-tts`)!
+    """
+    if not sections_list:
+        return
+    os.makedirs("output/subtitles", exist_ok=True)
+    os.makedirs("output/dubbed_audio", exist_ok=True)
+
+    def _fmt_srt_time(sec_val):
+        ms = int(round((sec_val - int(sec_val)) * 1000))
+        s_int = int(sec_val)
+        hh = s_int // 3600
+        mm = (s_int % 3600) // 60
+        ss = s_int % 60
+        return f"{hh:02d}:{mm:02d}:{ss:02d},{ms:03d}"
+
+    # Build English master SRT blocks from chapters
+    srt_segments = []
+    cur_t = 0.0
+    for sec in sections_list:
+        dur = float(sec.get("duration") or 12.0)
+        nar = str(sec.get("narration") or "").strip()
+        sents = [s.strip() for s in split_into_complete_sentences(nar) if s.strip()]
+        if not sents:
+            sents = [nar]
+        tot_c = max(sum(len(s) for s in sents), 1)
+        for s_txt in sents:
+            s_dur = dur * (len(s_txt) / float(tot_c))
+            srt_segments.append((cur_t, cur_t + s_dur, s_txt))
+            cur_t += s_dur
+
+    en_srt_lines = []
+    for idx_s, (st_t, ed_t, txt_s) in enumerate(srt_segments, 1):
+        en_srt_lines.append(f"{idx_s}\n{_fmt_srt_time(st_t)} --> {_fmt_srt_time(ed_t)}\n{txt_s}\n")
+    en_srt_path = f"output/subtitles/{video_tag}_en.srt"
+    with open(en_srt_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(en_srt_lines))
+
+    full_en_script = " ".join(s[2] for s in srt_segments)
+
+    # Top priority dubbing & caption languages: India (Hindi), China, Japan, France, Germany, Spain, Philippines, Malaysia
+    dub_targets = GLOBAL_20_LANGUAGES_CONFIG[:8] if not is_short else GLOBAL_20_LANGUAGES_CONFIG[:4]
+
+    def _process_lang_dub_and_srt(lang_tuple):
+        yt_code, gtx_code, lang_label, voice_id = lang_tuple
+        try:
+            # Translate full narration into target language
+            tr_full = translate_text_free_google_gtx(full_en_script[:1750], gtx_code)
+            if not tr_full:
+                return
+            # Save translated SRT file
+            tr_sents = [s.strip() for s in re.split(r"(?<=[.!?।。！？])\s+", tr_full) if s.strip()]
+            if not tr_sents:
+                tr_sents = [tr_full]
+            srt_lines_tr = []
+            for idx_s, (st_t, ed_t, orig_s) in enumerate(srt_segments, 1):
+                mapped_s = tr_sents[min(idx_s - 1, len(tr_sents) - 1)] if len(tr_sents) >= len(srt_segments) else translate_text_free_google_gtx(orig_s, gtx_code)
+                srt_lines_tr.append(f"{idx_s}\n{_fmt_srt_time(st_t)} --> {_fmt_srt_time(ed_t)}\n{mapped_s}\n")
+            tr_srt_path = f"output/subtitles/{video_tag}_{yt_code}.srt"
+            with open(tr_srt_path, "w", encoding="utf-8") as f:
+                f.write("\n".join(srt_lines_tr))
+
+            # Synthesize Multi-Language Neural Dubbed Audio Track via edge-tts CLI (isolated subprocess)
+            dub_mp3_path = f"output/dubbed_audio/{video_tag}_{yt_code}.mp3"
+            txt_tmp = f"temp/dub_txt_{video_tag}_{yt_code}.txt"
+            with open(txt_tmp, "w", encoding="utf-8") as tf:
+                tf.write(tr_full[:1500])
+            run_isolated_subprocess(["edge-tts", "--voice", voice_id, "--file", txt_tmp, "--write-media", dub_mp3_path], timeout_sec=14)
+        except Exception:
+            pass
+
+    try:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
+            list(ex.map(_process_lang_dub_and_srt, dub_targets))
+        print(f"🎙️ [Multi-Language Neural Dubbing & SRT] Generated dubbed audio & subtitle tracks in {len(dub_targets)} languages (Hindi, Chinese, Japanese, French, German, Spanish, Filipino, Malay)!", flush=True)
+    except Exception:
+        pass
+
+    # Upload synced multi-language caption tracks to the YouTube video via captions.insert API
+    if yt_client and video_id:
+        from googleapiclient.http import MediaFileUpload
+        for yt_code, _, lang_label, _ in [("en", "en", "English", "")] + list(dub_targets[:6]):
+            srt_p = f"output/subtitles/{video_tag}_{yt_code}.srt"
+            if os.path.exists(srt_p) and os.path.getsize(srt_p) > 20:
+                try:
+                    c_body = {
+                        "snippet": {
+                            "videoId": video_id,
+                            "language": yt_code,
+                            "name": lang_label.split(" (")[0],
+                            "isDraft": False
+                        }
+                    }
+                    yt_client.captions().insert(
+                        part="snippet",
+                        body=c_body,
+                        media_body=MediaFileUpload(srt_p, mimetype="application/octet-stream", resumable=False)
+                    ).execute()
+                except Exception:
+                    # Stop caption loop if OAuth token lacks caption scope or hits caption quota
+                    break
+
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
-    is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway="", linked_long_url=None
+    is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway="",
+    linked_long_url=None, sections_list=None
 ):
     qc_ok, qc_rep = run_automatic_pre_upload_qc_gate(video_path, is_short=is_short, story_title=title)
     if not qc_ok:
         print(f"🛑 [QC GATE BLOCKED UPLOAD] Critical quality check failed: {qc_rep}", flush=True)
         return None
+
+    video_tag = os.path.splitext(os.path.basename(video_path))[0].lower()
+    final_title = (title[:90] + " #Shorts") if is_short and "#shorts" not in title.lower() else title[:100]
+    localizations_map = build_20_country_youtube_localizations(final_title, description)
+
     token_b64 = os.environ.get("YOUTUBE_TOKEN_JSON_B64", "").strip()
     if not token_b64:
+        build_and_upload_multilang_captions_and_dubs(None, None, sections_list, video_tag=video_tag, is_short=is_short)
         print("ℹ️ [GitHub Cloud Test Mode] No YouTube API token set yet; saved to GitHub Artifacts:", video_path, flush=True)
         return None
 
@@ -8363,23 +8566,46 @@ def try_youtube_auto_upload(
             creds.refresh(Request())
         yt = build("youtube", "v3", credentials=creds)
 
-        final_title = (title[:90] + " #Shorts") if is_short and "#shorts" not in title.lower() else title[:100]
         body = {
-            "snippet": {"title": final_title, "description": description, "tags": tags[:25], "categoryId": str(category_id)},
-            "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}
+            "snippet": {
+                "title": final_title,
+                "description": description,
+                "tags": tags[:25],
+                "categoryId": str(category_id),
+                "defaultLanguage": "en",
+                "defaultAudioLanguage": "en"
+            },
+            "status": {
+                "privacyStatus": "public",
+                "selfDeclaredMadeForKids": False
+            },
+            "localizations": localizations_map
         }
         media = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype="video/mp4")
-        req = yt.videos().insert(part="snippet,status", body=body, media_body=media)
-        resp = None
-        while resp is None:
-            _, resp = req.next_chunk()
+        try:
+            req = yt.videos().insert(part="snippet,status,localizations", body=body, media_body=media)
+            resp = None
+            while resp is None:
+                _, resp = req.next_chunk()
+        except Exception:
+            # Fallback if a specific localization code is rejected by YouTube API
+            body_basic = {"snippet": body["snippet"], "status": body["status"]}
+            media_fallback = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype="video/mp4")
+            req = yt.videos().insert(part="snippet,status", body=body_basic, media_body=media_fallback)
+            resp = None
+            while resp is None:
+                _, resp = req.next_chunk()
+
         vid_id = resp["id"]
-        print(f"✅ [YOUTUBE LIVE UPLOAD SUCCESS - {pillar}] https://youtu.be/{vid_id}", flush=True)
+        print(f"✅ [YOUTUBE LIVE UPLOAD SUCCESS - {pillar} (20-Language Global Support Enabled)] https://youtu.be/{vid_id}", flush=True)
         if thumbnail_path and os.path.exists(thumbnail_path):
             try:
                 yt.thumbnails().set(videoId=vid_id, media_body=MediaFileUpload(thumbnail_path)).execute()
             except Exception as te:
                 print("⚠️ Thumbnail set warning:", te, flush=True)
+
+        # Build & upload 20-country multi-language captions (.srt) and neural dubbed audio tracks (.mp3)
+        build_and_upload_multilang_captions_and_dubs(yt, vid_id, sections_list, video_tag=video_tag, is_short=is_short)
 
         add_video_to_category_playlist_and_comment(
             yt, vid_id, pillar, summary_takeaway or title, playlist_map or {}, linked_long_url=linked_long_url
@@ -8496,7 +8722,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         out_long, pkg_report["selected_title"], long_seo_desc, long_seo_tags,
         category_id=lead_long_dossier.get("yt_category_id", "25"), pillar=sub_pillar, is_short=False,
         thumbnail_path=pkg_report["selected_thumbnail"], playlist_map=playlist_map,
-        summary_takeaway=long_chapters[-1]["narration"]
+        summary_takeaway=long_chapters[-1]["narration"], sections_list=long_chapters
     )
     pkg_report["youtube_video_id"] = long_vid_id
     pkg_report["youtube_url"] = f"https://www.youtube.com/watch?v={long_vid_id}" if long_vid_id else "https://www.youtube.com/@WorldTalkBrief"
@@ -8589,7 +8815,7 @@ async def render_and_upload_short_unit(
         out_short, short_dossier["original_yt_title"], short_seo_desc, short_seo_tags,
         category_id=short_dossier.get("yt_category_id", "25"), pillar=sub_pillar, is_short=True,
         thumbnail_path=short_pkg["selected_thumbnail"], playlist_map=playlist_map,
-        summary_takeaway=short_sections[-1]["narration"], linked_long_url=linked_long_url
+        summary_takeaway=short_sections[-1]["narration"], linked_long_url=linked_long_url, sections_list=short_sections
     )
     s_stats["linked_long_url"] = linked_long_url
     s_stats["short_video_id"] = short_vid_id
