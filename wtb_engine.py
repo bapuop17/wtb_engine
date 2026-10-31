@@ -13,6 +13,11 @@ import signal
 import traceback
 import subprocess
 import urllib.parse
+try:
+    from ddgs import DDGS
+    DDGS_AVAILABLE = True
+except Exception:
+    DDGS_AVAILABLE = False
 import concurrent.futures
 from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
@@ -1783,7 +1788,7 @@ def load_published_history():
 def register_story_in_history(title, summary_or_fact, hist_obj, story_key=None):
     st_key = story_key or make_story_key(title)
     if st_key:
-        hist_obj["published_keys"].add(st_key)
+        hist_obj["published_keys"].add(st_key) if isinstance(hist_obj.get("published_keys"), set) else hist_obj.setdefault("published_keys", []).append(st_key)
         pk_list = hist_obj.setdefault("published_keys_list", [])
         if st_key not in pk_list:
             pk_list.append(st_key)
@@ -2574,8 +2579,9 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                 except Exception:
                     pass
 
-            if len(verified_claims) < 4 and DDGS_AVAILABLE:
+            if len(verified_claims) < 4:
                 try:
+                    from ddgs import DDGS
                     all_title_toks = [w for w in re.findall(r"[A-Za-z0-9\-]{4,}", title) if w.lower() not in HEADLINE_STOP_VERBS_ADJS]
                     kw_q = " ".join(all_title_toks[:6])
                     if kw_q:
