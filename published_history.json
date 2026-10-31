@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-31T17:58:45.652009",
-  "round_robin_idx": 14,
-  "country_rot_idx": 0,
-  "bgm_track_counter": 587285981,
+  "updated_at": "2026-10-31T18:46:46.757705",
+  "round_robin_idx": 15,
+  "country_rot_idx": 24,
+  "bgm_track_counter": 611914595,
   "last_mega_24h_date": "2026-10-30",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -313,7 +313,12 @@
     "an_american_delegation_is_preparing_to",
     "the_moon_mars_and_jupiter_shine",
     "why_egypt_just_sent_troops_to",
-    "us_iran_doha_talks_the_150b"
+    "us_iran_doha_talks_the_150b",
+    "uk_s_burnham_says_he_is",
+    "iran_s_khamenei_orders_military_to",
+    "railway_engineering_work_over_christmas_will",
+    "uk_s_slavery_apology_the_100b",
+    "iran_s_supreme_leader_orders_unlimited"
   ],
   "event_fingerprints": [
     {
@@ -5357,6 +5362,113 @@
         "reported",
         "talks"
       ]
+    },
+    {
+      "title": "UK's Burnham says he is 'open' to formal apology for slavery, but rules out reparations",
+      "tokens": [
+        "apology",
+        "britain",
+        "burnham",
+        "face",
+        "formal",
+        "jerusalem",
+        "minister",
+        "must",
+        "open",
+        "past",
+        "post",
+        "prime",
+        "reparations",
+        "role",
+        "rules",
+        "slavery"
+      ]
+    },
+    {
+      "title": "Iran's Khamenei Orders Military to Expand US Retaliation Plans",
+      "tokens": [
+        "commanders",
+        "confrontation",
+        "expand",
+        "iran",
+        "israel",
+        "khamenei",
+        "leader",
+        "military",
+        "mojtaba",
+        "options",
+        "ordered",
+        "orders",
+        "plans",
+        "prepare",
+        "renewed",
+        "retaliation",
+        "supreme",
+        "tehran"
+      ]
+    },
+    {
+      "title": "Railway engineering work over Christmas will cause 10 days of disruption",
+      "tokens": [
+        "birmingham",
+        "britain",
+        "busiest",
+        "cause",
+        "christmas",
+        "days",
+        "disruption",
+        "engineering",
+        "five",
+        "great",
+        "lines",
+        "london",
+        "most",
+        "open",
+        "paddington",
+        "passengers",
+        "railway",
+        "routes",
+        "shut",
+        "some",
+        "stations",
+        "stay",
+        "street",
+        "travelling",
+        "will",
+        "work"
+      ]
+    },
+    {
+      "title": "UK's Slavery Apology: The $100B Debt Trap You Missed",
+      "tokens": [
+        "apology",
+        "burnham",
+        "debt",
+        "formal",
+        "missed",
+        "open",
+        "reparations",
+        "rules",
+        "slavery",
+        "trap"
+      ]
+    },
+    {
+      "title": "Iran\u2019s Supreme Leader Orders Unlimited Retaliation\u2014What Happens Next?",
+      "tokens": [
+        "expand",
+        "happens",
+        "iran",
+        "khamenei",
+        "leader",
+        "military",
+        "next",
+        "orders",
+        "plans",
+        "retaliation",
+        "supreme",
+        "unlimited"
+      ]
     }
   ],
   "last_categories": [
@@ -5390,6 +5502,8 @@
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
+    "GEOPOLITICS",
+    "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
@@ -5429,7 +5543,9 @@
     "Google Trends 200K+ Viral [INDIA]",
     "Google Trends 200K+ Viral [SWITZERLAND]",
     "Country Documentary Wire [EGYPT]",
-    "Country Documentary Wire [QATAR]"
+    "Country Documentary Wire [QATAR]",
+    "Top Viral News [UNITED KINGDOM]",
+    "Top Viral News [IRAN]"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -5451,6 +5567,9 @@
     "SPACE & SCIENCE",
     "SAUDI ARABIA",
     "UNITED STATES",
-    "SPACE & SCIENCE"
+    "SPACE & SCIENCE",
+    "ISRAEL",
+    "IRAN",
+    "GLOBAL MARKETS"
   ]
 }
