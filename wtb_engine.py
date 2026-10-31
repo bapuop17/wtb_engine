@@ -342,6 +342,7 @@ GLOBAL_ALL_COUNTRIES_ROTATION = [
 ]
 
 LOW_INTEREST_BORING_WORDS = [
+    "queer film", "film festival", "staff remembers", "our captain", "obituary", "sinkholes", "sinkhole",
     "farmers decide what to plan", "what to plant", "food safety", "cooking oil", "recipe",
     "gardening", "horoscope", "weather forecast", "local traffic", "high school", "county fair",
     "spelling bee", "pet adoption", "charity run", "book club", "restaurant review"
@@ -1818,26 +1819,15 @@ def save_published_history(hist_obj):
     except Exception:
         pass
 
-def sync_history_to_github_now(hist_obj):
+def sync_history_to_github_now(hist_obj=None):
     """
-    REAL-TIME ATOMIC GITHUB HISTORY SYNC:
-    Commits `published_history.json` FIRST (so git working tree is clean), then rebases with `-X theirs`
-    and pushes immediately to `origin main` so concurrent or subsequent runs NEVER repeat a story!
+    V25 SAFE LOCAL ATOMIC HISTORY SYNC:
+    Immediately writes `published_history.json` to disk after each story lock/upload.
+    Git commit & push is handled once at job completion by the workflow `if: always()` step
+    so mid-run git pushes never trigger GitHub Actions concurrency cancellation (exit code 143)!
     """
-    save_published_history(hist_obj)
-    if not os.path.exists(".git"):
-        return
-    try:
-        subprocess.run(["git", "config", "user.name", "WorldTalkBrief-Bot"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=4, check=False)
-        subprocess.run(["git", "config", "user.email", "bot@worldtalkbrief.org"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=4, check=False)
-        subprocess.run(["git", "add", HISTORY_FILE], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=4, check=False)
-        diff_res = subprocess.run(["git", "diff", "--staged", "--quiet"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=4, check=False)
-        if diff_res.returncode != 0:
-            subprocess.run(["git", "commit", "-m", "Auto-sync published_history.json [live-lock]"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=6, check=False)
-            subprocess.run(["git", "pull", "--rebase", "-X", "theirs", "origin", "main"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
-            subprocess.run(["git", "push", "origin", "HEAD:main"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
-    except Exception:
-        pass
+    if hist_obj is not None:
+        save_published_history(hist_obj)
 
 def make_story_key(title):
     words = re.findall(r"[a-z0-9]+", title.lower())
@@ -2102,16 +2092,18 @@ def is_semantically_similar_claim(new_claim, existing_claims, headline_title="")
     if headline_title:
         title_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", headline_title) if w.lower() not in stop_c}
         if title_words:
-            t_overlap = len(new_words.intersection(title_words)) / float(min(len(new_words), len(title_words)))
-            if t_overlap >= 0.42:
+            # Only reject if the sentence is a near-verbatim copy of the headline that adds fewer than 2 new content words!
+            novel_words = new_words - title_words
+            t_overlap = len(new_words.intersection(title_words)) / float(max(1, len(new_words)))
+            if len(novel_words) < 2 and t_overlap >= 0.72:
                 return True
 
     for old_c in existing_claims:
         old_words = {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", old_c["text"]) if w.lower() not in stop_c}
         if not old_words:
             continue
-        overlap = len(new_words.intersection(old_words)) / float(min(len(new_words), len(old_words)))
-        if overlap >= 0.38:
+        overlap = len(new_words.intersection(old_words)) / float(max(1, min(len(new_words), len(old_words))))
+        if overlap >= 0.65:
             return True
     return False
 
@@ -2375,8 +2367,12 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
     candidates = []
 
     feed_list = list(p_cfg["feeds"])
+    # V25 All-Country Daily Trending Harvester: inject 8 rotating country viral & Google Trends feeds into EVERY pillar scan!
+    country_viral_feeds = build_dynamic_country_viral_feeds(hist_obj, count_countries=8)
     if core_hub == "WORLD" or sub_pillar in ["GEOPOLITICS", "GLOBAL_POWERS", "DEFENSE_MILITARY"]:
-        feed_list = build_dynamic_country_viral_feeds(hist_obj, count_countries=5) + feed_list
+        feed_list = country_viral_feeds + feed_list
+    else:
+        feed_list = feed_list + country_viral_feeds[:4]
 
     for src, url in feed_list:
         try:
@@ -2553,7 +2549,7 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                                 s_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9\-]{4,}", cbs)}
                                 if geo_anchor_toks and not any(gt in cbs.lower() for gt in geo_anchor_toks) and len(s_toks.intersection(headline_specific_tokens)) < 2:
                                     continue
-                                if 45 <= len(cbs) <= 205 and len(s_toks.intersection(headline_specific_tokens)) >= 2 and not is_semantically_similar_claim(cbs, verified_claims, headline_title=title):
+                                if 40 <= len(cbs) <= 215 and len(s_toks.intersection(core_topic_tokens)) >= 1 and not is_semantically_similar_claim(cbs, verified_claims, headline_title=title):
                                     if cbs[-1] not in ".!?":
                                         cbs += "."
                                     verified_claims.append({
@@ -2564,10 +2560,44 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                                     })
                                     if len(verified_claims) >= 16:
                                         break
+                            # Also harvest the corroborating headline + source if it adds new specifics
+                            b_title_clean = clean_fact(getattr(b_ent, "title", "").rsplit(" - ", 1)[0])
+                            if 42 <= len(b_title_clean) <= 195 and not is_semantically_similar_claim(b_title_clean, verified_claims, headline_title=title):
+                                b_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9\-]{4,}", b_title_clean)}
+                                if len(b_toks.intersection(core_topic_tokens)) >= 1:
+                                    verified_claims.append({
+                                        "text": b_title_clean if b_title_clean[-1] in ".!?" else f"{b_title_clean}.",
+                                        "source_url": link,
+                                        "source_name": src,
+                                        "published_date": pub_date
+                                    })
                 except Exception:
                     pass
 
-            if len(verified_claims) < 4:
+            if len(verified_claims) < 4 and DDGS_AVAILABLE:
+                try:
+                    all_title_toks = [w for w in re.findall(r"[A-Za-z0-9\-]{4,}", title) if w.lower() not in HEADLINE_STOP_VERBS_ADJS]
+                    kw_q = " ".join(all_title_toks[:6])
+                    if kw_q:
+                        with DDGS() as ddgs:
+                            for d_item in list(ddgs.news(kw_q, max_results=6)):
+                                d_body = clean_fact(f"{d_item.get('title', '')}. {d_item.get('body', '')}")
+                                for ds in split_into_complete_sentences(d_body):
+                                    cds = clean_fact(ds)
+                                    s_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9\-]{4,}", cds)}
+                                    if 40 <= len(cds) <= 215 and len(s_toks.intersection(core_topic_tokens)) >= 1 and not is_semantically_similar_claim(cds, verified_claims, headline_title=title):
+                                        verified_claims.append({
+                                            "text": cds if cds[-1] in ".!?" else f"{cds}.",
+                                            "source_url": d_item.get("url") or link,
+                                            "source_name": d_item.get("source") or src,
+                                            "published_date": pub_date
+                                        })
+                                        if len(verified_claims) >= 12:
+                                            break
+                except Exception:
+                    pass
+
+            if len(verified_claims) < 2:
                 continue
 
             raw_facts = [c["text"] for c in verified_claims]
@@ -2637,7 +2667,7 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
     chosen_country = chosen["country_profile"].get("name", "INTERNATIONAL").upper()
     hist_obj.setdefault("last_countries", []).append(chosen_country)
     register_story_in_history(chosen["title"], " ".join(chosen.get("raw_facts", [])[:2]), hist_obj, story_key=chosen["story_key"])
-    sync_history_to_github_now(hist_obj)
+    save_published_history(hist_obj)
     print(
         f"🌍 [Global Country & Public Demand Audit] Selected Country: {chosen_country} | "
         f"Topic: '{chosen['title'][:52]}' | Score: {chosen['score']} (Pool Audited: {len(candidates)} Global Stories)",
@@ -2780,8 +2810,7 @@ COMMON_NON_PERSON_CAP_WORDS = {
 def is_safe_family_friendly_image(im_rgb, is_portrait=False):
     """
     100% FAMILY-FRIENDLY / ZERO-18+ SKIN & NSFW PIXEL DETECTOR:
-    Uses dual YCrCb + HSV color-space skin segmentation to automatically reject any image or
-    video frame with excessive exposed skin, nudity, swimwear, or nude classical statues!
+    Rejects explicit nudity/swimwear while allowing normal press photos with faces, hands, podiums, and warm indoor lighting!
     """
     try:
         small = im_rgb.convert("RGB").resize((160, 160))
@@ -2789,36 +2818,29 @@ def is_safe_family_friendly_image(im_rgb, is_portrait=False):
         arr_ycrcb = cv2.cvtColor(arr_rgb, cv2.COLOR_RGB2YCrCb)
         arr_hsv = cv2.cvtColor(arr_rgb, cv2.COLOR_RGB2HSV)
 
-        # Standard human skin chroma cluster in YCrCb & HSV
         ycrcb_mask = (
-            (arr_ycrcb[:, :, 0] > 55)
-            & (arr_ycrcb[:, :, 1] >= 135) & (arr_ycrcb[:, :, 1] <= 172)
-            & (arr_ycrcb[:, :, 2] >= 79) & (arr_ycrcb[:, :, 2] <= 125)
+            (arr_ycrcb[:, :, 0] > 60)
+            & (arr_ycrcb[:, :, 1] >= 138) & (arr_ycrcb[:, :, 1] <= 170)
+            & (arr_ycrcb[:, :, 2] >= 82) & (arr_ycrcb[:, :, 2] <= 122)
         )
         hsv_mask = (
-            (arr_hsv[:, :, 0] <= 20)
-            & (arr_hsv[:, :, 1] >= 42) & (arr_hsv[:, :, 1] <= 172)
-            & (arr_hsv[:, :, 2] >= 65)
+            (arr_hsv[:, :, 0] <= 18)
+            & (arr_hsv[:, :, 1] >= 48) & (arr_hsv[:, :, 1] <= 165)
+            & (arr_hsv[:, :, 2] >= 70)
         )
         skin_mask = ycrcb_mask & hsv_mask
         full_skin_ratio = float(np.mean(skin_mask))
-
-        # Check central torso/body region (rows 35% to 90%, cols 20% to 80%)
         torso_mask = skin_mask[56:144, 32:128]
         torso_skin_ratio = float(np.mean(torso_mask))
 
         if is_portrait:
-            # Close-up face portraits naturally have skin on the face, but lower torso shouldn't be bare skin
             lower_body_ratio = float(np.mean(skin_mask[112:156, 28:132]))
-            if full_skin_ratio > 0.46 or lower_body_ratio > 0.38:
+            if full_skin_ratio > 0.58 or lower_body_ratio > 0.50:
                 return False
             return True
 
-        # Strict Couch-Girl / Webcam Selfie / Bare-Shoulder Tank-Top Guard (Fixes 02:48 of 0FirikPv84w!):
-        # Rejects any scene image where central chest/shoulder skin (`rows 40%..88%, cols 25%..75%`) is > 0.16
-        # or full_skin_ratio > 0.20!
         center_chest_skin = float(np.mean(skin_mask[64:142, 40:120]))
-        if full_skin_ratio > 0.20 or torso_skin_ratio > 0.18 or center_chest_skin > 0.16:
+        if full_skin_ratio > 0.46 or (torso_skin_ratio > 0.42 and center_chest_skin > 0.40):
             return False
         return True
     except Exception:
@@ -3187,54 +3209,26 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
 # ==============================================================================
 def has_collage_or_text_banner_artifacts(im_rgb):
     """
-    V14 STRICT ANTI-COLLAGE, ANTI-SPLIT-SCREEN, ANTI-TV-CHYRON & ANTI-POSTER-TEXT DETECTOR:
-    Blocks all 5 visual flaws seen in 0FirikPv84w:
-    1. Side-by-side 2-panel split screens (`00:00`, `01:05`, `01:17`) via central vertical seam detection (`x = 148..172`).
-    2. Multi-panel grid collages (`01:29`, `02:37`, `02:24` Zoom call) via horizontal/vertical divider seams.
-    3. TV Broadcast Lower-Third Chyrons (`FOX NEWS`, `FOX BUSINESS` at `00:21`, `01:17`, `02:17`) via bottom-band high-contrast text/box check.
-    4. Giant Poster / Website Header Text Banners (`00:14` 'Article', `01:45` 'Past Workshops', `02:03` 'The Results Are In').
+    V25 CALIBRATED ANTI-COLLAGE & ANTI-TEXT-SLIDE DETECTOR:
+    Blocks true 2-panel split-screens and full-screen text slides without falsely rejecting
+    real photojournalism containing buildings, crowds, podiums, or microphones!
     """
     try:
         arr_c = np.array(im_rgb.resize((320, 180)), dtype=np.uint8)
         small_g = cv2.cvtColor(arr_c, cv2.COLOR_RGB2GRAY)
         gf = small_g.astype(np.float32)
 
-        # 1. Detect 2-Panel Side-by-Side Split-Screen Seam near center (`x = 146..174`):
-        # A split-screen has either a uniform white/black divider stripe (`center_stds < 3.2`) OR a full-height vertical cut (`center_jumps > 62.0`)
-        center_jumps = np.mean(np.abs(np.diff(gf[15:165, 146:174], axis=1)), axis=0)
-        center_stds = np.std(gf[15:165, 146:174], axis=0)
-        if np.max(center_jumps) > 62.0 or (np.min(center_stds) < 3.2 and np.max(center_jumps) > 28.0):
+        # 1. True 2-panel split-screen divider stripe right down the center (`x = 154..166`)
+        center_jumps = np.mean(np.abs(np.diff(gf[10:170, 154:166], axis=1)), axis=0)
+        center_stds = np.std(gf[10:170, 154:166], axis=0)
+        if np.max(center_jumps) > 82.0 or (np.min(center_stds) < 1.2 and np.max(center_jumps) > 48.0):
             return True
 
-        # 2. Detect Multi-Panel Grid Collage Seams (3x3 / 4x3 grids like 02:37 or Zoom grids like 02:24)
-        col_stds_all = np.std(gf[15:165, 40:280], axis=0)
-        col_jumps_all = np.mean(np.abs(np.diff(gf[15:165, 40:280], axis=1)), axis=0)
-        if int(np.sum(col_stds_all < 2.8)) >= 2 and np.max(col_jumps_all) > 45.0:
-            return True
-
-        # 3. Detect Burned-In Subtitles / Lower-Third Chyrons ('Cocoa in Côte d'Ivoire...', 'FOX NEWS' at y = 128..176)
+        # 2. Giant presentation slide / text-only banner covering >42% of the frame
         kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 3))
         grad = cv2.morphologyEx(small_g, cv2.MORPH_GRADIENT, kernel_rect)
-        bottom_chyron_strokes = float(np.mean(grad[128:176, 20:300] > 125))
-        bottom_bright_px = float(np.mean((arr_c[128:176, 20:300, 0] > 215) & (arr_c[128:176, 20:300, 1] > 215) & (arr_c[128:176, 20:300, 2] > 200)))
-        if (bottom_chyron_strokes > 0.17 and bottom_bright_px > 0.08) or bottom_chyron_strokes > 0.25:
-            return True
-
-        # 3B. Detect Top Burned-In Text Captions ('After tracking a series of atmospheric rivers...', 'METROPOLITAN BAPTIST CHURCH' at y = 4..54)
-        top_text_strokes = float(np.mean(grad[4:54, 18:302] > 125))
-        top_bright_px = float(np.mean((arr_c[4:54, 18:302, 0] > 210) & (arr_c[4:54, 18:302, 1] > 210) & (arr_c[4:54, 18:302, 2] > 210)))
-        if top_text_strokes > 0.19 and top_bright_px > 0.10:
-            return True
-
-        # 3C. Detect Corner TV Network Watermarks ('REEL AMERICA', 'C-SPAN3', 'AMERICAN HISTORY TV' at 03:02 of gfytiDo9DRw)
-        bl_strokes = float(np.mean(grad[134:174, 8:96] > 115))
-        br_strokes = float(np.mean(grad[134:174, 224:312] > 115))
-        if bl_strokes > 0.22 and br_strokes > 0.22:
-            return True
-
-        # 4. Detect Giant Poster / LED Sign / Static Textbook Map Text covering >26% of the frame
-        full_text_strokes = float(np.mean(grad[20:160, 20:300] > 135))
-        if full_text_strokes > 0.26:
+        full_text_strokes = float(np.mean(grad[20:160, 20:300] > 145))
+        if full_text_strokes > 0.42:
             return True
 
         return False
@@ -3323,7 +3317,7 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str, s
             "-r", "24", "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
             clean_mp4
         ]
-        subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=18, check=False)
+        run_isolated_subprocess(cmd, timeout_sec=14)
         if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 22000:
             vc = VideoFileClip(clean_mp4)
             GLOBAL_OPEN_VCLIPS.append(vc)
@@ -3343,11 +3337,41 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str, s
         pass
     return None
 
+def run_isolated_subprocess(cmd_list, timeout_sec=14):
+    """
+    Runs ffmpeg / yt-dlp in an isolated process group (`start_new_session=True`).
+    If it times out, kills ONLY that child process group (`os.killpg`) so no child process
+    can ever hang or send SIGTERM (exit code 143) to our main Python process!
+    """
+    proc = None
+    try:
+        proc = subprocess.Popen(
+            cmd_list,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True
+        )
+        proc.wait(timeout=timeout_sec)
+        return proc.returncode
+    except subprocess.TimeoutExpired:
+        if proc is not None:
+            try:
+                os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+            except Exception:
+                try:
+                    proc.kill()
+                except Exception:
+                    pass
+        return -1
+    except Exception:
+        return -1
+
 def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label_str):
     """
-    V24 YT-DLP REAL NEWS & DOCUMENTARY FOOTAGE HARVESTER:
-    Uses `yt-dlp` (pre-installed in GitHub Actions workflow) to pull a clean 9-second slice
-    (`00:06` to `00:15`, skipping opening channel logos) from Dailymotion / YouTube news footage!
+    V25 ISOLATED YT-DLP REAL NEWS & DOCUMENTARY FOOTAGE HARVESTER:
+    Uses isolated process group (`run_isolated_subprocess`) so timeouts never leak zombie ffmpeg processes
+    or trigger exit code 143!
     """
     if not search_or_url or search_or_url in used_video_urls:
         return None
@@ -3365,25 +3389,25 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             "--no-warnings",
             "--quiet",
             "--geo-bypass",
-            "--max-filesize", "18M",
-            "--download-sections", "*00:06-00:16",
-            "-f", "bestvideo[height<=1080][ext=mp4]/best[height<=720][ext=mp4]/best[ext=mp4]",
+            "--max-filesize", "16M",
+            "--download-sections", "*00:06-00:15",
+            "-f", "best[height<=720][ext=mp4]/bestvideo[height<=720][ext=mp4]/best[ext=mp4]",
             "-o", raw_local,
             search_or_url
         ]
-        subprocess.run(cmd_dl, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=16, check=False)
+        run_isolated_subprocess(cmd_dl, timeout_sec=13)
         if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 25000:
             return None
 
         cmd_tr = [
             "ffmpeg", "-nostdin", "-y",
             "-i", raw_local,
-            "-t", "10.0",
+            "-t", "9.5",
             "-vf", "setpts=1.20*PTS,scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,setsar=1",
             "-r", "24", "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
             clean_mp4
         ]
-        subprocess.run(cmd_tr, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=16, check=False)
+        run_isolated_subprocess(cmd_tr, timeout_sec=12)
         if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 25000:
             vc = VideoFileClip(clean_mp4)
             GLOBAL_OPEN_VCLIPS.append(vc)
@@ -3392,63 +3416,18 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
                 f2 = vc.get_frame(min(1.8, vc.duration * 0.60))
                 if is_valid_cinematic_video_frame(f1, story_title=label_str, query_context=label_str) and is_valid_cinematic_video_frame(f2, story_title=label_str, query_context=label_str):
                     used_video_urls.add(search_or_url)
-                    print(f"   🎬 [YT-DLP HD NEWS B-ROLL LOCKED]: {label_str[:34]} ({round(vc.duration, 1)}s)", flush=True)
+                    print(f"   🎬 [YT-DLP HD NEWS B-ROLL LOCKED]: {label_str[:38]} ({round(vc.duration, 1)}s)", flush=True)
                     return {
                         "vclip": vc,
                         "start_t": 0.0,
                         "label": f"● LIVE FOOTAGE • {label_str.upper()[:22]}"
                     }
-    except Exception:
-        pass
-    return None
-    if any(nf in cand_u.lower() for nf in ADULT_NSFW_BANNED_TERMS):
-        return None
-    try:
-        raw_local = f"temp/{tag_id}_raw.mp4"
-        clean_mp4 = f"temp/{tag_id}_{len(used_video_urls)}.mp4"
-
-        dl_start_t = time.time()
-        with requests.get(cand_u, headers=HEADERS_WEB, stream=True, timeout=(5, 10)) as vr:
-            if vr.status_code != 200:
-                return None
-            bytes_read = 0
-            with open(raw_local, "wb") as vf:
-                for chunk in vr.iter_content(chunk_size=262144):
-                    if not chunk or (time.time() - dl_start_t) > 14.0:
-                        break
-                    vf.write(chunk)
-                    bytes_read += len(chunk)
-                    if bytes_read >= 8500000:
-                        break
-
-        if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 18000:
-            return None
-
-        cmd = [
-            "ffmpeg", "-nostdin", "-y",
-            "-ss", "0.2",
-            "-i", raw_local,
-            "-t", "11.0",
-            "-vf", "setpts=1.35*PTS,scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,setsar=1",
-            "-r", "24", "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
-            clean_mp4
-        ]
-        subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=18, check=False)
-        if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 20000:
-            vc = VideoFileClip(clean_mp4)
-            GLOBAL_OPEN_VCLIPS.append(vc)
-            if vc.duration >= 2.2:
-                f1 = vc.get_frame(min(0.5, vc.duration * 0.20))
-                f2 = vc.get_frame(min(1.8, vc.duration * 0.55))
-                f3 = vc.get_frame(min(3.0, vc.duration * 0.85))
-                if is_valid_cinematic_video_frame(f1, story_title=label_str, query_context=label_str) and is_valid_cinematic_video_frame(f2, story_title=label_str, query_context=label_str) and is_valid_cinematic_video_frame(f3):
-                    used_video_urls.add(cand_u)
-                    print(f"   🎬 [FULL-SENTENCE HD VIDEO B-ROLL LOCKED]: {label_str[:30]} ({round(vc.duration, 1)}s)", flush=True)
-                    return {
-                        "vclip": vc,
-                        "start_t": 0.0,
-                        "label": f"● LIVE FOOTAGE • {label_str.upper()[:18]}"
-                    }
+                else:
+                    try:
+                        vc.close()
+                        GLOBAL_OPEN_VCLIPS.remove(vc)
+                    except Exception:
+                        pass
     except Exception:
         pass
     return None
@@ -3544,36 +3523,49 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         if cq_clean and len(cq_clean) >= 3 and cq_clean not in candidate_video_queries:
             candidate_video_queries.append(cq_clean)
 
-    # 0. Dailymotion Official News Video API + yt-dlp (Fast, Free, Unblocked on GitHub Actions IPs!)
+    # Require SPECIFIC headline tokens (excluding generic words like 'film', 'police', 'university', 'city') AND Country match!
+    generic_vid_skip = {
+        "film", "movie", "festival", "police", "officers", "university", "campus", "students", "city", "street",
+        "building", "company", "market", "security", "forces", "government", "minister", "president", "news",
+        "video", "footage", "broll", "edition", "calls", "inquiry", "screening", "entertainment", "cancelled"
+    }
+    strict_headline_tokens = {
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{dossier.get('title', '')} {topic_anchor}")
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in generic_vid_skip
+    }
+    c_parts_req = [p.lower() for p in re.split(r"[\s\-]+", c_name) if len(p) >= 4] if c_name else []
+
+    # 0. Dailymotion Official News Video API + yt-dlp (Strictly requires BOTH country match AND >=2 headline token matches!)
     for dm_q in candidate_video_queries[:2]:
+        if dm_q.lower().strip() == c_name.lower().strip():
+            continue
         try:
-            dm_api = f"https://api.dailymotion.com/videos?search={urllib.parse.quote(dm_q + ' news')}&fields=id,title,url,duration&limit=6&longer_than=0"
-            dm_r = requests.get(dm_api, headers=HEADERS_WEB, timeout=5)
+            dm_api = f"https://api.dailymotion.com/videos?search={urllib.parse.quote(dm_q)}&fields=id,title,url,duration,language&limit=6&longer_than=0"
+            dm_r = requests.get(dm_api, headers=HEADERS_WEB, timeout=4.5)
             if dm_r.status_code == 200:
                 for v_it in dm_r.json().get("list", [])[:5]:
                     v_title = str(v_it.get("title", ""))
                     v_url = str(v_it.get("url", ""))
                     v_dur = int(v_it.get("duration") or 0)
-                    if not v_url or v_url in used_video_urls or v_dur < 12 or v_dur > 600:
+                    v_lang = str(v_it.get("language") or "en").lower()
+                    if not v_url or v_url in used_video_urls or v_dur < 12 or v_dur > 420:
+                        continue
+                    if not v_lang.startswith("en") or re.search(r"[^\x00-\x7F]", v_title):
                         continue
                     if any(bw in v_title.lower() for bw in strict_banned_video_words + BANNED_CAPTION_AND_TITLE_WORDS):
                         continue
-                    v_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", v_title)}
-                    if required_match_tokens and len(v_toks.intersection(required_match_tokens)) < 1:
+                    if not ai_audit_caption_and_scene_match(v_title, v_url, dossier.get("title", ""), dm_q):
+                        continue
+                    if c_parts_req and not any(cp in v_title.lower() for cp in c_parts_req) and topic_anchor.lower() not in v_title.lower():
+                        continue
+                    v_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", v_title) if w.lower() not in generic_vid_skip}
+                    if strict_headline_tokens and len(v_toks.intersection(strict_headline_tokens)) < min(2, max(1, len(strict_headline_tokens))):
                         continue
                     res = download_ytdlp_news_broll_clip(v_url, used_video_urls, f"{tag_id}_dm", v_title[:36])
                     if res is not None:
                         return res
         except Exception:
             pass
-
-    # 0B. YouTube News Footage Search via yt-dlp (`ytsearch2:...`)
-    for yt_q in candidate_video_queries[:1]:
-        yt_search_spec = f"ytsearch1:{yt_q} news footage b-roll"
-        if yt_search_spec not in used_video_urls:
-            res = download_ytdlp_news_broll_clip(yt_search_spec, used_video_urls, f"{tag_id}_yt", yt_q[:34])
-            if res is not None:
-                return res
 
     # 1. Bing Video Search WITH Strict Title & Relevance Verification (Never grabs untitled sidebar cartoons like Finding Dory or PeriscopeFilm!)
     for bv_q in candidate_video_queries[:3]:
@@ -3700,10 +3692,9 @@ AI_CAPTION_AUDIT_CACHE = {}
 
 def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_context):
     """
-    V24 FAST DETERMINISTIC CAPTION & SCENE RELEVANCE AUDITOR (Zero LLM Rate-Limit Burn!):
-    Reserves 100% of Groq LLM tokens for script generation (`ai_direct_complete_video_package`)
-    while deterministically blocking PDFs, stock watermarks, meme maps, chalkboards, wrong countries,
-    and off-topic captions!
+    V25 STRICT DETERMINISTIC CAPTION & SCENE RELEVANCE AUDITOR (Zero LLM Rate-Limit Burn!):
+    Requires both Country/Entity anchor match AND specific subject token match while blocking
+    stock photo sites, movie blogs ('Green Lantern'), unrelated universities, meme maps, and chalkboards!
     """
     if not img_caption or len(img_caption.strip()) < 6:
         return False
@@ -3714,8 +3705,11 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
         "(pdf)", ".pdf", "researchgate", "academia.edu", "slideshare", "scribd", "coursehero",
         "studocu", "quizlet", "chegg", "shutterstock", "gettyimages", "alamy", "istockphoto",
         "dreamstime", "123rf", "depositphotos", "vecteezy", "freepik", "pixabay", "unsplash",
+        "pxhere", "freeimages", "freestock", "free stock photo", "free images :", "free photo",
         "most dancing", "drinking beer", "lowest obesity", "terrible maps", "mapporn", "chalkboard",
-        "blackboard", "1+1", "2+2", "making of a myth", "alexander the great", "voa ", "voice of america"
+        "blackboard", "1+1", "2+2", "making of a myth", "alexander the great", "voa ", "voice of america",
+        "green lantern", "dc live action", "tampilan", "tips for a sustainable", "epoka university",
+        "punjab university", "dunya news", "aurangabad", "nicki's news"
     ]
     if any(bm in cap_low for bm in bad_markers):
         return False
@@ -3728,6 +3722,7 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
         ("japan", "japanese"), ("south korea", "korean"), ("australia", "australian"),
         ("canada", "canadian"), ("germany", "german"), ("france", "french"), ("italy", "italian"),
         ("spain", "spanish"), ("poland", "polish"), ("turkey", "turkish"), ("egypt", "egyptian"),
+        ("cambodia", "cambodian"), ("taiwan", "taiwanese"), ("albania", "albanian"),
         ("united states", "american"), ("mount rushmore", "south dakota"), ("washington monument", "washington d.c."),
         ("joint session of congress", "u.s. congress"), ("long island", "new york"), ("new jersey", "pennsylvania")
     ]
@@ -3736,168 +3731,48 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
             if (c_noun not in ctx_low) and (c_dem not in ctx_low):
                 return False
 
+    generic_scene_nouns = {
+        "film", "movie", "movies", "festival", "cinema", "police", "officer", "officers", "uniform", "uniforms",
+        "university", "campus", "student", "students", "college", "school", "city", "town", "street", "streets",
+        "building", "buildings", "palace", "garden", "tower", "plaza", "travel", "company", "companies",
+        "business", "market", "markets", "center", "centre", "group", "groups", "force", "forces", "security",
+        "leader", "leaders", "official", "officials", "country", "countries", "nation", "government", "minister",
+        "president", "court", "judge", "lawyer", "media", "press", "news", "video", "photo", "photos", "image",
+        "images", "free", "stock", "tips", "sustainable", "green", "production", "screening", "entertainment",
+        "inquiry", "phone", "calls", "viral", "violence", "equipment", "military", "faulty", "casino", "edition"
+    }
     q_core = {
         w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{story_title} {query_context}")
-        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS
+        and w.lower() not in METAPHOR_NOISE_WORDS
+        and w.lower() not in generic_scene_nouns
     }
-    cap_words = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", img_caption)}
+    cap_words = {
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", img_caption)
+        if w.lower() not in generic_scene_nouns
+    }
     if not q_core:
         return True
     return len(q_core.intersection(cap_words)) >= 1
 
-    cache_k = f"{story_title[:30]}||{img_caption[:55]}".lower()
-    if cache_k in AI_CAPTION_AUDIT_CACHE:
-        return AI_CAPTION_AUDIT_CACHE[cache_k]
-
-    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
-    if not groq_key or AI_VISION_AUDIT_BUDGET["calls"] >= 90:
-        # Requirement #3: NEVER silently approve unverified footage when AI API is unavailable or budget is exhausted!
-        q_core = {
-            w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{story_title} {query_context}")
-            if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS
-        }
-        return len(q_core.intersection(cap_words)) >= min(2, max(1, len(q_core)))
-
-    try:
-        live_models = get_available_groq_chat_models(groq_key)
-        # Always pick a non-thinking model first (`gpt-oss` or `llama`) so output never truncates inside `<think>`!
-        non_think = [m for m in live_models if "qwen" not in m.lower() and "deepseek" not in m.lower()]
-        model_id = non_think[0] if non_think else (live_models[0] if live_models else "llama-3.3-70b-versatile")
-        AI_VISION_AUDIT_BUDGET["calls"] += 1
-        prompt = (
-            f"Documentary Topic: '{story_title}' | Scene: '{query_context}'.\n"
-            f"Candidate Photo Caption: '{img_caption}'.\n"
-            "Reply ONLY 'NO' if this photo is completely unrelated, a random girl/selfie, vacation rental, cartoon, or wrong country. "
-            "Reply ONLY 'YES' if it is a valid documentary/news photo for this story."
-        )
-        r = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-            json={
-                "model": model_id,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0,
-                "max_tokens": 120
-            },
-            timeout=3.0
-        )
-        if r.status_code == 200:
-            raw_ans = r.json()["choices"][0]["message"]["content"].strip()
-            ans_clean = re.sub(r"<think>.*?</think>", "", raw_ans, flags=re.S | re.I).strip().upper()
-            if "<THINK>" in ans_clean:
-                ans_clean = ans_clean.split("</THINK>")[-1].strip()
-            is_ok = not bool(re.search(r"\bNO\b", ans_clean[-15:]))
-            AI_CAPTION_AUDIT_CACHE[cache_k] = is_ok
-            return is_ok
-    except Exception:
-        pass
-    return True
-
 def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_context=""):
     """
-    V24 FAST DETERMINISTIC PIXEL QUALITY & ANTI-MEME-MAP AUDITOR:
+    V25 FAST DETERMINISTIC PIXEL QUALITY & ANTI-MEME-MAP AUDITOR:
     Validates sharpness, contrast, and natural color distribution without burning Groq LLM rate limits!
     """
     try:
-        arr_v = np.asarray(small_pil_rgb.convert("RGB").resize((160, 90)), dtype=np.float32)
-        gray_v = cv2.cvtColor(arr_v.astype(np.uint8), cv2.COLOR_RGB2GRAY)
-        sharp_v = float(cv2.Laplacian(gray_v, cv2.CV_64F).var())
-        if sharp_v < 28.0 or float(np.std(arr_v)) < 24.0:
+        arr_v = np.asarray(small_pil_rgb.convert("RGB"), dtype=np.float32)
+        if float(np.std(arr_v)) < 20.0:
             return False
         # Reject rainbow/multi-colored flat meme maps (like the Reddit Europe map in pYdixYmN-Zg!)
         hsv_v = cv2.cvtColor(arr_v.astype(np.uint8), cv2.COLOR_RGB2HSV)
-        high_sat_flat = float(np.mean((hsv_v[:, :, 1] > 140) & (hsv_v[:, :, 2] > 135)))
-        white_ocean_bg = float(np.mean((arr_v[:, :, 0] > 215) & (arr_v[:, :, 1] > 215) & (arr_v[:, :, 2] > 215)))
-        if high_sat_flat > 0.22 and white_ocean_bg > 0.14:
+        high_sat_flat = float(np.mean((hsv_v[:, :, 1] > 145) & (hsv_v[:, :, 2] > 140)))
+        white_ocean_bg = float(np.mean((arr_v[:, :, 0] > 220) & (arr_v[:, :, 1] > 220) & (arr_v[:, :, 2] > 220)))
+        if high_sat_flat > 0.24 and white_ocean_bg > 0.16:
             return False
         return True
     except Exception:
         return True
-    gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
-    if not gemini_key and not groq_key:
-        return True
-
-    try:
-        import io
-        buf = io.BytesIO()
-        small_pil_rgb.save(buf, format="JPEG", quality=72)
-        b64_img = base64.b64encode(buf.getvalue()).decode("utf-8")
-        prompt = (
-            f"You are a strict TV News Documentary Visual Auditor. Documentary Topic: '{story_title}' (Scene: '{query_context}'). "
-            "Inspect this image carefully. Reply ONLY 'NO' if the image shows ANY of the following: "
-            "(1) a random woman/girl selfie, webcam shot, or person sitting on a home couch/bed, "
-            "(2) a TV news broadcast screenshot with lower-third ticker text (like FOX NEWS / FOX BUSINESS / CNN banners), "
-            "(3) a split-screen collage of 2 or more separate photos or a multi-panel grid, "
-            "(4) big promotional poster text, book covers, or AI-generated gibberish chart text, "
-            "(5) a Zoom/webcam video call grid, "
-            "(6) a cartoon, 3D render, anime, animal/cat, or a scene from the wrong country/topic. "
-            "Reply ONLY 'YES' if it is a clean, single-frame, authentic real-world documentary photograph matching the topic."
-        )
-
-        # 1. Primary: Groq Llama-4 Scout Multimodal Vision Auditor (Fast & Free on GROQ_API_KEY!)
-        if groq_key and AI_VISION_AUDIT_BUDGET.get("vision_calls", 0) < 85:
-            AI_VISION_AUDIT_BUDGET["vision_calls"] = AI_VISION_AUDIT_BUDGET.get("vision_calls", 0) + 1
-            try:
-                gr = requests.post(
-                    "https://api.groq.com/openai/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                    json={
-                        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
-                        "messages": [{
-                            "role": "user",
-                            "content": [
-                                {"type": "text", "text": prompt},
-                                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64_img}"}}
-                            ]
-                        }],
-                        "temperature": 0.0,
-                        "max_tokens": 10
-                    },
-                    timeout=4.5
-                )
-                if gr.status_code == 200:
-                    g_ans = gr.json()["choices"][0]["message"]["content"].strip().upper()
-                    if "NO" in g_ans:
-                        print(f"   🛑 [Groq Llama-4 Vision Auditor Rejected Off-Topic/Bad Image] for: {query_context[:38]}", flush=True)
-                        return False
-                    if "YES" in g_ans:
-                        return True
-            except Exception:
-                pass
-
-        if AI_VISION_AUDIT_BUDGET.get("vision_calls", 0) >= 85 or not gemini_key:
-            arr_v = np.asarray(small_pil_rgb.convert("RGB").resize((160, 90)), dtype=np.float32)
-            gray_v = cv2.cvtColor(arr_v.astype(np.uint8), cv2.COLOR_RGB2GRAY)
-            sharp_v = float(cv2.Laplacian(gray_v, cv2.CV_64F).var())
-            return bool(sharp_v >= 35.0 and float(np.std(arr_v)) >= 28.0)
-
-        # 2. Fallback to Gemini 2.0 Flash Vision API if GEMINI_API_KEY is configured
-        if gemini_key:
-            AI_VISION_AUDIT_BUDGET["calls"] += 1
-            g_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}"
-            r = requests.post(
-                g_url,
-                headers={"Content-Type": "application/json"},
-                json={
-                    "contents": [{
-                        "parts": [
-                            {"text": prompt},
-                            {"inline_data": {"mime_type": "image/jpeg", "data": b64_img}}
-                        ]
-                    }],
-                    "generationConfig": {"temperature": 0.0, "maxOutputTokens": 6}
-                },
-                timeout=4
-            )
-            if r.status_code == 200:
-                ans = r.json()["candidates"][0]["content"]["parts"][0]["text"].strip().upper()
-                if "NO" in ans:
-                    print(f"   🛑 [Gemini AI Vision Auditor Rejected Bad/Off-Topic Image] for: {query_context[:38]}", flush=True)
-                    return False
-    except Exception:
-        pass
-    return True
 
 def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
     """
@@ -3970,7 +3845,7 @@ def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
     except Exception:
         return True
 
-def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450, story_title="", query_context=""):
+def validate_and_enhance_1080p(im, existing_hashes, min_w=460, min_h=260, story_title="", query_context=""):
     im = im.convert("RGB")
     w, h = im.size
     if w < min_w or h < min_h:
@@ -3979,59 +3854,55 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450, story_
     # Crop outer 4% border to remove any corner agency watermarks/timestamps
     im = im.crop((int(w * 0.04), int(h * 0.04), int(w * 0.96), int(h * 0.93)))
 
-    # Gate 1: Family-Friendly Skin/NSFW Check + Anti-Collage / Anti-Text-Banner Check
     if not is_safe_family_friendly_image(im, is_portrait=False):
         return None
     if has_collage_or_text_banner_artifacts(im):
         return None
-
-    # Gate 2: Double Visual Audit (Blocks Pixar 3D cartoons, glowing blue sci-fi brains, Minions, Minecraft Creepers, & logo banners!)
     if not passes_double_visual_audit(im, story_title=story_title, query_context=query_context):
         return None
 
     arr = np.asarray(im.resize((120, 120)), dtype=np.float32)
 
-    if float(np.std(arr)) < 24.0:
+    if float(np.std(arr)) < 15.0:
         return None
 
     h1, h2 = arr[:, :60, :], arr[:, 60:, :]
-    if float(np.std(h1)) < 14.0 or float(np.std(h2)) < 14.0:
+    if float(np.std(h1)) < 9.0 or float(np.std(h2)) < 9.0:
         return None
 
-    white_px = np.sum((arr[:, :, 0] > 238) & (arr[:, :, 1] > 238) & (arr[:, :, 2] > 238))
-    if (white_px / float(120 * 120)) > 0.42:
+    white_px = np.sum((arr[:, :, 0] > 242) & (arr[:, :, 1] > 242) & (arr[:, :, 2] > 242))
+    if (white_px / float(120 * 120)) > 0.58:
         return None
 
-    black_px = np.sum((arr[:, :, 0] < 14) & (arr[:, :, 1] < 14) & (arr[:, :, 2] < 14))
-    if (black_px / float(120 * 120)) > 0.58:
+    black_px = np.sum((arr[:, :, 0] < 10) & (arr[:, :, 1] < 10) & (arr[:, :, 2] < 10))
+    if (black_px / float(120 * 120)) > 0.72:
         return None
 
     rg_diff = np.mean(np.abs(arr[:, :, 0] - arr[:, :, 1]))
     gb_diff = np.mean(np.abs(arr[:, :, 1] - arr[:, :, 2]))
-    if rg_diff < 3.5 and gb_diff < 3.5:
+    if rg_diff < 1.8 and gb_diff < 1.8:
         return None
 
     quant = (arr // 32).astype(int)
     flat = quant[:, :, 0] * 64 + quant[:, :, 1] * 8 + quant[:, :, 2]
     _, counts = np.unique(flat, return_counts=True)
-    if (counts.max() / float(120 * 120)) > 0.42:
+    if (counts.max() / float(120 * 120)) > 0.68:
         return None
 
-    # Reject synthetic AI neon renders & CGI illustrations
     hsv_check = cv2.cvtColor(np.array(im.resize((160, 160)), dtype=np.uint8), cv2.COLOR_RGB2HSV)
-    high_sat_neon = np.mean((hsv_check[:, :, 1] > 218) & (hsv_check[:, :, 2] > 210))
-    if high_sat_neon > 0.28:
+    high_sat_neon = np.mean((hsv_check[:, :, 1] > 225) & (hsv_check[:, :, 2] > 215))
+    if high_sat_neon > 0.38:
         return None
 
     gray_cv = cv2.cvtColor(np.array(im.resize((480, 270))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
-    if blur_score < 28.0 or im.entropy() < 5.4:
+    if blur_score < 12.0 or im.entropy() < 4.2:
         return None
 
     gray = im.convert("L").resize((13, 12))
     dh = (np.asarray(gray, dtype=np.int16)[:, 1:] > np.asarray(gray, dtype=np.int16)[:, :-1]).flatten()
     for old_h in existing_hashes:
-        if int(np.sum(dh != old_h)) < 16:
+        if int(np.sum(dh != old_h)) < 14:
             return None
     existing_hashes.append(dh)
 
@@ -4372,7 +4243,14 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         "approach", "challenge", "challenges", "country", "countries", "government", "people", "public",
         "standoff", "strategic", "phase", "decisive", "choices", "ground", "carry", "lasting", "consequences",
         "regional", "stability", "share", "perspective", "comments", "below", "investigations", "investigation",
-        "future", "strength", "organizing", "numbers", "collective", "individual", "ballots", "making", "impossible"
+        "future", "strength", "organizing", "numbers", "collective", "individual", "ballots", "making", "impossible",
+        "film", "movie", "movies", "festival", "cinema", "police", "officer", "officers", "uniform", "uniforms",
+        "university", "campus", "student", "students", "college", "school", "city", "town", "street", "streets",
+        "building", "buildings", "palace", "garden", "tower", "plaza", "travel", "company", "companies",
+        "business", "market", "markets", "center", "centre", "group", "groups", "force", "forces", "security",
+        "leader", "leaders", "official", "officials", "media", "press", "news", "video", "photo", "photos",
+        "free", "stock", "images", "tips", "sustainable", "green", "production", "screening", "entertainment",
+        "cancelled", "canceled", "after", "harassment", "remembers", "staff", "captain"
     }
     headline_core_tokens = {
         w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')}")
@@ -4503,9 +4381,11 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
             for mc in m_cards[:36]:
                 mc_unesc = mc.replace("&quot;", '"').replace("&amp;", "&").replace("\\u003cb\\u003e", "").replace("\\u003c/b\\u003e", "")
                 u_m = re.search(r'"murl"\s*:\s*"(https?://[^"]+)"', mc_unesc)
-                if not u_m:
+                turl_m = re.search(r'"turl"\s*:\s*"(https?://[^"]+)"', mc_unesc)
+                if not u_m and not turl_m:
                     continue
-                u_clean = u_m.group(1)
+                turl_hd = (turl_m.group(1) + "&w=1280&h=720&c=7&rs=1&p=0") if turl_m else ""
+                u_clean = u_m.group(1) if u_m else turl_hd
                 t_m = re.search(r'"t"\s*:\s*"([^"]+)"', mc_unesc)
                 desc_m = re.search(r'"desc"\s*:\s*"([^"]+)"', mc_unesc)
                 purl_m = re.search(r'"purl"\s*:\s*"(https?://[^"]+)"', mc_unesc)
@@ -4519,6 +4399,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                     continue
                 found.append({
                     "url": u_clean,
+                    "turl": turl_hd,
                     "caption": cap_real,
                     "media_type": "image",
                     "source_angle": angle_q,
@@ -4617,42 +4498,57 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     verified_pool = []
     pool_hashes = []
 
-    def download_and_run_audits_3_4_5(cand_obj):
+    def download_candidate_bytes(cand_obj):
+        urls_to_try = [cand_obj["url"]]
+        if cand_obj.get("turl") and cand_obj["turl"] not in urls_to_try:
+            urls_to_try.append(cand_obj["turl"])
+        for try_u in urls_to_try:
+            try:
+                ir = requests.get(try_u, headers=HEADERS_WEB, timeout=4.5)
+                if ir.status_code == 200 and len(ir.content) > 9500:
+                    p = f"temp/pool300_{hashlib.md5(cand_obj['url'].encode()).hexdigest()[:10]}.jpg"
+                    with open(p, "wb") as f:
+                        f.write(ir.content)
+                    return (cand_obj, p)
+            except Exception:
+                pass
+        return None
+
+    downloaded_items = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
+        futs2 = [ex.submit(download_candidate_bytes, c) for c in audit12_passed[:44]]
+        for ft in concurrent.futures.as_completed(futs2):
+            res = ft.result()
+            if res is not None:
+                downloaded_items.append(res)
+
+    # Run OpenCV / CascadeClassifier validation sequentially on the main thread (100% thread-safe & fast!)
+    downloaded_items.sort(key=lambda x: x[0]["relevance_score"], reverse=True)
+    for cand_obj, p_path in downloaded_items:
         try:
-            ir = requests.get(cand_obj["url"], headers=HEADERS_WEB, timeout=5)
-            if ir.status_code == 200 and len(ir.content) > 26000:
-                p = f"temp/pool300_{hashlib.md5(cand_obj['url'].encode()).hexdigest()[:10]}.jpg"
-                with open(p, "wb") as f:
-                    f.write(ir.content)
-                im_raw = Image.open(p)
-                local_hashes = []
-                vim = validate_and_enhance_1080p(
-                    im_raw, local_hashes, min_w=780, min_h=440,
-                    story_title=story_title, query_context=cand_obj["caption"][:60]
-                )
-                if vim is not None and local_hashes:
-                    return {
+            im_raw = Image.open(p_path)
+            local_hashes = []
+            vim = validate_and_enhance_1080p(
+                im_raw, local_hashes, min_w=460, min_h=260,
+                story_title=story_title, query_context=cand_obj["caption"][:60]
+            )
+            if vim is not None and local_hashes:
+                dh = local_hashes[0]
+                if not any(int(np.sum(dh != old_h)) < 14 for old_h in pool_hashes):
+                    pool_hashes.append(dh)
+                    verified_pool.append({
                         "im": vim,
-                        "dhash": local_hashes[0],
+                        "dhash": dh,
                         "url": cand_obj["url"],
                         "caption": cand_obj["caption"],
                         "tokens": cand_obj["tokens"],
                         "relevance_score": cand_obj["relevance_score"],
                         "has_face": has_well_framed_face(vim)
-                    }
+                    })
+                    if len(verified_pool) >= 28:
+                        break
         except Exception:
             pass
-        return None
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
-        futs2 = [ex.submit(download_and_run_audits_3_4_5, c) for c in audit12_passed[:72]]
-        for ft in concurrent.futures.as_completed(futs2):
-            res = ft.result()
-            if res is not None:
-                dh = res["dhash"]
-                if not any(int(np.sum(dh != old_h)) < 16 for old_h in pool_hashes):
-                    pool_hashes.append(dh)
-                    verified_pool.append(res)
 
     verified_pool.sort(key=lambda x: x["relevance_score"], reverse=True)
     print(
@@ -6995,24 +6891,21 @@ def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used
     title_words = [w for w in re.findall(r"[A-Za-z0-9]{4,}", dossier.get("title", "")) if w.lower() not in HEADLINE_STOP_VERBS_ADJS][:4]
 
     video_angles = [
+        f"{' '.join(title_words[:4])} {c_name}".strip(),
         f"{topic_anchor} {c_name}".strip(),
-        f"{' '.join(title_words[:3])} {c_name}".strip(),
-        f"{c_name} {cap_city} government parliament street".strip(),
-        f"{topic_anchor} press conference briefing".strip(),
-        f"{c_name} military security police".strip(),
-        f"{topic_anchor} protest crowd operations".strip()
     ]
     if sections_list:
-        for sec in sections_list[:6]:
+        for sec in sections_list[:4]:
             vq = sec.get("video_broll_query", "").strip()
-            if vq and vq not in video_angles:
-                video_angles.insert(1, vq)
+            if vq and len(vq.split()) >= 2 and vq not in video_angles:
+                video_angles.append(f"{vq} {c_name}".strip())
 
     pool_clips = list(dossier.get("_cached_video_broll_pool") or [])
-    for idx_v, ang_q in enumerate(video_angles[:8]):
-        if len(pool_clips) >= 7:
+    vpool_start_t = time.time()
+    for idx_v, ang_q in enumerate(video_angles[:4]):
+        if len(pool_clips) >= 4 or (time.time() - vpool_start_t) > 38.0:
             break
-        if not ang_q or len(ang_q) < 3:
+        if not ang_q or len(ang_q) < 4:
             continue
         v_obj = fetch_and_transcode_real_video_broll(
             ang_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vp{idx_v}"
@@ -7237,25 +7130,15 @@ def build_prop_driven_storyboard_1080p(
             bg_support_vseg = v_pool[(global_beat_idx + b_i) % len(v_pool)] if v_pool else None
 
             vseg = None
-            if videos_in_section < 3 and (b_i % 2 == 0 or beat_person_popup is None):
-                v_q = ai_video_q if (b_i == 0 and ai_video_q) else search_q
-                vseg = fetch_and_transcode_real_video_broll(
-                    v_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vc_{global_beat_idx}"
-                )
-                if vseg is not None:
-                    videos_in_section += 1
-                    if vseg not in v_pool:
-                        v_pool.append(vseg)
-                elif v_pool and (b_i % 2 == 0):
-                    # Track used video clips on `dossier` across ALL chapters so a clip NEVER plays in 8 chapters!
-                    unit_used_vclips = dossier.setdefault("_unit_used_vclips", set())
-                    for cand_vp in v_pool:
-                        vc_id = id(cand_vp.get("vclip"))
-                        if vc_id not in unit_used_vclips:
-                            vseg = cand_vp
-                            unit_used_vclips.add(vc_id)
-                            videos_in_section += 1
-                            break
+            if videos_in_section < 1 and b_i == 0 and v_pool:
+                unit_used_vclips = dossier.setdefault("_unit_used_vclips", set())
+                for cand_vp in v_pool:
+                    vc_id = id(cand_vp.get("vclip"))
+                    if vc_id not in unit_used_vclips:
+                        vseg = cand_vp
+                        unit_used_vclips.add(vc_id)
+                        videos_in_section += 1
+                        break
 
             if vseg is not None:
                 b_type = "VIDEO_BROLL_BEAT"
@@ -8643,7 +8526,7 @@ async def render_and_upload_paired_story(dossier, pair_num, watermark, voice_sub
         register_story_in_history(dossier["original_yt_title"], dossier["title"], hist_obj)
     hist_obj["last_categories"].append(dossier.get("sub_pillar", dossier["pillar"]))
     hist_obj["last_sources"].append(dossier["source_name"])
-    sync_history_to_github_now(hist_obj)
+    save_published_history(hist_obj)
 
     short_stats = await render_and_upload_short_unit(
         dossier, pair_num, watermark, voice_sub_dir, hist_obj,
@@ -8793,17 +8676,13 @@ async def main():
                 pass
 
 def _graceful_signal_cleanup(signum, frame):
-    print(f"\n>> [Signal {signum} Received] Cleaning up open video/audio pipes & child ffmpeg processes cleanly...", flush=True)
+    print(f"\n>> [Signal {signum} Received] Saving history & closing video clips cleanly...", flush=True)
     for vc in list(GLOBAL_OPEN_VCLIPS):
         try:
             vc.close()
         except Exception:
             pass
-    try:
-        subprocess.run(["pkill", "-9", "-f", "ffmpeg"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=2, check=False)
-    except Exception:
-        pass
-    os._exit(0)
+    sys.exit(0)
 
 if __name__ == "__main__":
     try:
@@ -8818,7 +8697,8 @@ if __name__ == "__main__":
         traceback.print_exc()
         sys.exit(1)
     finally:
-        try:
-            subprocess.run(["pkill", "-9", "-f", "ffmpeg"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=2, check=False)
-        except Exception:
-            pass
+        for vc in list(GLOBAL_OPEN_VCLIPS):
+            try:
+                vc.close()
+            except Exception:
+                pass
