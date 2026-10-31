@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-10-31T16:39:40.982612",
+  "updated_at": "2026-10-31T16:50:15.698570",
   "round_robin_idx": 13,
-  "country_rot_idx": 44,
+  "country_rot_idx": 22,
   "bgm_track_counter": 545997443,
   "last_mega_24h_date": "2026-10-30",
   "published_keys": [
@@ -305,7 +305,10 @@
     "isack_hadjar_shoves_fan_in_mexico",
     "poland_deploys_riot_police_in_standoff",
     "haaland_s_return_the_math_behind",
-    "f1_driver_s_paddock_rage_the"
+    "f1_driver_s_paddock_rage_the",
+    "we_are_getting_closer_to_reaching",
+    "fmtworld_the_houthis_have_intensified_attacks",
+    "australian_defence_minister_richard_marles_has"
   ],
   "event_fingerprints": [
     {
@@ -5033,6 +5036,103 @@
         "rage",
         "shoves"
       ]
+    },
+    {
+      "title": "We are getting closer to reaching a deal to end the war in Ukraine, - Trump. The US president said he now sees a real possibility of reachin",
+      "tokens": [
+        "agreement",
+        "although",
+        "before",
+        "claimed",
+        "clashreport",
+        "closer",
+        "controversial",
+        "deal",
+        "diesel",
+        "does",
+        "first",
+        "getting",
+        "made",
+        "peace",
+        "possibility",
+        "president",
+        "putin",
+        "reaching",
+        "real",
+        "rule",
+        "russia",
+        "russian",
+        "sail",
+        "sees",
+        "sets",
+        "signing",
+        "statements",
+        "such",
+        "summit",
+        "tanker",
+        "trump",
+        "ukraine"
+      ]
+    },
+    {
+      "title": "#FMTWorld The Houthis have intensified attacks on Saudi Arabia, disrupting major events and threatening the kingdom's economic diversificati",
+      "tokens": [
+        "arabia",
+        "attacks",
+        "disrupting",
+        "diversification",
+        "drone",
+        "economic",
+        "economy",
+        "events",
+        "fmtworld",
+        "fuels",
+        "giving",
+        "have",
+        "houthis",
+        "intelligence",
+        "intensified",
+        "iran",
+        "kingdom",
+        "major",
+        "missile",
+        "plans",
+        "saudi",
+        "self",
+        "stability",
+        "strikes",
+        "sustaining",
+        "target",
+        "threaten",
+        "threatening",
+        "yemen"
+      ]
+    },
+    {
+      "title": "Australian Defence Minister Richard Marles has said that China's military buildup was creating a condition of pressure in Southeast Asia, ur",
+      "tokens": [
+        "allies",
+        "asia",
+        "australian",
+        "build",
+        "buildup",
+        "china",
+        "condition",
+        "cooperation",
+        "creating",
+        "deepen",
+        "defence",
+        "marles",
+        "military",
+        "minister",
+        "partners",
+        "pressure",
+        "richard",
+        "southeast",
+        "thursday",
+        "urged",
+        "urging"
+      ]
     }
   ],
   "last_categories": [
@@ -5117,6 +5217,9 @@
     "BELARUS",
     "NORWAY",
     "MEXICO",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "UKRAINE",
+    "YEMEN",
+    "SPACE & SCIENCE"
   ]
 }
