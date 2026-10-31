@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-10-30T22:57:08.016487",
+  "updated_at": "2026-10-31T15:12:41.019003",
   "round_robin_idx": 12,
-  "country_rot_idx": 20,
+  "country_rot_idx": 25,
   "bgm_track_counter": 502500017,
   "last_mega_24h_date": "2026-10-30",
   "published_keys": [
@@ -276,7 +276,29 @@
     "eastern_libya_migration_smuggling_tobruk_crete",
     "what_the_rift_within_the_tsikhanouski",
     "belarus_opposition_in_exile_tsikhanouski_rift",
-    "siarhei_tsikhanouski_sviatlana_tsikhanouskaya_belarus"
+    "siarhei_tsikhanouski_sviatlana_tsikhanouskaya_belarus",
+    "bollywood_s_10b_bloodbath_the_new",
+    "north_korea_s_6_3b_crypto",
+    "why_el_ni_o_is_turning",
+    "why_a_17_year_old_indonesian",
+    "why_greece_s_floods_are_exposing",
+    "how_north_korea_s_hackers_fund",
+    "why_the_belarusian_power_couple_just",
+    "24_hours_in_10_minutes_global",
+    "bolsonaro_s_flee_to_miami_the",
+    "bolsonaro_s_president_claim_the_48",
+    "amateur_morons_flvio_bolsonaro_s_short",
+    "trump_s_secret_deal_why_seoul",
+    "why_johannesburg_is_literally_falling_apart",
+    "johannesburg_is_collapsing_the_40_000",
+    "human_trafficking_victims_stranded_in_guinea",
+    "xi_jinping_s_secret_move_why",
+    "why_xi_s_loyalty_crusade_could",
+    "spain_train_crash_why_human_error",
+    "silicone_waste_just_became_a_100b",
+    "flavio_bolsonaro_s_shocking_leader_of",
+    "is_india_s_food_poisoning_you",
+    "beijing_queer_film_festival_cancelled_after"
   ],
   "event_fingerprints": [
     {
@@ -4404,6 +4426,494 @@
         "exile",
         "lukashenko"
       ]
+    },
+    {
+      "title": "Bollywood's $10B Bloodbath: The New Underworld Threat",
+      "tokens": [
+        "bloodbath",
+        "bollywood",
+        "documentary",
+        "full",
+        "gangsters",
+        "golden",
+        "here",
+        "https",
+        "izxri",
+        "jeghu",
+        "threat",
+        "underworld",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "North Korea's $6.3B Crypto Heist: The Real Mastermind",
+      "tokens": [
+        "binance",
+        "crypto",
+        "documentary",
+        "events",
+        "full",
+        "heist",
+        "here",
+        "https",
+        "korea",
+        "mastermind",
+        "north",
+        "real",
+        "shocking",
+        "turn",
+        "twnbyor",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Why El Ni\u00f1o Is Turning Papua New Guinea Into a Crisis Zone",
+      "tokens": [
+        "documentary",
+        "full",
+        "guinea",
+        "here",
+        "https",
+        "papua",
+        "turning",
+        "watch",
+        "youtube",
+        "zone"
+      ]
+    },
+    {
+      "title": "Why A 17-Year-Old Indonesian Rider Is Breaking Honda's Grip",
+      "tokens": [
+        "breaking",
+        "discover",
+        "documentary",
+        "facbivg",
+        "full",
+        "grip",
+        "here",
+        "honda",
+        "https",
+        "indonesian",
+        "rider",
+        "veda",
+        "watch",
+        "year",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Why Greece's Floods Are Exposing a Military Blind Spot",
+      "tokens": [
+        "blind",
+        "central",
+        "documentary",
+        "exposing",
+        "floods",
+        "full",
+        "greece",
+        "here",
+        "https",
+        "military",
+        "spot",
+        "turkey",
+        "watch",
+        "western",
+        "youtube"
+      ]
+    },
+    {
+      "title": "How North Korea's Hackers Fund Nuclear War",
+      "tokens": [
+        "documentary",
+        "full",
+        "fund",
+        "hackers",
+        "here",
+        "https",
+        "korea",
+        "north",
+        "nuclear",
+        "regime",
+        "secretive",
+        "sophist",
+        "turned",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Libya's Smuggling Empire: The EU's Dirty Secret",
+      "tokens": [
+        "battlegro",
+        "become",
+        "coast",
+        "documentary",
+        "eastern",
+        "full",
+        "here",
+        "https",
+        "libya",
+        "libyan",
+        "smuggling",
+        "watch",
+        "youtube",
+        "zrmkjem"
+      ]
+    },
+    {
+      "title": "Why The Belarusian Power Couple Just Broke Apart",
+      "tokens": [
+        "apart",
+        "belarusian",
+        "broke",
+        "couple",
+        "documentary",
+        "full",
+        "here",
+        "https",
+        "just",
+        "jyosbytboeg",
+        "most",
+        "powerful",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Libya's Smuggling Empire: The $1B Power Play",
+      "tokens": [
+        "documentary",
+        "easter",
+        "full",
+        "here",
+        "https",
+        "irregular",
+        "latest",
+        "libya",
+        "migration",
+        "pydixymn",
+        "smuggling",
+        "watch",
+        "wave",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Bolsonaro's Flee to Miami: The $4.4M Vote Collapse",
+      "tokens": [
+        "bolsonaro",
+        "claimed",
+        "collapse",
+        "documentary",
+        "flavio",
+        "flee",
+        "full",
+        "here",
+        "https",
+        "jair",
+        "miami",
+        "nvbf",
+        "victor",
+        "vote",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Bolsonaro's 'President' Claim: The 48-Hour Global Scandal",
+      "tokens": [
+        "bolsonaro",
+        "claim",
+        "defied",
+        "democ",
+        "documentary",
+        "full",
+        "here",
+        "hour",
+        "https",
+        "idbfy",
+        "president",
+        "scandal",
+        "shocking",
+        "twist",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "'Amateur morons': Flvio Bolsonaro's short-lived 'president-elect' claim met with mockery",
+      "tokens": [
+        "amateur",
+        "bolsonaro",
+        "case",
+        "chapter",
+        "claim",
+        "deep",
+        "defense",
+        "dive",
+        "elect",
+        "flvio",
+        "lived",
+        "military",
+        "mockery",
+        "morons",
+        "original",
+        "presents",
+        "president",
+        "short",
+        "study",
+        "talk"
+      ]
+    },
+    {
+      "title": "Trump's Secret Deal: Why Seoul Is Terrified of Being Left Behind",
+      "tokens": [
+        "behind",
+        "being",
+        "cold",
+        "deal",
+        "donald",
+        "korea",
+        "left",
+        "making",
+        "move",
+        "north",
+        "reaches",
+        "seoul",
+        "south",
+        "sweat",
+        "terrified",
+        "trump"
+      ]
+    },
+    {
+      "title": "Why Johannesburg Is Literally Falling Apart Underground",
+      "tokens": [
+        "apart",
+        "blame",
+        "documentary",
+        "falling",
+        "full",
+        "here",
+        "https",
+        "johannesburg",
+        "literally",
+        "rklgcaxug",
+        "sinking",
+        "underground",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Johannesburg Is Collapsing: The 40,000 Ton Gold Lie",
+      "tokens": [
+        "blame",
+        "collapsing",
+        "documentary",
+        "full",
+        "gold",
+        "here",
+        "https",
+        "johannesburg",
+        "sbgm",
+        "sinking",
+        "watch",
+        "youtube",
+        "zoyk"
+      ]
+    },
+    {
+      "title": "Human trafficking victims stranded in Guinea-Bissau | Defense Military Explained",
+      "tokens": [
+        "bissau",
+        "case",
+        "chapter",
+        "deep",
+        "defense",
+        "dive",
+        "guinea",
+        "human",
+        "military",
+        "original",
+        "presents",
+        "stranded",
+        "study",
+        "talk",
+        "timestamps",
+        "trafficking",
+        "victims"
+      ]
+    },
+    {
+      "title": "Xi Jinping's Secret Move: Why Loyalty Beats Growth",
+      "tokens": [
+        "beats",
+        "china",
+        "documentary",
+        "full",
+        "grip",
+        "growth",
+        "here",
+        "https",
+        "jinping",
+        "loyalty",
+        "move",
+        "party",
+        "ruling",
+        "tightening",
+        "watch",
+        "xebh",
+        "youtube",
+        "zpnk"
+      ]
+    },
+    {
+      "title": "Why Xi's Loyalty Crusade Could Redraw Global Power",
+      "tokens": [
+        "absolute",
+        "call",
+        "chinese",
+        "communis",
+        "could",
+        "crusade",
+        "deep",
+        "dive",
+        "documentary",
+        "initiative",
+        "inside",
+        "jinping",
+        "latest",
+        "loyalty",
+        "redraw",
+        "unpack"
+      ]
+    },
+    {
+      "title": "Spain Train Crash: Why 'Human Error' Is A Lie",
+      "tokens": [
+        "crash",
+        "derailed",
+        "documentary",
+        "error",
+        "full",
+        "here",
+        "high",
+        "https",
+        "human",
+        "january",
+        "mmqqht",
+        "spain",
+        "speed",
+        "train",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "ECB President Lagarde steps down in order to speak out | Geopolitics Explained",
+      "tokens": [
+        "documentary",
+        "down",
+        "full",
+        "geopolitics",
+        "hanbk",
+        "here",
+        "https",
+        "lagarde",
+        "order",
+        "president",
+        "speak",
+        "steps",
+        "talk",
+        "ulvs",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Silicone Waste Just Became a $100B Goldmine?",
+      "tokens": [
+        "became",
+        "documentary",
+        "everywhere",
+        "full",
+        "goldmine",
+        "here",
+        "https",
+        "implants",
+        "just",
+        "medical",
+        "silicone",
+        "waste",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Flavio Bolsonaro's Shocking 'Leader of Brazil' Claim Exposed",
+      "tokens": [
+        "bolsonaro",
+        "brazil",
+        "breach",
+        "claim",
+        "declared",
+        "exposed",
+        "flavio",
+        "fleeing",
+        "geopolitical",
+        "himself",
+        "leader",
+        "miami",
+        "shocking"
+      ]
+    },
+    {
+      "title": "Is India's Food Poisoning You? The Hidden Crisis",
+      "tokens": [
+        "billion",
+        "daily",
+        "documentary",
+        "ewffpva",
+        "feeds",
+        "food",
+        "full",
+        "here",
+        "hidden",
+        "https",
+        "india",
+        "people",
+        "poisoning",
+        "watch",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Beijing Queer film festival cancelled after harassment from authorities",
+      "tokens": [
+        "apologise",
+        "authorities",
+        "been",
+        "beijing",
+        "cancelled",
+        "festival",
+        "film",
+        "harassment",
+        "inform",
+        "instagram",
+        "late",
+        "love",
+        "organisers",
+        "posted",
+        "queer",
+        "regret",
+        "sincerely",
+        "statement",
+        "thursday",
+        "week"
+      ]
     }
   ],
   "last_categories": [
@@ -4481,6 +4991,7 @@
     "SPAIN",
     "GLOBAL TECH & AI",
     "LIBYA",
-    "BELARUS"
+    "BELARUS",
+    "CHINA"
   ]
 }
