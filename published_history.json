@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-31T15:58:05.906752",
-  "round_robin_idx": 12,
-  "country_rot_idx": 20,
-  "bgm_track_counter": 502500017,
+  "updated_at": "2026-10-31T16:39:40.982612",
+  "round_robin_idx": 13,
+  "country_rot_idx": 44,
+  "bgm_track_counter": 545997443,
   "last_mega_24h_date": "2026-10-30",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -300,7 +300,12 @@
     "spain_train_crash_why_human_error",
     "silicone_waste_just_became_a_100b",
     "flavio_bolsonaro_s_shocking_leader_of",
-    "is_india_s_food_poisoning_you"
+    "is_india_s_food_poisoning_you",
+    "man_city_lineup_vs_brighton_today",
+    "isack_hadjar_shoves_fan_in_mexico",
+    "poland_deploys_riot_police_in_standoff",
+    "haaland_s_return_the_math_behind",
+    "f1_driver_s_paddock_rage_the"
   ],
   "event_fingerprints": [
     {
@@ -4926,6 +4931,108 @@
         "watch",
         "youtube"
       ]
+    },
+    {
+      "title": "Man City lineup vs. Brighton today: Erling Haaland returns after midweek rest",
+      "tokens": [
+        "against",
+        "back",
+        "being",
+        "brighton",
+        "carabao",
+        "city",
+        "erling",
+        "game",
+        "given",
+        "haaland",
+        "lineup",
+        "manchester",
+        "match",
+        "midweek",
+        "norway",
+        "rest",
+        "returns",
+        "star",
+        "tough",
+        "wedn"
+      ]
+    },
+    {
+      "title": "Isack Hadjar Shoves Fan in Mexico GP Paddock as F1 Fans Debate His Behavior",
+      "tokens": [
+        "annoyed",
+        "behavior",
+        "city",
+        "debate",
+        "fans",
+        "hadjar",
+        "isack",
+        "mexico",
+        "misconduct",
+        "paddock",
+        "seeking",
+        "selfie",
+        "shoves",
+        "stewards",
+        "summoned",
+        "visibly"
+      ]
+    },
+    {
+      "title": "Poland Deploys Riot Police in Standoff Over Country's Top Court",
+      "tokens": [
+        "between",
+        "centrists",
+        "cops",
+        "country",
+        "coup",
+        "court",
+        "deployed",
+        "deploys",
+        "erupt",
+        "judge",
+        "outside",
+        "poland",
+        "police",
+        "protests",
+        "right",
+        "riot",
+        "standoff",
+        "suspended"
+      ]
+    },
+    {
+      "title": "Haaland's Return: The Math Behind Man City's Rotation",
+      "tokens": [
+        "behind",
+        "brighton",
+        "city",
+        "erling",
+        "haaland",
+        "lineup",
+        "math",
+        "midweek",
+        "rest",
+        "return",
+        "returns",
+        "rotation"
+      ]
+    },
+    {
+      "title": "F1 Driver's Paddock Rage: The Mexico Incident Explained",
+      "tokens": [
+        "behavior",
+        "debate",
+        "driver",
+        "fans",
+        "hadjar",
+        "incident",
+        "isack",
+        "mexico",
+        "paddock",
+        "rage",
+        "shoves"
+      ]
     }
   ],
   "last_categories": [
@@ -4958,7 +5065,9 @@
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
-    "DAILY_24H_MEGA_NEWS"
+    "DAILY_24H_MEGA_NEWS",
+    "GEOPOLITICS",
+    "DEFENSE_MILITARY"
   ],
   "last_sources": [
     "TechCrunch AI",
@@ -4990,7 +5099,9 @@
     "Phys.org Breakthroughs",
     "France24 Global Affairs",
     "France24 Global Affairs",
-    "Global Wire Services"
+    "Global Wire Services",
+    "Google Trends 200K+ Viral [INDIA]",
+    "Google Trends 200K+ Viral [SWITZERLAND]"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -5003,6 +5114,9 @@
     "SPAIN",
     "GLOBAL TECH & AI",
     "LIBYA",
-    "BELARUS"
+    "BELARUS",
+    "NORWAY",
+    "MEXICO",
+    "GLOBAL TECH & AI"
   ]
 }
