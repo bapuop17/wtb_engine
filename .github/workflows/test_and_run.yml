@@ -1,4 +1,4 @@
-name: WTB News Engine V25 (Nitish Rajput + Think School + Abhi & Niyu Documentary Production)
+name: WTB News Engine V26 (Nitish Rajput + Think School + Abhi & Niyu Documentary Production)
 
 on:
   workflow_dispatch:
@@ -44,20 +44,19 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install System Multimedia, Headless Blender 3D, Cairo & Font Dependencies
+      - name: Install System Multimedia, Cairo & Font Dependencies (Fast IPv4)
+        timeout-minutes: 5
         run: |
-          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" update -y
-          sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" install -y --no-install-recommends \
+          sudo apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" update -y || true
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" install -y --no-install-recommends \
             ffmpeg \
-            blender \
             libcairo2-dev \
             pkg-config \
             python3-dev \
             fonts-dejavu-core \
             fonts-liberation \
             fonts-freefont-ttf
-
-      - name: Install Python V25 Documentary & Motion-Graphics Libraries
+      - name: Install Python V26 Documentary & Motion-Graphics Libraries
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
@@ -80,7 +79,7 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V25 Documentary News Engine
+      - name: Run WTB V26 Documentary News Engine
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
