@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-01T03:54:00.740620",
-  "round_robin_idx": 17,
-  "country_rot_idx": 26,
-  "bgm_track_counter": 700807358,
+  "updated_at": "2026-11-01T07:34:18.791256",
+  "round_robin_idx": 18,
+  "country_rot_idx": 4,
+  "bgm_track_counter": 763210826,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -329,7 +329,12 @@
     "eu_set_to_define_canada_s",
     "openai_reportedly_lowers_funding_target_for",
     "why_trump_just_sold_500_missiles",
-    "canada_s_secret_eu_deal_the"
+    "canada_s_secret_eu_deal_the",
+    "secretary_of_state_marco_rubio_at",
+    "african_export_import_bank_and_the",
+    "here_s_how_the_new_macbook",
+    "rubio_s_serbia_bet_why_nato",
+    "africa_s_5b_energy_bank_the"
   ],
   "event_fingerprints": [
     {
@@ -5718,11 +5723,160 @@
         "summit",
         "year"
       ]
+    },
+    {
+      "title": "Secretary of State Marco Rubio at a Press Availability",
+      "tokens": [
+        "asia",
+        "availability",
+        "central",
+        "distance",
+        "ending",
+        "focus",
+        "heads",
+        "keeping",
+        "marco",
+        "matters",
+        "most",
+        "nato",
+        "press",
+        "pressing",
+        "rubio",
+        "secretary",
+        "some",
+        "state",
+        "table",
+        "ukraine",
+        "wonder"
+      ]
+    },
+    {
+      "title": "African Export-Import Bank and the African Petroleum Producers' Organisation have formally announced the establishment of the Africa Energy ",
+      "tokens": [
+        "afreximbank",
+        "africa",
+        "african",
+        "announced",
+        "announcement",
+        "appo",
+        "bank",
+        "billion",
+        "capital",
+        "during",
+        "energy",
+        "establish",
+        "establishment",
+        "export",
+        "formally",
+        "general",
+        "have",
+        "import",
+        "inaugural",
+        "launch",
+        "lenders",
+        "made",
+        "meeting",
+        "officially",
+        "organisation",
+        "petroleum",
+        "producers"
+      ]
+    },
+    {
+      "title": "Here's how the new MacBook Pro and macOS 27 are optimized for touch",
+      "tokens": [
+        "apple",
+        "back",
+        "brings",
+        "enters",
+        "experience",
+        "favorite",
+        "fresh",
+        "here",
+        "laptop",
+        "logo",
+        "macbook",
+        "macos",
+        "optimized",
+        "promises",
+        "take",
+        "touch",
+        "touchscreen"
+      ]
+    },
+    {
+      "title": "Rubio's Serbia Bet: Why NATO Just Lost",
+      "tokens": [
+        "availability",
+        "just",
+        "lost",
+        "marco",
+        "nato",
+        "press",
+        "rubio",
+        "secretary",
+        "serbia",
+        "state"
+      ]
+    },
+    {
+      "title": "African Export-Import Bank and the African Petroleum Producers' Organisation have formally announced the establishment of the Africa Energy ",
+      "tokens": [
+        "afreximbank",
+        "africa",
+        "african",
+        "announced",
+        "announcement",
+        "appo",
+        "bank",
+        "billion",
+        "capital",
+        "during",
+        "energy",
+        "establish",
+        "establishment",
+        "export",
+        "formally",
+        "general",
+        "have",
+        "import",
+        "inaugural",
+        "launch",
+        "lenders",
+        "made",
+        "meeting",
+        "officially",
+        "organisation",
+        "petroleum",
+        "producers"
+      ]
+    },
+    {
+      "title": "Africa's $5B Energy Bank: The West's Silent Threat",
+      "tokens": [
+        "africa",
+        "african",
+        "announced",
+        "announcement",
+        "bank",
+        "during",
+        "energy",
+        "establishment",
+        "export",
+        "formally",
+        "have",
+        "import",
+        "made",
+        "organisation",
+        "petroleum",
+        "producers",
+        "silent",
+        "threat",
+        "west"
+      ]
     }
   ],
   "last_categories": [
-    "SCIENCE",
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "SCIENCE",
@@ -5760,11 +5914,11 @@
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
+    "DEFENSE_MILITARY",
+    "GEOPOLITICS",
     "DEFENSE_MILITARY"
   ],
   "last_sources": [
-    "Space.com Breaking",
-    "Al Jazeera Global",
     "Al Jazeera Global",
     "Al Jazeera Global",
     "Space.com Breaking",
@@ -5802,7 +5956,9 @@
     "Country Documentary Wire [EGYPT]",
     "BBC World Global",
     "Top Viral News [UKRAINE]",
-    "Top Viral News [CANADA]"
+    "Top Viral News [CANADA]",
+    "Country Documentary Wire [PHILIPPINES]",
+    "Country Documentary Wire [NIGERIA]"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -5833,6 +5989,9 @@
     "MIND-BLOWING FACT",
     "UKRAINE",
     "CANADA",
+    "GLOBAL TECH & AI",
+    "SERBIA",
+    "INTERNATIONAL",
     "GLOBAL TECH & AI"
   ]
 }
