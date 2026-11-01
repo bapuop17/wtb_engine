@@ -5589,6 +5589,23 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
         sim_counts["BROADCAST_INTERVIEW_QUOTE_MOCKUP"] = sim_counts.get("BROADCAST_INTERVIEW_QUOTE_MOCKUP", 0) + 1
         return "BROADCAST_INTERVIEW_QUOTE_MOCKUP"
 
+    # Use a full evidence-led scorecard for beats that actually speak numbers.
+    # This keeps data storytelling intentional instead of mixing a giant card
+    # with unrelated decorative overlays.
+    has_verified_metric = bool(re.search(
+        r"(?:[$£€₹]\s*)?\d[\d,.]*\s*(?:%|percent|million|billion|trillion|crore|lakh|km|miles|tons|years|countries|people)?",
+        low,
+        flags=re.I
+    )) or bool(re.search(
+        r"\b(?:one|two|three|four|five|ten|twenty|thirty|forty|fifty|hundred|thousand|million|billion|trillion)\s+"
+        r"(?:percent|million|billion|trillion|thousand|crore|lakh)\b",
+        low,
+        flags=re.I
+    ))
+    if has_verified_metric and beat_in_sec in (0, 1) and sim_counts.get("THINKSCHOOL_DATA_SCORECARD", 0) < 3:
+        sim_counts["THINKSCHOOL_DATA_SCORECARD"] = sim_counts.get("THINKSCHOOL_DATA_SCORECARD", 0) + 1
+        return "THINKSCHOOL_DATA_SCORECARD"
+
     if is_short:
         return None
 
@@ -6555,6 +6572,8 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         frame = render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=is_short)
     elif sim_mode == "NITISH_DOSSIER_SPLIT_BOARD":
         frame = render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_short=is_short)
+    elif sim_mode == "THINKSCHOOL_DATA_SCORECARD":
+        frame = render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_short=is_short)
     elif b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg") is not None:
         vseg = beat["vseg"]
         vc = vseg["vclip"]
@@ -6625,7 +6644,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             frame.paste(num_card, (nx_c, ny_c), num_card)
 
     # 5. Point Highlight Callout Banner (with Animated Yellow Marker Swipe!)
-    pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short)
+    pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short) if sim_mode is None else None
     if pt_card is not None:
         pt_w, pt_h = pt_card.size
         pt_anim = min(max(local_t / 0.28, 0.0), 1.0)
