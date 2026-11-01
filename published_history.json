@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-01T07:34:18.791256",
-  "round_robin_idx": 18,
-  "country_rot_idx": 4,
-  "bgm_track_counter": 763210826,
+  "updated_at": "2026-11-01T16:19:54.239997",
+  "round_robin_idx": 19,
+  "country_rot_idx": 20,
+  "bgm_track_counter": 805821376,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -334,7 +334,15 @@
     "african_export_import_bank_and_the",
     "here_s_how_the_new_macbook",
     "rubio_s_serbia_bet_why_nato",
-    "africa_s_5b_energy_bank_the"
+    "africa_s_5b_energy_bank_the",
+    "why_japan_s_secret_arms_deal",
+    "german_cost_of_living_protests_explode",
+    "japan_s_secret_weapon_why_china",
+    "germany_s_gen_z_riots_why",
+    "chery_says_there_are_not_enough",
+    "new_zelda_and_gta_represent_a",
+    "why_chery_s_claim_of_not",
+    "why_zelda_gta_reveal_the_gaming"
   ],
   "event_fingerprints": [
     {
@@ -5874,11 +5882,149 @@
         "threat",
         "west"
       ]
+    },
+    {
+      "title": "Why Japan's Secret Arms Deal Is Triggering a Cyber\u2011Intelligence Arms Race in the Indo\u2011Pacific",
+      "tokens": [
+        "arms",
+        "cyber",
+        "deal",
+        "indo",
+        "intelligence",
+        "japan",
+        "pacific",
+        "race",
+        "triggering"
+      ]
+    },
+    {
+      "title": "German Cost\u2011of\u2011Living Protests Explode: Why Shops Were Looted Overnight",
+      "tokens": [
+        "cost",
+        "explode",
+        "german",
+        "living",
+        "looted",
+        "overnight",
+        "protests",
+        "shops"
+      ]
+    },
+    {
+      "title": "Japan\u2019s Secret Weapon: Why China Is Terrified of This Tech",
+      "tokens": [
+        "china",
+        "japan",
+        "tech",
+        "terrified",
+        "weapon"
+      ]
+    },
+    {
+      "title": "Germany's Gen Z Riots: Why Frankfurt Shops Were Looted",
+      "tokens": [
+        "frankfurt",
+        "germany",
+        "looted",
+        "riots",
+        "shops"
+      ]
+    },
+    {
+      "title": "Why Japan's Secret Arms Deal Is Triggering a Cyber\u2011Intelligence Arms Race in the Indo\u2011Pa #Short",
+      "tokens": [
+        "arms",
+        "cyber",
+        "deal",
+        "indo",
+        "intelligence",
+        "japan",
+        "race",
+        "short",
+        "triggering"
+      ]
+    },
+    {
+      "title": "Chery says there are not enough Electric SUV's in Australia",
+      "tokens": [
+        "aren",
+        "australia",
+        "banking",
+        "bold",
+        "brand",
+        "chery",
+        "competitive",
+        "electric",
+        "enou",
+        "enough",
+        "help",
+        "landing",
+        "lepas",
+        "most",
+        "segments",
+        "some",
+        "stand",
+        "there",
+        "thinks",
+        "vehicle",
+        "vehicles"
+      ]
+    },
+    {
+      "title": "New Zelda and GTA represent a games industry that no longer exists",
+      "tokens": [
+        "apart",
+        "biggest",
+        "exists",
+        "games",
+        "industry",
+        "just",
+        "launch",
+        "longer",
+        "novembe",
+        "november",
+        "offering",
+        "represent",
+        "reprieve",
+        "some",
+        "terrible",
+        "weeks",
+        "year",
+        "zelda"
+      ]
+    },
+    {
+      "title": "Why Chery\u2019s Claim of \u2018Not Enough EV SUVs\u2019 Could Shift Australia\u2019s Auto Future",
+      "tokens": [
+        "australia",
+        "auto",
+        "chery",
+        "claim",
+        "could",
+        "electric",
+        "enough",
+        "future",
+        "suvs",
+        "there"
+      ]
+    },
+    {
+      "title": "Why Zelda & GTA Reveal the Gaming Industry\u2019s Death Spiral",
+      "tokens": [
+        "death",
+        "exists",
+        "games",
+        "gaming",
+        "industry",
+        "longer",
+        "represent",
+        "reveal",
+        "spiral",
+        "zelda"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
-    "GEOPOLITICS",
     "SCIENCE",
     "SPORTS",
     "GEOPOLITICS",
@@ -5916,11 +6062,11 @@
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
-    "DEFENSE_MILITARY"
+    "DEFENSE_MILITARY",
+    "GEOPOLITICS",
+    "CYBER_INTELLIGENCE"
   ],
   "last_sources": [
-    "Al Jazeera Global",
-    "Al Jazeera Global",
     "Space.com Breaking",
     "The Guardian Sport",
     "Al Jazeera Global",
@@ -5958,7 +6104,9 @@
     "Top Viral News [UKRAINE]",
     "Top Viral News [CANADA]",
     "Country Documentary Wire [PHILIPPINES]",
-    "Country Documentary Wire [NIGERIA]"
+    "Country Documentary Wire [NIGERIA]",
+    "Top Viral News [AUSTRALIA]",
+    "The Verge Tech"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -5992,6 +6140,8 @@
     "GLOBAL TECH & AI",
     "SERBIA",
     "INTERNATIONAL",
+    "GLOBAL TECH & AI",
+    "AUSTRALIA",
     "GLOBAL TECH & AI"
   ]
 }
