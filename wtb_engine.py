@@ -65,29 +65,30 @@ HISTORY_FILE = "published_history.json"
 # ==============================================================================
 ORDERED_PILLARS = [
     "GEOPOLITICS",
-    "DEFENSE_MILITARY",
-    "GLOBAL_POWERS",
+    "INDIA_TRENDING",
     "GEOPOLITICS",
     "TECHNOLOGY",
     "GEOPOLITICS",
-    "MIND_BLOWING_FACTS",
-    "DEFENSE_MILITARY",
-    "GEOPOLITICS",
-    "AI_ROBOTICS",
-    "GLOBAL_POWERS",
-    "GEOPOLITICS",
     "SCIENCE",
     "GEOPOLITICS",
-    "BUSINESS",
+    "HEALTH",
+    "GEOPOLITICS",
     "DEFENSE_MILITARY",
-    "MIND_BLOWING_FACTS",
+    "GEOPOLITICS",
+    "BUSINESS",
+    "GEOPOLITICS",
+    "AI_ROBOTICS",
+    "GEOPOLITICS",
+    "GLOBAL_POWERS",
     "GEOPOLITICS",
     "CYBER_INTELLIGENCE",
-    "GLOBAL_POWERS"
+    "GEOPOLITICS",
+    "MIND_BLOWING_FACTS"
 ]
 
 PILLAR_TO_CORE_HUB = {
     "GEOPOLITICS": "WORLD",
+    "INDIA_TRENDING": "WORLD",
     "DEFENSE_MILITARY": "WORLD",
     "GLOBAL_POWERS": "WORLD",
     "TECHNOLOGY": "TECHNOLOGY",
@@ -107,10 +108,6 @@ PILLAR_TO_CORE_HUB = {
     "DAILY_24H_MEGA_NEWS": "WORLD"
 }
 
-# 100% ULTRA-NATURAL EXPRESSIVE HUMAN STORYTELLER VOICES (Andrew & Ava Multilingual + Deepgram Aura)
-# V30 100% ULTRA-NATURAL EXPRESSIVE HUMAN DOCUMENTARY VOICES + MULTI-VOICE CAST:
-# Uses Microsoft Gen-3 Expressive Multilingual & Broadcast Voices (Andrew, Brian, Guy, Ava, Ryan)
-# with dynamic multi-voice switching for quotes, analyst breakdowns, and investigative chapters!
 CATEGORY_VOICE_CAST = {
     "WORLD": ("en-US-AndrewMultilingualNeural", "en-US-BrianMultilingualNeural", "aura-orion-en", "+1%", "+4%"),
     "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-helios-en", "+1%", "+4%"),
@@ -162,31 +159,37 @@ CATEGORY_FEEDS = {
         "accent_color": (255, 215, 0),
         "hook_tag": "GEOPOLITICAL CASE FILE",
         "bgm_mood": "dark_geopolitics",
-        "reddit_subs": "worldnews+geopolitics",
-        "search_query": "world news geopolitics summit military sanctions",
-        "domain_context": "geopolitics diplomacy government",
+        "reddit_subs": "worldnews+geopolitics+india",
+        "search_query": "world news geopolitics summit military sanctions india",
+        "domain_context": "geopolitics diplomacy government military",
         "feeds": [
+            ("Google Trends India Viral 24h", "https://trends.google.com/trending/rss?geo=IN"),
+            ("Google News India TopGeopolitics", "https://news.google.com/rss/search?q=(India+OR+Modi+OR+New+Delhi+OR+China+OR+Pakistan+OR+Russia+OR+USA)+(geopolitics+OR+defense+OR+diplomacy+OR+border+OR+trade+OR+summit)+when:1d&hl=en-IN&gl=IN&ceid=IN:en"),
             ("BBC World Global", "http://feeds.bbci.co.uk/news/world/rss.xml"),
             ("Google World Top Headlines", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
+            ("Google India Top Headlines", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en"),
+            ("The Hindu National & Diplomacy", "https://www.thehindu.com/news/national/feeder/default.rss"),
+            ("Indian Express India & World", "https://indianexpress.com/section/india/feed/"),
             ("The Guardian International", "https://www.theguardian.com/world/rss"),
             ("DW World News", "https://rss.dw.com/rdf/rss-en-world"),
             ("France24 Global Affairs", "https://www.france24.com/en/rss"),
-            ("CNN Global Headlines", "http://rss.cnn.com/rss/edition_world.rss"),
             ("AP & Reuters Global Wires", "https://news.google.com/rss/search?q=when:1d+source:Reuters+OR+source:Associated_Press&hl=en-US&gl=US&ceid=US:en")
         ]
     },
     "TECHNOLOGY": {
         "yt_category_id": "28",
-        "playlist_title": "World Talk Brief • AI, Robotics, Gaming & Future Tech",
+        "playlist_title": "World Talk Brief • AI, Robotics, India Tech & Future Tech",
         "badge_color": (0, 130, 255),
         "accent_color": (0, 240, 255),
         "hook_tag": "FUTURE TECH DOSSIER",
         "bgm_mood": "cyberpunk_tech",
         "reddit_subs": "technology+robotics+artificial+singularity",
-        "search_query": "artificial intelligence humanoid robot nvidia openai technology",
-        "domain_context": "official press photo",
+        "search_query": "artificial intelligence semiconductor india tech nvidia openai robotics",
+        "domain_context": "technology semiconductor artificial intelligence",
         "feeds": [
-            ("Google News Tech 24h", "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-US&gl=US&ceid=US:en"),
+            ("Google News India Tech 24h", "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en"),
+            ("India AI & Semiconductor Trending", "https://news.google.com/rss/search?q=(India+OR+Bengaluru+OR+IIT+OR+Tata+OR+global)+(semiconductor+OR+artificial+intelligence+OR+chip+OR+cyber+OR+supercomputer+OR+tech)+when:2d&hl=en-IN&gl=IN&ceid=IN:en"),
+            ("Google News Global Tech 24h", "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-US&gl=US&ceid=US:en"),
             ("TechCrunch AI", "https://techcrunch.com/category/artificial-intelligence/feed/"),
             ("The Verge Tech", "https://www.theverge.com/rss/index.xml"),
             ("BBC Technology", "http://feeds.bbci.co.uk/news/technology/rss.xml"),
@@ -195,33 +198,35 @@ CATEGORY_FEEDS = {
     },
     "MIND_BLOWING_FACTS": {
         "yt_category_id": "27",
-        "playlist_title": "World Talk Brief • Mind-Blowing Facts & World Mysteries",
+        "playlist_title": "World Talk Brief • Mind-Blowing Case Studies & World Mysteries",
         "badge_color": (165, 25, 220),
         "accent_color": (255, 215, 0),
         "hook_tag": "UNBELIEVABLE REALITY",
         "bgm_mood": "cosmic_mystery",
         "reddit_subs": "Damnthatsinteresting+interestingasfuck+space",
-        "search_query": "unbelievable facts scientific mystery mind blowing discovery",
+        "search_query": "unbelievable facts scientific mystery mega engineering discovery india world",
         "domain_context": "real documentary photo",
         "feeds": [
+            ("India & World Hidden Case Studies", "https://news.google.com/rss/search?q=(India+OR+world+OR+scientists)+(archaeological+discovery+OR+mega+project+OR+hidden+history+OR+breakthrough+OR+mystery)+when:2d&hl=en-IN&gl=IN&ceid=IN:en"),
             ("Unbelievable Hidden Discoveries", "https://news.google.com/rss/search?q=scientists+baffled+OR+hidden+discovery+OR+secret+beneath+OR+never+before+seen+OR+ancient+mystery+when:2d&hl=en-US&gl=US&ceid=US:en"),
             ("SciTechDaily Discoveries", "https://scitechdaily.com/feed/"),
-            ("Phys.org Breakthroughs", "https://phys.org/rss-feed/"),
-            ("Google News Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-US&gl=US&ceid=US:en")
+            ("Phys.org Breakthroughs", "https://phys.org/rss-feed/")
         ]
     },
     "SCIENCE": {
         "yt_category_id": "28",
-        "playlist_title": "World Talk Brief • Space, NASA & Future Science",
+        "playlist_title": "World Talk Brief • ISRO, NASA, Space & Future Science",
         "badge_color": (105, 40, 225),
         "accent_color": (0, 235, 255),
         "hook_tag": "SPACE & SCIENCE BRIEF",
         "bgm_mood": "cosmic_mystery",
-        "reddit_subs": "space+science+astronomy+nasa",
-        "search_query": "space nasa spacex astronomy quantum discovery",
-        "domain_context": "NASA space astronomy science",
+        "reddit_subs": "space+science+astronomy+isro+nasa",
+        "search_query": "ISRO NASA space rocket quantum discovery science",
+        "domain_context": "ISRO NASA space astronomy science",
         "feeds": [
-            ("Google News Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-US&gl=US&ceid=US:en"),
+            ("India ISRO & Science Trending", "https://news.google.com/rss/search?q=(ISRO+OR+India+space+OR+Gaganyaan+OR+Chandrayaan+OR+DRDO+OR+quantum+OR+nuclear+fusion)+when:2d&hl=en-IN&gl=IN&ceid=IN:en"),
+            ("Google News India Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-IN&gl=IN&ceid=IN:en"),
+            ("Google News Global Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-US&gl=US&ceid=US:en"),
             ("Space.com Breaking", "https://www.space.com/feeds/all"),
             ("NASA Breaking News", "https://www.nasa.gov/news-release/feed/"),
             ("The Guardian Science", "https://www.theguardian.com/science/rss"),
@@ -230,34 +235,37 @@ CATEGORY_FEEDS = {
     },
     "BUSINESS": {
         "yt_category_id": "25",
-        "playlist_title": "World Talk Brief • Business, Markets & Global Economy",
+        "playlist_title": "World Talk Brief • Indian Economy, Global Markets & Geoeconomics",
         "badge_color": (12, 160, 105),
         "accent_color": (255, 215, 0),
         "hook_tag": "MONEY & MARKETS FILE",
         "bgm_mood": "high_stakes_finance",
-        "reddit_subs": "economics+business+finance",
-        "search_query": "global economy stock market business billionaire trade tariffs",
-        "domain_context": "economy finance market",
+        "reddit_subs": "economics+business+finance+IndiaInvestments",
+        "search_query": "indian economy global economy stock market RBI trade tariffs billionaire",
+        "domain_context": "economy finance market trade",
         "feeds": [
-            ("Google News Business 24h", "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en"),
+            ("Google News India Business 24h", "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en"),
+            ("India Economy, RBI & Trade Trending", "https://news.google.com/rss/search?q=(India+economy+OR+RBI+OR+manufacturing+OR+exports+OR+tariffs+OR+BRICS+OR+rupee+OR+billion)+when:1d&hl=en-IN&gl=IN&ceid=IN:en"),
+            ("Google News Global Business 24h", "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en"),
             ("CNBC Business", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"),
             ("BBC Business", "http://feeds.bbci.co.uk/news/business/rss.xml"),
-            ("The Guardian Business", "https://www.theguardian.com/uk/business/rss"),
             ("DW Business", "https://rss.dw.com/rdf/rss-en-bus")
         ]
     },
     "HEALTH": {
         "yt_category_id": "28",
-        "playlist_title": "World Talk Brief • Health, Biotech & Medical Science",
+        "playlist_title": "World Talk Brief • Healthcare, Medical Science & Biotech",
         "badge_color": (10, 155, 145),
         "accent_color": (0, 235, 255),
-        "hook_tag": "MEDICAL BREAKTHROUGH",
+        "hook_tag": "MEDICAL & HEALTHCARE BRIEF",
         "bgm_mood": "inspiring_science",
         "reddit_subs": "science+health+medicine",
-        "search_query": "medical breakthrough human brain health longevity biotech",
-        "domain_context": "medical research hospital laboratory",
+        "search_query": "healthcare medical breakthrough hospital vaccine AIIMS WHO biotech",
+        "domain_context": "medical research hospital healthcare laboratory",
         "feeds": [
-            ("Google News Health 24h", "https://news.google.com/rss/headlines/section/topic/HEALTH?hl=en-US&gl=US&ceid=US:en"),
+            ("Google News India Healthcare 24h", "https://news.google.com/rss/headlines/section/topic/HEALTH?hl=en-IN&gl=IN&ceid=IN:en"),
+            ("India Healthcare, AIIMS & Pharma Trending", "https://news.google.com/rss/search?q=(India+healthcare+OR+AIIMS+OR+ICMR+OR+medical+breakthrough+OR+vaccine+OR+pharma+OR+WHO+OR+disease)+when:2d&hl=en-IN&gl=IN&ceid=IN:en"),
+            ("Google News Global Health 24h", "https://news.google.com/rss/headlines/section/topic/HEALTH?hl=en-US&gl=US&ceid=US:en"),
             ("SciTechDaily Health", "https://scitechdaily.com/news/health/feed/"),
             ("MedicalXpress", "https://medicalxpress.com/rss-feed/"),
             ("BBC Health", "http://feeds.bbci.co.uk/news/health/rss.xml")
@@ -265,36 +273,34 @@ CATEGORY_FEEDS = {
     },
     "SPORTS": {
         "yt_category_id": "17",
-        "playlist_title": "World Talk Brief • Global Sports Arena",
+        "playlist_title": "World Talk Brief • Global & Indian Sports Case Studies",
         "badge_color": (230, 80, 10),
         "accent_color": (255, 220, 0),
         "hook_tag": "SPORTS ARENA DOSSIER",
         "bgm_mood": "stadium_action",
-        "reddit_subs": "sports+soccer+formula1+Cricket",
-        "search_query": "cricket football champions league formula 1 sports",
-        "domain_context": "sports stadium match",
+        "reddit_subs": "sports+Cricket+formula1",
+        "search_query": "cricket BCCI olympics sports championship",
+        "domain_context": "sports stadium championship",
         "feeds": [
-            ("Google News Sports 24h", "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-US&gl=US&ceid=US:en"),
+            ("Google News India Sports 24h", "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-IN&gl=IN&ceid=IN:en"),
             ("BBC Sport", "http://feeds.bbci.co.uk/sport/rss.xml"),
-            ("ESPN Top News", "https://www.espn.com/espn/rss/news"),
-            ("The Guardian Sport", "https://www.theguardian.com/uk/sport/rss")
+            ("ESPN Top News", "https://www.espn.com/espn/rss/news")
         ]
     },
     "ENTERTAINMENT": {
         "yt_category_id": "24",
-        "playlist_title": "World Talk Brief • Cinema, Gaming & Pop Culture",
+        "playlist_title": "World Talk Brief • Cinema, Media & Cultural Case Studies",
         "badge_color": (210, 25, 115),
         "accent_color": (0, 235, 255),
-        "hook_tag": "CINEMA & GAMING BRIEF",
+        "hook_tag": "MEDIA & CULTURE BRIEF",
         "bgm_mood": "stadium_action",
-        "reddit_subs": "movies+gaming+entertainment",
-        "search_query": "movies box office gaming marvel gta entertainment",
-        "domain_context": "cinema film entertainment",
+        "reddit_subs": "movies+entertainment",
+        "search_query": "cinema box office streaming media industry",
+        "domain_context": "cinema film media",
         "feeds": [
-            ("Google News Entertainment 24h", "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-US&gl=US&ceid=US:en"),
+            ("Google News India Entertainment 24h", "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en"),
             ("Hollywood Reporter", "https://www.hollywoodreporter.com/feed/"),
-            ("BBC Entertainment & Arts", "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"),
-            ("The Guardian Film", "https://www.theguardian.com/uk/film/rss")
+            ("BBC Entertainment & Arts", "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml")
         ]
     }
 }
@@ -569,6 +575,7 @@ DEMONYM_TO_COUNTRY = {
 }
 
 BANNED_CAPTION_AND_TITLE_WORDS = [
+    "pagoda", "cherry blossom", "cherry blossoms", "sakura", "mount fuji", "mt fuji", "mt. fuji", "osaka castle", "himeji castle", "nachi falls", "waterfall", "waterfalls", "sightseeing", "tourist attraction", "tourist attractions", "travel guide", "places to visit", "things to do in", "famous landmarks", "postcard", "autumn leaves", "spring in japan", "visit japan", "japan travel", "holiday destination",
     "apple watch", "smartwatch", "watch face", "watch ultra", "rolex", "casio", "wrist watch", "formula 1", "formula one", "f1 car", "grand prix", "red bull racing", "ferrari f1", "mud run", "tough mudder", "obstacle course", "spartan race", "viking helmet", "horned helmet", "house with chimaeras", "great seal", "seal of the", "coat of arms", "state emblem", "follow us @", "@alarabiya", "daily brief", "blank map", "vector map", "map of europe",
     "ancient egypt", "pharaoh", "hieroglyph", "hieroglyphs", "tomb painting", "wall painting", "papyrus", "mummy", "sarcophagus", "fresco", "mural", "isometric", "3d isometric", "3d character", "most dancing", "drinking beer", "lowest obesity", "happiest with", "least wasteful", "most internet users", "fewest divorces", "terrible maps", "mapporn", "stereotype map", "chalkboard", "blackboard", "1+1", "2+2", "school board", "voa ", "voice of america", "making of a myth", "alexander the great", "336 bc", "macedon", "cira", "geocolor", 
     "airbnb", "vacation rental", "bare ", "webcam", "vlog", "reaction", "youtuber", "influencer",
@@ -1109,16 +1116,17 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
     top_hits_str = ", ".join(top_channel_hits[:3]) if top_channel_hits else "High-impact geopolitical shifts, defense tech, AI breakthroughs, and mind-blowing mysteries"
 
     sys_prompt = (
-        "You are the world's #1 YouTube Documentary Showrunner, combining the exact storytelling DNA of three legendary creators: "
-        "(1) NITISH RAJPUT (forensic chronological date-by-date, minute-by-minute reconstruction where every person's full name, background, exact location, and motive is explained with hard evidence), "
-        "(2) THINK SCHOOL (explosive cold-open contradiction hook, 'Follow-the-Money' financial/strategic math breakdown, and exposing the hidden power loop behind the scenes), and "
-        "(3) ABHI & NIYU (high-energy emotional ground-reality hook, crystal-clear everyday public language, and 'Big Global Lessons' takeaway at the end). "
-        "CRITICAL A-TO-Z SCRIPT & VISUAL RULES: "
-        "1. SCENE 1 (COLD-OPEN CLIMAX & CONTRADICTION HOOK): Start right in the middle of the most shocking moment or contradiction of the story, then state the 3 core questions this video will uncover. "
-        "2. SCENES 2-4 (CHRONOLOGICAL TIMELINE & GROUND REALITY): Walk through the exact sequence of events with concrete dates, locations, full names + roles of every key person (leaders, lawyers, judges, pilots, economists, witnesses), and what happened step by step. "
-        "3. SCENES 5-6 (THE HIDDEN MECHANISM & FOLLOW THE MONEY): Break down the exact numbers, billions/millions, percentages, laws, or strategic calculations in simple math anyone in the general public can grasp immediately. "
-        "4. SCENES 7-8 (THE GLOBAL LESSONS & FINAL VERDICT): Deliver the deeper geopolitical/economic lessons ('Lesson #1', 'Lesson #2') and end with a thought-provoking question that compels viewers to comment. "
-        "5. 100% POINT-TO-POINT VISUAL MAPPING: Every single sentence in `beat_visuals` MUST have a distinct, concrete real-world `photo_query` matching the exact person, role, courtroom, street protest, factory, or document spoken in that sentence! Never mention external news channels like Al Jazeera or BBC. "
+        "You are the world's #1 YouTube Documentary Showrunner, combining the exact editorial structure of four legendary broadcasters: "
+        "(1) BBC WORLD NEWS (authoritative breaking-news factual precision, verified international dates, exact locations, and balanced global context), "
+        "(2) NITISH RAJPUT (forensic chronological reconstruction where every leader, minister, lawyer, or institution is named with exact roles and hard evidence), "
+        "(3) THINK SCHOOL (explosive cold-open contradiction hook, 'Follow-the-Money' financial/geopolitical math breakdown, and strategic winners vs losers), and "
+        "(4) ABHI & NIYU (high-energy public-impact storytelling, crystal-clear everyday explanation, India & global relevance, and numbered 'Big Lessons' takeaway at the end). "
+        "CRITICAL A-TO-Z SCRIPT & VISUAL MATCHING RULES: "
+        "1. SCENE 1 (BREAKING COLD-OPEN & CONTRADICTION HOOK): Open immediately with the breaking event, the exact countries/leaders involved, and the 3 core questions this documentary will answer. "
+        "2. SCENES 2-4 (CHRONOLOGICAL TIMELINE & BBC/NITISH GROUND REALITY): Walk through the exact sequence of events with concrete dates, cities, full names + official titles of key figures, and verified ground facts. "
+        "3. SCENES 5-7 (THINK SCHOOL FOLLOW-THE-MONEY & STRATEGIC MECHANISM): Break down the exact billions/trillions, percentages, military/tech capabilities, supply chains, or laws in clear, engaging numbers. "
+        "4. SCENES 8-10 (GLOBAL & INDIA IMPACT + ABHI & NIYU LESSONS & VERDICT): Explain how this shift impacts India and global power balances, deliver clear numbered takeaways ('Lesson #1', 'Lesson #2'), and close with a thought-provoking question for the comments. "
+        "5. 100% SCRIPT-LOCKED VISUAL MAPPING: Every single sentence in `beat_visuals` MUST have a concrete, real-world `photo_query` that describes the EXACT country, leader, military hardware, laboratory, hospital, parliament, or street event spoken in THAT sentence (NEVER generic tourism/nature scenery and NEVER mention external news channels like BBC or Al Jazeera in narration). "
         "Output STRICT JSON only."
     )
 
@@ -3184,7 +3192,7 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str, s
             "-i", raw_local,
             "-t", "10.5",
             "-vf", "setpts=1.18*PTS,scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080:0:0,unsharp=3:3:0.6:3:3:0.0,setsar=1",
-            "-r", "24", "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
+            "-r", "24", "-an", "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-preset", "fast",
             clean_mp4
         ]
         run_isolated_subprocess(cmd, timeout_sec=14)
@@ -3273,7 +3281,7 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             "-i", raw_local,
             "-t", "9.5",
             "-vf", "setpts=1.15*PTS,scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,unsharp=3:3:0.6:3:3:0.0,setsar=1",
-            "-r", "24", "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
+            "-r", "24", "-an", "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-preset", "fast",
             clean_mp4
         ]
         run_isolated_subprocess(cmd_tr, timeout_sec=12)
@@ -3303,17 +3311,15 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
 
 def get_story_anchor_and_context_tokens(dossier):
     """
-    V34 STRICT GEOGRAPHIC/ENTITY ANCHOR vs EVENT CONTEXT TOKEN ARCHITECTURE:
-    Fixes the two bugs seen in Run #158 (`N2SIJ2d47mY`):
-    1. Previously, generic headline words ('shops', 'looted') were placed inside `anchor_tokens`, which:
-       (a) made `loc_prefix = 'Germany Shops'` (causing Bing to return '27 Famous Landmarks in Germany - Travel'), and
-       (b) allowed 'Delhi Dancing Thief: Thieves Looted Shops' to pass with `anchor_hits >= 2` ('looted' + 'shops')!
-    2. Now:
-       - `geo_anchor_tokens` (Tier-A) contains ONLY the Country, Demonym, Capital, Cities in the story,
-         Verified Leaders, and Proper Institution Names (e.g. `{'germany', 'german', 'frankfurt', 'berlin', 'munich'}`
-         or `{'africa', 'african', 'afreximbank', 'abuja', 'nigeria', 'oramah'}`).
-       - `event_context_tokens` (Tier-B) contains the concrete event/subject words from the headline & facts
-         (e.g. `{'riots', 'riot', 'protest', 'protests', 'protesters', 'demonstrators', 'police', 'looted', 'looting', 'shops', 'stores', 'inflation', 'energy', 'crisis', 'living'}`).
+    V35 STRICT MULTI-COUNTRY & DOMAIN-AWARE GEOGRAPHIC ANCHOR vs EVENT CONTEXT TOKEN ENGINE:
+    1. `geo_anchor_tokens` (Tier-A): Includes the primary country, PLUS every Country, Demonym, Capital,
+       Major City, Leader, and Specific Named Institution/Agency (ISRO, DRDO, NATO, Pentagon, RBI, WHO, etc.)
+       mentioned in the headline or verified facts (so multi-country stories like Japan + Philippines + China + India
+       recognize all involved countries!).
+    2. `event_context_tokens` (Tier-B): Includes concrete event nouns from the story PLUS domain-specific
+       visual synonyms (e.g. arms/weapons/defense -> military, missile, radar, navy, troops, fighter, warship, security, pact)
+       so real press photos and news videos ALWAYS match while tourist postcards (`pagoda`, `cherry blossom`, `mount fuji`)
+       have 0 event hits (`e_hits == 0`) and are 100% REJECTED!
     """
     if dossier.get("_cached_tier_ab_tokens"):
         return dossier["_cached_tier_ab_tokens"]
@@ -3323,7 +3329,8 @@ def get_story_anchor_and_context_tokens(dossier):
     c_prof = dossier.get("country_profile", {})
     c_name = "" if c_prof.get("is_global_topic") else str(c_prof.get("name", ""))
     cap_city = "" if c_prof.get("is_global_topic") else str(c_prof.get("capital", ""))
-    raw_facts_str = " ".join(str(f) for f in (dossier.get("raw_facts") or [])[:10])
+    raw_facts_str = " ".join(str(f) for f in (dossier.get("raw_facts") or [])[:12])
+    comb_story_low = f"{title_str} {topic_anchor} {raw_facts_str}".lower()
 
     trap_and_noise_words = {
         "silent", "threat", "secret", "trap", "shocked", "world", "explained", "vanished", "reshaped",
@@ -3336,15 +3343,15 @@ def get_story_anchor_and_context_tokens(dossier):
         "unless", "whether", "however", "moreover", "furthermore", "meanwhile", "therefore", "finally",
         "first", "second", "third", "chapter", "scene", "story", "today", "yesterday", "tomorrow",
         "million", "billion", "trillion", "percent", "dollar", "dollars", "years", "year", "time",
-        "move", "moves", "deal", "deals", "sale", "sold", "just", "approves", "approved",
-        "global", "national", "international", "ball", "court", "math", "simple", "loop", "hidden",
-        "model", "symptom", "disease", "social", "contract", "spiral", "deeper", "thoughts", "comments",
-        "below", "subscribe", "talk", "brief", "regelt", "were", "their", "there", "these", "those",
-        "would", "could", "should", "have", "been", "being", "make", "made", "making", "take", "took",
-        "taken", "takes", "charge", "started", "began", "tried", "trying", "leaves", "leaving", "turn", "turns", "turned"
+        "move", "moves", "just", "approves", "approved", "global", "national", "international", "ball",
+        "court", "math", "simple", "loop", "hidden", "model", "symptom", "disease", "social", "contract",
+        "spiral", "deeper", "thoughts", "comments", "below", "subscribe", "talk", "brief", "regelt",
+        "were", "their", "there", "these", "those", "would", "could", "should", "have", "been", "being",
+        "make", "made", "making", "take", "took", "taken", "takes", "charge", "started", "began",
+        "tried", "trying", "leaves", "leaving", "turn", "turns", "turned", "game", "changer", "gamechanger",
+        "strike", "direct", "package", "handed", "triggering", "triggers", "triggered"
     }
 
-    # Common generic event nouns that belong in `event_context_tokens` (Tier-B), NEVER in `geo_anchor_tokens` (Tier-A)!
     generic_event_nouns = {
         "shops", "shop", "stores", "store", "looted", "looting", "riots", "riot", "protest", "protests",
         "protesters", "demonstrators", "demonstration", "police", "water", "cannon", "cannons", "cost",
@@ -3353,73 +3360,100 @@ def get_story_anchor_and_context_tokens(dossier):
         "unrest", "strike", "strikes", "workers", "students", "youth", "activists", "march", "rally",
         "street", "streets", "crowd", "attack", "attacked", "fire", "fires", "explosion", "military",
         "army", "troops", "missile", "missiles", "drone", "drones", "sanctions", "tariff", "tariffs",
-        "economy", "economic", "market", "markets", "stock", "stocks", "trade", "exports", "imports"
+        "economy", "economic", "market", "markets", "stock", "stocks", "trade", "exports", "imports",
+        "weapons", "weapon", "arms", "defense", "defence", "security", "cyber", "intelligence", "tech",
+        "technology", "artificial", "robot", "robotics", "semiconductor", "chip", "chips", "satellite",
+        "rocket", "space", "hospital", "medical", "health", "healthcare", "vaccine", "virus", "doctor"
     }
 
-    # 1. Build Tier-A (`geo_anchor_tokens`): Strictly Country, Demonym, Capital, Cities, Leaders & Specific Named Institutions
+    # 1. Build Tier-A (`geo_anchor_tokens`): Primary Country + Any Secondary Countries/Cities/Leaders in the Story!
     geo_anchor_tokens = set()
     for geo_w in re.findall(r"[A-Za-z]{3,}", f"{c_name} {cap_city}"):
         gwl = geo_w.lower()
-        if gwl not in {"global", "international", "world", "the", "and", "city"}:
+        if gwl not in {"global", "international", "world", "the", "and", "city", "briefing", "tech", "science", "markets", "medical"}:
             geo_anchor_tokens.add(gwl)
 
-    for dem_k, cnt_v in DEMONYM_TO_COUNTRY.items():
-        if c_name and cnt_v.upper() == c_name.upper():
-            for dw in re.findall(r"[A-Za-z]{3,}", dem_k):
-                geo_anchor_tokens.add(dw.lower())
+    # Also detect all countries & demonyms mentioned in the headline or top facts (e.g. Japan + Philippines + China + India)
+    for cnt_k, cnt_tuple in COUNTRY_GEO_DB.items():
+        cnt_low = cnt_k.lower()
+        if re.search(rf"\b{re.escape(cnt_low)}\b", comb_story_low):
+            for cw_p in re.findall(r"[A-Za-z]{3,}", cnt_low):
+                geo_anchor_tokens.add(cw_p)
+            cap_low = str(cnt_tuple[2]).lower()
+            for cap_p in re.findall(r"[A-Za-z]{4,}", cap_low):
+                geo_anchor_tokens.add(cap_p)
 
-    known_major_cities = {
+    for dem_k, cnt_v in DEMONYM_TO_COUNTRY.items():
+        dem_clean = dem_k.strip().lower()
+        if len(dem_clean) >= 3 and re.search(rf"\b{re.escape(dem_clean)}\b", comb_story_low):
+            for dw in re.findall(r"[A-Za-z]{3,}", f"{dem_clean} {cnt_v.lower()}"):
+                if dw not in {"the", "and"}:
+                    geo_anchor_tokens.add(dw)
+
+    known_major_cities_and_orgs = {
         "frankfurt", "berlin", "munich", "hamburg", "cologne", "paris", "london", "tokyo", "beijing",
         "shanghai", "moscow", "kyiv", "kharkiv", "abuja", "lagos", "nairobi", "cairo", "johannesburg",
-        "delhi", "mumbai", "bengaluru", "islamabad", "karachi", "dhaka", "manila", "jakarta", "singapore",
-        "seoul", "taipei", "sydney", "melbourne", "toronto", "ottawa", "washington", "manhattan",
-        "chicago", "tehran", "tel aviv", "jerusalem", "riyadh", "dubai", "doha", "ankara", "istanbul",
-        "warsaw", "rome", "madrid", "barcelona", "brussels", "amsterdam", "geneva", "zurich", "vienna"
+        "delhi", "mumbai", "bengaluru", "chennai", "hyderabad", "kolkata", "ahmedabad", "islamabad",
+        "karachi", "dhaka", "manila", "jakarta", "singapore", "seoul", "taipei", "sydney", "melbourne",
+        "toronto", "ottawa", "washington", "pentagon", "kremlin", "nato", "brics", "isro", "drdo",
+        "aiims", "icmr", "nasa", "spacex", "openai", "nvidia", "tsmc", "huawei", "tehran", "jerusalem",
+        "riyadh", "dubai", "doha", "ankara", "istanbul", "warsaw", "rome", "madrid", "brussels", "geneva"
     }
-    comb_text_low = f"{title_str} {raw_facts_str}".lower()
-    for city_w in known_major_cities:
-        if re.search(rf"\b{re.escape(city_w)}\b", comb_text_low):
+    for city_w in known_major_cities_and_orgs:
+        if re.search(rf"\b{re.escape(city_w)}\b", comb_story_low):
             for cw_part in city_w.split():
                 geo_anchor_tokens.add(cw_part)
 
     p_dir = dossier.get("person_role_directory") or {}
-    for _, (w_n, d_n, _) in list(p_dir.items())[:6]:
+    for _, (w_n, d_n, _) in list(p_dir.items())[:8]:
         for pw in re.findall(r"[A-Za-z]{4,}", f"{w_n} {d_n}"):
             pwl = pw.lower()
             if pwl not in trap_and_noise_words and pwl not in generic_event_nouns:
                 geo_anchor_tokens.add(pwl)
 
-    # Only add specific named institutions/acronyms from title if `geo_anchor_tokens` has no country/city yet
     if not geo_anchor_tokens:
         for tw in re.findall(r"[A-Za-z0-9]{4,}", f"{title_str} {topic_anchor}"):
             twl = tw.lower()
-            if (twl not in HEADLINE_STOP_VERBS_ADJS
-                    and twl not in METAPHOR_NOISE_WORDS
-                    and twl not in trap_and_noise_words
-                    and twl not in generic_event_nouns
-                    and twl not in {"violent", "overnight", "explode", "exploded"}):
+            if twl not in HEADLINE_STOP_VERBS_ADJS and twl not in METAPHOR_NOISE_WORDS and twl not in trap_and_noise_words and twl not in generic_event_nouns:
                 geo_anchor_tokens.add(twl)
 
-    if not geo_anchor_tokens:
-        for tw in re.findall(r"[A-Za-z0-9]{4,}", title_str):
-            if tw.lower() not in HEADLINE_STOP_VERBS_ADJS and tw.lower() not in trap_and_noise_words:
-                geo_anchor_tokens.add(tw.lower())
-
-    # 2. Build Tier-B (`event_context_tokens`): Concrete event & topic nouns from `title_str` and `raw_facts_str`
+    # 2. Build Tier-B (`event_context_tokens`): Concrete Event, Military, Tech, Science, Health & Economic Nouns
     event_context_tokens = set()
-    for fw in re.findall(r"[A-Za-z]{4,}", f"{title_str} {topic_anchor} {raw_facts_str}"):
+    for fw in re.findall(r"[A-Za-z]{3,}", f"{title_str} {topic_anchor} {raw_facts_str}"):
         fwl = fw.lower()
-        if (fwl not in HEADLINE_STOP_VERBS_ADJS
+        if fwl in {"ai", "ev", "5g", "6g", "un", "eu", "uk", "us", "gdp", "imf", "rbi", "who", "idf", "pla"}:
+            if fwl not in geo_anchor_tokens:
+                event_context_tokens.add(fwl)
+            continue
+        if (len(fwl) >= 4
+                and fwl not in HEADLINE_STOP_VERBS_ADJS
                 and fwl not in METAPHOR_NOISE_WORDS
                 and fwl not in trap_and_noise_words
                 and fwl not in COMMON_SENTENCE_START_WORDS
                 and fwl not in geo_anchor_tokens):
             event_context_tokens.add(fwl)
 
+    # Domain-Aware Synonym Expansion so real news photos & videos of the exact topic ALWAYS pass!
+    if any(k in event_context_tokens for k in ["arms", "weapons", "weapon", "defense", "defence", "military", "navy", "army", "missile", "security", "pact", "warfare", "troops", "pac", "pacific", "indo"]):
+        event_context_tokens.update({
+            "military", "defense", "defence", "weapons", "arms", "security", "navy", "warship", "vessels",
+            "guard", "maritime", "radar", "missile", "missiles", "troops", "army", "forces", "minister",
+            "cabinet", "treaty", "pact", "alliance", "summit", "bilateral", "patrol", "exercises", "fighter"
+        })
+    if any(k in event_context_tokens for k in ["cyber", "intelligence", "tech", "technology", "artificial", "ai", "semiconductor", "chip", "chips", "robot", "digital"]):
+        event_context_tokens.update({
+            "cyber", "technology", "tech", "artificial", "intelligence", "digital", "semiconductor",
+            "chip", "chips", "computer", "data", "network", "system", "systems", "radar", "electronics",
+            "autonomous", "robotics", "innovation", "server", "software"
+        })
     if any(k in event_context_tokens for k in ["riots", "riot", "looted", "looting", "protest", "protests", "protesters", "demonstrators", "clashes", "unrest"]):
         event_context_tokens.update({"riot", "riots", "protest", "protests", "protesters", "demonstration", "demonstrators", "rally", "march", "police", "unrest", "clashes", "crowd"})
-    if any(k in event_context_tokens for k in ["energy", "inflation", "prices", "economy", "bank", "financial", "subsidies", "living"]):
-        event_context_tokens.update({"economy", "economic", "inflation", "energy", "financial", "bank", "crisis", "prices"})
+    if any(k in event_context_tokens for k in ["energy", "inflation", "prices", "economy", "bank", "financial", "subsidies", "living", "budget", "spending", "trade", "tariff", "tariffs"]):
+        event_context_tokens.update({"economy", "economic", "inflation", "energy", "financial", "bank", "crisis", "prices", "budget", "spending", "market", "trade", "finance", "ministry"})
+    if any(k in event_context_tokens for k in ["health", "healthcare", "medical", "hospital", "doctor", "vaccine", "virus", "disease", "patient", "treatment", "clinical"]):
+        event_context_tokens.update({"health", "healthcare", "medical", "hospital", "doctors", "doctor", "patient", "patients", "clinical", "medicine", "research", "laboratory", "treatment", "vaccine"})
+    if any(k in event_context_tokens for k in ["space", "rocket", "satellite", "orbit", "lunar", "moon", "mars", "astronaut", "telescope", "isro", "nasa"]):
+        event_context_tokens.update({"space", "rocket", "satellite", "launch", "orbit", "spacecraft", "mission", "astronaut", "lunar", "science", "isro", "nasa"})
 
     res_tuple = (geo_anchor_tokens, event_context_tokens)
     dossier["_cached_tier_ab_tokens"] = res_tuple
@@ -3431,10 +3465,11 @@ def get_strict_topic_core_tokens(dossier):
 
 def extract_topic_master_queries(dossier, sections_list=None):
     """
-    V34 GOOGLE/BING 18-ANGLE NEWS & EVENT QUERY BUILDER:
-    - `loc_prefix` is STRICTLY Geographic/Entity (`'Germany Frankfurt'` or `'Germany'`, NEVER `'Germany Shops'`!).
-    - Combines `loc_prefix` with concrete event words from the headline and chapters so every query returns
-      authentic news photojournalism & real event footage (never travel landmark blogs!).
+    V35 GOOGLE/BING 20-ANGLE NEWS, INTERVIEW & BEAT-SPECIFIC QUERY BUILDER:
+    Builds 20 diverse, ultra-specific news photojournalism & video queries covering:
+    1. Primary headline countries + exact event (e.g. 'Japan Philippines defense weapons deal')
+    2. Secondary countries & actors in the story (e.g. 'China military navy Indo-Pacific', 'India military defense spending')
+    3. Every chapter/beat's specific subject so the 200+ photo vault has dedicated HD visuals for EVERY sentence!
     """
     story_title = str(dossier.get("title", "")).strip()
     topic_anchor = str(dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)).strip()
@@ -3443,83 +3478,102 @@ def extract_topic_master_queries(dossier, sections_list=None):
 
     geo_anchor_tokens, event_context_tokens = get_story_anchor_and_context_tokens(dossier)
 
-    # 1. Build `loc_prefix` strictly from `geo_name` + any major city in `geo_anchor_tokens` (NEVER 'Shops' or 'Looted'!)
-    loc_words = []
-    if geo_name:
-        loc_words.append(geo_name.split()[0])
-    for w in re.findall(r"[A-Za-z]{4,}", f"{story_title} {' '.join((dossier.get('raw_facts') or [])[:3])}"):
-        wl = w.lower()
-        if wl in geo_anchor_tokens and wl not in {x.lower() for x in loc_words} and wl not in {"german", "american", "indian", "british", "french", "chinese", "russian"}:
-            loc_words.append(w.title())
-            if len(loc_words) >= 2:
-                break
-    loc_prefix = " ".join(loc_words[:2]).strip() or (geo_name or topic_anchor[:24])
+    # Identify all countries/hubs mentioned in the title and facts
+    comb_story = f"{story_title} {' '.join((dossier.get('raw_facts') or [])[:6])}"
+    story_countries = []
+    if geo_name and geo_name.upper() not in {"GLOBAL", "INTERNATIONAL"}:
+        story_countries.append(geo_name)
+    for cnt_name in COUNTRY_GEO_DB.keys():
+        if re.search(rf"\b{re.escape(cnt_name.lower())}\b", comb_story.lower()):
+            c_title = cnt_name.title()
+            if c_title not in story_countries:
+                story_countries.append(c_title)
+    for dem_k, cnt_mapped in DEMONYM_TO_COUNTRY.items():
+        if re.search(rf"\b{re.escape(dem_k.strip().lower())}\b", story_title.lower()):
+            c_title = cnt_mapped.title()
+            if c_title not in story_countries:
+                story_countries.append(c_title)
 
-    # Extract top headline event words (e.g. 'cost of living protests', 'shops looted', 'riots')
+    loc_primary = " ".join(story_countries[:2]).strip() or (geo_name or topic_anchor[:24])
+    loc_first = story_countries[0] if story_countries else (geo_name or topic_anchor.split()[0])
+
     headline_event_words = []
-    for w in re.findall(r"[A-Za-z0-9\-]{4,}", story_title):
+    for w in re.findall(r"[A-Za-z0-9\-]{3,}", story_title):
         wl = w.lower()
-        if wl in event_context_tokens and wl not in [x.lower() for x in headline_event_words] and wl not in {x.lower() for x in loc_words}:
+        if (wl in event_context_tokens or wl in {"arms", "defense", "cyber", "military", "weapons", "protest", "riots", "inflation", "economy", "tech", "space", "health"}) and wl not in [x.lower() for x in headline_event_words] and wl not in {x.lower() for x in loc_primary.split()}:
             headline_event_words.append(w.lower())
 
-    ev_phrase_1 = " ".join(headline_event_words[:3]).strip() or "news"
+    ev_phrase_1 = " ".join(headline_event_words[:3]).strip() or "official press conference"
     ev_phrase_2 = " ".join(headline_event_words[1:4]).strip() or ev_phrase_1
 
     queries = []
     base_candidates = [
-        f"{loc_prefix} {ev_phrase_1}".strip(),
-        f"{geo_name or loc_prefix} {ev_phrase_2}".strip(),
-        f"{loc_prefix} protest police" if any(k in event_context_tokens for k in ["riot", "riots", "protest", "protests", "looted"]) else f"{loc_prefix} {ev_phrase_1} press photo",
-        f"{loc_prefix} demonstration crowd" if any(k in event_context_tokens for k in ["riot", "riots", "protest", "protests", "looted"]) else f"{loc_prefix} official meeting",
-        f"{geo_name or loc_prefix} inflation protest" if "living" in event_context_tokens or "inflation" in event_context_tokens else f"{loc_prefix} {ev_phrase_1} news",
-        f"{loc_prefix} police street" if any(k in event_context_tokens for k in ["riot", "riots", "protest", "protests", "looted"]) else f"{loc_prefix} press conference",
-        f"{loc_prefix} {ev_phrase_1} interview",
-        f"{geo_name or loc_prefix} government press conference"
+        f"{loc_primary} {ev_phrase_1}".strip(),
+        f"{loc_first} {ev_phrase_1} news".strip(),
+        f"{loc_primary} {ev_phrase_2} official photo".strip(),
+        f"{loc_first} government ministry press conference".strip(),
+        f"{loc_primary} defense military security" if any(k in event_context_tokens for k in ["arms", "weapons", "defense", "military", "navy", "security"]) else f"{loc_primary} {ev_phrase_1} report",
+        f"{story_countries[1]} {loc_first} {headline_event_words[0] if headline_event_words else 'summit'}".strip() if len(story_countries) >= 2 else f"{loc_first} {ev_phrase_2}".strip(),
+        f"{story_countries[2]} military defense" if len(story_countries) >= 3 and "military" in event_context_tokens else f"{loc_first} official meeting {ev_phrase_1}".strip(),
+        f"{loc_primary} {ev_phrase_1} interview".strip()
     ]
     for q_cand in base_candidates:
         qc = " ".join(q_cand.split()).strip()
-        if len(qc) >= 4 and qc.lower() not in [x.lower() for x in queries]:
+        if len(qc) >= 5 and qc.lower() not in [x.lower() for x in queries]:
             queries.append(qc)
 
-    # 2. Extract Concrete Chapter-Level Queries (`loc_prefix` + 2 Event Context Nouns)
+    # Add queries for each secondary country mentioned in the story + its context!
+    for sec_cnt in story_countries[1:5]:
+        sc_q = f"{sec_cnt} {headline_event_words[0] if headline_event_words else 'government'} {headline_event_words[1] if len(headline_event_words) > 1 else 'official'}".strip()
+        if sc_q.lower() not in [x.lower() for x in queries]:
+            queries.append(sc_q)
+
+    # Extract concrete sentence-level queries across all chapters/sections
     raw_sources = []
     if sections_list:
         for sec in sections_list:
             raw_sources.append(str(sec.get("narration", "")))
-    for rf in (dossier.get("raw_facts") or [])[:10]:
+            for bv in (sec.get("beat_visuals") or []):
+                if isinstance(bv, dict) and bv.get("photo_query"):
+                    raw_sources.append(str(bv["photo_query"]))
+    for rf in (dossier.get("raw_facts") or [])[:12]:
         raw_sources.append(str(rf))
 
     skip_q_words = {
-        "germany", "german", "frankfurt", "regelt", "gen", "world", "talk", "brief", "chapter", "lesson",
-        "math", "simple", "ball", "court", "watch", "video", "board", "western", "silent", "threat",
-        "comments", "subscribe", "share", "thoughts", "below", "first", "second", "third", "question",
-        "questions", "symptom", "disease", "contract", "loop", "hidden", "model", "system", "problem",
-        "tens", "thousands", "hundreds", "millions", "billions", "smashed", "hurled", "fired", "responded",
-        "started", "spread", "targeted", "soared", "eroded", "attacked", "injured", "demonstrated",
-        "excluded", "making", "unaffordable", "many", "some", "even", "while", "across", "single", "night",
-        "shops", "shop", "stores", "store", "turn", "turned", "overnight", "explode"
-    } | {w.lower() for w in loc_prefix.split()}
+        "world", "talk", "brief", "chapter", "lesson", "math", "simple", "ball", "court", "watch",
+        "video", "board", "western", "silent", "threat", "comments", "subscribe", "share", "thoughts",
+        "below", "first", "second", "third", "question", "questions", "symptom", "disease", "contract",
+        "loop", "hidden", "model", "system", "problem", "tens", "thousands", "hundreds", "millions",
+        "billions", "trillions", "many", "some", "even", "while", "across", "single", "night",
+        "turn", "turned", "overnight", "explode", "handed", "package", "direct", "strike", "game", "changer"
+    }
 
     for src_sent in raw_sources:
+        # Check if this sentence mentions a specific country (e.g. 'India spends $92.1 billion' or 'China is tracking')
+        sent_cnt = loc_first
+        for cnt_c in story_countries:
+            if cnt_c.lower() in src_sent.lower():
+                sent_cnt = cnt_c
+                break
         sent_nouns = []
         for w in re.findall(r"[A-Za-z]{4,}", src_sent):
             wl = w.lower()
-            if wl in event_context_tokens and wl not in skip_q_words and wl not in [x.lower() for x in sent_nouns]:
+            if wl in event_context_tokens and wl not in skip_q_words and wl not in sent_cnt.lower() and wl not in [x.lower() for x in sent_nouns]:
                 sent_nouns.append(wl)
         if len(sent_nouns) >= 2:
-            ch_q = f"{loc_prefix} {sent_nouns[0]} {sent_nouns[1]}".strip()
+            ch_q = f"{sent_cnt} {sent_nouns[0]} {sent_nouns[1]}".strip()
             if ch_q.lower() not in [x.lower() for x in queries]:
                 queries.append(ch_q)
-        if len(queries) >= 16:
+        if len(queries) >= 20:
             break
 
     p_dir = dossier.get("person_role_directory") or {}
     for _, (_, d_n, _) in list(p_dir.items())[:4]:
-        for pq in [f"{d_n} {geo_name or loc_prefix}".strip(), f"{d_n} press conference".strip()]:
+        for pq in [f"{d_n} {loc_first}".strip(), f"{d_n} press conference".strip()]:
             if len(pq) >= 5 and pq.lower() not in [x.lower() for x in queries]:
                 queries.insert(2, pq)
 
-    return queries[:18]
+    return queries[:22]
 
 FOREIGN_PLACE_COLLISION_TERMS = [
     ("india", "indian", "delhi", "new delhi", "mumbai", "chennai", "kolkata", "bengaluru", "hyderabad", "punjab", "pachaiyappa", "tamil nadu", "kerala", "bihar", "gujarat", "maharashtra", "uttar pradesh", "lok sabha", "bjp"),
@@ -3736,16 +3790,18 @@ AI_CAPTION_AUDIT_CACHE = {}
 
 def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_context="", dossier=None):
     """
-    V34 GOOGLE-ACCURATE PHOTO & SCENE AUDITOR:
-    - Blocks foreign countries/cities ('Delhi', 'Pachaiyappa', 'Malaysia', 'Subic'), travel landmark blogs
-      ('27 Famous Landmarks', 'places to visit', 'travel guide'), shipwrecks, infographics ('livingcost', 'numbeo'),
+    V35 STRICT TOPIC-LOCKED PHOTO & SCENE AUDITOR:
+    - Blocks all tourist scenery/postcards ('pagoda', 'cherry blossom', 'sakura', 'mount fuji',
+      'osaka castle', 'waterfall', 'sightseeing', 'places to visit', 'famous landmarks'),
+      foreign country collisions ('Delhi Dancing Thief', 'Pachaiyappa', 'Malaysia', 'Subic'),
       and trap words ('cheese board', 'western movie', 'cowboy', 'apple watch', 'calculator').
-    - Accepts real press photos that match the story's geographic or event tokens!
+    - Requires BOTH a geographic/entity match (`g_hits >= 1`) AND a concrete event/topic match (`e_hits >= 1`),
+      eliminating the `g_hits >= 2` with `e_hits == 0` loophole that allowed Japanese castles and waterfalls!
     """
     if not img_caption or len(img_caption.strip()) < 5:
         return False
     cap_low = f"{img_caption} {img_url}".lower()
-    ctx_low = f"{story_title} {query_context} {(dossier or {}).get('country_profile', {}).get('name', '')}".lower()
+    ctx_low = f"{story_title} {query_context} {(dossier or {}).get('country_profile', {}).get('name', '')} {' '.join(((dossier or {}).get('raw_facts') or [])[:4])}".lower()
 
     if "gyanesh" in ctx_low and ("rajiv kumar" in cap_low or "sunil arora" in cap_low or "sushil chandra" in cap_low):
         return False
@@ -3770,7 +3826,11 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
         "buy now", "free shipping", "discount code", "promo code", "sponsored ad", "subic",
         "livingcost", "numbeo", "cost of living in", "total with rent", "without rent", "the edge tv",
         "famous landmarks", "places to visit", "things to do in", "travel guide", "tourist attractions",
-        "best hotels", "tripadvisor", "lonely planet", "steamship", "shipwreck", "dancing thief", "pachaiyappa"
+        "tourist attraction", "sightseeing", "best hotels", "tripadvisor", "lonely planet", "steamship",
+        "shipwreck", "dancing thief", "pachaiyappa", "pagoda", "cherry blossom", "cherry blossoms",
+        "sakura", "mount fuji", "mt fuji", "mt. fuji", "osaka castle", "himeji castle", "nachi falls",
+        "waterfall", "waterfalls", "shinto shrine", "torii gate", "autumn leaves", "spring in japan",
+        "visit japan", "japan travel", "postcard", "wallpaper", "screensaver"
     ]
     if any(bm in cap_low for bm in bad_markers):
         return False
@@ -3780,11 +3840,11 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
 
     if dossier is not None:
         geo_toks, ev_toks = get_story_anchor_and_context_tokens(dossier)
-        cap_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", cap_low)}
+        cap_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{2,}", cap_low)}
         g_hits = len(geo_toks.intersection(cap_toks))
         e_hits = len(ev_toks.intersection(cap_toks))
-        # Accept if photo caption matches (Geo + Event) OR (>=2 Event tokens from a Country-Locked query)!
-        if (g_hits >= 1 and e_hits >= 1) or (e_hits >= 2) or (g_hits >= 2):
+        # MUST have at least 1 Event Context Token (`e_hits >= 1`) so pure scenic/country photos (`e_hits == 0`) NEVER pass!
+        if (g_hits >= 1 and e_hits >= 1) or (e_hits >= 2):
             return True
         return False
 
@@ -3811,11 +3871,16 @@ def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
         r_ch, g_ch, b_ch = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
 
         title_low = f"{story_title} {query_context}".lower()
-        is_ocean_or_sky = any(k in title_low for k in ["ocean", "sea", "navy", "submarine", "whale", "shark", "aviation", "aircraft"])
+        is_ocean_or_sky = any(k in title_low for k in ["ocean", "sea", "navy", "submarine", "whale", "shark", "aviation", "aircraft", "pacific", "maritime", "warship", "fleet"])
         if not is_ocean_or_sky:
             sci_fi_blue_mask = (b_ch > (r_ch + 42.0)) & (g_ch > (r_ch + 18.0)) & (b_ch > 125.0)
-            if float(np.mean(sci_fi_blue_mask)) > 0.27:
+            if float(np.mean(sci_fi_blue_mask)) > 0.28:
                 return False
+
+        # Reject pink cherry-blossom / magenta HDR tourist postcard images (`r > 180, b > 145, g < r - 35`)
+        pink_sakura_mask = (r_ch > 175.0) & (b_ch > 135.0) & (r_ch > (g_ch + 32.0))
+        if float(np.mean(pink_sakura_mask)) > 0.16:
+            return False
 
         minion_yellow_mask = (r_ch > 205.0) & (g_ch > 185.0) & (b_ch < 75.0)
         creeper_green_mask = (g_ch > (r_ch + 45.0)) & (g_ch > (b_ch + 45.0)) & (g_ch > 130.0)
@@ -3836,7 +3901,6 @@ def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
         if total_blocks > 0 and (smooth_blocks / float(total_blocks)) > 0.82:
             return False
 
-        # Only reject extreme neon oversaturated cartoon frames (mean_sat > 165 and flat smooth_blocks > 0.65)
         hsv_small = cv2.cvtColor(arr.astype(np.uint8), cv2.COLOR_RGB2HSV)
         mean_sat = float(np.mean(hsv_small[:, :, 1]))
         if mean_sat > 168.0 and total_blocks > 0 and (smooth_blocks / float(total_blocks)) > 0.62:
@@ -3854,13 +3918,19 @@ def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
     except Exception:
         return True
 
-def validate_and_enhance_1080p(im, existing_hashes, min_w=460, min_h=260, story_title="", query_context=""):
+def validate_and_enhance_1080p(im, existing_hashes, min_w=780, min_h=440, story_title="", query_context=""):
+    """
+    V35 TRUE FULL-HD 1080p RESOLUTION & SHARPNESS VALIDATOR:
+    - Rejects low-resolution thumbnail images (`w < 780` or `h < 440`) that looked blurry in `72wTjV7DBPM`!
+    - Enforces Laplacian edge sharpness (`blur_score >= 28.0`) and natural entropy (`>= 4.5`) so blurry
+      skyline/thumbnail images are 100% blocked before entering the vault!
+    """
     im = im.convert("RGB")
     w, h = im.size
     if w < min_w or h < min_h:
         return None
 
-    im = im.crop((int(w * 0.04), int(h * 0.04), int(w * 0.96), int(h * 0.93)))
+    im = im.crop((int(w * 0.03), int(h * 0.03), int(w * 0.97), int(h * 0.94)))
 
     if not is_safe_family_friendly_image(im, is_portrait=False):
         return None
@@ -3870,19 +3940,19 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=460, min_h=260, story_
         return None
 
     arr = np.asarray(im.resize((120, 120)), dtype=np.float32)
-    if float(np.std(arr)) < 15.0:
+    if float(np.std(arr)) < 16.0:
         return None
 
     h1, h2 = arr[:, :60, :], arr[:, 60:, :]
-    if float(np.std(h1)) < 8.5 or float(np.std(h2)) < 8.5:
+    if float(np.std(h1)) < 9.0 or float(np.std(h2)) < 9.0:
         return None
 
     white_px = np.sum((arr[:, :, 0] > 242) & (arr[:, :, 1] > 242) & (arr[:, :, 2] > 242))
-    if (white_px / float(120 * 120)) > 0.55:
+    if (white_px / float(120 * 120)) > 0.52:
         return None
 
     black_px = np.sum((arr[:, :, 0] < 10) & (arr[:, :, 1] < 10) & (arr[:, :, 2] < 10))
-    if (black_px / float(120 * 120)) > 0.72:
+    if (black_px / float(120 * 120)) > 0.70:
         return None
 
     rg_diff = np.mean(np.abs(arr[:, :, 0] - arr[:, :, 1]))
@@ -3893,17 +3963,17 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=460, min_h=260, story_
     quant = (arr // 32).astype(int)
     flat = quant[:, :, 0] * 64 + quant[:, :, 1] * 8 + quant[:, :, 2]
     _, counts = np.unique(flat, return_counts=True)
-    if (counts.max() / float(120 * 120)) > 0.68:
+    if (counts.max() / float(120 * 120)) > 0.65:
         return None
 
     hsv_check = cv2.cvtColor(np.array(im.resize((160, 160)), dtype=np.uint8), cv2.COLOR_RGB2HSV)
     high_sat_neon = np.mean((hsv_check[:, :, 1] > 225) & (hsv_check[:, :, 2] > 215))
-    if high_sat_neon > 0.38:
+    if high_sat_neon > 0.35:
         return None
 
-    gray_cv = cv2.cvtColor(np.array(im.resize((480, 270))), cv2.COLOR_RGB2GRAY)
+    gray_cv = cv2.cvtColor(np.array(im.resize((640, 360))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
-    if blur_score < 12.0 or im.entropy() < 4.2:
+    if blur_score < 28.0 or im.entropy() < 4.5:
         return None
 
     gray = im.convert("L").resize((13, 12))
@@ -3923,11 +3993,11 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=460, min_h=260, story_
 def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, tag_id="real_fallback", is_short=False, dossier=None):
     d_obj = dossier or {"title": str(ai_prompt or ""), "topic_anchor": str(ai_prompt or "")[:30], "pillar": "WORLD"}
     master_qs = extract_topic_master_queries(d_obj)
-    if not master_qs:
-        return None
-    for clean_q in master_qs[:4]:
+    cand_qs = ([str(ai_prompt).strip()] if ai_prompt and len(str(ai_prompt).strip()) >= 6 else []) + master_qs[:5]
+    neg_suffix = "-cartoon -illustration -stock -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
+    for clean_q in cand_qs[:5]:
         try:
-            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(clean_q + ' -cartoon -illustration -stock')}&first=0&count=35&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
+            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(clean_q + ' ' + neg_suffix)}&first=0&count=35&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
             r = requests.get(b_url, headers=HEADERS_WEB, timeout=6)
             blocks = []
             for mc in re.findall(r'm="(\{.*?\})"', r.text)[:28]:
@@ -3936,7 +4006,7 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                 turl_m = re.search(r'"turl"\s*:\s*"(https?://[^"]+)"', mc_u)
                 if not um and not turl_m:
                     continue
-                turl_hd = (turl_m.group(1) + "&w=1280&h=720&c=7&rs=1&p=0") if turl_m else ""
+                turl_hd = (turl_m.group(1) + "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95") if turl_m else ""
                 u_prim = um.group(1) if um else turl_hd
                 tm = re.search(r'"t"\s*:\s*"([^"]+)"', mc_u)
                 pm = re.search(r'"purl"\s*:\s*"(https?://[^"]+)"', mc_u)
@@ -3953,11 +4023,11 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                 for try_u in ([u_clean, u_turl] if u_turl else [u_clean]):
                     try:
                         ir = requests.get(try_u, headers=HEADERS_WEB, timeout=5)
-                        if ir.status_code == 200 and len(ir.content) > 8500:
+                        if ir.status_code == 200 and len(ir.content) > 18000:
                             p = f"temp/{tag_id}_realnews.jpg"
                             with open(p, "wb") as f:
                                 f.write(ir.content)
-                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=460, min_h=260, story_title=d_obj.get("title", ""), query_context=clean_q)
+                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=780, min_h=440, story_title=d_obj.get("title", ""), query_context=clean_q)
                             if vim is not None:
                                 print(f"   📸 [Topic-Locked HD Press Photo Locked]: {clean_q[:42]}", flush=True)
                                 return vim
@@ -3996,12 +4066,12 @@ def extract_key_point_from_sentence(sentence_text, beat_num=1, fallback_stat="")
 
     if fallback_stat and len(str(fallback_stat).strip()) >= 6:
         fb_clean = fit_whole_words_limit(str(fallback_stat).upper().strip(), 30)
-        if not any(bad in fb_clean for bad in ["POINT ", "EVIDENCE FILE"]):
+        if not any(bad in fb_clean for bad in ["POINT ", "EVIDENCE FILE", "CASE EVIDENCE"]):
             return fb_clean, hl_kw
 
     imp_words = [
         w.upper() for w in words
-        if (any(c.isdigit() for c in w) or (len(w) >= 4 and w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in COMMON_SENTENCE_START_WORDS and w.lower() not in {"THIS", "THAT", "WITH", "FROM", "HAVE", "WERE", "BEEN", "THEY", "THEIR"}))
+        if (any(c.isdigit() for c in w) or (len(w) >= 4 and w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in COMMON_SENTENCE_START_WORDS and w.lower() not in {"this", "that", "with", "from", "have", "were", "been", "they", "their"}))
     ]
     if len(imp_words) >= 3:
         return fit_whole_words_limit(" ".join(imp_words[:5]), 30), hl_kw
@@ -4037,7 +4107,8 @@ METAPHOR_NOISE_WORDS = {
     "machine", "breath", "choke", "whether", "suddenly", "neither", "associations", "the", "and",
     "for", "are", "was", "not", "but", "can", "who", "its", "his", "her", "our", "you", "all",
     "any", "one", "two", "may", "now", "out", "use", "see", "let", "get", "got", "put", "set",
-    "say", "too", "yet", "watch", "board", "western", "lesson", "calculator", "binder", "ball"
+    "say", "too", "yet", "watch", "board", "western", "lesson", "calculator", "binder", "ball",
+    "gamechanger", "changer", "shield", "strike", "handed", "package"
 }
 
 COMMON_SENTENCE_START_WORDS = {
@@ -4053,30 +4124,64 @@ COMMON_SENTENCE_START_WORDS = {
 }
 
 def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
+    """
+    V35 POINT-TO-POINT SENTENCE-TO-VISUAL QUERY ENGINE:
+    Ensures every single beat displays the EXACT visual spoken in `beat_text` while staying
+    100% anchored to the documentary's topic (zero off-topic trap words!):
+    - If `beat_text` mentions a specific leader/person -> searches `<Person Name> <Country/Event>`
+    - If `beat_text` mentions a specific country/city in the story (e.g. 'India spends $92.1 billion'
+      or 'China is tracking every single move in the Indo-Pacific' or 'Philippines') -> anchors on THAT
+      country + the sentence's concrete military/economic/tech nouns!
+    - Combines `bv_dict["photo_query"]` (sanitized) + `beat_text` event tokens so every sentence
+      gets a distinct, accurate HD visual!
+    """
     master_qs = extract_topic_master_queries(dossier)
     base_topic_q = master_qs[0] if master_qs else str(dossier.get("title", ""))[:35]
     geo_toks, ev_toks = get_story_anchor_and_context_tokens(dossier)
 
-    p_dir = dossier.get("person_role_directory") or {}
     low_txt = str(beat_text or "").lower()
+    p_dir = dossier.get("person_role_directory") or {}
     for p_key, (w_n, d_n, _) in p_dir.items():
         if p_key in low_txt or d_n.lower() in low_txt:
             surname_toks = {w.lower() for w in re.findall(r"[A-Za-z]{4,}", d_n) if w.lower() not in {"minister", "president", "chief", "kumar", "singh"}}
             return d_n, f"{d_n} {base_topic_q}".strip(), surname_toks
 
+    # Detect which country/countries are mentioned in THIS specific sentence (`beat_text`)
     c_prof = dossier.get("country_profile", {})
-    geo_name = "" if c_prof.get("is_global_topic") else str(c_prof.get("name", "")).title()
-    loc_prefix = geo_name or " ".join(base_topic_q.split()[:2]).strip()
-    matched_ctx = []
-    for w in re.findall(r"[A-Za-z]{4,}", str(beat_text or "")):
-        wl = w.lower()
-        if wl in ev_toks and wl not in loc_prefix.lower() and wl not in {"shops", "shop", "stores", "store", "regelt", "were", "gen"} and wl not in matched_ctx:
-            matched_ctx.append(wl)
-    if matched_ctx:
-        q_built = f"{loc_prefix} {' '.join(matched_ctx[:2])}".strip()
-        return loc_prefix, q_built, set()
+    primary_geo = "" if c_prof.get("is_global_topic") else str(c_prof.get("name", "")).title()
+    sent_countries = []
+    for cnt_name in COUNTRY_GEO_DB.keys():
+        if re.search(rf"\b{re.escape(cnt_name.lower())}\b", low_txt):
+            sent_countries.append(cnt_name.title())
+    for dem_k, cnt_mapped in DEMONYM_TO_COUNTRY.items():
+        if len(dem_k.strip()) >= 4 and re.search(rf"\b{re.escape(dem_k.strip().lower())}\b", low_txt):
+            if cnt_mapped.title() not in sent_countries:
+                sent_countries.append(cnt_mapped.title())
 
-    return loc_prefix, base_topic_q, set()
+    loc_prefix = " ".join(sent_countries[:2]).strip() if sent_countries else (primary_geo or " ".join(base_topic_q.split()[:2]).strip())
+    must_tokens = {w.lower() for w in re.findall(r"[A-Za-z]{3,}", loc_prefix)} if sent_countries else set()
+
+    # Extract concrete event/subject words spoken in `beat_text` + `bv_dict`
+    bv_q_str = str((bv_dict or {}).get("photo_query") or "")
+    combined_sent_src = f"{beat_text} {bv_q_str}"
+    matched_ctx = []
+    for w in re.findall(r"[A-Za-z0-9]{3,}", combined_sent_src):
+        wl = w.lower()
+        if wl in {"ai", "5g", "ev", "un", "eu", "nato", "isro", "drdo", "nasa", "rbi", "imf"} and wl not in matched_ctx:
+            matched_ctx.append(wl.upper() if len(wl) <= 4 else wl)
+            continue
+        if (len(wl) >= 4
+                and wl in ev_toks
+                and wl not in loc_prefix.lower()
+                and wl not in {"shops", "shop", "stores", "store", "regelt", "were", "gen", "handed", "package", "direct", "strike", "move", "moves", "clear", "lesson"}
+                and wl not in matched_ctx):
+            matched_ctx.append(wl)
+
+    if matched_ctx:
+        q_built = f"{loc_prefix} {' '.join(matched_ctx[:3])}".strip()
+        return loc_prefix, q_built, must_tokens
+
+    return loc_prefix, base_topic_q, must_tokens
 
 def sanitize_visual_search_query(raw_q, dossier):
     master_qs = extract_topic_master_queries(dossier)
@@ -4084,21 +4189,23 @@ def sanitize_visual_search_query(raw_q, dossier):
         return str(dossier.get("topic_anchor") or dossier.get("title", ""))[:40]
     geo_toks, ev_toks = get_story_anchor_and_context_tokens(dossier)
     allowed_toks = geo_toks | ev_toks
-    raw_matched = [w for w in re.findall(r"[A-Za-z0-9\-]{3,}", str(raw_q or "")) if w.lower() in allowed_toks and w.lower() not in {"regelt", "were"}]
+    raw_matched = [w for w in re.findall(r"[A-Za-z0-9\-]{2,}", str(raw_q or "")) if w.lower() in allowed_toks and w.lower() not in {"regelt", "were", "handed", "package"}]
     if len(raw_matched) >= 2:
-        return " ".join(raw_matched[:4]).strip()
+        return " ".join(raw_matched[:5]).strip()
     return master_qs[0]
 
 def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, query_str=""):
     """
-    V34 GOOGLE-ACCURATE VISUAL AUDIT GATE #1:
-    1. Blocks foreign country collisions ('Delhi', 'Pachaiyappa', 'Malaysia', 'Subic'), travel/landmark blogs
-       ('27 Famous Landmarks', 'places to visit', 'travel guide'), shipwrecks, infographics ('livingcost', 'numbeo'),
-       and trap words ('cheese board', 'western movie', 'cowboy', 'apple watch', 'calculator').
-    2. Accepts any photo from our Country+Event search angles whose caption matches:
-       - At least 1 `geo_anchor_token` AND at least 1 `event_context_token`, OR
-       - At least 2 `event_context_tokens` (excluding generic 'shops' alone), OR
-       - At least 2 `geo_anchor_tokens`!
+    V35 GOOGLE-ACCURATE VISUAL AUDIT GATE #1:
+    1. Blocks all tourist scenery/postcards ('pagoda', 'cherry blossom', 'sakura', 'mount fuji',
+       'osaka castle', 'waterfall', 'sightseeing', 'places to visit', 'famous landmarks'),
+       foreign country collisions ('Delhi', 'Pachaiyappa', 'Malaysia', 'Subic'), shipwrecks,
+       infographics ('livingcost', 'numbeo'), and trap words ('cheese board', 'western movie',
+       'cowboy', 'apple watch', 'calculator').
+    2. Requires EVERY photo caption to contain at least 1 Concrete Event Token (`e_hits >= 1`):
+       - `(g_hits >= 1 and e_hits >= 1)` OR `(e_hits >= 2)`!
+       - NEVER allows `g_hits >= 2` with `e_hits == 0` (which previously let tourist photos of
+         Japanese castles, waterfalls, and Mount Fuji pass on a military arms deal story!).
     """
     if not img_title_or_desc or len(str(img_title_or_desc).strip()) < 5:
         return False
@@ -4120,12 +4227,16 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         "add to cart", "buy now", "free shipping", "discount code", "promo code", "sponsored", "subic",
         "livingcost", "numbeo", "statista", "cost of living in", "total with rent", "without rent", "the edge tv",
         "famous landmarks", "places to visit", "things to do in", "travel guide", "tourist attractions",
-        "best hotels", "tripadvisor", "lonely planet", "steamship", "shipwreck", "dancing thief", "pachaiyappa"
+        "tourist attraction", "sightseeing", "best hotels", "tripadvisor", "lonely planet", "steamship",
+        "shipwreck", "dancing thief", "pachaiyappa", "pagoda", "cherry blossom", "cherry blossoms",
+        "sakura", "mount fuji", "mt fuji", "mt. fuji", "osaka castle", "himeji castle", "nachi falls",
+        "waterfall", "waterfalls", "shinto shrine", "torii gate", "autumn leaves", "spring in japan",
+        "visit japan", "japan travel", "postcard", "wallpaper", "screensaver"
     ]
     if any(tw in comb_meta for tw in off_topic_ad_and_trap_words):
         return False
 
-    title_low = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {dossier.get('country_profile', {}).get('name', '')}".lower()
+    title_low = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {dossier.get('country_profile', {}).get('name', '')} {' '.join((dossier.get('raw_facts') or [])[:4])}".lower()
     if has_foreign_country_collision(comb_meta, title_low):
         return False
 
@@ -4146,14 +4257,15 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         return True
 
     geo_tokens, ev_tokens = get_story_anchor_and_context_tokens(dossier)
-    caption_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", comb_meta)}
+    caption_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{2,}", comb_meta)}
     if not caption_tokens:
         return False
 
     g_hits = len(geo_tokens.intersection(caption_tokens))
     e_hits = len(ev_tokens.intersection(caption_tokens))
 
-    if (g_hits >= 1 and e_hits >= 1) or (e_hits >= 2) or (g_hits >= 2):
+    # CRITICAL V35 GUARD: Every photo MUST match at least 1 Event Context Token (`e_hits >= 1`)!
+    if (g_hits >= 1 and e_hits >= 1) or (e_hits >= 2):
         return True
 
     return False
@@ -4162,12 +4274,12 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
 # 9B. V34 18-ANGLE GOOGLE/BING HARVESTER (LOCKS 35–52+ UNIQUE 1080p HD PHOTOS!)
 # ==============================================================================
 def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
-    if dossier.get("_cached_200_audited_pool") is not None and len(dossier["_cached_200_audited_pool"]) >= 18:
+    if dossier.get("_cached_200_audited_pool") is not None and len(dossier["_cached_200_audited_pool"]) >= 24:
         return dossier["_cached_200_audited_pool"]
 
     story_title = dossier.get("title", "")
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
-    neg_guard = "-cartoon -illustration -chart -infographic -table"
+    neg_guard = "-cartoon -illustration -chart -infographic -table -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
 
     search_angles = extract_topic_master_queries(dossier, sections_list=sections_list)
     raw_candidates = []
@@ -4199,7 +4311,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     def fetch_angle_candidates(angle_idx_and_q):
         idx_a, angle_q = angle_idx_and_q
         found = []
-        page_offsets = [0, 35] if idx_a < 5 else [0]
+        page_offsets = [0, 35] if idx_a < 6 else [0]
         for first_off in page_offsets:
             try:
                 b_url = (
@@ -4214,7 +4326,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                     turl_m = re.search(r'"turl"\s*:\s*"(https?://[^"]+)"', mc_unesc)
                     if not u_m and not turl_m:
                         continue
-                    turl_hd = (turl_m.group(1) + "&w=1280&h=720&c=7&rs=1&p=0") if turl_m else ""
+                    turl_hd = (turl_m.group(1) + "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95") if turl_m else ""
                     u_clean = u_m.group(1) if u_m else turl_hd
                     t_m = re.search(r'"t"\s*:\s*"([^"]+)"', mc_unesc)
                     desc_m = re.search(r'"desc"\s*:\s*"([^"]+)"', mc_unesc)
@@ -4233,7 +4345,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                         "caption": cap_real,
                         "media_type": "image",
                         "source_angle": angle_q,
-                        "base_priority": 32 if idx_a < 4 else 26
+                        "base_priority": 32 if idx_a < 5 else 26
                     })
             except Exception:
                 pass
@@ -4257,7 +4369,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                 pass
         return found
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
         futs = [ex.submit(fetch_angle_candidates, (i, aq)) for i, aq in enumerate(search_angles)]
         for ft in concurrent.futures.as_completed(futs):
             try:
@@ -4268,24 +4380,26 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
             except Exception:
                 pass
 
-    for kw_news in search_angles[:2]:
+    for kw_news in search_angles[:4]:
         try:
             b_rss = f"https://www.bing.com/news/search?q={urllib.parse.quote(kw_news)}&format=rss"
             br = requests.get(b_rss, headers=HEADERS_WEB, timeout=5)
             b_feed = feedparser.parse(br.content)
-            for b_ent in b_feed.entries[:14]:
+            for b_ent in b_feed.entries[:16]:
                 ent_title = getattr(b_ent, "title", "")
                 if hasattr(b_ent, "media_thumbnail") and b_ent.media_thumbnail:
                     tu = b_ent.media_thumbnail[0].get("url", "")
                     if tu and tu not in seen_cand_urls:
-                        tu_hd = re.sub(r"&w=\d+&h=\d+", "&w=1280&h=720", tu)
+                        tu_hd = re.sub(r"&w=\d+&h=\d+", "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95", tu)
+                        if "w=1920" not in tu_hd and "th?id=" in tu_hd:
+                            tu_hd = tu_hd + "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95"
                         seen_cand_urls.add(tu_hd)
                         raw_candidates.append({
                             "url": tu_hd,
                             "caption": f"{ent_title} {kw_news}",
                             "media_type": "image",
                             "source_angle": "bing_news_rss",
-                            "base_priority": 34
+                            "base_priority": 38
                         })
         except Exception:
             pass
@@ -4297,19 +4411,19 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
         cap = cand["caption"]
         if not passes_audit_gate_1_caption_and_url(u, cap, dossier, cand["source_angle"]):
             continue
-        cap_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", f"{cap} {u}")}
+        cap_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{2,}", f"{cap} {u}")}
         g_hits = len(cap_tokens.intersection(geo_tokens))
         e_hits = len(cap_tokens.intersection(ev_tokens))
-        cand["relevance_score"] = cand["base_priority"] + (g_hits * 22) + (e_hits * 12)
+        cand["relevance_score"] = cand["base_priority"] + (g_hits * 22) + (e_hits * 16)
         cand["tokens"] = cap_tokens
         pre_passed.append(cand)
 
     pre_passed.sort(key=lambda x: x["relevance_score"], reverse=True)
     audit12_passed = []
-    for cand in pre_passed[:140]:
+    for cand in pre_passed[:160]:
         if cand["source_angle"] in ("multi_site_original_article", "direct_article") or ai_audit_caption_and_scene_match(cand["caption"], cand["url"], story_title, cand["source_angle"], dossier=dossier):
             audit12_passed.append(cand)
-            if len(audit12_passed) >= 95:
+            if len(audit12_passed) >= 110:
                 break
 
     verified_pool = []
@@ -4322,7 +4436,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
         for try_u in urls_to_try:
             try:
                 ir = requests.get(try_u, headers=HEADERS_WEB, timeout=4.5)
-                if ir.status_code == 200 and len(ir.content) > 8500:
+                if ir.status_code == 200 and len(ir.content) > 15000:
                     p = f"temp/pool300_{hashlib.md5(cand_obj['url'].encode()).hexdigest()[:10]}.jpg"
                     with open(p, "wb") as f:
                         f.write(ir.content)
@@ -4333,7 +4447,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
 
     downloaded_items = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
-        futs2 = [ex.submit(download_candidate_bytes, c) for c in audit12_passed[:88]]
+        futs2 = [ex.submit(download_candidate_bytes, c) for c in audit12_passed[:96]]
         for ft in concurrent.futures.as_completed(futs2):
             res = ft.result()
             if res is not None:
@@ -4346,14 +4460,14 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
             orig_w, orig_h = im_raw.size
             local_hashes = []
             vim = validate_and_enhance_1080p(
-                im_raw, local_hashes, min_w=460, min_h=260,
+                im_raw, local_hashes, min_w=780, min_h=440,
                 story_title=story_title, query_context=cand_obj["source_angle"]
             )
             if vim is not None and local_hashes:
                 dh = local_hashes[0]
                 if not any(int(np.sum(dh != old_h)) < 10 for old_h in pool_hashes):
                     pool_hashes.append(dh)
-                    hd_bonus = 25 if (orig_w >= 1150 and orig_h >= 640) else 0
+                    hd_bonus = 30 if (orig_w >= 1200 and orig_h >= 675) else 0
                     verified_pool.append({
                         "im": vim,
                         "dhash": dh,
@@ -4363,14 +4477,14 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                         "relevance_score": cand_obj["relevance_score"] + hd_bonus,
                         "has_face": has_well_framed_face(vim)
                     })
-                    if len(verified_pool) >= 54:
+                    if len(verified_pool) >= 60:
                         break
         except Exception:
             pass
 
     verified_pool.sort(key=lambda x: x["relevance_score"], reverse=True)
     print(
-        f">> [V34 18-ANGLE HD VAULT] Topic: '{story_title[:46]}' | "
+        f">> [V35 22-ANGLE TRUE-HD VAULT] Topic: '{story_title[:46]}' | "
         f"Harvested: {len(raw_candidates)} Raw Visuals -> Audit #1&#2 Passed: {len(audit12_passed)} -> "
         f"Audit #3,#4&#5 Locked: {len(verified_pool)} Unique 1080p HD Visuals!",
         flush=True
@@ -4419,31 +4533,29 @@ def select_best_visual_from_200_pool(beat_text, search_q, dossier, used_image_ur
 
     best_item = None
     best_score = -999
+    best_overlap = 0
     for item in pool:
         if item["url"] in used_image_urls:
             continue
         if any(int(np.sum(item["dhash"] != old_h)) < 8 for old_h in existing_hashes):
             continue
-        item_toks = item.get("tokens") or {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", f"{item.get('caption', '')} {item.get('url', '')}")}
+        item_toks = item.get("tokens") or {w.lower() for w in re.findall(r"[A-Za-z0-9]{2,}", f"{item.get('caption', '')} {item.get('url', '')}")}
         if must_match_tokens and len(must_match_tokens.intersection(item_toks)) == 0:
             continue
         overlap_cnt = len(beat_tokens.intersection(item_toks))
         topic_cnt = len(geo_toks.intersection(item_toks))
-        total_sc = item["relevance_score"] + (overlap_cnt * 42) + (topic_cnt * 15)
+        total_sc = item["relevance_score"] + (overlap_cnt * 65) + (topic_cnt * 18)
         if total_sc > best_score:
             best_score = total_sc
             best_item = item
+            best_overlap = overlap_cnt
 
+    # If the sentence mentions a specific secondary country/person (`must_match_tokens`) and no vault photo matched it,
+    # return None so `fetch_verified_news_or_wiki_visual` fetches a live HD press photo for that exact sentence!
     if best_item is None and must_match_tokens:
-        for item in pool:
-            if item["url"] in used_image_urls:
-                continue
-            if any(int(np.sum(item["dhash"] != old_h)) < 8 for old_h in existing_hashes):
-                continue
-            best_item = item
-            break
+        return None
 
-    if best_item is not None:
+    if best_item is not None and best_overlap >= 1:
         used_image_urls.add(best_item["url"])
         existing_hashes.append(best_item["dhash"])
         return best_item["im"]
@@ -4452,7 +4564,7 @@ def select_best_visual_from_200_pool(beat_text, search_q, dossier, used_image_ur
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat", used_image_urls=None, beat_text="", bv_dict=None):
     if used_image_urls is None:
         used_image_urls = set()
-    neg_guard = "-cartoon -illustration -chart -infographic"
+    neg_guard = "-cartoon -illustration -chart -infographic -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
     story_title = dossier.get("title", "")
 
@@ -4465,7 +4577,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         must_match_tokens=must_match_tokens
     )
     if pool_match_im is not None:
-        print(f"   🎯 [Unique HD Topic Visual from Vault]: {exact_topic_q[:45]}", flush=True)
+        print(f"   🎯 [Unique HD Sentence-Matched Visual from Vault]: {exact_topic_q[:48]}", flush=True)
         return pool_match_im
 
     master_qs = extract_topic_master_queries(dossier)
@@ -4474,7 +4586,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         if lq and len(lq.strip()) >= 4 and lq.strip() not in live_queries:
             live_queries.append(lq.strip())
 
-    page_off = (len(existing_hashes) // 6) * 20
+    page_off = (len(existing_hashes) // 6) * 15
     for b_img_q in live_queries[:4]:
         try:
             b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + ' ' + neg_guard)}&first={page_off}&count=35&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
@@ -4486,7 +4598,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                 turl_m = re.search(r'"turl"\s*:\s*"(https?://[^"]+)"', mc_u)
                 if not um and not turl_m:
                     continue
-                turl_hd = (turl_m.group(1) + "&w=1280&h=720&c=7&rs=1&p=0") if turl_m else ""
+                turl_hd = (turl_m.group(1) + "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95") if turl_m else ""
                 u_primary = um.group(1) if um else turl_hd
                 tm = re.search(r'"t"\s*:\s*"([^"]+)"', mc_u)
                 desc_m = re.search(r'"desc"\s*:\s*"([^"]+)"', mc_u)
@@ -4507,19 +4619,27 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                 for try_u in ([u_clean, u_turl] if u_turl else [u_clean]):
                     try:
                         ir = requests.get(try_u, headers=HEADERS_WEB, timeout=4.5)
-                        if ir.status_code == 200 and len(ir.content) > 8500:
+                        if ir.status_code == 200 and len(ir.content) > 15000:
                             p = f"temp/{tag_id}_binghd.jpg"
                             with open(p, "wb") as f:
                                 f.write(ir.content)
-                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=460, min_h=260, story_title=story_title, query_context=b_img_q)
+                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=780, min_h=440, story_title=story_title, query_context=b_img_q)
                             if vim is not None:
                                 used_image_urls.add(u_clean)
-                                print(f"   📸 [Live Unique Topic HD Photo Locked]: '{b_img_q[:32]}' -> {cap_t[:42]}", flush=True)
+                                print(f"   📸 [Live Sentence-Accurate HD Photo Locked]: '{b_img_q[:34]}' -> {cap_t[:44]}", flush=True)
                                 return vim
                     except Exception:
                         pass
         except Exception:
             pass
+
+    # Fallback to any remaining unused photo in the 200+ audited vault before returning None
+    pool = dossier.get("_cached_200_audited_pool") or []
+    for item in pool:
+        if item["url"] not in used_image_urls and not any(int(np.sum(item["dhash"] != old_h)) < 8 for old_h in existing_hashes):
+            used_image_urls.add(item["url"])
+            existing_hashes.append(item["dhash"])
+            return item["im"]
 
     failed_queries.append(topic_anchor)
     return None
@@ -4558,15 +4678,15 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
         bg = ImageEnhance.Brightness(bg).enhance(0.32)
         draw_bg = ImageDraw.Draw(bg)
 
-        card_h = int(target_h * 0.66)
+        card_h = int(target_h * 0.76)
         scale_c = max(target_w / float(iw), card_h / float(ih))
         rw, rh = int(iw * scale_c), int(ih * scale_c)
         fg_resized = im.resize((rw, rh), resample_mode)
         left_c = (rw - target_w) // 2
-        top_c = max(0, int((rh - card_h) * 0.25))
+        top_c = max(0, int((rh - card_h) * 0.22))
         fg_card = fg_resized.crop((left_c, top_c, left_c + target_w, top_c + card_h))
 
-        y_pos = 210
+        y_pos = 148
         bg.paste(fg_card, (0, y_pos))
         draw_bg.rectangle([(0, y_pos - 3), (target_w, y_pos)], fill=(255, 215, 0))
         draw_bg.rectangle([(0, y_pos + card_h), (target_w, y_pos + card_h + 3)], fill=(0, 235, 255))
@@ -5270,14 +5390,19 @@ def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_
         draw.rounded_rectangle([(eb_x + 28, eb_y + 92), (eb_x + 28 + hl_w, eb_y + 154)], radius=10, fill=(255, 230, 0, 245))
     draw.text((eb_x + 42, eb_y + 104), point_hl, fill=(10, 14, 24, 255), font=get_font(32 if is_short else 34))
 
-    # Split spoken excerpt into 3 clean investigative bullet rows that reveal progressively!
-    words_b = [w for w in re.sub(r"[^\x20-\x7E]", "", b_txt).split() if w]
-    chunk_n = max(4, (len(words_b) + 2) // 3)
-    bullets = [
-        " ".join(words_b[:chunk_n]),
-        " ".join(words_b[chunk_n:chunk_n * 2]),
-        " ".join(words_b[chunk_n * 2:chunk_n * 3])
-    ]
+    # Build 3 complete, self-contained investigative takeaways from the story's verified facts (NEVER chopping 1 sentence into 3 broken fragments!)
+    raw_story_facts = [strip_news_publisher_mentions(f) for f in (beat["story"].get("raw_facts") or []) if len(str(f)) >= 30]
+    cand_sentences = [b_txt] + [f for f in raw_story_facts if f[:24].lower() != b_txt[:24].lower()]
+    bullets = []
+    for cs_i, cs_txt in enumerate(cand_sentences[:6]):
+        clean_cs = re.sub(r"\s+[-|]\s+[A-Z][A-Za-z0-9\s\.\-&]{2,35}$", "", re.sub(r"[^\x20-\x7E]", "", cs_txt)).strip()
+        pt_summary = fit_whole_words_limit(clean_cs, 62)
+        if len(pt_summary) >= 16 and pt_summary not in bullets:
+            bullets.append(pt_summary)
+        if len(bullets) >= 3:
+            break
+    while len(bullets) < 3:
+        bullets.append(fit_whole_words_limit(point_hl, 50))
     by_cur = eb_y + 188
     for b_idx, b_line in enumerate(bullets):
         if not b_line:
@@ -5444,7 +5569,7 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     canvas.alpha_composite(get_prebuilt_vignette_overlay(W, H))
     return canvas
 
-def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False, sec_idx=0, beat_in_sec=0):
+def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False, sec_idx=0, beat_in_sec=0, is_short=False):
     """
     V33 NITISH RAJPUT & THINK SCHOOL AUTHENTIC DOCUMENTARY COMPOSITOR SELECTOR:
     - Keeps pointless procedural dark screens ('prithvi ka gola' 3D globe & '100% ESCALATION' bars) 100% BANNED!
@@ -5466,8 +5591,11 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
         sim_counts["BROADCAST_INTERVIEW_QUOTE_MOCKUP"] = sim_counts.get("BROADCAST_INTERVIEW_QUOTE_MOCKUP", 0) + 1
         return "BROADCAST_INTERVIEW_QUOTE_MOCKUP"
 
-    # 2. Nitish Rajput / Think School Split-Canvas Investigative Dossier Board on deep analytical beats
-    if beat_in_sec == 2 and sec_idx in (2, 6) and sim_counts.get("NITISH_DOSSIER_SPLIT_BOARD", 0) < 2:
+    if is_short:
+        return None
+
+    # 2. Nitish Rajput / Think School Split-Canvas Investigative Dossier Board on deep analytical beats (16:9 Long Documentaries)
+    if (not is_short) and beat_in_sec == 2 and sec_idx in (2, 6) and sim_counts.get("NITISH_DOSSIER_SPLIT_BOARD", 0) < 2:
         sim_counts["NITISH_DOSSIER_SPLIT_BOARD"] = sim_counts.get("NITISH_DOSSIER_SPLIT_BOARD", 0) + 1
         return "NITISH_DOSSIER_SPLIT_BOARD"
 
@@ -6239,14 +6367,15 @@ def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
     d.text((24, 12), doc_header, fill=(255, 225, 0, 255), font=get_font(21))
 
     point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY FACT HIGHLIGHTED").upper(), 28)
-    full_claim_txt = str((beat.get("claim_meta") or {}).get("text") or b_txt)
-    clean_ex = strip_news_publisher_mentions(re.sub(r"[^\x20-\x7E]", "", full_claim_txt)).strip()
+    # Use the clean spoken sentence `b_txt` (never raw RSS title with publisher suffixes like 'The Diplomat - Asia-Pacific'!)
+    clean_ex = strip_news_publisher_mentions(re.sub(r"[^\x20-\x7E]", "", b_txt)).strip()
+    clean_ex = re.sub(r"\s+(?:The Diplomat|Asia-Pacific|Reuters|BBC|The Guardian|CNN|DW|France24|Bloomberg|CNBC).*$", "", clean_ex, flags=re.I).strip()
     clean_ex = re.sub(r"^[a-z]+,\s*", "", clean_ex)
     if clean_ex:
         clean_ex = clean_ex[0].upper() + clean_ex[1:]
-    words_ex = clean_ex.split()
-    line1_ex = " ".join(words_ex[:9])
-    line2_ex = " ".join(words_ex[9:18])
+    line1_ex = fit_whole_words_limit(clean_ex, 52)
+    rem_ex = clean_ex[len(line1_ex):].strip()
+    line2_ex = fit_whole_words_limit(rem_ex, 50) if rem_ex else ""
 
     # Animated Translucent Yellow Marker Box drawing across the headline
     hl_prog = cubic_bezier_ease_in_out(min(max((local_t - 0.08) / 0.45, 0.0), 1.0))
@@ -6293,14 +6422,14 @@ def build_kinetic_number_callout_rgba(beat, local_t, is_short=True):
         stat_str = "5 – 0 DEFEAT"
         sub_lbl = "HISTORIC HUMILIATION"
     else:
-        yr_m = re.search(r"\b(19\d{2}|20\d{2})\b", b_txt)
-        num_m = re.search(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?\s*(?:%|percent|billion|million|years|hospitals|rials))", b_txt, flags=re.I)
-        if yr_m:
+        num_m = re.search(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?\s*(?:%|percent|trillion|billion|million|crore|lakh|km|miles|tons|years|countries))", b_txt, flags=re.I)
+        yr_m = re.search(r"\b(19\d{2}|200\d|201\d|202[0-2])\b", b_txt)
+        if num_m:
+            stat_str = num_m.group(1).upper().replace("PERCENT", "%")[:18]
+            sub_lbl = "VERIFIED IMPACT METRIC"
+        elif yr_m:
             stat_str = yr_m.group(1)
-            sub_lbl = "ARCHIVAL YEAR STAMP"
-        elif num_m:
-            stat_str = num_m.group(1).upper()[:18]
-            sub_lbl = "VERIFIED METRIC"
+            sub_lbl = "HISTORICAL TIMELINE"
 
     if not stat_str:
         return None
@@ -6624,24 +6753,23 @@ def compute_exact_sentence_beat_timings(narration, raw_sents, word_timings, sec_
 
 def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used_video_queries, tag_prefix="vpool"):
     """
-    V30 100% TOPIC-LOCKED HD VIDEO & INTERVIEW POOL HARVESTER:
-    - Searches ONLY for the main story topic (`extract_topic_master_queries(dossier)`), NEVER section `video_broll_query`
-      sentence words (which previously searched 'exploration contracts' -> Filipino Subic news clip!).
-    - Pre-harvests up to 5 distinct 1080p moving video & interview clips of the actual topic!
+    V35 MULTI-ANGLE 1080p HD VIDEO & INTERVIEW B-ROLL HARVESTER:
+    Pre-harvests up to 8 distinct 1080p HD moving video & interview clips of the actual story topic
+    so both Long Documentaries and Shorts have rich, non-repeating moving HD B-roll across chapters!
     """
-    if dossier.get("_cached_video_broll_pool") and len(dossier["_cached_video_broll_pool"]) >= 4:
+    if dossier.get("_cached_video_broll_pool") and len(dossier["_cached_video_broll_pool"]) >= 6:
         return dossier["_cached_video_broll_pool"]
 
-    master_qs = extract_topic_master_queries(dossier)
+    master_qs = extract_topic_master_queries(dossier, sections_list=sections_list)
     video_angles = []
-    for mq in master_qs[:6]:
+    for mq in master_qs[:10]:
         if mq not in video_angles:
             video_angles.append(mq)
 
     pool_clips = list(dossier.get("_cached_video_broll_pool") or [])
     vpool_start_t = time.time()
-    for idx_v, ang_q in enumerate(video_angles[:7]):
-        if len(pool_clips) >= 6 or (time.time() - vpool_start_t) > 58.0:
+    for idx_v, ang_q in enumerate(video_angles[:10]):
+        if len(pool_clips) >= 8 or (time.time() - vpool_start_t) > 75.0:
             break
         if not ang_q or len(ang_q) < 4:
             continue
@@ -6652,7 +6780,7 @@ def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used
             pool_clips.append(v_obj)
 
     dossier["_cached_video_broll_pool"] = pool_clips
-    print(f"🎬 [V30 Topic-Locked HD Video & Interview Pool Ready] Locked {len(pool_clips)} Distinct 1080p Clips for '{dossier.get('title', '')[:44]}'!", flush=True)
+    print(f"🎬 [V35 Topic-Locked HD Video & Interview Pool Ready] Locked {len(pool_clips)} Distinct 1080p Clips for '{dossier.get('title', '')[:44]}'!", flush=True)
     return pool_clips
 
 def extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.30, blur_radius=14):
@@ -6746,21 +6874,16 @@ def build_prop_driven_storyboard_1080p(
             sec_elapsed_before = s_info["start"]
 
             prop_badge, wiki_target, search_q, _ = extract_speaker_or_prop_for_beat(b_txt, dossier, entities, global_beat_idx)
-            # Lock `search_q` strictly to `master_topic_queries` (NEVER overwrite with `bv["photo_query"]` sentence words!)
-            if master_topic_queries:
+            cur_bv_dict = beat_visuals_list[b_i] if (b_i < len(beat_visuals_list) and isinstance(beat_visuals_list[b_i], dict)) else {}
+            _, sent_specific_q, _ = extract_sentence_proper_entities_and_query(b_txt, cur_bv_dict, dossier)
+            if sent_specific_q and len(sent_specific_q) >= 4:
+                search_q = sent_specific_q
+            elif master_topic_queries:
                 search_q = master_topic_queries[(global_beat_idx + b_i) % len(master_topic_queries)]
 
-            bv_point_hl = ""
-            bv_person = ""
-            bv_role = ""
-            if b_i < len(beat_visuals_list) and isinstance(beat_visuals_list[b_i], dict):
-                bv = beat_visuals_list[b_i]
-                if bv.get("point_highlight"):
-                    bv_point_hl = str(bv["point_highlight"]).strip()
-                if bv.get("mentioned_person"):
-                    bv_person = str(bv["mentioned_person"]).strip()
-                if bv.get("person_role"):
-                    bv_role = str(bv["person_role"]).strip()
+            bv_point_hl = str(cur_bv_dict.get("point_highlight") or "").strip()
+            bv_person = str(cur_bv_dict.get("mentioned_person") or "").strip()
+            bv_role = str(cur_bv_dict.get("person_role") or "").strip()
 
             if sec.get("role"):
                 prop_badge = sec["role"]
@@ -6797,7 +6920,7 @@ def build_prop_driven_storyboard_1080p(
 
             is_final_beat_of_long = (not is_short) and (sec_idx == len(sections_list) - 1) and (b_i == num_beats - 1) and (global_beat_idx >= 6)
             real_sec_idx = int(sec.get("chapter_index", sec_idx))
-            special_sim_mode = classify_special_visual_simulation_mode(b_txt, dossier, beat_idx=global_beat_idx, is_last_beat=is_final_beat_of_long, sec_idx=real_sec_idx, beat_in_sec=b_i)
+            special_sim_mode = classify_special_visual_simulation_mode(b_txt, dossier, beat_idx=global_beat_idx, is_last_beat=is_final_beat_of_long, sec_idx=real_sec_idx, beat_in_sec=b_i, is_short=is_short)
             has_shock_turning_point = bool(re.search(r"\b(5-0|five to zero|humiliation|anarchy|sacking|sacked|collapsed|crippled|dustbin|casualty|dead|killed|violation|crisis)\b", b_txt, flags=re.I))
             has_date_or_year = bool(re.search(r"\b(19\d{2}|20\d{2}|100 years|century)\b", b_txt, flags=re.I))
 
@@ -6839,7 +6962,7 @@ def build_prop_driven_storyboard_1080p(
                 beat_im = fetch_verified_news_or_wiki_visual(
                     wiki_target, search_q, dossier, existing_hashes, failed_queries,
                     tag_id=f"{tag_prefix}_b{global_beat_idx}", used_image_urls=used_image_urls,
-                    beat_text=b_txt, bv_dict=None
+                    beat_text=b_txt, bv_dict=cur_bv_dict
                 )
                 if beat_im is None:
                     beat_im = fetch_huggingface_or_pollinations_1080p_scene(
@@ -6961,25 +7084,14 @@ class VoiceAndSubtitleEngine:
             tts_spoken_text = re.sub(pat_ph, rep_ph, tts_spoken_text, flags=re.I)
 
         long_v, short_v, dg_backup, long_rate, short_rate = CATEGORY_VOICE_CAST.get(
-            core_hub, ("en-US-AndrewMultilingualNeural", "en-US-BrianMultilingualNeural", "aura-orion-en", "+5%", "+7%")
+            core_hub, ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+2%", "+4%")
         )
-        # Multi-Voice Rotation (`अलग-अलग वॉइस`): alternate between Lead Host, Analyst Co-Host, and Quote Correspondent!
-        sec_idx_v = self._chapter_voice_counter
-        self._chapter_voice_counter += 1
-        has_direct_quote = bool(re.search(r'("|“|”|\bsaid\b|\bstated\b|\bwarned\b|\bannounced\b|\baccording to\b)', tts_spoken_text, flags=re.I))
-
-        if is_short:
-            edge_voice, rate, pitch = (short_v, short_rate, "-1Hz") if (sec_idx_v % 2 == 0) else (long_v, short_rate, "-2Hz")
-        else:
-            if sec_idx_v == 0:
-                edge_voice, rate, pitch = (long_v, long_rate, "-2Hz")
-            elif has_direct_quote and sec_idx_v % 2 == 1:
-                edge_voice, rate, pitch = ("en-GB-RyanNeural", "+4%", "-1Hz")
-            elif sec_idx_v % 2 == 1:
-                edge_voice, rate, pitch = (short_v, long_rate, "+0Hz")
-            else:
-                v_cand, r_cand, p_cand = DOCUMENTARY_MULTI_VOICE_POOL[sec_idx_v % len(DOCUMENTARY_MULTI_VOICE_POOL)]
-                edge_voice, rate, pitch = v_cand, r_cand, p_cand
+        # V35 SINGLE CONSISTENT HUMAN DOCUMENTARY NARRATOR VOICE PER VIDEO:
+        # Never switches voices mid-video! Uses ONE warm, expressive human narrator voice
+        # (`en-US-AndrewMultilingualNeural`) consistently from Chapter 1 to Chapter 10!
+        edge_voice = "en-US-AndrewMultilingualNeural"
+        rate = "+4%" if is_short else "+2%"
+        pitch = "-1Hz"
 
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
         word_timings = []
@@ -8323,9 +8435,11 @@ def translate_text_free_google_gtx(text_str, target_lang_code):
 
 def build_20_country_youtube_localizations(en_title, en_description):
     """
-    V32 52-LANGUAGE YOUTUBE LOCALIZATION ENGINE (WITH STRICT API SANITIZATION):
-    - Translates Title & Description into 52 world languages in parallel (`max_workers=16`).
-    - Strips `<` and `>` and enforces `<=92` char titles so YouTube Data API v3 NEVER rejects `localizations`!
+    V35 BULLETPROOF 52-LANGUAGE YOUTUBE LOCALIZATION ENGINE (INDIA + GLOBAL):
+    - Translates Title & Summary cleanly into all 52 languages (including Hindi, Gujarati, Marathi,
+      Tamil, Telugu, Bengali, Kannada, Malayalam, Punjabi, Urdu, Spanish, French, German, Arabic,
+      Russian, Japanese, Chinese, Korean, Portuguese, Indonesian, Filipino, Malay, Vietnamese, Thai).
+    - Translates Title and Description separately so Google Translate NEVER mangles separator tokens!
     """
     clean_en_t = sanitize_youtube_metadata_text(en_title, 92)
     clean_en_d = sanitize_youtube_metadata_text(en_description, 4500)
@@ -8335,19 +8449,12 @@ def build_20_country_youtube_localizations(en_title, en_description):
             "description": clean_en_d
         }
     }
-    short_desc = clean_en_d[:750]
-    combined_payload = f"{clean_en_t}\n|||\n{short_desc}"
+    short_desc = clean_en_d[:550]
 
     def _trans_one(lang_tuple):
         yt_code, gtx_code, _, _ = lang_tuple
-        tr_both = translate_text_free_google_gtx(combined_payload, gtx_code)
-        if tr_both and "|||" in tr_both:
-            parts = tr_both.split("|||", 1)
-            t_tr = sanitize_youtube_metadata_text(parts[0], 90)
-            d_tr = sanitize_youtube_metadata_text(parts[1], 4400)
-        else:
-            t_tr = sanitize_youtube_metadata_text(translate_text_free_google_gtx(clean_en_t, gtx_code), 90)
-            d_tr = sanitize_youtube_metadata_text(short_desc, 4400)
+        t_tr = sanitize_youtube_metadata_text(translate_text_free_google_gtx(clean_en_t, gtx_code), 90)
+        d_tr = sanitize_youtube_metadata_text(translate_text_free_google_gtx(short_desc, gtx_code), 4200)
         if t_tr and len(t_tr) >= 3:
             return yt_code, {"title": t_tr, "description": d_tr or clean_en_d}
         return yt_code, None
@@ -8364,17 +8471,18 @@ def build_20_country_youtube_localizations(en_title, en_description):
                     pass
     except Exception:
         pass
-    print(f"🌍 [52-Language Global YouTube API] Built & sanitized native Title/Description localizations for {len(localizations)} languages!", flush=True)
+    print(f"🌍 [52-Language Global & Indian YouTube API] Built & sanitized native Title/Description localizations for {len(localizations)} languages!", flush=True)
     return localizations
 
-def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False):
+def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None):
     """
-    V34 QUOTA-SAFE MULTI-LANGUAGE SUBTITLES (.SRT) & NEURAL DUBBING GENERATOR:
-    - Generates timestamped `.srt` subtitle files in 18+ languages and neural dubbed `.mp3` audio tracks locally in `output/`.
-    - QUOTA GUARD: Does NOT call `youtube.captions().insert` in a loop because YouTube Data API v3 charges
-      400 quota units per caption track (12 tracks = 4,800 units = half of the entire 10,000 daily quota!).
-      Instead, `defaultAudioLanguage="en"` + 52-language `localizations` enables YouTube's built-in auto-caption
-      translation across all languages at ZERO extra caption quota cost!
+    V35 MULTI-LANGUAGE SUBTITLES (.SRT) & NEURAL DUBBING ENGINE (INDIA + GLOBAL):
+    1. Generates timestamped `.srt` subtitle files in 18+ Indian & World languages (`hi`, `gu`, `mr`, `ta`, `te`,
+       `bn`, `es`, `fr`, `de`, `ar`, `ru`, `ja`, `zh-Hans`, `pt`, `id`, `fil`, `ko`, `tr`) in `output/subtitles/`.
+    2. Synthesizes full neural human-like dubbed audio tracks (`.mp3`) in 10 major languages (`Hindi`, `Gujarati`,
+       `Tamil`, `Spanish`, `French`, `German`, `Arabic`, `Russian`, `Japanese`, `Portuguese`) in `output/dubbed_audio/`!
+    3. Also muxes a Multi-Audio Dubbed Master MP4 (`output/<video_tag>_multilang_dubbed.mp4`) containing
+       English + Hindi + Spanish + Arabic + French audio streams selectable in any media player!
     """
     if not sections_list:
         return
@@ -8411,15 +8519,16 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
         f.write("\n".join(en_srt_lines))
 
     newline_joined_en = "\n".join(s[2] for s in srt_segments)
-    srt_targets = GLOBAL_20_LANGUAGES_CONFIG[:14] if not is_short else GLOBAL_20_LANGUAGES_CONFIG[:8]
-    dub_voice_codes = {"hi", "es", "fr", "de", "ja", "zh-Hans", "ar", "pt"} if not is_short else {"hi", "es", "fr", "ar"}
+    srt_targets = GLOBAL_20_LANGUAGES_CONFIG[:18] if not is_short else GLOBAL_20_LANGUAGES_CONFIG[:12]
+    dub_voice_codes = {"hi", "gu", "ta", "es", "fr", "de", "ar", "ru", "ja", "pt"} if not is_short else {"hi", "gu", "es", "fr", "ar"}
+    generated_dub_files = []
 
     def _process_lang_dub_and_srt(lang_tuple):
         yt_code, gtx_code, lang_label, voice_id = lang_tuple
         try:
             tr_block = translate_text_free_google_gtx(newline_joined_en[:1850], gtx_code)
             if not tr_block:
-                return
+                return None
             tr_lines = [ln.strip() for ln in tr_block.splitlines() if ln.strip()]
             if not tr_lines:
                 tr_lines = [tr_block]
@@ -8435,17 +8544,58 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
                 dub_mp3_path = f"output/dubbed_audio/{video_tag}_{yt_code}.mp3"
                 txt_tmp = f"temp/dub_txt_{video_tag}_{yt_code}.txt"
                 with open(txt_tmp, "w", encoding="utf-8") as tf:
-                    tf.write(" ".join(tr_lines)[:1400])
-                run_isolated_subprocess(["edge-tts", "--voice", voice_id, "--file", txt_tmp, "--write-media", dub_mp3_path], timeout_sec=11)
+                    tf.write(" ".join(tr_lines)[:1600])
+                run_isolated_subprocess(["edge-tts", "--voice", voice_id, "--file", txt_tmp, "--write-media", dub_mp3_path], timeout_sec=14)
+                if os.path.exists(dub_mp3_path) and os.path.getsize(dub_mp3_path) > 2000:
+                    return (yt_code, lang_label, dub_mp3_path, tr_srt_path)
         except Exception:
             pass
+        return None
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
-            list(ex.map(_process_lang_dub_and_srt, srt_targets))
-        print(f"🎙️ [Multi-Language SRT & Dubs] Built {len(srt_targets)} language subtitle tracks + neural dubs in parallel (0 API Quota Used)!", flush=True)
+            results_dub = list(ex.map(_process_lang_dub_and_srt, srt_targets))
+            for r_d in results_dub:
+                if r_d is not None:
+                    generated_dub_files.append(r_d)
+        print(f"🎙️ [Multi-Language SRT & Neural Dubs] Built {len(srt_targets)} subtitle tracks + {len(generated_dub_files)} neural audio dubs (Hindi/Global)!", flush=True)
     except Exception:
         pass
+
+    # Mux Multi-Language Dubbed Audio Tracks (English + Hindi + Spanish + French + Arabic) into a Multi-Audio MP4 in `output/`
+    if video_path and os.path.exists(video_path) and generated_dub_files:
+        try:
+            multilang_mp4 = f"output/{video_tag}_multilang_dubbed.mp4"
+            cmd_mux = ["ffmpeg", "-nostdin", "-y", "-i", video_path]
+            for _, _, dub_mp3, _ in generated_dub_files[:5]:
+                cmd_mux.extend(["-i", dub_mp3])
+            cmd_mux.extend(["-map", "0:v:0", "-map", "0:a:0"])
+            for idx_d in range(len(generated_dub_files[:5])):
+                cmd_mux.extend(["-map", f"{idx_d + 1}:a:0"])
+            cmd_mux.extend(["-c:v", "copy", "-c:a", "aac", "-shortest", multilang_mp4])
+            run_isolated_subprocess(cmd_mux, timeout_sec=16)
+            if os.path.exists(multilang_mp4) and os.path.getsize(multilang_mp4) > 50000:
+                print(f"🎧 [Multi-Language Dubbed MP4 Ready] {multilang_mp4} (Original + {len(generated_dub_files[:5])} Dubbed Audio Tracks!)", flush=True)
+        except Exception:
+            pass
+
+    # Upload Top Multi-Language Closed Caption (.SRT) Tracks (Hindi, English, Spanish) to YouTube API (after video & thumbnail are already live!)
+    if yt_client is not None and video_id:
+        from googleapiclient.http import MediaFileUpload
+        priority_cc = [("hi", "Hindi (India)", f"output/subtitles/{video_tag}_hi.srt"), ("en", "English", en_srt_path), ("es", "Spanish", f"output/subtitles/{video_tag}_es.srt")]
+        for cc_code, cc_name, cc_file in priority_cc:
+            if not os.path.exists(cc_file):
+                continue
+            try:
+                yt_client.captions().insert(
+                    part="snippet",
+                    body={"snippet": {"videoId": video_id, "language": cc_code, "name": cc_name, "isDraft": False}},
+                    media_body=MediaFileUpload(cc_file, mimetype="application/octet-stream", resumable=False)
+                ).execute()
+                print(f"📝 [YouTube CC Track Uploaded] {cc_name} ({cc_code}) active on https://youtu.be/{video_id}!", flush=True)
+            except Exception as cc_err:
+                if "quotaExceeded" in str(cc_err) or "403" in str(cc_err):
+                    break
 
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
@@ -8474,9 +8624,11 @@ def try_youtube_auto_upload(
 
     multilang_preview_lines = ["", "🌍 GLOBAL MULTI-LANGUAGE TITLES (52 LANGUAGES SUPPORTED):"]
     preview_langs = [
-        ("hi", "🇮🇳 Hindi"), ("es", "🇪🇸 Español"), ("fr", "🇫🇷 Français"), ("de", "🇩🇪 Deutsch"),
-        ("ar", "🇸🇦 العربية"), ("pt", "🇧🇷 Português"), ("ru", "🇷🇺 Русский"), ("ja", "🇯🇵 日本語"),
-        ("zh-Hans", "🇨🇳 中文"), ("id", "🇮🇩 Indonesia"), ("fil", "🇵🇭 Filipino"), ("ms", "🇲🇾 Melayu")
+        ("hi", "🇮🇳 हिन्दी (Hindi)"), ("gu", "🇮🇳 ગુજરાતી (Gujarati)"), ("mr", "🇮🇳 मराठी (Marathi)"),
+        ("ta", "🇮🇳 தமிழ் (Tamil)"), ("te", "🇮🇳 తెలుగు (Telugu)"), ("bn", "🇮🇳 বাংলা (Bengali)"),
+        ("es", "🇪🇸 Español"), ("fr", "🇫🇷 Français"), ("de", "🇩🇪 Deutsch"),
+        ("ar", "🇸🇦 العربية"), ("ru", "🇷🇺 Русский"), ("ja", "🇯🇵 日本語"),
+        ("zh-Hans", "🇨🇳 中文"), ("pt", "🇧🇷 Português"), ("id", "🇮🇩 Indonesia")
     ]
     for l_code, l_flag in preview_langs:
         if l_code in localizations_map and localizations_map[l_code].get("title"):
@@ -8492,7 +8644,7 @@ def try_youtube_auto_upload(
             candidate_tokens.append(tk_val)
 
     if not candidate_tokens:
-        build_and_upload_multilang_captions_and_dubs(None, None, sections_list, video_tag=video_tag, is_short=is_short)
+        build_and_upload_multilang_captions_and_dubs(None, None, sections_list, video_tag=video_tag, is_short=is_short, video_path=video_path)
         print("ℹ️ [GitHub Cloud Test Mode] No YouTube API token set yet; saved to GitHub Artifacts:", video_path, flush=True)
         return None
 
@@ -8546,7 +8698,7 @@ def try_youtube_auto_upload(
 
             # 2. Apply Multi-Language Localizations via clean `videos().update` (50 units)
             try:
-                core_20_keys = ["en", "hi", "es", "fr", "de", "ar", "pt", "ru", "ja", "ko", "tr", "it", "id", "vi", "th", "bn", "ur", "ta", "nl", "pl"]
+                core_20_keys = ["en", "hi", "gu", "mr", "ta", "te", "bn", "kn", "ml", "pa", "ur", "es", "fr", "de", "ar", "pt", "ru", "ja", "zh-Hans", "ko", "tr", "it", "id", "vi", "th", "nl", "pl"]
                 safe_locs = {k: localizations_map[k] for k in core_20_keys if k in localizations_map}
                 yt.videos().update(
                     part="snippet,localizations",
@@ -8557,7 +8709,7 @@ def try_youtube_auto_upload(
                 print("ℹ️ [Multi-Language Description Active; API localizations note]:", str(loc_e)[:95], flush=True)
 
             # 3. Generate local multi-language .srt & dubbed audio tracks (0 API quota units!)
-            build_and_upload_multilang_captions_and_dubs(yt, vid_id, sections_list, video_tag=video_tag, is_short=is_short)
+            build_and_upload_multilang_captions_and_dubs(yt, vid_id, sections_list, video_tag=video_tag, is_short=is_short, video_path=video_path)
 
             # 4. If this is a Short, post the Linked Full Documentary comment
             add_video_to_category_playlist_and_comment(
@@ -8711,7 +8863,7 @@ async def render_and_upload_short_unit(
     short_dossier["_unit_used_photo_ids"] = set()
     short_dossier["_unit_sim_counts"] = {}
     short_dossier["_unit_shown_persons"] = set()
-    seed_photos = list(preloaded_photos[:4]) if preloaded_photos else []
+    seed_photos = list(preloaded_photos) if preloaded_photos else []
     s_beats, s_unique_photos, s_stats = build_prop_driven_storyboard_1080p(
         short_sections, short_dossier, short_entities, 1080, 1920,
         tag_prefix=f"short_{unit_num}", shared_photo_pool=seed_photos
@@ -8839,22 +8991,24 @@ async def main():
         # ==============================================================================
         selected_dossiers = []
 
-        # PAIR #1: Geopolitics, Global Country Top News & Defense
-        geo_priority_order = ["GEOPOLITICS", "GLOBAL_POWERS", "DEFENSE_MILITARY"]
-        if rr_idx % 2 == 1:
-            geo_priority_order = ["GLOBAL_POWERS", "GEOPOLITICS", "DEFENSE_MILITARY"]
+        # PAIR #1 (ALWAYS GEOPOLITICS / INDIA & GLOBAL STRATEGIC AFFAIRS -> ~12-15 Geopolitics Videos/Day!):
+        geo_priority_order = ["GEOPOLITICS", "INDIA_TRENDING", "GLOBAL_POWERS", "DEFENSE_MILITARY"]
+        if rr_idx % 3 == 1:
+            geo_priority_order = ["INDIA_TRENDING", "GEOPOLITICS", "GLOBAL_POWERS", "DEFENSE_MILITARY"]
+        elif rr_idx % 3 == 2:
+            geo_priority_order = ["GLOBAL_POWERS", "GEOPOLITICS", "INDIA_TRENDING", "DEFENSE_MILITARY"]
         for geo_pillar in geo_priority_order:
             gd = discover_dossier_for_pillar(geo_pillar, hist_obj, winning_keywords, batch_fingerprints)
             if gd is not None:
-                gd["score"] += 45
+                gd["score"] += 55
                 selected_dossiers.append(gd)
                 break
 
-        # PAIR #2: Rotating Multi-Category + High-Audience Country Documentary
+        # PAIR #2: All Categories Rotation (Trending in India + Global: Tech, Science, Healthcare, Business, AI, Defense, Geopolitics, Cyber, Facts)
         rotating_categories = [
-            "GLOBAL_POWERS", "TECHNOLOGY", "DEFENSE_MILITARY", "BUSINESS",
-            "AI_ROBOTICS", "SCIENCE", "MIND_BLOWING_FACTS", "GEOPOLITICS",
-            "CYBER_INTELLIGENCE", "HEALTH"
+            "TECHNOLOGY", "SCIENCE", "HEALTH", "BUSINESS",
+            "GEOPOLITICS", "AI_ROBOTICS", "DEFENSE_MILITARY",
+            "INDIA_TRENDING", "CYBER_INTELLIGENCE", "MIND_BLOWING_FACTS"
         ]
         start_cat = rotating_categories[rr_idx % len(rotating_categories)]
         ordered_rot = [start_cat] + [c for c in rotating_categories if c != start_cat]
