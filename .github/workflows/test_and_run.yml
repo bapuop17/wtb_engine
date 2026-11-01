@@ -1,4 +1,4 @@
-name: WTB News Engine V35 (Auto-Scheduled 4 Videos • True 1080p HD • Geopolitics + All Categories • 52 Languages)
+name: WTB News Engine V36 (Every 2h • 4 Videos • 1080p)
 
 on:
   workflow_dispatch:
@@ -18,17 +18,17 @@ on:
       - 'wtb_engine.py'
       - '.github/workflows/**'
   schedule:
-    # Runs every 1.5 hours at off-peak minute 7 & 37 (~16 runs/day = 15+ Geopolitics videos + All Categories!)
-    - cron: '7 * * * *'
-    - cron: '37 1,3,5,7,9,11,13,15,17,19,21,23 * * *'
+    # One run every 2 hours, offset from the top of the hour; 4 outputs/run = 48 planned/day.
+    - cron: '17 */2 * * *'
 
 permissions:
   contents: write
   actions: write
 
 concurrency:
-  group: wtb-production-group
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
+  queue: max
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -37,7 +37,7 @@ env:
 jobs:
   build_and_publish:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 110
 
     steps:
       - name: Checkout Repository
@@ -82,12 +82,13 @@ jobs:
             lxml \
             opencv-python-headless \
             ddgs \
+            pycountry \
             yt-dlp \
             google-api-python-client \
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V35 Documentary News Engine (2 Long + 2 Shorts = 4 Videos)
+      - name: Run WTB Documentary News Engine (2 Long + 2 Shorts = 4 Videos)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
