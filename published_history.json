@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-01T16:19:54.239997",
+  "updated_at": "2026-11-01T17:15:08.364483",
   "round_robin_idx": 19,
   "country_rot_idx": 20,
-  "bgm_track_counter": 805821376,
+  "bgm_track_counter": 822967406,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -335,14 +335,16 @@
     "here_s_how_the_new_macbook",
     "rubio_s_serbia_bet_why_nato",
     "africa_s_5b_energy_bank_the",
+    "why_zelda_gta_reveal_the_gaming",
+    "why_chery_s_claim_of_not",
     "why_japan_s_secret_arms_deal",
     "german_cost_of_living_protests_explode",
     "japan_s_secret_weapon_why_china",
     "germany_s_gen_z_riots_why",
-    "chery_says_there_are_not_enough",
-    "new_zelda_and_gta_represent_a",
-    "why_chery_s_claim_of_not",
-    "why_zelda_gta_reveal_the_gaming"
+    "rubio_defends_russian_g20_presence_despite",
+    "5_new_foldable_phones_to_consider",
+    "why_a_us_senator_is_defending",
+    "apple_s_foldable_iphone_the_2"
   ],
   "event_fingerprints": [
     {
@@ -5884,6 +5886,30 @@
       ]
     },
     {
+      "title": "Why Zelda & GTA Reveal the Gaming Industry\u2019s Death Spiral",
+      "tokens": [
+        "death",
+        "gaming",
+        "industry",
+        "reveal",
+        "spiral",
+        "zelda"
+      ]
+    },
+    {
+      "title": "Why Chery\u2019s Claim of \u2018Not Enough EV SUVs\u2019 Could Shift Australia\u2019s Auto Future",
+      "tokens": [
+        "australia",
+        "auto",
+        "chery",
+        "claim",
+        "could",
+        "enough",
+        "future",
+        "suvs"
+      ]
+    },
+    {
       "title": "Why Japan's Secret Arms Deal Is Triggering a Cyber\u2011Intelligence Arms Race in the Indo\u2011Pacific",
       "tokens": [
         "arms",
@@ -5945,82 +5971,81 @@
       ]
     },
     {
-      "title": "Chery says there are not enough Electric SUV's in Australia",
+      "title": "Rubio Defends Russian G20 Presence Despite Criticism From Allies",
       "tokens": [
-        "aren",
-        "australia",
-        "banking",
-        "bold",
-        "brand",
-        "chery",
-        "competitive",
-        "electric",
-        "enou",
-        "enough",
-        "help",
-        "landing",
-        "lepas",
-        "most",
-        "segments",
-        "some",
-        "stand",
-        "there",
-        "thinks",
-        "vehicle",
-        "vehicles"
+        "allies",
+        "analysis",
+        "casts",
+        "claims",
+        "contacts",
+        "criticism",
+        "cutting",
+        "deal",
+        "defends",
+        "despite",
+        "doubts",
+        "down",
+        "intelligence",
+        "presence",
+        "quick",
+        "rubio",
+        "russian",
+        "slaps",
+        "ukraine",
+        "urges",
+        "zelensky"
       ]
     },
     {
-      "title": "New Zelda and GTA represent a games industry that no longer exists",
+      "title": "5 New Foldable Phones To Consider Instead Of The iPhone Duo",
       "tokens": [
-        "apart",
-        "biggest",
-        "exists",
-        "games",
-        "industry",
-        "just",
-        "launch",
-        "longer",
-        "novembe",
-        "november",
-        "offering",
-        "represent",
-        "reprieve",
-        "some",
-        "terrible",
-        "weeks",
-        "year",
-        "zelda"
+        "android",
+        "better",
+        "consider",
+        "discover",
+        "features",
+        "five",
+        "foldable",
+        "foldables",
+        "hype",
+        "instead",
+        "iphone",
+        "phones",
+        "pricing",
+        "standout",
+        "versatility",
+        "worth"
       ]
     },
     {
-      "title": "Why Chery\u2019s Claim of \u2018Not Enough EV SUVs\u2019 Could Shift Australia\u2019s Auto Future",
+      "title": "Why a US Senator Is Defending Russia at the G20 \u2013 The Hidden Geopolitical Gamble",
       "tokens": [
-        "australia",
-        "auto",
-        "chery",
-        "claim",
-        "could",
-        "electric",
-        "enough",
-        "future",
-        "suvs",
-        "there"
+        "allies",
+        "criticism",
+        "defending",
+        "defends",
+        "despite",
+        "gamble",
+        "geopolitical",
+        "hidden",
+        "presence",
+        "rubio",
+        "russia",
+        "russian",
+        "senator"
       ]
     },
     {
-      "title": "Why Zelda & GTA Reveal the Gaming Industry\u2019s Death Spiral",
+      "title": "Apple's Foldable iPhone: The $2,000 Tech Trap?",
       "tokens": [
-        "death",
-        "exists",
-        "games",
-        "gaming",
-        "industry",
-        "longer",
-        "represent",
-        "reveal",
-        "spiral",
-        "zelda"
+        "apple",
+        "consider",
+        "foldable",
+        "instead",
+        "iphone",
+        "phones",
+        "tech",
+        "trap"
       ]
     }
   ],
@@ -6105,8 +6130,8 @@
     "Top Viral News [CANADA]",
     "Country Documentary Wire [PHILIPPINES]",
     "Country Documentary Wire [NIGERIA]",
-    "Top Viral News [AUSTRALIA]",
-    "The Verge Tech"
+    "Top Viral News [RUSSIA]",
+    "Google News Global Tech 24h"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -6141,7 +6166,7 @@
     "SERBIA",
     "INTERNATIONAL",
     "GLOBAL TECH & AI",
-    "AUSTRALIA",
+    "RUSSIA",
     "GLOBAL TECH & AI"
   ]
 }
