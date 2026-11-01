@@ -1,4 +1,4 @@
-name: WTB News Engine V26 (Nitish Rajput + Think School + Abhi & Niyu Documentary Production)
+name: WTB News Engine V31 (Auto-Scheduled 4 Videos Every 1-1.5 Hours • 52 Languages • All Countries)
 
 on:
   workflow_dispatch:
@@ -11,14 +11,21 @@ on:
         description: 'Number of Long+Short video pairs per run (2 = 2 Long + 2 Linked Shorts = 4 Videos)'
         required: false
         default: '2'
+  push:
+    branches:
+      - main
+    paths:
+      - 'wtb_engine.py'
+      - '.github/workflows/**'
   schedule:
-    # Runs every 30 minutes across the 24h clock (2 Long + 2 Linked Shorts = 4 Videos per run!)
-    - cron: '*/30 * * * *'
-    # Dedicated 6:00 PM USA Eastern Time (22:00 UTC) 9-10 Min 24-Hour Global News Mega Broadcast
-    - cron: '0 22 * * *'
+    # Off-peak minutes (7 and 37) prevent GitHub Actions top-of-hour cron drops!
+    # Runs automatically every 1 hour to 1.5 hours (produces 4 Videos = 2 Long + 2 Linked Shorts per run -> 24 to 40+ videos/day!)
+    - cron: '7 * * * *'
+    - cron: '37 1,3,5,7,9,11,13,15,17,19,21,23 * * *'
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: wtb-production-group
@@ -56,7 +63,8 @@ jobs:
             fonts-dejavu-core \
             fonts-liberation \
             fonts-freefont-ttf
-      - name: Install Python V26 Documentary & Motion-Graphics Libraries
+
+      - name: Install Python V31 Documentary & Motion-Graphics Libraries
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
@@ -79,7 +87,7 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V26 Documentary News Engine
+      - name: Run WTB V31 Documentary News Engine (2 Long + 2 Shorts = 4 Videos)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -91,7 +99,7 @@ jobs:
         run: |
           python3 -u wtb_engine.py
 
-      - name: Save Non-Repeating Topic & Category History to GitHub
+      - name: Save Non-Repeating Topic & Country History to GitHub
         if: always()
         run: |
           if [ -f published_history.json ]; then
@@ -102,7 +110,7 @@ jobs:
             if ! git diff --staged --quiet; then
               git commit -m "Auto-sync published_history.json"
             fi
-            for attempt in 1 2 3; do
+            for attempt in 1 2 3; then
               git pull --rebase -X theirs origin main || true
               if git push origin HEAD:main; then
                 echo "Successfully synced published_history.json on attempt $attempt"
@@ -111,6 +119,13 @@ jobs:
               sleep 3
             done
           fi
+
+      - name: Ensure Workflow Schedule stays Active on GitHub
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow enable "test_and_run.yml" || true
 
       - name: Upload Generated 1080p Videos, Thumbnails & QC Reports to GitHub Artifacts
         if: always()
