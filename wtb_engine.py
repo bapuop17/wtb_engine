@@ -3644,6 +3644,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
     for art_v in dossier.get("article_video_urls", []):
         res = download_and_transcode_mp4_url(art_v, used_video_urls, f"{tag_id}_art", query_str)
         if res is not None:
+            res["source_query"] = query_str
             return res
 
     strict_banned_video_words = [
@@ -3709,6 +3710,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
                     continue
                 res = download_ytdlp_news_broll_clip(v_url, used_video_urls, f"{tag_id}_yt", v_title[:40])
                 if res is not None:
+                    res["source_query"] = yt_q
                     return res
         except Exception:
             try:
@@ -3732,6 +3734,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
                         continue
                     res = download_ytdlp_news_broll_clip(v_url, used_video_urls, f"{tag_id}_dm", v_title[:38])
                     if res is not None:
+                        res["source_query"] = dm_q
                         return res
         except Exception:
             pass
@@ -3756,6 +3759,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
                     if m_clean not in used_video_urls and not any(b in m_clean.lower() for b in ["aljazeera", "cartoon", "game", "logo", "periscopefilm"]):
                         res = download_and_transcode_mp4_url(m_clean, used_video_urls, f"{tag_id}_bingv", v_title[:38])
                         if res is not None:
+                            res["source_query"] = bv_q
                             return res
         except Exception:
             pass
@@ -4633,14 +4637,8 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Fallback to any remaining unused photo in the 200+ audited vault before returning None
-    pool = dossier.get("_cached_200_audited_pool") or []
-    for item in pool:
-        if item["url"] not in used_image_urls and not any(int(np.sum(item["dhash"] != old_h)) < 8 for old_h in existing_hashes):
-            used_image_urls.add(item["url"])
-            existing_hashes.append(item["dhash"])
-            return item["im"]
-
+    # Never substitute an unrelated vault image: an arbitrary photo would break
+    # sentence-to-visual synchronization.
     failed_queries.append(topic_anchor)
     return None
 
@@ -6777,6 +6775,7 @@ def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used
             ang_q, dossier, used_video_urls, used_video_queries, tag_id=f"{tag_prefix}_vp{idx_v}"
         )
         if v_obj is not None:
+            v_obj["source_query"] = ang_q
             pool_clips.append(v_obj)
 
     dossier["_cached_video_broll_pool"] = pool_clips
@@ -6837,6 +6836,7 @@ def build_prop_driven_storyboard_1080p(
         harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used_video_queries, tag_prefix=tag_prefix)
 
     master_topic_queries = extract_topic_master_queries(dossier)
+    geo_anchor_tokens, event_context_tokens = get_story_anchor_and_context_tokens(dossier)
     global_beat_idx = start_beat_offset
 
     for sec_idx, sec in enumerate(sections_list):
@@ -6935,14 +6935,33 @@ def build_prop_driven_storyboard_1080p(
             else:
                 chosen_sfx = "dry_marker_squeak"
 
-            # Assign Real 1080p HD Video / Interview B-Roll from the Verified Topic Video Pool!
+            # Use moving footage only when its harvested query matches this sentence.
+            # A generic topic clip can visibly contradict the narration beat.
             v_pool = dossier.get("_cached_video_broll_pool") or []
-            bg_support_vseg = v_pool[(global_beat_idx + b_i) % len(v_pool)] if v_pool else None
+            beat_query_tokens = {
+                w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", f"{b_txt} {search_q}")
+                if w.lower() not in HEADLINE_STOP_VERBS_ADJS
+            }
+            matching_v_pool = []
+            for candidate_v in v_pool:
+                candidate_tokens = {
+                    w.lower() for w in re.findall(
+                        r"[A-Za-z0-9]{3,}",
+                        f"{candidate_v.get('source_query', '')} {candidate_v.get('label', '')}"
+                    )
+                }
+                geo_hits = len(geo_anchor_tokens.intersection(candidate_tokens))
+                event_hits = len(event_context_tokens.intersection(candidate_tokens))
+                beat_hits = len(beat_query_tokens.intersection(candidate_tokens))
+                if geo_hits >= 1 and event_hits >= 1 and beat_hits >= 1:
+                    matching_v_pool.append((beat_hits + event_hits + geo_hits, candidate_v))
+            matching_v_pool.sort(key=lambda item: item[0], reverse=True)
+            bg_support_vseg = matching_v_pool[0][1] if matching_v_pool else None
 
             vseg = None
-            if videos_in_section < 2 and b_i in (0, 2) and v_pool:
+            if videos_in_section < 2 and b_i in (0, 2) and matching_v_pool:
                 unit_used_vclips = dossier.setdefault("_unit_used_vclips", set())
-                for cand_vp in v_pool:
+                for _, cand_vp in matching_v_pool:
                     vc_id = id(cand_vp.get("vclip"))
                     if vc_id not in unit_used_vclips:
                         vseg = cand_vp
@@ -6978,14 +6997,10 @@ def build_prop_driven_storyboard_1080p(
                         beat_im = unused_photos[0]
                         unit_used_photos.add(id(beat_im))
                     else:
-                        pool_all = [it["im"] for it in (dossier.get("_cached_200_audited_pool") or []) if it.get("im") is not None]
-                        unused_pool_ims = [p_im for p_im in pool_all if id(p_im) not in unit_used_photos]
-                        if unused_pool_ims:
-                            beat_im = unused_pool_ims[0]
-                            unit_used_photos.add(id(beat_im))
-                            unique_real_photos.append(beat_im)
-                        else:
-                            beat_im = create_distinct_editorial_composition_variant(unique_real_photos[global_beat_idx % len(unique_real_photos)], global_beat_idx)
+                        beat_im = create_distinct_editorial_composition_variant(
+                            unique_real_photos[global_beat_idx % len(unique_real_photos)],
+                            global_beat_idx
+                        )
                 elif beat_person_popup is not None and beat_person_popup.get("portrait_im") is not None:
                     p_bg = beat_person_popup["portrait_im"].resize((1920, 1080)).filter(ImageFilter.GaussianBlur(radius=28))
                     beat_im = ImageEnhance.Brightness(p_bg).enhance(0.38)
