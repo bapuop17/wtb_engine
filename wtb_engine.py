@@ -59,6 +59,7 @@ HEADERS_WIKI = {
 }
 
 HISTORY_FILE = "published_history.json"
+GLOBAL_RSS_FEED_CACHE = {}
 
 # ==============================================================================
 # 1. 20 HIGH-CTR BREAKING & TRENDING CATEGORIES + GEOPOLITICS SURGE SYSTEM
@@ -310,7 +311,7 @@ CATEGORY_FEEDS = {
 # ==============================================================================
 # Tiered Global Priority Countries for a US-Based Global Documentary Channel (BBC World / Johnny Harris / Nitish Rajput Standard)
 
-# COMPULSORY 46-COUNTRY GLOBAL ROTATION RADAR (Covers Every Major Country Across All 6 Continents!)
+# Priority markets first; `get_all_country_rotation_catalog()` appends the full ISO catalogue when installed.
 GLOBAL_ALL_COUNTRIES_ROTATION = [
     # High-Audience Priority Wave A (Tier-1 Global & Regional Giants)
     ("UNITED STATES", "US", "United States White House Pentagon Wall Street Congress"),
@@ -390,6 +391,27 @@ GLOBAL_ALL_COUNTRIES_ROTATION = [
     ("CUBA", "CU", "Cuba Havana Caribbean geopolitics energy"),
     ("PANAMA", "PA", "Panama Canal global shipping maritime trade")
 ]
+ALL_COUNTRY_ROTATION_CACHE = None
+
+def get_all_country_rotation_catalog():
+    """Keep priority markets first, then append the ISO country/territory catalogue when available."""
+    global ALL_COUNTRY_ROTATION_CACHE
+    if ALL_COUNTRY_ROTATION_CACHE is not None:
+        return ALL_COUNTRY_ROTATION_CACHE
+
+    catalog = list(GLOBAL_ALL_COUNTRIES_ROTATION)
+    known = {name.upper() for name, _, _ in catalog}
+    try:
+        import pycountry
+        for country in pycountry.countries:
+            display_name = str(getattr(country, "common_name", country.name)).upper()
+            if display_name not in known:
+                catalog.append((display_name, country.alpha_2, f"{display_name} government economy"))
+                known.add(display_name)
+    except Exception:
+        pass
+    ALL_COUNTRY_ROTATION_CACHE = catalog
+    return catalog
 
 LOW_INTEREST_BORING_WORDS = [
     "queer film", "film festival", "staff remembers", "our captain", "obituary", "sinkholes", "sinkhole", "starting lineup", "carabao cup", "premier league", "champions league", "la liga", "serie a", "bundesliga", "europa league", "match preview", "penalty shootout", "squad rotation", "cup tie", "etihad stadium", "old trafford", "anfield", "stamford bridge", "haaland", "manchester city", "manchester united", "arsenal", "chelsea", "liverpool", "tottenham", "spurs", "real madrid", "barcelona", "transfer window", "sacking season", "ballon d'or", "grand prix", "touchdown",
@@ -401,22 +423,23 @@ LOW_INTEREST_BORING_WORDS = [
 def build_dynamic_country_viral_feeds(hist_obj, count_countries=7):
     """
     V26 ALL-COUNTRY HIGH-STAKES DOCUMENTARY TOPIC HARVESTER:
-    Rotates across all 46+ countries in `GLOBAL_ALL_COUNTRIES_ROTATION` and queries each country's
+    Rotates through priority markets, then the ISO country/territory catalogue, and queries each country's
     biggest Geopolitical, Economic, Defense, Government, Energy, and National Crisis stories
     (never raw sports match lineups or celebrity gossip!).
     """
     last_c = set(hist_obj.get("last_countries", [])[-8:])
     c_idx = int(hist_obj.get("country_rot_idx", 0))
     chosen_tuples = []
-    for step in range(len(GLOBAL_ALL_COUNTRIES_ROTATION)):
-        cand_t = GLOBAL_ALL_COUNTRIES_ROTATION[(c_idx + step) % len(GLOBAL_ALL_COUNTRIES_ROTATION)]
+    country_catalog = get_all_country_rotation_catalog()
+    for step in range(len(country_catalog)):
+        cand_t = country_catalog[(c_idx + step) % len(country_catalog)]
         if cand_t[0] not in last_c:
             chosen_tuples.append(cand_t)
             if len(chosen_tuples) >= count_countries:
                 break
     if not chosen_tuples:
-        chosen_tuples = GLOBAL_ALL_COUNTRIES_ROTATION[:count_countries]
-    hist_obj["country_rot_idx"] = (c_idx + count_countries) % len(GLOBAL_ALL_COUNTRIES_ROTATION)
+        chosen_tuples = country_catalog[:count_countries]
+    hist_obj["country_rot_idx"] = (c_idx + count_countries) % len(country_catalog)
 
     dynamic_feeds = []
     for c_name, iso2, kw_str in chosen_tuples:
@@ -905,7 +928,7 @@ def get_prebuilt_vignette_overlay(W, H):
     return ov
 
 def build_wtb_watermark(width=130, height=76):
-    logo = Image.new("RGBA", (260, 156), (255, 255, 255, 245))
+    logo = Image.new("RGBA", (260, 156), (0, 0, 0, 0))
     d = ImageDraw.Draw(logo)
     d.polygon([(24, 10), (242, 10), (242, 44), (232, 54), (14, 54), (14, 20)], fill=(12, 56, 118, 255))
     d.text((34, 14), "WORLD", fill=(255, 255, 255, 255), font=get_font(34))
@@ -1021,10 +1044,10 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
     gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
     if gemini_key:
         try:
-            g_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}"
+            g_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
             r = requests.post(
                 g_url,
-                headers={"Content-Type": "application/json"},
+                headers={"Content-Type": "application/json", "x-goog-api-key": gemini_key},
                 json={
                     "contents": [{"parts": [{"text": f"{system_prompt}\n\n{user_prompt}"}]}],
                     "generationConfig": {"temperature": 0.55, "maxOutputTokens": 3900, "responseMimeType": "application/json"}
@@ -2237,16 +2260,28 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
     else:
         feed_list = feed_list + country_viral_feeds[:4]
 
-    for src, url in feed_list:
+    def _fetch_feed(feed_spec):
+        src_name, feed_url = feed_spec
+        cached = GLOBAL_RSS_FEED_CACHE.get(feed_url)
+        if cached and time.time() - cached[0] < 600:
+            return src_name, feed_url, cached[1]
         try:
-            r_feed = requests.get(url, headers=HEADERS_WEB, timeout=8)
-            if r_feed.status_code != 200:
-                continue
-            feed = feedparser.parse(r_feed.content)
+            response = requests.get(feed_url, headers=HEADERS_WEB, timeout=(3, 6))
+            if response.status_code != 200:
+                return src_name, feed_url, []
+            entries = list(feedparser.parse(response.content).entries[:14])
+            GLOBAL_RSS_FEED_CACHE[feed_url] = (time.time(), entries)
+            return src_name, feed_url, entries
         except Exception:
-            continue
+            return src_name, feed_url, []
 
-        for entry in feed.entries[:14]:
+    if not feed_list:
+        return None
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(12, len(feed_list))) as feed_executor:
+        fetched_feeds = list(feed_executor.map(_fetch_feed, feed_list))
+
+    for src, url, feed_entries in fetched_feeds:
+        for entry in feed_entries:
             # Support Google Trends 100K-200K+ RSS items (extracting the viral news headline & traffic volume!)
             viral_traffic_boost = 0
             raw_t = getattr(entry, "title", "").rsplit(" - ", 1)[0]
@@ -2529,9 +2564,6 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
     candidates.sort(key=lambda x: x["score"], reverse=True)
     chosen = candidates[0]
     chosen_country = chosen["country_profile"].get("name", "INTERNATIONAL").upper()
-    hist_obj.setdefault("last_countries", []).append(chosen_country)
-    register_story_in_history(chosen["title"], " ".join(chosen.get("raw_facts", [])[:2]), hist_obj, story_key=chosen["story_key"])
-    save_published_history(hist_obj)
     print(
         f"🌍 [Global Country & Public Demand Audit] Selected Country: {chosen_country} | "
         f"Topic: '{chosen['title'][:52]}' | Score: {chosen['score']} (Pool Audited: {len(candidates)} Global Stories)",
@@ -2708,7 +2740,7 @@ def is_safe_family_friendly_image(im_rgb, is_portrait=False):
             return False
         return True
     except Exception:
-        return True
+        return False
 
 NON_PERSON_ORG_WORDS = {
     "amnesty", "international", "mada", "masr", "reuters", "associated", "press", "guardian",
@@ -2973,7 +3005,7 @@ def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
                     if not has_collage_or_text_banner_artifacts(im) and is_safe_family_friendly_image(im_sq, is_portrait=True) and is_real_natural_subject_photo(im_sq):
                         if not is_animal_or_obj and not has_verified_human_face_with_skin(im_sq):
                             continue
-                        if not verify_image_with_ai_vision_auditor(im_sq.resize((240, 240)), f"Official portrait of {display_name} ({role_str})", display_name):
+                        if not passes_pixel_artifact_filter(im_sq.resize((240, 240)), f"Official portrait of {display_name} ({role_str})", display_name):
                             continue
                         PERSON_PORTRAIT_CACHE[cache_key] = im_sq
                         print(f"   🎯 [Dynamic Subject Spotlight Locked (Verified Portrait)]: {display_name} ({role_str})", flush=True)
@@ -3785,12 +3817,11 @@ def apply_copyright_safe_documentary_lut(im):
     return ImageEnhance.Contrast(out).enhance(1.06)
 
 
-AI_VISION_AUDIT_BUDGET = {"calls": 0}
 AI_CAPTION_AUDIT_CACHE = {}
 
-def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_context="", dossier=None):
+def caption_metadata_matches_story(img_caption, img_url, story_title, query_context="", dossier=None):
     """
-    V35 STRICT TOPIC-LOCKED PHOTO & SCENE AUDITOR:
+    Match image caption/URL metadata against the story; this does not inspect image contents.
     - Blocks all tourist scenery/postcards ('pagoda', 'cherry blossom', 'sakura', 'mount fuji',
       'osaka castle', 'waterfall', 'sightseeing', 'places to visit', 'famous landmarks'),
       foreign country collisions ('Delhi Dancing Thief', 'Pachaiyappa', 'Malaysia', 'Subic'),
@@ -3850,7 +3881,8 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
 
     return True
 
-def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_context=""):
+def passes_pixel_artifact_filter(small_pil_rgb, story_title="", query_context=""):
+    """Reject obvious pixel/color artifacts; this helper does not verify scene semantics."""
     try:
         arr_v = np.asarray(small_pil_rgb.convert("RGB"), dtype=np.float32)
         if float(np.std(arr_v)) < 18.0:
@@ -3862,7 +3894,7 @@ def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_contex
             return False
         return True
     except Exception:
-        return True
+        return False
 
 def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
     try:
@@ -3911,17 +3943,17 @@ def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
             if len(cats) > 0:
                 return False
 
-        if story_title and not verify_image_with_ai_vision_auditor(small, story_title, query_context):
+        if story_title and not passes_pixel_artifact_filter(small, story_title, query_context):
             return False
 
         return True
     except Exception:
-        return True
+        return False
 
-def validate_and_enhance_1080p(im, existing_hashes, min_w=780, min_h=440, story_title="", query_context=""):
+def validate_and_enhance_1080p(im, existing_hashes, min_w=1280, min_h=720, story_title="", query_context=""):
     """
     V35 TRUE FULL-HD 1080p RESOLUTION & SHARPNESS VALIDATOR:
-    - Rejects low-resolution thumbnail images (`w < 780` or `h < 440`) that looked blurry in `72wTjV7DBPM`!
+    - Rejects below-HD image sources (`w < 1280` or `h < 720`) before any 1080p upscaling.
     - Enforces Laplacian edge sharpness (`blur_score >= 28.0`) and natural entropy (`>= 4.5`) so blurry
       skyline/thumbnail images are 100% blocked before entering the vault!
     """
@@ -4018,7 +4050,7 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                 u_clean = u.replace("&amp;", "&")
                 if not passes_audit_gate_1_caption_and_url(u_clean, cap_t, d_obj, clean_q):
                     continue
-                if not ai_audit_caption_and_scene_match(cap_t, u_clean, d_obj.get('title', ''), clean_q, dossier=d_obj):
+                if not caption_metadata_matches_story(cap_t, u_clean, d_obj.get('title', ''), clean_q, dossier=d_obj):
                     continue
                 for try_u in ([u_clean, u_turl] if u_turl else [u_clean]):
                     try:
@@ -4421,7 +4453,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     pre_passed.sort(key=lambda x: x["relevance_score"], reverse=True)
     audit12_passed = []
     for cand in pre_passed[:160]:
-        if cand["source_angle"] in ("multi_site_original_article", "direct_article") or ai_audit_caption_and_scene_match(cand["caption"], cand["url"], story_title, cand["source_angle"], dossier=dossier):
+        if cand["source_angle"] in ("multi_site_original_article", "direct_article") or caption_metadata_matches_story(cand["caption"], cand["url"], story_title, cand["source_angle"], dossier=dossier):
             audit12_passed.append(cand)
             if len(audit12_passed) >= 110:
                 break
@@ -4460,7 +4492,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
             orig_w, orig_h = im_raw.size
             local_hashes = []
             vim = validate_and_enhance_1080p(
-                im_raw, local_hashes, min_w=780, min_h=440,
+                im_raw, local_hashes, min_w=1280, min_h=720,
                 story_title=story_title, query_context=cand_obj["source_angle"]
             )
             if vim is not None and local_hashes:
@@ -4614,7 +4646,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                     continue
                 if not passes_audit_gate_1_caption_and_url(u_clean, cap_t, dossier, b_img_q):
                     continue
-                if not ai_audit_caption_and_scene_match(cap_t, u_clean, story_title, b_img_q, dossier=dossier):
+                if not caption_metadata_matches_story(cap_t, u_clean, story_title, b_img_q, dossier=dossier):
                     continue
                 for try_u in ([u_clean, u_turl] if u_turl else [u_clean]):
                     try:
@@ -4623,7 +4655,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                             p = f"temp/{tag_id}_binghd.jpg"
                             with open(p, "wb") as f:
                                 f.write(ir.content)
-                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=780, min_h=440, story_title=story_title, query_context=b_img_q)
+                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=1280, min_h=720, story_title=story_title, query_context=b_img_q)
                             if vim is not None:
                                 used_image_urls.add(u_clean)
                                 print(f"   📸 [Live Sentence-Accurate HD Photo Locked]: '{b_img_q[:34]}' -> {cap_t[:44]}", flush=True)
@@ -8283,11 +8315,12 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         dur = frame_cnt / max(fps, 1.0)
 
         exp_aspect = (9.0 / 16.0) if is_short else (16.0 / 9.0)
+        exp_size = (1080, 1920) if is_short else (1920, 1080)
         actual_aspect = w / float(max(h, 1))
         qc_report["checks"]["dimensions"] = f"{w}x{h} @ {fps:.1f}fps ({dur:.1f}s)"
-        if abs(actual_aspect - exp_aspect) > 0.05 or dur < 15.0:
+        if (w, h) != exp_size or abs(actual_aspect - exp_aspect) > 0.02 or dur < 15.0:
             cap.release()
-            qc_report["checks"]["aspect_or_duration"] = "FAIL"
+            qc_report["checks"]["resolution_aspect_or_duration"] = f"FAIL: expected {exp_size[0]}x{exp_size[1]} or longer video"
             return False, qc_report
 
         # Sample 8 frames across the video to check for black frames AND frozen frames
@@ -8328,7 +8361,7 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         qc_report["checks"]["black_frames_sampled"] = black_frames
         qc_report["checks"]["frozen_frame_pairs"] = frozen_pairs
         qc_report["checks"]["audio_sync_verified"] = audio_sync_ok
-        qc_report["checks"]["licensing_and_attribution_audit"] = "PASS (Editorial Transformative Commentary + Verified Wire/Commons Attribution)"
+        qc_report["checks"]["licensing_and_attribution_audit"] = "NOT VERIFIED: visual source licences are not checked by this engine"
         if black_frames >= 3 or frozen_pairs >= 5 or not audio_sync_ok:
             return False, qc_report
 
@@ -8343,7 +8376,7 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         return True, qc_report
     except Exception as e:
         qc_report["checks"]["exception"] = str(e)
-        return True, qc_report
+        return False, qc_report
 
 
 # ==============================================================================
@@ -8698,12 +8731,20 @@ def try_youtube_auto_upload(
 
             # 2. Apply Multi-Language Localizations via clean `videos().update` (50 units)
             try:
-                core_20_keys = ["en", "hi", "gu", "mr", "ta", "te", "bn", "kn", "ml", "pa", "ur", "es", "fr", "de", "ar", "pt", "ru", "ja", "zh-Hans", "ko", "tr", "it", "id", "vi", "th", "nl", "pl"]
-                safe_locs = {k: localizations_map[k] for k in core_20_keys if k in localizations_map}
-                yt.videos().update(
-                    part="snippet,localizations",
-                    body={"id": vid_id, "snippet": body_basic["snippet"], "localizations": safe_locs}
-                ).execute()
+                safe_locs = dict(localizations_map)
+                try:
+                    yt.videos().update(
+                        part="snippet,localizations",
+                        body={"id": vid_id, "snippet": body_basic["snippet"], "localizations": safe_locs}
+                    ).execute()
+                except Exception:
+                    # Keep the known-good subset if one locale code is rejected by YouTube.
+                    core_20_keys = ["en", "hi", "gu", "mr", "ta", "te", "bn", "kn", "ml", "pa", "ur", "es", "fr", "de", "ar", "pt", "ru", "ja", "zh-Hans", "ko", "tr", "it", "id", "vi", "th", "nl", "pl"]
+                    safe_locs = {k: localizations_map[k] for k in core_20_keys if k in localizations_map}
+                    yt.videos().update(
+                        part="snippet,localizations",
+                        body={"id": vid_id, "snippet": body_basic["snippet"], "localizations": safe_locs}
+                    ).execute()
                 print(f"🌍 [YouTube Multi-Language Localizations Locked] {len(safe_locs)} languages active on https://youtu.be/{vid_id}!", flush=True)
             except Exception as loc_e:
                 print("ℹ️ [Multi-Language Description Active; API localizations note]:", str(loc_e)[:95], flush=True)
@@ -8835,6 +8876,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         thumbnail_path=pkg_report["selected_thumbnail"], playlist_map=playlist_map,
         summary_takeaway=long_chapters[-1]["narration"], sections_list=long_chapters
     )
+    pkg_report["rendered_video_path"] = out_long
     pkg_report["youtube_video_id"] = long_vid_id
     pkg_report["youtube_url"] = f"https://www.youtube.com/watch?v={long_vid_id}" if long_vid_id else "https://www.youtube.com/@WorldTalkBrief"
     return pkg_report, shared_long_photos
@@ -8929,6 +8971,7 @@ async def render_and_upload_short_unit(
         summary_takeaway=short_sections[-1]["narration"], linked_long_url=linked_long_url, sections_list=short_sections
     )
     s_stats["linked_long_url"] = linked_long_url
+    s_stats["rendered_video_path"] = out_short
     s_stats["short_video_id"] = short_vid_id
     return s_stats
 
@@ -8939,26 +8982,30 @@ async def render_and_upload_paired_story(dossier, pair_num, watermark, voice_sub
     )
     linked_long_url = pkg_long.get("youtube_url")
 
-    # Save history immediately after Long upload so even if anything interrupts later, topic never repeats!
-    register_story_in_history(dossier["title"], " ".join(dossier.get("raw_facts", [])[:2]), hist_obj, story_key=dossier["story_key"])
-    if dossier.get("original_yt_title"):
-        register_story_in_history(dossier["original_yt_title"], dossier["title"], hist_obj)
-    hist_obj["last_categories"].append(dossier.get("sub_pillar", dossier["pillar"]))
-    hist_obj["last_sources"].append(dossier["source_name"])
-    save_published_history(hist_obj)
-
     short_stats = await render_and_upload_short_unit(
         dossier, pair_num, watermark, voice_sub_dir, hist_obj,
         winning_keywords, viral_yt_tags, playlist_map, top_channel_hits,
         linked_long_url=linked_long_url, preloaded_photos=shared_photos
     )
+    # Record a story only when YouTube confirms at least one video in the pair.
+    # Failed uploads and artifact-only runs remain eligible for a later retry.
+    if pkg_long.get("youtube_video_id") or short_stats.get("short_video_id"):
+        register_story_in_history(dossier["title"], " ".join(dossier.get("raw_facts", [])[:2]), hist_obj, story_key=dossier["story_key"])
+        if dossier.get("original_yt_title"):
+            register_story_in_history(dossier["original_yt_title"], dossier["title"], hist_obj)
+        hist_obj.setdefault("last_countries", []).append(dossier.get("country_profile", {}).get("name", "INTERNATIONAL").upper())
+        hist_obj.setdefault("last_categories", []).append(dossier.get("sub_pillar", dossier.get("pillar", "WORLD")))
+        hist_obj.setdefault("last_sources", []).append(dossier.get("source_name", ""))
+    else:
+        print("⚠️ [History Not Advanced] YouTube confirmed neither video in this pair; the topic can be retried.", flush=True)
     save_published_history(hist_obj)
     return pkg_long, short_stats
 
 async def main():
+    run_start_wall = time.time()
     try:
         # Build signature top-right corner WORLD TALK BRIEF logo (`watermark`) once for all frames
-        watermark = build_wtb_watermark(width=132, height=76)
+        watermark = build_wtb_watermark(width=164, height=98)
         voice_sub_dir = VoiceAndSubtitleEngine()
         hist_obj = load_published_history()
         winning_keywords, viral_yt_tags, playlist_map, top_channel_hits = run_youtube_api_full_intelligence(hist_obj)
@@ -8982,7 +9029,11 @@ async def main():
         hot_geo_surge = detect_hot_geopolitics_surge()
         rr_idx = hist_obj.get("round_robin_idx", 0)
         batch_fingerprints = []
-        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "2"))
+        try:
+            pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "2") or "2")
+        except (TypeError, ValueError):
+            pairs_to_build = 2
+        pairs_to_build = min(2, max(1, pairs_to_build))
 
         # ==============================================================================
         # V31 4-VIDEO MULTI-COUNTRY & MULTI-CATEGORY SELECTION ENGINE:
@@ -9039,15 +9090,21 @@ async def main():
                         break
 
         import gc
-        run_start_wall = time.time()
         active_dossiers = selected_dossiers[:pairs_to_build]
+        if not active_dossiers:
+            no_story_report = {
+                "status": "no_story_found",
+                "videos_produced_in_run": 0,
+                "pairs_requested": pairs_to_build,
+                "message": "No fresh, non-duplicate story passed the source checks."
+            }
+            with open("output/wtb_1080p_report.json", "w", encoding="utf-8") as f:
+                json.dump(no_story_report, f, indent=2)
+            print("⚠️ [No Story Selected] No fresh story passed the source checks; the run report was saved.", flush=True)
+            return
+
         built_results = []
         for p_idx, st_d in enumerate(active_dossiers, 1):
-            if p_idx > 2 and (time.time() - run_start_wall) > 42 * 60:
-                print(f"⏱️ [Time-Guard] {round((time.time() - run_start_wall)/60.0, 1)}m elapsed; stopping cleanly after Pair #{p_idx-1}!", flush=True)
-                break
-            AI_VISION_AUDIT_BUDGET["calls"] = 0
-            AI_VISION_AUDIT_BUDGET["vision_calls"] = 0
             pkg_l, s_st = await render_and_upload_paired_story(
                 st_d, p_idx, watermark, voice_sub_dir, hist_obj,
                 winning_keywords, viral_yt_tags, playlist_map, top_channel_hits
@@ -9061,37 +9118,47 @@ async def main():
             GLOBAL_OPEN_VCLIPS.clear()
             gc.collect()
 
-        pkg_1, s1_stats = built_results[0][1], built_results[0][2]
-        story_1 = built_results[0][0]
-        pkg_2, s2_stats = (built_results[1][1], built_results[1][2]) if len(built_results) > 1 else (pkg_1, s1_stats)
-        story_2 = built_results[1][0] if len(built_results) > 1 else story_1
+        pair_reports = []
+        videos_uploaded = 0
+        videos_rendered = 0
+        for pair_idx, (story, long_pkg, short_stats) in enumerate(built_results, 1):
+            videos_uploaded += int(bool(long_pkg.get("youtube_video_id")))
+            videos_uploaded += int(bool(short_stats.get("short_video_id")))
+            for rendered_path in (long_pkg.get("rendered_video_path"), short_stats.get("rendered_video_path")):
+                if rendered_path and os.path.isfile(rendered_path) and os.path.getsize(rendered_path) >= 100_000:
+                    videos_rendered += 1
+            pair_reports.append({
+                "pair": pair_idx,
+                "pillar": story.get("sub_pillar", story.get("pillar", "WORLD")),
+                "country": story.get("country_profile", {}).get("name", "GLOBAL"),
+                "title": story.get("original_yt_title", story.get("title", "")),
+                "long_video": long_pkg,
+                "linked_short": short_stats
+            })
 
         save_published_history(hist_obj)
 
-        with open("output/wtb_1080p_report.json", "w") as f:
+        with open("output/wtb_1080p_report.json", "w", encoding="utf-8") as f:
             json.dump({
-                "videos_produced_in_run": len(built_results) * 2,
-                "paired_mode": "2_LONG_AND_2_LINKED_SHORTS_PER_RUN",
+                "status": (
+                    "completed" if len(built_results) >= pairs_to_build and videos_rendered == len(built_results) * 2 and videos_uploaded == videos_rendered
+                    else "rendered_without_uploads" if videos_rendered > 0 and videos_uploaded == 0
+                    else "partial"
+                ),
+                "videos_produced_in_run": videos_rendered,
+                "videos_rendered_in_run": videos_rendered,
+                "videos_uploaded_to_youtube": videos_uploaded,
+                "pairs_requested": pairs_to_build,
+                "pairs_built": len(built_results),
+                "paired_mode": "LONG_AND_LINKED_SHORT_PER_PAIR",
                 "geopolitics_hot_surge_active": hot_geo_surge,
                 "next_round_robin_index": hist_obj.get("round_robin_idx", 0),
                 "playlists_synced": len(playlist_map),
-                "pair_1": {
-                    "pillar": story_1.get("sub_pillar", story_1["pillar"]),
-                    "country": story_1.get("country_profile", {}).get("name", "GLOBAL"),
-                    "title": story_1["original_yt_title"],
-                    "long_video": pkg_1,
-                    "linked_short": s1_stats
-                },
-                "pair_2": {
-                    "pillar": story_2.get("sub_pillar", story_2["pillar"]),
-                    "country": story_2.get("country_profile", {}).get("name", "GLOBAL"),
-                    "title": story_2["original_yt_title"],
-                    "long_video": pkg_2,
-                    "linked_short": s2_stats
-                }
+                "total_run_minutes": round((time.time() - run_start_wall) / 60.0, 1),
+                "pairs": pair_reports
             }, f, indent=2)
 
-        print(f"✅ [6/6] V31 ENGINE COMPLETE! Produced {len(built_results) * 2} Full-HD 1080p Videos ({len(built_results)} Long + {len(built_results)} Shorts) in {round((time.time() - run_start_wall)/60.0, 1)} mins!", flush=True)
+        print(f"✅ [6/6] ENGINE COMPLETE! Rendered {videos_rendered} Full-HD 1080p videos ({len(built_results)} long + {len(built_results)} shorts planned); YouTube confirmed {videos_uploaded}. Total run time: {round((time.time() - run_start_wall)/60.0, 1)} mins.", flush=True)
     finally:
         for vc in GLOBAL_OPEN_VCLIPS:
             try:
