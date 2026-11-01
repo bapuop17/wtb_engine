@@ -109,14 +109,14 @@ PILLAR_TO_CORE_HUB = {
 
 # 100% ULTRA-NATURAL EXPRESSIVE HUMAN STORYTELLER VOICES (Andrew & Ava Multilingual + Deepgram Aura)
 CATEGORY_VOICE_CAST = {
-    "WORLD": ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+2%", "+4%"),
-    "TECHNOLOGY": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-helios-en", "+2%", "+4%"),
-    "MIND_BLOWING_FACTS": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-asteria-en", "+2%", "+4%"),
-    "SCIENCE": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-helios-en", "+2%", "+4%"),
-    "BUSINESS": ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+2%", "+4%"),
-    "HEALTH": ("en-US-AvaMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-asteria-en", "+2%", "+4%"),
-    "SPORTS": ("en-US-AndrewMultilingualNeural", "en-US-AvaMultilingualNeural", "aura-arcas-en", "+3%", "+5%"),
-    "ENTERTAINMENT": ("en-US-AvaMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-stella-en", "+2%", "+4%")
+    "WORLD": ("en-US-ChristopherNeural", "en-US-ChristopherNeural", "aura-orion-en", "+2%", "+4%"),
+    "TECHNOLOGY": ("en-US-ChristopherNeural", "en-US-AvaMultilingualNeural", "aura-helios-en", "+2%", "+4%"),
+    "MIND_BLOWING_FACTS": ("en-US-ChristopherNeural", "en-US-AvaMultilingualNeural", "aura-asteria-en", "+2%", "+4%"),
+    "SCIENCE": ("en-US-ChristopherNeural", "en-US-AvaMultilingualNeural", "aura-helios-en", "+2%", "+4%"),
+    "BUSINESS": ("en-US-ChristopherNeural", "en-US-ChristopherNeural", "aura-orion-en", "+2%", "+4%"),
+    "HEALTH": ("en-US-AvaMultilingualNeural", "en-US-ChristopherNeural", "aura-asteria-en", "+2%", "+4%"),
+    "SPORTS": ("en-US-ChristopherNeural", "en-US-AvaMultilingualNeural", "aura-arcas-en", "+3%", "+5%"),
+    "ENTERTAINMENT": ("en-US-AvaMultilingualNeural", "en-US-ChristopherNeural", "aura-stella-en", "+2%", "+4%")
 }
 
 # Concise negative guard for Bing URL queries so query length NEVER overflows Bing's parser!
@@ -530,6 +530,7 @@ DEMONYM_TO_COUNTRY = {
 }
 
 BANNED_CAPTION_AND_TITLE_WORDS = [
+    "apple watch", "smartwatch", "watch face", "watch ultra", "rolex", "casio", "wrist watch", "formula 1", "formula one", "f1 car", "grand prix", "red bull racing", "ferrari f1", "mud run", "tough mudder", "obstacle course", "spartan race", "viking helmet", "horned helmet", "house with chimaeras", "great seal", "seal of the", "coat of arms", "state emblem", "follow us @", "@alarabiya", "daily brief", "blank map", "vector map", "map of europe",
     "ancient egypt", "pharaoh", "hieroglyph", "hieroglyphs", "tomb painting", "wall painting", "papyrus", "mummy", "sarcophagus", "fresco", "mural", "isometric", "3d isometric", "3d character", "most dancing", "drinking beer", "lowest obesity", "happiest with", "least wasteful", "most internet users", "fewest divorces", "terrible maps", "mapporn", "stereotype map", "chalkboard", "blackboard", "1+1", "2+2", "school board", "voa ", "voice of america", "making of a myth", "alexander the great", "336 bc", "macedon", "cira", "geocolor", 
     "airbnb", "vacation rental", "bare ", "webcam", "vlog", "reaction", "youtuber", "influencer",
     "selfie", "couch", "sofa", "bedroom", "living room", "tank top", "bikini", "actress",
@@ -554,6 +555,7 @@ BANNED_CAPTION_AND_TITLE_WORDS = [
 ]
 
 BANNED_IMAGE_SOURCES = [
+    ".svg", ".svg.png", "seal_of_", "great_seal", "coat_of_arms", "emblem", "insignia", "flag_of_", "map_of_", "location_map", "locator_map", "invasion_of_", "blank_map", "political_map", "al_arabiya", "alarabiya", "united24", "gnt_",
     "ytimg.com", "i.ytimg.com", "youtube.com", "youtu.be", "vimeo.com", "tiktokcdn", "tiktok.com",
     "instagram.com", "cdninstagram", "fbcdn.net", "facebook.com", "twimg.com", "pbs.twimg.com",
     "fncstatic.com", "foxnews.com/static", "a57.foxnews.com", "msnbc.com", "substackcdn.com",
@@ -1279,136 +1281,16 @@ def lowpass_warm_filter(wave_arr, window_len=24):
 
 def synthesize_pro_sfx_event(sfx_type, sr=44100):
     """
-    A2 & A3 LAYERED FOLEY & IMPACT SFX ENGINE (Vox / Johnny Harris / Nitish Rajput Standard):
-    - `typewriter_camera_shutter`: Sharp paper-thud + mechanical 35mm camera shutter click + typewriter strike (for 2.5D Timeline & Historical Dates)
-    - `dry_marker_squeak`: Crisp dry-felt highlighter marker squeak + paper slide (synced to 12° tilted newspaper highlight mask)
-    - `vinyl_stop_transition`: Turntable pitch-down brake effect (180Hz -> 22Hz) transitioning from nostalgic golden era to modern collapse
-    - `organogram_arrow_whoosh`: Swift directional air whoosh + tactical snap as corporate organogram arrows connect
-    - `ligo_gravitational_chirp`: Authentic upward spacetime frequency chirp + sub-bass rumble
-    - `tactical_map_zoom_whoosh`: Cartographic aerial zoom whoosh + radar lock tick
-    - `crisis_stat_sub_drop`: Deep sub-bass impact hit
+    V29 CLEAN BROADCAST SUBTLE TRANSITION PULSE:
+    Eliminates the 420Hz marker squeak and vinyl-brake warble that clashed with the narrator's voice!
+    Produces a barely-perceptible, warm low-frequency air transition (-32dB) that never masks speech.
     """
-    rng = np.random.default_rng(abs(hash(sfx_type)) % 99999)
-
-    if sfx_type == "typewriter_camera_shutter":
-        dur = 0.36
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        # 1. Heavy Paper-Thud at t=0.02s
-        thud_f = 95.0 * np.exp(-t * 18.0) + 42.0
-        thud = 0.65 * np.sin(2.0 * np.pi * np.cumsum(thud_f) / float(sr)) * np.exp(-t * 14.0)
-        # 2. Mechanical Camera Shutter Double-Click at t=0.08s and t=0.14s
-        noise = rng.standard_normal(n).astype(np.float32)
-        click1 = np.exp(-((t - 0.075) ** 2) / (2.0 * (0.0045 ** 2)))
-        click2 = 0.80 * np.exp(-((t - 0.135) ** 2) / (2.0 * (0.0055 ** 2)))
-        shutter = lowpass_warm_filter(noise * (click1 + click2), window_len=6)
-        sig = thud + 0.55 * shutter
-        max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.138).astype(np.float32)
-
-    if sfx_type in ["dry_marker_squeak", "paper_evidence_highlighter"]:
-        dur = 0.40
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        noise = rng.standard_normal(n).astype(np.float32)
-        # Paper slide + subtle felt-marker friction envelope across 0.12s..0.34s
-        slide_env = np.exp(-((t - 0.07) ** 2) / (2.0 * (0.035 ** 2)))
-        marker_env = np.exp(-((t - 0.22) ** 2) / (2.0 * (0.075 ** 2)))
-        felt_stroke = lowpass_warm_filter(noise, window_len=10) * (0.55 * slide_env + 0.75 * marker_env)
-        squeak_mod = 0.28 * np.sin(2.0 * np.pi * (420.0 + 90.0 * np.sin(t * 28.0)) * t) * marker_env
-        warm_body = 0.35 * np.sin(2.0 * np.pi * 88.0 * t) * np.exp(-t * 14.0)
-        sig = felt_stroke + lowpass_warm_filter(squeak_mod, window_len=12) + warm_body
-        max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.126).astype(np.float32)
-
-    if sfx_type == "vinyl_stop_transition":
-        dur = 0.48
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        # Turntable pitch brake: 175Hz decelerating smoothly down to 24Hz
-        f_brake = 175.0 * ((1.0 - (t / dur)) ** 2.2) + 24.0
-        phase = 2.0 * np.pi * np.cumsum(f_brake) / float(sr)
-        env = np.sin(np.pi * (t / dur)) ** 0.8 * np.exp(-t * 2.5)
-        sig = (0.65 * np.sin(phase) + 0.35 * np.sin(phase * 1.5)) * env
-        sig = lowpass_warm_filter(sig, window_len=18)
-        max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.142).astype(np.float32)
-
-    if sfx_type == "organogram_arrow_whoosh":
-        dur = 0.34
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        env = np.sin(np.pi * (t / dur)) ** 1.8
-        brown = np.cumsum(rng.standard_normal(n).astype(np.float32))
-        brown -= np.mean(brown)
-        brown /= max(float(np.max(np.abs(brown))), 1e-4)
-        whoosh = lowpass_warm_filter(brown, window_len=26) * env
-        snap = 0.48 * np.sin(2.0 * np.pi * 115.0 * t) * np.exp(-((t - 0.24) ** 2) / (2.0 * (0.018 ** 2)))
-        sig = whoosh + snap
-        max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.128).astype(np.float32)
-
-    if sfx_type == "ligo_gravitational_chirp":
-        dur = 0.52
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        f_inst = 38.0 + 195.0 * ((t / dur) ** 2.6)
-        phase = 2.0 * np.pi * np.cumsum(f_inst) / float(sr)
-        env = np.sin(np.pi * (t / dur)) ** 1.3
-        chirp = 0.62 * np.sin(phase) * env
-        sub_rumble = 0.38 * np.sin(2.0 * np.pi * 46.0 * t) * np.exp(-t * 4.5)
-        sig = lowpass_warm_filter(chirp + sub_rumble, window_len=16)
-        max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.128).astype(np.float32)
-
-    if sfx_type == "tactical_map_zoom_whoosh":
-        dur = 0.42
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        env = np.sin(np.pi * (t / dur)) ** 1.5
-        brown = np.cumsum(rng.standard_normal(n).astype(np.float32))
-        brown -= np.mean(brown)
-        brown /= max(float(np.max(np.abs(brown))), 1e-4)
-        whoosh = lowpass_warm_filter(brown, window_len=34) * env
-        sub_sweep = 0.50 * np.sin(2.0 * np.pi * (82.0 * np.exp(-t * 5.0) + 42.0) * t) * env
-        sig = whoosh + sub_sweep
-        max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.124).astype(np.float32)
-
-    if sfx_type in ["crisis_stat_sub_drop", "deep_sub_drop"]:
-        dur = 0.48
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        f_drop = 88.0 * np.exp(-t * 9.5) + 34.0
-        phase = 2.0 * np.pi * np.cumsum(f_drop) / float(sr)
-        sig = np.sin(phase) * np.exp(-t * 6.0)
-        max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.142).astype(np.float32)
-
-    if sfx_type in ["camera_shutter_flash", "dossier_stamp_thud", "cinematic_medallion_reveal", "digital_hud_lock"]:
-        dur = 0.30
-        n = int(sr * dur)
-        t = np.linspace(0, dur, n, endpoint=False)
-        sub_f = 82.0 * np.exp(-t * 13.0) + 44.0
-        phase = 2.0 * np.pi * np.cumsum(sub_f) / float(sr)
-        warm_thump = np.sin(phase) * np.exp(-t * 10.0)
-        soft_air = lowpass_warm_filter(rng.standard_normal(n).astype(np.float32), window_len=30) * np.sin(np.pi * (t / dur)) * np.exp(-t * 11.0)
-        sig = 0.72 * warm_thump + 0.28 * soft_air
-        max_v = max(float(np.max(np.abs(sig))), 1e-4)
-        return ((sig / max_v) * 0.124).astype(np.float32)
-
-    dur = 0.34
+    dur = 0.24
     n = int(sr * dur)
     t = np.linspace(0, dur, n, endpoint=False)
-    env = np.sin(np.pi * (t / dur)) ** 1.6
-    brown = np.cumsum(rng.standard_normal(n).astype(np.float32))
-    brown -= np.mean(brown)
-    brown /= max(float(np.max(np.abs(brown))), 1e-4)
-    warm_whoosh = lowpass_warm_filter(brown, window_len=38) * env
-    sub_bed = 0.48 * np.sin(2.0 * np.pi * 56.0 * t) * env
-    sig = warm_whoosh + sub_bed
-    max_v = max(float(np.max(np.abs(sig))), 1e-4)
-    return ((sig / max_v) * 0.115).astype(np.float32)
+    env = np.sin(np.pi * (t / dur)) ** 2.0 * np.exp(-t * 8.0)
+    sig = 0.5 * np.sin(2.0 * np.pi * 68.0 * t) * env
+    return (sig * 0.024).astype(np.float32)
 
 def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     """
@@ -1467,7 +1349,7 @@ def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     raw_mix = pad_layer + sub_layer + arp_layer + pulse_layer
     warm_mix = lowpass_warm_filter(raw_mix, window_len=24)
     max_s = max(float(np.max(np.abs(warm_mix))), 1e-4)
-    mastered_seg = (warm_mix / max_s) * 0.135
+    mastered_seg = (warm_mix / max_s) * 0.062
     return mastered_seg.astype(np.float32), track_name
 
 def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times, mood="dark_geopolitics", track_seed=0, sfx_events=None):
@@ -1537,7 +1419,7 @@ def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times
             idx = int(ev_t * sr)
 
             # 1.2-Second Hard Cut to Absolute Silence (0.00 dB) for catastrophic turning points!
-            if ev.get("dramatic_silence_drop") and 0 < idx < n_samples:
+            if False and ev.get("dramatic_silence_drop"):
                 drop_len = min(int(1.20 * sr), n_samples - idx)
                 if drop_len > 200:
                     duck_curve = np.zeros(drop_len, dtype=np.float32)
@@ -3243,21 +3125,37 @@ def has_collage_or_text_banner_artifacts(im_rgb):
 
 def is_valid_cinematic_video_frame(frame_rgb, story_title="", query_context=""):
     """
-    V21 STRICT DOCUMENTARY VIDEO B-ROLL FRAME AUDITOR:
+    V29 STRICT FIELD-FOOTAGE B-ROLL AUDITOR:
     Rejects:
-    1. Blank/solid frames, giant presentation text slides ('How can we detect...', 'PRESIDENT ADDRESS TO CONGRESS', 'NASA LIVE EVENT'),
-       burned-in stock watermarks ('PeriscopeFilm.com', '123RF'), and TV chyrons via `has_collage_or_text_banner_artifacts`.
-    2. Pixar/Disney 3D cartoons ('Finding Dory'), anime, sci-fi holograms, and off-topic clips via `passes_double_visual_audit`.
+    1. TV Studio Anchor Talking-Head Closeups (like the '@AlArabiya_Eng FOLLOW US' anchor at 00:00 and 'GNT' anchor at 00:27 of glUIW4nW6dU!).
+    2. Top/bottom bright TV network ticker/social-handle bars ('FOLLOW US @...', 'BREAKING NEWS', 'UNITED24', 'VOA').
+    3. Blank/solid frames, cartoons, and split-screens.
     """
     try:
         pil_f = Image.fromarray(frame_rgb).convert("RGB")
-        arr = np.asarray(pil_f.resize((120, 120)), dtype=np.float32)
+        arr = np.asarray(pil_f.resize((160, 90)), dtype=np.float32)
         if float(np.std(arr)) < 18.0:
             return False
-        white_px = np.sum((arr[:, :, 0] > 240) & (arr[:, :, 1] > 240) & (arr[:, :, 2] > 240)) / float(120 * 120)
-        black_px = np.sum((arr[:, :, 0] < 12) & (arr[:, :, 1] < 12) & (arr[:, :, 2] < 12)) / float(120 * 120)
-        if white_px > 0.45 or black_px > 0.62:
+        white_px = np.sum((arr[:, :, 0] > 235) & (arr[:, :, 1] > 235) & (arr[:, :, 2] > 235)) / float(160 * 90)
+        black_px = np.sum((arr[:, :, 0] < 12) & (arr[:, :, 1] < 12) & (arr[:, :, 2] < 12)) / float(160 * 90)
+        if white_px > 0.42 or black_px > 0.60:
             return False
+
+        # Reject top or bottom TV studio graphic banner bars (e.g. white/red/blue ticker bands at top 18% or bottom 20%)
+        top_band_white = float(np.mean((arr[:16, :, 0] > 205) & (arr[:16, :, 1] > 205) & (arr[:16, :, 2] > 205)))
+        bot_band_white = float(np.mean((arr[72:, :, 0] > 205) & (arr[72:, :, 1] > 205) & (arr[72:, :, 2] > 205)))
+        if top_band_white > 0.30 or bot_band_white > 0.30:
+            return False
+
+        # Reject TV studio news anchor talking-head closeups (where a single large face occupies the center of the video clip)
+        if FACE_CASCADE is not None:
+            gray_f = cv2.cvtColor(np.asarray(pil_f.resize((320, 180)), dtype=np.uint8), cv2.COLOR_RGB2GRAY)
+            faces = FACE_CASCADE.detectMultiScale(gray_f, scaleFactor=1.1, minNeighbors=5, minSize=(42, 42))
+            for (fx, fy, fw, fh) in faces:
+                if (fw * fh) / float(320 * 180) > 0.065:
+                    # Large talking-head anchor/youtuber face in video clip -> reject so only real field B-roll footage plays!
+                    return False
+
         if has_collage_or_text_banner_artifacts(pil_f):
             return False
         if not passes_double_visual_audit(pil_f, story_title=story_title, query_context=query_context):
@@ -3396,7 +3294,7 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             "--quiet",
             "--geo-bypass",
             "--max-filesize", "16M",
-            "--download-sections", "*00:06-00:15",
+            "--download-sections", "*00:18-00:27",
             "-f", "best[height<=720][ext=mp4]/bestvideo[height<=720][ext=mp4]/best[ext=mp4]",
             "-o", raw_local,
             search_or_url
@@ -4191,95 +4089,117 @@ COMMON_SENTENCE_START_WORDS = {
 
 def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
     """
-    V28 GOOGLE-ACCURATE SENTENCE ENTITY & SUBJECT EXTRACTOR:
-    Reads the exact spoken sentence (`beat_text`) and extracts:
-    1. Any Named Person, Leader, Politician, Official, Place, Landmark, or Organization
-       (e.g. 'KC Venugopal', 'Gyanesh Kumar', 'Ramlila Maidan', 'Abdel Fattah el-Sisi',
-        'Vladimir Putin', 'Suez Canal', 'BJP', 'BRICS', 'Supreme Court').
-    2. Builds the exact 3-to-5 word search query a human types into Google Images to get
-       that exact person/place/event photo!
-    3. Returns `(primary_entity_name, google_search_query, must_match_tokens)`.
+    V29 GHATNA-LOCKED (INCIDENT + SENTENCE SUBJECT) GOOGLE/BING VISUAL QUERY BUILDER:
+    Fixes the bugs seen in glUIW4nW6dU & hYhy0nYc6xg:
+    - Never mistakes sentence-starter words ('For', 'Watch', 'Without', 'Instead', 'Let') for proper nouns
+      (which caused 'For' -> Formula 1 cars and 'Watch' -> Apple Watch!).
+    - Never searches generic words like 'obstacle' ('obstacle to peace' -> mud race obstacle course!).
+    - ALWAYS combines the Core Incident ('ghatna_anchor', e.g. 'Ukraine Patriot missile') with the specific
+      Person, Leader, Country, or Physical Object spoken in `beat_text`!
     """
     c_prof = dossier.get("country_profile", {})
     geo_name = "" if c_prof.get("is_global_topic") else c_prof.get("name", "").title()
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
     story_title = dossier.get("title", "")
 
-    clean_sent = re.sub(r"[^A-Za-z0-9\s\-\.'']", " ", str(beat_text or "")).strip()
+    # 1. Build the 2-3 word Core Incident Anchor ('ghatna_anchor') from the headline & topic_anchor
+    incident_stop = HEADLINE_STOP_VERBS_ADJS | METAPHOR_NOISE_WORDS | COMMON_SENTENCE_START_WORDS | {
+        "just", "sold", "approves", "approved", "sale", "deal", "move", "shocked", "world", "explained",
+        "vanished", "reshaped", "power", "map", "secret", "trap", "massive", "critical", "urgent"
+    }
+    incident_words = []
+    for w in re.findall(r"[A-Za-z0-9\-]{3,}", f"{topic_anchor} {story_title}"):
+        wl = w.lower()
+        if wl not in incident_stop and wl not in [x.lower() for x in incident_words]:
+            incident_words.append(w)
+    if geo_name:
+        g_first = geo_name.split()[0]
+        incident_words = [g_first] + [x for x in incident_words if x.lower() != g_first.lower()]
+    ghatna_anchor = " ".join(incident_words[:3]).strip() or topic_anchor
 
-    # 1. Check if AI blueprint explicitly specified `mentioned_person` for this beat
+    # 2. Extract multi-word Proper Names (People, Leaders, Organizations, Places) from `bv_dict` or mid-sentence capitalized phrases
     bv_person = str((bv_dict or {}).get("mentioned_person") or "").strip()
-    bv_role = str((bv_dict or {}).get("person_role") or "").strip()
     bv_photo_q = str((bv_dict or {}).get("photo_query") or "").strip()
 
-    # 2. Extract multi-word Capitalized Proper Noun phrases (People, Places, Landmarks, Institutions) from `beat_text`
-    #    Supports initials/acronyms like 'KC Venugopal', 'BJP', 'ECI', 'UN', 'BRICS', 'Ramlila Maidan', 'Gyanesh Kumar'
-    proper_phrases = []
+    clean_sent = re.sub(r"[^A-Za-z0-9\s\-\.'']", " ", str(beat_text or "")).strip()
     tokens = clean_sent.split()
+    proper_phrases = []
     cur_phrase = []
     for idx_t, tok in enumerate(tokens):
         t_clean = tok.strip(".,;:!?'\"()")
-        if not t_clean:
+        if not t_clean or len(t_clean) < 2:
+            if cur_phrase:
+                proper_phrases.append(" ".join(cur_phrase))
+                cur_phrase = []
             continue
-        is_cap = (t_clean[0].isupper() and len(t_clean) >= 2) or (t_clean.isupper() and len(t_clean) >= 2)
-        if idx_t == 0 and t_clean.lower() in COMMON_SENTENCE_START_WORDS:
-            is_cap = False
-        elif t_clean.lower() in COMMON_SENTENCE_START_WORDS:
-            is_cap = False
+        # NEVER treat the first word of a sentence (`idx_t == 0`) as a standalone 1-word proper noun
+        # unless it is part of a 2+ word capitalized name (e.g. 'President Donald Trump', 'Volodymyr Zelenskyy', 'KC Venugopal')!
+        is_cap = (t_clean[0].isupper() and not t_clean.isdigit()) and (t_clean.lower() not in COMMON_SENTENCE_START_WORDS) and (t_clean.lower() not in incident_stop)
         if is_cap:
             cur_phrase.append(t_clean)
         else:
             if cur_phrase:
-                proper_phrases.append(" ".join(cur_phrase))
+                # Only keep a phrase starting at idx_t == 0 if it has >=2 capitalized words OR is a known acronym/country!
+                if len(cur_phrase) >= 2 or (tokens[0].strip(".,;:!?'\"()") != cur_phrase[0]):
+                    proper_phrases.append(" ".join(cur_phrase))
                 cur_phrase = []
     if cur_phrase:
-        proper_phrases.append(" ".join(cur_phrase))
+        if len(cur_phrase) >= 2 or (tokens and tokens[0].strip(".,;:!?'\"()") != cur_phrase[0]):
+            proper_phrases.append(" ".join(cur_phrase))
 
-    # Filter out generic country name alone if a more specific person/place phrase exists in the sentence
-    geo_low_set = {geo_name.lower(), "india", "indian", "egypt", "egyptian", "russia", "russian", "china", "chinese", "united states", "american", "world", "talk", "brief"}
+    geo_low_set = {geo_name.lower(), "world", "talk", "brief", "youtube", "description", "comment", "comments", "lesson", "chapter", "watch", "for", "context"}
     specific_propers = [p for p in proper_phrases if p.lower() not in geo_low_set and len(p) >= 3]
 
     chosen_entity = ""
     if bv_person and bv_person.lower() not in geo_low_set and len(bv_person) >= 3:
         chosen_entity = bv_person
     elif specific_propers:
-        # Prefer 2+ word proper names (like 'KC Venugopal', 'Gyanesh Kumar', 'Ramlila Maidan', 'Suez Canal')
-        multi_word_propers = [p for p in specific_propers if len(p.split()) >= 2]
-        chosen_entity = multi_word_propers[0] if multi_word_propers else specific_propers[0]
+        multi_w = [p for p in specific_propers if len(p.split()) >= 2]
+        chosen_entity = multi_w[0] if multi_w else specific_propers[0]
 
-    # Build `must_match_tokens` for the chosen entity (excluding common ambiguous surnames like 'kumar' when a first name like 'gyanesh' exists!)
-    ambiguous_common_surnames = {"kumar", "singh", "sharma", "khan", "ali", "ahmed", "chen", "wang", "smith", "jones", "brown", "minister", "president", "chief", "commission", "election", "party", "bloc", "alliance"}
+    ambiguous_common_surnames = {
+        "kumar", "singh", "sharma", "khan", "ali", "ahmed", "chen", "wang", "smith", "jones", "brown",
+        "minister", "president", "chief", "commission", "election", "party", "bloc", "alliance", "state",
+        "department", "leader", "system", "network", "program", "context", "watch", "single", "obstacle"
+    }
     must_match_tokens = set()
     if chosen_entity:
-        ent_words = [w.lower() for w in re.findall(r"[A-Za-z0-9]{2,}", chosen_entity) if w.lower() not in HEADLINE_STOP_VERBS_ADJS]
-        distinctive_ent_words = [w for w in ent_words if w not in ambiguous_common_surnames and len(w) >= 3]
-        if distinctive_ent_words:
-            must_match_tokens = set(distinctive_ent_words)
-        elif ent_words:
-            must_match_tokens = set(ent_words)
+        ent_words = [w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", chosen_entity) if w.lower() not in incident_stop]
+        distinctive = [w for w in ent_words if w not in ambiguous_common_surnames]
+        if distinctive:
+            must_match_tokens = set(distinctive)
 
-    # Build the crisp Google/Bing search query
+    # 3. Build the Ghatna-Locked Search Query: ALWAYS includes both the chosen_entity (or beat physical nouns) AND `ghatna_anchor`!
+    bad_metaphor_words = {
+        "obstacle", "peace", "green", "lit", "cent", "paying", "sounding", "alarms", "soundtrack", "daily",
+        "life", "gold", "standard", "gaps", "land", "unimpeded", "hidden", "mechanism", "dipping", "Context",
+        "context", "single", "might", "cost", "less", "ability", "multiple", "targets", "multiplier", "buying",
+        "bullets", "survival", "siege", "stretched", "thin", "bottlenecks", "bottleneck", "logistical",
+        "nightmare", "plays", "hands", "bank", "acknowledging", "dependence", "fragile", "loop", "leverage",
+        "influence", "partnership", "transaction", "blood", "balance", "sheets", "winning", "voice", "watch",
+        "full", "documentary", "link", "description", "pinned", "comment", "share", "perspective", "subscribe"
+    }
     if chosen_entity:
-        # Add 1-2 context words from the sentence or country so Google/Bing finds the exact news photo
-        ctx_words = []
-        for w in re.findall(r"[A-Za-z0-9]{3,}", f"{bv_role} {clean_sent}"):
-            wl = w.lower()
-            if (wl not in COMMON_SENTENCE_START_WORDS and wl not in HEADLINE_STOP_VERBS_ADJS
-                    and wl not in METAPHOR_NOISE_WORDS and wl not in chosen_entity.lower()):
-                if wl not in [x.lower() for x in ctx_words]:
-                    ctx_words.append(w)
-        q_parts = [chosen_entity]
-        if geo_name and geo_name.lower() not in chosen_entity.lower():
-            q_parts.append(geo_name.split()[0])
-        if ctx_words:
-            q_parts.append(ctx_words[0])
-        search_q = " ".join(q_parts)
-        return chosen_entity, search_q[:75], must_match_tokens
+        q_words = []
+        for w in (chosen_entity.split() + ghatna_anchor.split()):
+            if w.lower() not in [x.lower() for x in q_words] and w.lower() not in bad_metaphor_words:
+                q_words.append(w)
+        search_q = " ".join(q_words[:5]).strip()
+        return chosen_entity, search_q, must_match_tokens
 
-    # Otherwise use concrete nouns from the sentence + story anchor
-    sq_fallback = sanitize_visual_search_query(bv_photo_q or beat_text, dossier)
-    fb_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{beat_text} {sq_fallback}") if w.lower() not in COMMON_SENTENCE_START_WORDS and w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in ambiguous_common_surnames}
-    return topic_anchor, sq_fallback, fb_toks
+    # Extract concrete physical nouns from `bv_photo_q` or `beat_text` (excluding metaphor words like 'obstacle', 'bullets', 'balance sheets')
+    scene_nouns = []
+    for w in re.findall(r"[A-Za-z0-9\-]{4,}", f"{bv_photo_q} {clean_sent}"):
+        wl = w.lower()
+        if (wl not in incident_stop and wl not in bad_metaphor_words and wl not in ambiguous_common_surnames
+                and wl not in [x.lower() for x in ghatna_anchor.split()]):
+            if wl not in [x.lower() for x in scene_nouns]:
+                scene_nouns.append(w)
+
+    q_combined = ghatna_anchor.split()[:3] + scene_nouns[:2]
+    search_q = " ".join(q_combined[:5]).strip()
+    fb_toks = {w.lower() for w in q_combined if len(w) >= 4 and w.lower() not in ambiguous_common_surnames}
+    return ghatna_anchor, search_q, fb_toks
 
 def sanitize_visual_search_query(raw_q, dossier):
     """
@@ -4814,53 +4734,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         beat_text or news_query, bv_dict, dossier
     )
 
-    # 1. Wikipedia Exact Entity Lookup (with OpenSearch fallback for names like 'KC Venugopal' -> 'K. C. Venugopal'!)
-    generic_wiki_skip = {c.lower() for c in COUNTRY_GEO_DB.keys()} | {"vote", "voting", "election", "elections", "gold", "mining", "city", "police", "government", "court", "africa", "europe", "asia", "world", "global", "india", "egypt", "russia", "china"}
-    wiki_candidates = []
-    for wc in [sent_entity, wiki_exact_title]:
-        if wc and len(wc.strip()) >= 3 and wc.lower().strip() not in generic_wiki_skip and wc not in wiki_candidates:
-            wiki_candidates.append(wc.strip())
-
-    for w_cand in wiki_candidates[:2]:
-        try:
-            # Resolve canonical Wikipedia page title via opensearch first (turns 'KC Venugopal' into 'K. C. Venugopal')
-            resolved_titles = [w_cand]
-            try:
-                os_url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={urllib.parse.quote(w_cand)}&limit=2&namespace=0&format=json"
-                os_r = requests.get(os_url, headers=HEADERS_WIKI, timeout=4).json()
-                if isinstance(os_r, list) and len(os_r) >= 2 and os_r[1]:
-                    for rt in os_r[1][:2]:
-                        if rt not in resolved_titles:
-                            resolved_titles.insert(0, rt)
-            except Exception:
-                pass
-
-            for r_title in resolved_titles[:2]:
-                w_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(r_title.replace(' ', '_'))}"
-                wr = requests.get(w_url, headers=HEADERS_WIKI, timeout=4.5)
-                if wr.status_code == 200:
-                    wdata = wr.json()
-                    w_desc = f"{wdata.get('title', '')} {wdata.get('description', '')} {wdata.get('extract', '')[:140]}"
-                    if must_match_tokens:
-                        w_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{2,}", w_desc)}
-                        if len(must_match_tokens.intersection(w_toks)) == 0:
-                            continue
-                    w_img = (wdata.get("originalimage") or {}).get("source") or (wdata.get("thumbnail") or {}).get("source")
-                    if w_img and w_img not in used_image_urls and not w_img.lower().endswith(".svg") and not any(mp in w_img.lower() for mp in ["map", "orthographic", "locator", "location", "church", "baptist", "flag", "coat_of_arms", "signature", "autograph"]):
-                        ir = requests.get(w_img, headers=HEADERS_WIKI, timeout=4.5)
-                        if ir.status_code == 200 and len(ir.content) > 8500:
-                            p = f"temp/{tag_id}_wiki_exact.jpg"
-                            with open(p, "wb") as f:
-                                f.write(ir.content)
-                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=360, min_h=240, story_title=story_title, query_context=w_cand)
-                            if vim is not None:
-                                used_image_urls.add(w_img)
-                                print(f"   🏛️ [Wikipedia Exact Entity Visual Locked]: {r_title}", flush=True)
-                                return vim
-        except Exception:
-            pass
-
-    # 1B. Check the 200+ Pool ONLY if a pool image explicitly matches `must_match_tokens` for this sentence!
+    # 1. Check the 200+ Verified News Photo Pool FIRST if a pool image matches `must_match_tokens` for this sentence! ONLY if a pool image explicitly matches `must_match_tokens` for this sentence!
     pool_match_im = select_best_visual_from_200_pool(
         beat_text or news_query, exact_google_q, dossier, used_image_urls, existing_hashes,
         must_match_tokens=must_match_tokens
@@ -4962,38 +4836,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     if pool_fallback is not None:
         return pool_fallback
 
-    # 4. Wikimedia Commons Bitmap Archive (with Double Audit Gate #1 + Gate #2)
-    for cm_q in [f"{wiki_exact_title} {topic_anchor}", topic_anchor]:
-        if not cm_q:
-            continue
-        try:
-            api = "https://commons.wikimedia.org/w/api.php"
-            params = {
-                "action": "query", "generator": "search",
-                "gsrsearch": f"filetype:bitmap {cm_q} -nude -statue -sculpture -painting -cartoon -logo",
-                "gsrnamespace": "6", "gsrlimit": 10,
-                "prop": "imageinfo", "iiprop": "url", "iiurlwidth": 1920, "format": "json"
-            }
-            r = requests.get(api, params=params, headers=HEADERS_WIKI, timeout=6).json()
-            for pg in r.get("query", {}).get("pages", {}).values():
-                t_title = pg.get("title", "")
-                ii = pg.get("imageinfo", [{}])[0]
-                u = ii.get("thumburl") or ii.get("url")
-                if u and u not in used_image_urls and u.lower().endswith((".jpg", ".jpeg", ".png")):
-                    if not passes_audit_gate_1_caption_and_url(u, t_title, dossier, cm_q):
-                        continue
-                    ir = requests.get(u, headers=HEADERS_WIKI, timeout=5)
-                    if ir.status_code == 200 and len(ir.content) > 9500:
-                        p = f"temp/{tag_id}_comm.jpg"
-                        with open(p, "wb") as f:
-                            f.write(ir.content)
-                        vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=460, min_h=260, story_title=story_title, query_context=cm_q)
-                        if vim is not None:
-                            used_image_urls.add(u)
-                            return vim
-        except Exception:
-            pass
-
+    # 4. Wikimedia Commons disabled to prevent flat textbook/vector maps!
     failed_queries.append(news_query)
     return None
 
@@ -6918,7 +6761,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     # Keep the center and right of the 1080p frame 100% clean for the real photograph/footage!
 
     # 4. NITISH RAJPUT 3D CENTER DOCUMENT / EVIDENCE CLIPPING (`beech mein` on key evidence beats when not in a full-screen board)
-    if beat.get("person_popup") is None and sim_mode is None and int(beat.get("beat_in_section", 0)) == 1 and local_t <= min(beat_dur * 0.78, 2.8):
+    if False:
         ev_card = build_evidence_paper_cutout_rgba(beat, local_t, is_short=is_short)
         if ev_card is not None:
             dim_overlay = Image.new("RGBA", (W, H), (6, 10, 20, 125))
@@ -7394,7 +7237,7 @@ class VoiceAndSubtitleEngine:
         for pat_ph, rep_ph in self.PHONETIC_TTS_MAP.items():
             tts_spoken_text = re.sub(pat_ph, rep_ph, tts_spoken_text, flags=re.I)
         long_v, short_v, dg_backup, long_rate, short_rate = CATEGORY_VOICE_CAST.get(
-            core_hub, ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+0%", "+2%")
+            core_hub, ("en-US-ChristopherNeural", "en-US-ChristopherNeural", "aura-orion-en", "+0%", "+2%")
         )
         edge_voice = short_v if is_short else long_v
         rate = short_rate if is_short else long_rate
@@ -7439,15 +7282,20 @@ class VoiceAndSubtitleEngine:
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1000:
             gTTS(text=tts_spoken_text, lang="en").save(raw_mp3)
 
+        wav_out = out_path[:-4] + ".wav" if out_path.endswith(".mp3") else (out_path + ".wav")
         try:
-            # Studio Broadcast Loudness Mastering (-12 LUFS Equivalent): Warm 175Hz chest presence + 3.1kHz vocal clarity + +5dB makeup gain + 1.55x clean loudness boost + brickwall limiter at 0.96
+            # V29 Crystal-Clear Broadcast Voice Mastering to Uncompressed PCM WAV:
+            # Eliminates MP3 frame-boundary seek stutters ('t-', 'ef-') in MoviePy concatenate_videoclips
+            # and removes harsh equalizer/compressor warble!
             cmd = [
                 "ffmpeg", "-nostdin", "-y", "-i", raw_mp3,
-                "-af", "equalizer=f=175:width_type=o:width=1.2:g=2.6,equalizer=f=3100:width_type=o:width=1.4:g=2.2,acompressor=threshold=-18dB:ratio=2.4:attack=10:release=150:makeup=5dB,volume=1.55,alimiter=limit=0.96,apad=pad_dur=0.16",
-                "-ar", "44100", "-ac", "2", "-b:a", "192k", out_path
+                "-af", "highpass=f=80,afade=t=in:st=0:d=0.035,apad=pad_dur=0.22",
+                "-ar", "44100", "-ac", "2", "-c:a", "pcm_s16le", wav_out
             ]
-            subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=12, check=False)
-            if not os.path.exists(out_path) or os.path.getsize(out_path) < 1000:
+            run_isolated_subprocess(cmd, timeout_sec=12)
+            if os.path.exists(wav_out) and os.path.getsize(wav_out) > 2000:
+                out_path = wav_out
+            else:
                 os.replace(raw_mp3, out_path)
         except Exception:
             os.replace(raw_mp3, out_path)
@@ -8098,9 +7946,8 @@ def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
             if "description" not in sections[-1]["narration"].lower():
                 sections[-1]["narration"] = f"{sections[-1]['narration']} Watch the full documentary via the link in the description and pinned comment!"
         elif not is_short and sections:
-            analytical_outro = build_domain_grounded_conclusion(dossier, sections[-1]["narration"])
             if "subscribe to world talk brief" not in sections[-1]["narration"].lower():
-                sections[-1]["narration"] = f"{sections[-1]['narration']} {analytical_outro}"
+                sections[-1]["narration"] = f"{sections[-1]['narration'].rstrip('.!?')}. Share your thoughts in the comments below, and subscribe to World Talk Brief."
         sections = run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=is_short)
         return sections, ents
 
