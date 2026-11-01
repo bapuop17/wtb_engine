@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-01T01:22:58.910696",
-  "round_robin_idx": 16,
-  "country_rot_idx": 2,
-  "bgm_track_counter": 675272914,
+  "updated_at": "2026-11-01T03:54:00.740620",
+  "round_robin_idx": 17,
+  "country_rot_idx": 26,
+  "bgm_track_counter": 700807358,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -324,7 +324,12 @@
     "india_s_opposition_set_to_hold",
     "this_oddball_reflective_lava_world_is",
     "why_sisi_s_move_just_reshaped",
-    "130_million_votes_vanished_india_s"
+    "130_million_votes_vanished_india_s",
+    "us_approves_sale_of_500_patriot",
+    "eu_set_to_define_canada_s",
+    "openai_reportedly_lowers_funding_target_for",
+    "why_trump_just_sold_500_missiles",
+    "canada_s_secret_eu_deal_the"
   ],
   "event_fingerprints": [
     {
@@ -5618,10 +5623,104 @@
         "vanished",
         "votes"
       ]
+    },
+    {
+      "title": "US approves sale of 500 Patriot missiles to Ukraine",
+      "tokens": [
+        "approved",
+        "approves",
+        "billion",
+        "defense",
+        "department",
+        "friday",
+        "interceptor",
+        "missiles",
+        "patriot",
+        "potential",
+        "sale",
+        "scarce",
+        "state",
+        "ukraine"
+      ]
+    },
+    {
+      "title": "EU set to define Canada's associate membership next year, signs agreements at Montreal summit",
+      "tokens": [
+        "agreements",
+        "associate",
+        "canada",
+        "carney",
+        "concept",
+        "define",
+        "first",
+        "jerusalem",
+        "membership",
+        "montreal",
+        "next",
+        "post",
+        "pushed",
+        "sept",
+        "signs",
+        "summit",
+        "year"
+      ]
+    },
+    {
+      "title": "OpenAI reportedly lowers funding target for new round",
+      "tokens": [
+        "billion",
+        "doesn",
+        "expectations",
+        "funding",
+        "latest",
+        "living",
+        "lowers",
+        "openai",
+        "previously",
+        "raising",
+        "reported",
+        "reportedly",
+        "round",
+        "seem",
+        "target",
+        "then",
+        "trillion",
+        "valuation"
+      ]
+    },
+    {
+      "title": "Why Trump Just Sold 500 Missiles to Ukraine",
+      "tokens": [
+        "approves",
+        "just",
+        "missiles",
+        "patriot",
+        "sale",
+        "sold",
+        "trump",
+        "ukraine"
+      ]
+    },
+    {
+      "title": "Canada's Secret EU Deal: The $1.5T Economic Pivot",
+      "tokens": [
+        "agreements",
+        "associate",
+        "canada",
+        "deal",
+        "define",
+        "economic",
+        "membership",
+        "montreal",
+        "next",
+        "pivot",
+        "signs",
+        "summit",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "AI_ROBOTICS",
     "SCIENCE",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -5659,10 +5758,11 @@
     "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
+    "DEFENSE_MILITARY",
+    "GEOPOLITICS",
     "DEFENSE_MILITARY"
   ],
   "last_sources": [
-    "TechCrunch AI",
     "Space.com Breaking",
     "Al Jazeera Global",
     "Al Jazeera Global",
@@ -5700,7 +5800,9 @@
     "Top Viral News [IRAN]",
     "Global Wire Services",
     "Country Documentary Wire [EGYPT]",
-    "BBC World Global"
+    "BBC World Global",
+    "Top Viral News [UKRAINE]",
+    "Top Viral News [CANADA]"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -5728,6 +5830,9 @@
     "GLOBAL MARKETS",
     "EGYPT",
     "INDIA",
-    "MIND-BLOWING FACT"
+    "MIND-BLOWING FACT",
+    "UKRAINE",
+    "CANADA",
+    "GLOBAL TECH & AI"
   ]
 }
