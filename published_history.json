@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-31T22:24:49.609143",
-  "round_robin_idx": 15,
-  "country_rot_idx": 24,
-  "bgm_track_counter": 641827764,
+  "updated_at": "2026-11-01T01:22:58.910696",
+  "round_robin_idx": 16,
+  "country_rot_idx": 2,
+  "bgm_track_counter": 675272914,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -319,7 +319,12 @@
     "railway_engineering_work_over_christmas_will",
     "uk_s_slavery_apology_the_100b",
     "iran_s_supreme_leader_orders_unlimited",
-    "mega_24h_2026_10_31"
+    "mega_24h_2026_10_31",
+    "why_egypt_s_sisi_matters_to",
+    "india_s_opposition_set_to_hold",
+    "this_oddball_reflective_lava_world_is",
+    "why_sisi_s_move_just_reshaped",
+    "130_million_votes_vanished_india_s"
   ],
   "event_fingerprints": [
     {
@@ -5499,6 +5504,120 @@
         "ukrainians",
         "years"
       ]
+    },
+    {
+      "title": "Why Egypt's Sisi Matters to China's Russia-Africa Strategy and the Future of BRICS",
+      "tokens": [
+        "africa",
+        "brics",
+        "china",
+        "diplomacy",
+        "egypt",
+        "future",
+        "joined",
+        "joins",
+        "matters",
+        "modern",
+        "president",
+        "russia",
+        "sisi",
+        "strategy",
+        "summit"
+      ]
+    },
+    {
+      "title": "India's opposition set to hold mega rally seeking election chief's resignation",
+      "tokens": [
+        "bloc",
+        "chief",
+        "comes",
+        "election",
+        "exercise",
+        "feared",
+        "growing",
+        "gyanesh",
+        "hold",
+        "india",
+        "leave",
+        "mega",
+        "million",
+        "opposition",
+        "passed",
+        "protests",
+        "rally",
+        "resignation",
+        "resolution",
+        "revision",
+        "roll",
+        "rolls",
+        "seeking",
+        "symbolic",
+        "voter",
+        "voters"
+      ]
+    },
+    {
+      "title": "This oddball reflective lava world is challenging to understand",
+      "tokens": [
+        "among",
+        "challenging",
+        "complete",
+        "discoveries",
+        "exoplanet",
+        "hours",
+        "kepler",
+        "lava",
+        "less",
+        "many",
+        "move",
+        "oddball",
+        "orbit",
+        "period",
+        "planets",
+        "quickly",
+        "reflective",
+        "short",
+        "surprising",
+        "tess",
+        "than",
+        "ultra",
+        "understand",
+        "very"
+      ]
+    },
+    {
+      "title": "Why Sisi's Move Just Reshaped the Global Power Map",
+      "tokens": [
+        "africa",
+        "brics",
+        "china",
+        "egypt",
+        "future",
+        "just",
+        "matters",
+        "move",
+        "reshaped",
+        "russia",
+        "sisi",
+        "strategy"
+      ]
+    },
+    {
+      "title": "130 Million Votes Vanished? India's Election War Explained",
+      "tokens": [
+        "chief",
+        "election",
+        "hold",
+        "india",
+        "mega",
+        "million",
+        "opposition",
+        "rally",
+        "resignation",
+        "seeking",
+        "vanished",
+        "votes"
+      ]
     }
   ],
   "last_categories": [
@@ -5538,7 +5657,9 @@
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
-    "DAILY_24H_MEGA_NEWS"
+    "DAILY_24H_MEGA_NEWS",
+    "GEOPOLITICS",
+    "DEFENSE_MILITARY"
   ],
   "last_sources": [
     "TechCrunch AI",
@@ -5577,7 +5698,9 @@
     "Country Documentary Wire [QATAR]",
     "Top Viral News [UNITED KINGDOM]",
     "Top Viral News [IRAN]",
-    "Global Wire Services"
+    "Global Wire Services",
+    "Country Documentary Wire [EGYPT]",
+    "BBC World Global"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -5602,6 +5725,9 @@
     "SPACE & SCIENCE",
     "ISRAEL",
     "IRAN",
-    "GLOBAL MARKETS"
+    "GLOBAL MARKETS",
+    "EGYPT",
+    "INDIA",
+    "MIND-BLOWING FACT"
   ]
 }
