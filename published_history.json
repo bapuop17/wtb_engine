@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-11-02T02:53:50.503034",
-  "round_robin_idx": 1,
-  "country_rot_idx": 52,
-  "bgm_track_counter": 875998470,
+  "updated_at": "2026-11-02T03:51:02.718722",
+  "round_robin_idx": 2,
+  "country_rot_idx": 68,
+  "bgm_track_counter": 882277238,
   "last_mega_24h_date": "2026-10-31",
   "youtube_quota_day_pt": "2026-11-01",
-  "youtube_general_units_reserved": 0,
+  "youtube_general_units_reserved": 50,
   "youtube_caption_units_reserved": 0,
-  "youtube_general_quota_exhausted_day_pt": "",
+  "youtube_general_quota_exhausted_day_pt": "2026-11-01",
   "youtube_channel_history_sync_ok": true,
-  "youtube_channel_history_sync_at_utc": "2026-11-02T02:53:50.502610",
+  "youtube_channel_history_sync_at_utc": "2026-11-02T03:25:00.770323",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
     "xbox_s_first_chief_operating_officer",
@@ -408,7 +408,10 @@
     "why_the_vikings_are_the_nfl",
     "why_american_airlines_just_cut_its",
     "salon_owners_urge_budget_vat_cut",
-    "how_troy_premier_changed_everything_in"
+    "how_troy_premier_changed_everything_in",
+    "yaxel_lendeborg_s_girlfriend_caused_stir",
+    "metroid_prime_needs_some_resident_evil",
+    "why_metroid_prime_s_sci_fi"
   ],
   "event_fingerprints": [
     {
@@ -6996,11 +6999,82 @@
         "race",
         "troy"
       ]
+    },
+    {
+      "title": "Yaxel Lendeborg's Girlfriend Caused Stir With Sizzling Swimsuit Photo",
+      "tokens": [
+        "career",
+        "caused",
+        "draft",
+        "girlfriend",
+        "golden",
+        "having",
+        "heading",
+        "lendeborg",
+        "photo",
+        "polarizing",
+        "prolific",
+        "prospect",
+        "rookie",
+        "sizzling",
+        "start",
+        "state",
+        "stir",
+        "sure",
+        "swimsuit",
+        "warriors",
+        "yaxel"
+      ]
+    },
+    {
+      "title": "'Metroid Prime' needs some 'Resident Evil'-style remakes to rediscover its sci-fi shooter mojo",
+      "tokens": [
+        "been",
+        "beloved",
+        "considering",
+        "debut",
+        "evil",
+        "first",
+        "franchises",
+        "gamecube",
+        "jumping",
+        "many",
+        "metroid",
+        "mojo",
+        "needs",
+        "nintendo",
+        "prime",
+        "rediscover",
+        "remakes",
+        "resident",
+        "series",
+        "shame",
+        "shooter",
+        "since",
+        "some",
+        "style",
+        "title"
+      ]
+    },
+    {
+      "title": "Why Metroid Prime's Sci-Fi Mojo Is Fading",
+      "tokens": [
+        "evil",
+        "fading",
+        "metroid",
+        "mojo",
+        "needs",
+        "prime",
+        "rediscover",
+        "remakes",
+        "resident",
+        "shooter",
+        "some",
+        "style"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "SCIENCE",
     "GEOPOLITICS",
@@ -7038,11 +7112,11 @@
     "INDIA_TRENDING",
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
-    "TECHNOLOGY"
+    "TECHNOLOGY",
+    "INDIA_TRENDING",
+    "SCIENCE"
   ],
   "last_sources": [
-    "Al Jazeera Global",
-    "Al Jazeera Global",
     "Al Jazeera Global",
     "Space.com Breaking",
     "Al Jazeera Global",
@@ -7080,7 +7154,9 @@
     "Top Viral News [ITALY]",
     "SciTechDaily Discoveries",
     "Country Documentary Wire [ETHIOPIA]",
-    "The Verge Tech"
+    "The Verge Tech",
+    "Google Trends India Viral 24h",
+    "Space.com Breaking"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -7120,6 +7196,8 @@
     "ITALY",
     "MIND-BLOWING FACT",
     "ETHIOPIA",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "GLOBAL",
+    "GLOBAL"
   ]
 }
