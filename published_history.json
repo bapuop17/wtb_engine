@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-11-02T03:51:02.718722",
-  "round_robin_idx": 2,
-  "country_rot_idx": 68,
-  "bgm_track_counter": 882277238,
+  "updated_at": "2026-11-02T06:24:25.395554",
+  "round_robin_idx": 3,
+  "country_rot_idx": 84,
+  "bgm_track_counter": 922502714,
   "last_mega_24h_date": "2026-10-31",
   "youtube_quota_day_pt": "2026-11-01",
   "youtube_general_units_reserved": 50,
   "youtube_caption_units_reserved": 0,
   "youtube_general_quota_exhausted_day_pt": "2026-11-01",
   "youtube_channel_history_sync_ok": true,
-  "youtube_channel_history_sync_at_utc": "2026-11-02T03:25:00.770323",
+  "youtube_channel_history_sync_at_utc": "2026-11-02T06:03:36.099814",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
     "xbox_s_first_chief_operating_officer",
@@ -411,58 +411,11 @@
     "how_troy_premier_changed_everything_in",
     "yaxel_lendeborg_s_girlfriend_caused_stir",
     "metroid_prime_needs_some_resident_evil",
-    "why_metroid_prime_s_sci_fi"
+    "why_metroid_prime_s_sci_fi",
+    "match_thread_2nd_unofficial_test_india",
+    "we_re_technology_savvy_military_says"
   ],
   "event_fingerprints": [
-    {
-      "title": "Current U.S. support for Ukraine looks very different than it did",
-      "tokens": [
-        "support",
-        "different",
-        "ukraine",
-        "than",
-        "very",
-        "current",
-        "looks"
-      ]
-    },
-    {
-      "title": "Trump and Zelensky appear at loggerheads despite Oslo optimism",
-      "tokens": [
-        "despite",
-        "optimism",
-        "trump",
-        "zelensky",
-        "loggerheads",
-        "appear",
-        "oslo"
-      ]
-    },
-    {
-      "title": "The right to enforce civil rights is under attack in the US",
-      "tokens": [
-        "attack",
-        "rights",
-        "under",
-        "right",
-        "civil",
-        "enforce"
-      ]
-    },
-    {
-      "title": "Russia frees jailed American Stephen Hubbard during Witkoff talks",
-      "tokens": [
-        "jailed",
-        "witkoff",
-        "during",
-        "hubbard",
-        "american",
-        "russia",
-        "talks",
-        "frees",
-        "stephen"
-      ]
-    },
     {
       "title": "Sudan conflict: Peace efforts resume to end 'drone war' fuelling humanitarian crisis",
       "tokens": [
@@ -7072,11 +7025,76 @@
         "some",
         "style"
       ]
+    },
+    {
+      "title": "Match Thread: 2nd unofficial Test - India A vs New Zealand A, Day 3",
+      "tokens": [
+        "ahead",
+        "announce",
+        "home",
+        "india",
+        "match",
+        "return",
+        "schedule",
+        "series",
+        "test",
+        "thread",
+        "unofficial",
+        "warm",
+        "years",
+        "zealand"
+      ]
+    },
+    {
+      "title": "Match Thread: 2nd unofficial Test - India A vs New Zealand A, Day 3 | Global Powers Explained",
+      "tokens": [
+        "india",
+        "match",
+        "powers",
+        "test",
+        "thread",
+        "unofficial",
+        "zealand"
+      ]
+    },
+    {
+      "title": "'We're technology-savvy': Military says Pakistan ahead of India, Afghan Taliban in operational readiness",
+      "tokens": [
+        "afghan",
+        "ahead",
+        "army",
+        "asia",
+        "confiden",
+        "india",
+        "ispr",
+        "military",
+        "network",
+        "operational",
+        "pakistan",
+        "readiness",
+        "savvy",
+        "taliban",
+        "technology",
+        "voices"
+      ]
+    },
+    {
+      "title": "'We're technology-savvy': Military says Pakistan ahead of India, Afghan Taliban in",
+      "tokens": [
+        "afghan",
+        "ahead",
+        "india",
+        "military",
+        "operational",
+        "pakistan",
+        "readiness",
+        "savvy",
+        "taliban",
+        "technology"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
-    "SCIENCE",
     "GEOPOLITICS",
     "DAILY_24H_MEGA_NEWS",
     "SCIENCE",
@@ -7114,11 +7132,11 @@
     "GEOPOLITICS",
     "TECHNOLOGY",
     "INDIA_TRENDING",
-    "SCIENCE"
+    "SCIENCE",
+    "GLOBAL_POWERS",
+    "HEALTH"
   ],
   "last_sources": [
-    "Al Jazeera Global",
-    "Space.com Breaking",
     "Al Jazeera Global",
     "Global Wire Services",
     "Space.com Breaking",
@@ -7156,7 +7174,9 @@
     "Country Documentary Wire [ETHIOPIA]",
     "The Verge Tech",
     "Google Trends India Viral 24h",
-    "Space.com Breaking"
+    "Space.com Breaking",
+    "Top Viral News [NEW ZEALAND]",
+    "Country Documentary Wire [AFGHANISTAN]"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -7198,6 +7218,8 @@
     "ETHIOPIA",
     "GLOBAL TECH & AI",
     "GLOBAL",
-    "GLOBAL"
+    "GLOBAL",
+    "INDIA",
+    "PAKISTAN"
   ]
 }
