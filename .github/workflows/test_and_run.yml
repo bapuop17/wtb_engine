@@ -1,4 +1,4 @@
-name: WTB News Engine V36 (Every 2h • 4 Videos • 1080p)
+name: WTB News Engine V37 (Every 2h • 4 Videos • 1080p)
 
 on:
   workflow_dispatch:
@@ -11,22 +11,18 @@ on:
         description: 'Number of Long+Short video pairs per run (2 = 2 Long + 2 Linked Shorts = 4 Videos)'
         required: false
         default: '2'
-  push:
-    branches:
-      - main
-    paths:
-      - 'wtb_engine.py'
-      - '.github/workflows/**'
   schedule:
-    # One run every 2 hours, offset from the top of the hour; 4 outputs/run = 48 planned/day.
-    - cron: '17 */2 * * *'
+    # Hourly safety trigger; the cadence guard allows production only once per 2-hour window.
+    # Runs at :07 IST (:37 UTC), away from the UTC top-of-hour load peak.
+    - cron: '7 * * * *'
+      timezone: 'Asia/Kolkata'
 
 permissions:
   contents: write
   actions: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: wtb-news-engine-production
   cancel-in-progress: false
   queue: max
 
@@ -43,14 +39,33 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
+      - name: Claim Two-Hour Production Slot
+        id: cadence
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 .github/scripts/claim_schedule_slot.py
+          if ! git diff --quiet -- workflow_schedule_state.json; then
+            git config user.name "WorldTalkBrief-Bot"
+            git config user.email "bot@worldtalkbrief.org"
+            git add workflow_schedule_state.json
+            git commit -m "Claim scheduled video production slot"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       - name: Set up Python 3.11
+        if: steps.cadence.outputs.should_run == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install System Multimedia, Cairo & Font Dependencies (Fast IPv4)
+        if: steps.cadence.outputs.should_run == 'true'
         timeout-minutes: 5
         run: |
           sudo apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" update -y || true
@@ -64,7 +79,8 @@ jobs:
             fonts-freefont-ttf \
             fonts-noto-core
 
-      - name: Install Python V35 Documentary & Motion-Graphics Libraries
+      - name: Install Python Documentary & Motion-Graphics Libraries
+        if: steps.cadence.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
@@ -88,7 +104,9 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB Documentary News Engine (2 Long + 2 Shorts = 4 Videos)
+      - name: Run WTB Global Documentary News Engine (2 Long + 2 Shorts = 4 Videos)
+        id: run_engine
+        if: steps.cadence.outputs.should_run == 'true'
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
@@ -99,35 +117,58 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FORCE_MEGA_NEWS: ${{ github.event.inputs.force_mega_news || 'false' }}
-          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || '2' }}
-          YOUTUBE_GENERAL_QUOTA_BUDGET: '9000'
-          YOUTUBE_CAPTION_UNITS_PER_DAY: '4000'
+          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || steps.cadence.outputs.pairs_to_run || '2' }}
+          YOUTUBE_GENERAL_QUOTA_BUDGET: '8000'
+          YOUTUBE_CAPTION_UNITS_PER_DAY: '3200'
           YOUTUBE_ENABLE_LINKED_COMMENTS: 'false'
+          BUILD_LOCAL_DUB_ARTIFACTS: 'false'
         run: |
           python3 -u wtb_engine.py
 
-      - name: Save Non-Repeating Topic & Country History to GitHub
-        if: always()
+      - name: Save Upload History and Production Slot Status
+        if: always() && steps.cadence.outputs.should_run == 'true'
         shell: bash
         run: |
-          test -f published_history.json || exit 0
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          state_path = Path("workflow_schedule_state.json")
+          state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
+          report_path = Path("output/wtb_1080p_report.json")
+          report = {}
+          if report_path.exists():
+            try:
+              report = json.loads(report_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+              report = {}
+          uploaded = int(report.get("videos_uploaded_to_youtube", 0) or 0)
+          state["last_uploaded_count"] = uploaded
+          target = max(1, min(4, int(state.get("target_unfilled_videos", 4) or 4)))
+          remaining = max(0, target - uploaded)
+          state["target_unfilled_videos"] = remaining
+          if remaining == 0:
+            state["last_run_status"] = "success"
+          elif uploaded > 0:
+            state["last_run_status"] = "partial"
+          else:
+            state["last_run_status"] = "failure"
+          state["last_finished_at_utc"] = datetime.now(timezone.utc).isoformat()
+          state_path.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
+          PY
           git config user.name "WorldTalkBrief-Bot"
           git config user.email "bot@worldtalkbrief.org"
           git checkout -- .github/workflows/ || true
-          git add published_history.json
-          git diff --staged --quiet || git commit -m "Auto-sync published_history.json"
+          git add workflow_schedule_state.json
+          if test -f published_history.json; then git add published_history.json; fi
+          git diff --staged --quiet || git commit -m "Auto-sync video production status and history"
           git pull --rebase origin main
           git push origin HEAD:main
 
-      - name: Ensure Workflow Schedule stays Active on GitHub
-        if: always()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh workflow enable "test_and_run.yml" || true
-
       - name: Upload Generated 1080p Videos, Thumbnails & QC Reports to GitHub Artifacts
-        if: always()
+        if: always() && steps.cadence.outputs.should_run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: World-Talk-Brief-1080p-Output-${{ github.run_number }}
@@ -135,5 +176,58 @@ jobs:
             output/*.mp4
             output/*.jpg
             output/*.json
+            output/qc/*.json
+            output/subtitles/*.srt
           if-no-files-found: ignore
           retention-days: 3
+
+      - name: Summarize Skipped Safety Tick
+        if: always() && steps.cadence.outputs.should_run != 'true'
+        env:
+          CADENCE_REASON: ${{ steps.cadence.outputs.reason }}
+        shell: bash
+        run: |
+          {
+            echo "## WTB production check"
+            echo
+            echo "No video batch was started: ${CADENCE_REASON:-cadence guard skipped this safety tick}."
+            echo "The schedule checks again in one hour."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Summarize Rendered and Uploaded Videos
+        if: always() && steps.cadence.outputs.should_run == 'true'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          report_path = Path("output/wtb_1080p_report.json")
+          summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          lines = ["## WTB production report", ""]
+          if not report_path.exists():
+            lines.append("No engine report was created. Check the engine step for the failure reason.")
+          else:
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            lines.extend([
+              f"- Status: **{report.get('status', 'unknown')}**",
+              f"- Rendered: **{report.get('videos_rendered_in_run', report.get('videos_produced_in_run', 0))}**",
+              f"- YouTube-confirmed uploads: **{report.get('videos_uploaded_to_youtube', 0)}**",
+              "",
+            ])
+            for pair in report.get("pairs", []):
+              title = str(pair.get("title", "Untitled")).replace("\r", " ").replace("\n", " ").replace("|", "\\|")[:180]
+              title = re.sub(r"([\\`*_{}\[\]()#+\-.!|>])", r"\\\1", title)
+              lines.append(f"### {title}")
+              long_video = pair.get("long_video", {}) or {}
+              short_video = pair.get("linked_short", {}) or {}
+              long_id = long_video.get("youtube_video_id")
+              short_id = short_video.get("short_video_id")
+              lines.append(f"- Long video: https://youtu.be/{long_id}" if long_id else "- Long video: not confirmed uploaded")
+              lines.append(f"- Short: https://youtu.be/{short_id}" if short_id else "- Short: not confirmed uploaded")
+              lines.append("")
+          with summary_path.open("a", encoding="utf-8") as summary_file:
+            summary_file.write("\n".join(lines) + "\n")
+          PY

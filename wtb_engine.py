@@ -85,12 +85,12 @@ def reserve_youtube_general_quota(hist_obj, operation, units):
     if hist_obj is None:
         return True
     initialize_youtube_quota_guard(hist_obj)
-    budget = max(1000, int(os.environ.get("YOUTUBE_GENERAL_QUOTA_BUDGET", "9000") or "9000"))
+    budget = max(1000, int(os.environ.get("YOUTUBE_GENERAL_QUOTA_BUDGET", "8000") or "8000"))
     units = max(0, int(units))
     reserved = int(hist_obj.get("youtube_general_units_reserved", 0))
     new_caption_reserved = None
     if operation.startswith("captions.insert"):
-        caption_cap = max(0, int(os.environ.get("YOUTUBE_CAPTION_UNITS_PER_DAY", "4000") or "4000"))
+        caption_cap = max(0, int(os.environ.get("YOUTUBE_CAPTION_UNITS_PER_DAY", "3200") or "3200"))
         caption_reserved = int(hist_obj.get("youtube_caption_units_reserved", 0))
         if caption_reserved + units > caption_cap:
             print(f"ℹ️ [Daily Caption Quota Budget] Skipping {operation}; {caption_reserved}/{caption_cap} caption units are reserved for this Pacific day.", flush=True)
@@ -126,24 +126,14 @@ def mark_youtube_general_quota_exhausted(error, operation, hist_obj=None):
 # ==============================================================================
 ORDERED_PILLARS = [
     "GEOPOLITICS",
-    "INDIA_TRENDING",
-    "GEOPOLITICS",
-    "TECHNOLOGY",
-    "GEOPOLITICS",
-    "SCIENCE",
-    "GEOPOLITICS",
-    "HEALTH",
-    "GEOPOLITICS",
-    "DEFENSE_MILITARY",
-    "GEOPOLITICS",
-    "BUSINESS",
-    "GEOPOLITICS",
-    "AI_ROBOTICS",
-    "GEOPOLITICS",
     "GLOBAL_POWERS",
-    "GEOPOLITICS",
+    "DEFENSE_MILITARY",
+    "TECHNOLOGY",
+    "SCIENCE",
+    "HEALTH",
+    "BUSINESS",
+    "AI_ROBOTICS",
     "CYBER_INTELLIGENCE",
-    "GEOPOLITICS",
     "MIND_BLOWING_FACTS"
 ]
 
@@ -181,7 +171,7 @@ CATEGORY_VOICE_CAST = {
 }
 
 DOCUMENTARY_MULTI_VOICE_POOL = [
-    ("en-US-AndrewMultilingualNeural", "+1%", "-2Hz"),   # Lead Investigative Host (Warm, Human, Johnny Harris / Think School style)
+    ("en-US-AndrewMultilingualNeural", "+1%", "-2Hz"),   # Lead original WTB investigative host
     ("en-US-BrianMultilingualNeural", "+1%", "+0Hz"),    # Co-Host / Strategic Analyst Voice
     ("en-GB-RyanNeural", "+1%", "-1Hz"),                 # Official Quote / International Correspondent Voice
     ("en-US-GuyNeural", "+1%", "-2Hz")                   # Senior Broadcast Narrator Voice
@@ -220,41 +210,38 @@ CATEGORY_FEEDS = {
         "accent_color": (255, 215, 0),
         "hook_tag": "GEOPOLITICAL CASE FILE",
         "bgm_mood": "dark_geopolitics",
-        "reddit_subs": "worldnews+geopolitics+india",
-        "search_query": "world news geopolitics summit military sanctions india",
-        "domain_context": "geopolitics diplomacy government military",
+        "reddit_subs": "worldnews+geopolitics+InternationalNews",
+        "search_query": "global geopolitics diplomacy conflict defense sanctions world",
+        "domain_context": "global geopolitics diplomacy foreign policy government military",
         "feeds": [
-            ("Google Trends India Viral 24h", "https://trends.google.com/trending/rss?geo=IN"),
-            ("Google News India TopGeopolitics", "https://news.google.com/rss/search?q=(India+OR+Modi+OR+New+Delhi+OR+China+OR+Pakistan+OR+Russia+OR+USA)+(geopolitics+OR+defense+OR+diplomacy+OR+border+OR+trade+OR+summit)+when:1d&hl=en-IN&gl=IN&ceid=IN:en"),
-            ("BBC World Global", "http://feeds.bbci.co.uk/news/world/rss.xml"),
             ("Google World Top Headlines", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
-            ("Google India Top Headlines", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en"),
-            ("The Hindu National & Diplomacy", "https://www.thehindu.com/news/national/feeder/default.rss"),
-            ("Indian Express India & World", "https://indianexpress.com/section/india/feed/"),
+            ("BBC World Global", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+            ("AP & Reuters Global Wires", "https://news.google.com/rss/search?q=when:1d+source:Reuters+OR+source:Associated_Press&hl=en-US&gl=US&ceid=US:en"),
             ("The Guardian International", "https://www.theguardian.com/world/rss"),
             ("DW World News", "https://rss.dw.com/rdf/rss-en-world"),
             ("France24 Global Affairs", "https://www.france24.com/en/rss"),
-            ("AP & Reuters Global Wires", "https://news.google.com/rss/search?q=when:1d+source:Reuters+OR+source:Associated_Press&hl=en-US&gl=US&ceid=US:en")
+            ("Google News Asia Pacific", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-SG&gl=SG&ceid=SG:en"),
+            ("Google News India World", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en"),
+            ("The Hindu National & Diplomacy", "https://www.thehindu.com/news/national/feeder/default.rss")
         ]
     },
     "TECHNOLOGY": {
         "yt_category_id": "28",
-        "playlist_title": "World Talk Brief • AI, Robotics, India Tech & Future Tech",
+        "playlist_title": "World Talk Brief • Global Technology & AI",
         "badge_color": (0, 130, 255),
         "accent_color": (0, 240, 255),
         "hook_tag": "FUTURE TECH DOSSIER",
         "bgm_mood": "cyberpunk_tech",
         "reddit_subs": "technology+robotics+artificial+singularity",
-        "search_query": "artificial intelligence semiconductor india tech nvidia openai robotics",
+        "search_query": "global technology artificial intelligence semiconductor robotics cyber",
         "domain_context": "technology semiconductor artificial intelligence",
         "feeds": [
-            ("Google News India Tech 24h", "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en"),
-            ("India AI & Semiconductor Trending", "https://news.google.com/rss/search?q=(India+OR+Bengaluru+OR+IIT+OR+Tata+OR+global)+(semiconductor+OR+artificial+intelligence+OR+chip+OR+cyber+OR+supercomputer+OR+tech)+when:2d&hl=en-IN&gl=IN&ceid=IN:en"),
             ("Google News Global Tech 24h", "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-US&gl=US&ceid=US:en"),
             ("TechCrunch AI", "https://techcrunch.com/category/artificial-intelligence/feed/"),
             ("The Verge Tech", "https://www.theverge.com/rss/index.xml"),
             ("BBC Technology", "http://feeds.bbci.co.uk/news/technology/rss.xml"),
-            ("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index")
+            ("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index"),
+            ("Google News India Tech", "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en")
         ]
     },
     "MIND_BLOWING_FACTS": {
@@ -276,41 +263,39 @@ CATEGORY_FEEDS = {
     },
     "SCIENCE": {
         "yt_category_id": "28",
-        "playlist_title": "World Talk Brief • ISRO, NASA, Space & Future Science",
+        "playlist_title": "World Talk Brief • Global Science & Space",
         "badge_color": (105, 40, 225),
         "accent_color": (0, 235, 255),
         "hook_tag": "SPACE & SCIENCE BRIEF",
         "bgm_mood": "cosmic_mystery",
         "reddit_subs": "space+science+astronomy+isro+nasa",
-        "search_query": "ISRO NASA space rocket quantum discovery science",
+        "search_query": "global science discovery space NASA research climate physics",
         "domain_context": "ISRO NASA space astronomy science",
         "feeds": [
-            ("India ISRO & Science Trending", "https://news.google.com/rss/search?q=(ISRO+OR+India+space+OR+Gaganyaan+OR+Chandrayaan+OR+DRDO+OR+quantum+OR+nuclear+fusion)+when:2d&hl=en-IN&gl=IN&ceid=IN:en"),
-            ("Google News India Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-IN&gl=IN&ceid=IN:en"),
             ("Google News Global Science 24h", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-US&gl=US&ceid=US:en"),
             ("Space.com Breaking", "https://www.space.com/feeds/all"),
             ("NASA Breaking News", "https://www.nasa.gov/news-release/feed/"),
             ("The Guardian Science", "https://www.theguardian.com/science/rss"),
-            ("SciTechDaily Space", "https://scitechdaily.com/news/space/feed/")
+            ("SciTechDaily Space", "https://scitechdaily.com/news/space/feed/"),
+            ("Google News India Science", "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-IN&gl=IN&ceid=IN:en")
         ]
     },
     "BUSINESS": {
         "yt_category_id": "25",
-        "playlist_title": "World Talk Brief • Indian Economy, Global Markets & Geoeconomics",
+        "playlist_title": "World Talk Brief • Global Markets & Geoeconomics",
         "badge_color": (12, 160, 105),
         "accent_color": (255, 215, 0),
         "hook_tag": "MONEY & MARKETS FILE",
         "bgm_mood": "high_stakes_finance",
         "reddit_subs": "economics+business+finance+IndiaInvestments",
-        "search_query": "indian economy global economy stock market RBI trade tariffs billionaire",
+        "search_query": "global economy markets trade tariffs companies business",
         "domain_context": "economy finance market trade",
         "feeds": [
-            ("Google News India Business 24h", "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en"),
-            ("India Economy, RBI & Trade Trending", "https://news.google.com/rss/search?q=(India+economy+OR+RBI+OR+manufacturing+OR+exports+OR+tariffs+OR+BRICS+OR+rupee+OR+billion)+when:1d&hl=en-IN&gl=IN&ceid=IN:en"),
             ("Google News Global Business 24h", "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en"),
             ("CNBC Business", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"),
             ("BBC Business", "http://feeds.bbci.co.uk/news/business/rss.xml"),
-            ("DW Business", "https://rss.dw.com/rdf/rss-en-bus")
+            ("DW Business", "https://rss.dw.com/rdf/rss-en-bus"),
+            ("Google News India Business", "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en")
         ]
     },
     "HEALTH": {
@@ -324,12 +309,11 @@ CATEGORY_FEEDS = {
         "search_query": "healthcare medical breakthrough hospital vaccine AIIMS WHO biotech",
         "domain_context": "medical research hospital healthcare laboratory",
         "feeds": [
-            ("Google News India Healthcare 24h", "https://news.google.com/rss/headlines/section/topic/HEALTH?hl=en-IN&gl=IN&ceid=IN:en"),
-            ("India Healthcare, AIIMS & Pharma Trending", "https://news.google.com/rss/search?q=(India+healthcare+OR+AIIMS+OR+ICMR+OR+medical+breakthrough+OR+vaccine+OR+pharma+OR+WHO+OR+disease)+when:2d&hl=en-IN&gl=IN&ceid=IN:en"),
             ("Google News Global Health 24h", "https://news.google.com/rss/headlines/section/topic/HEALTH?hl=en-US&gl=US&ceid=US:en"),
             ("SciTechDaily Health", "https://scitechdaily.com/news/health/feed/"),
             ("MedicalXpress", "https://medicalxpress.com/rss-feed/"),
-            ("BBC Health", "http://feeds.bbci.co.uk/news/health/rss.xml")
+            ("BBC Health", "http://feeds.bbci.co.uk/news/health/rss.xml"),
+            ("Google News India Health", "https://news.google.com/rss/headlines/section/topic/HEALTH?hl=en-IN&gl=IN&ceid=IN:en")
         ]
     },
     "SPORTS": {
@@ -369,21 +353,21 @@ CATEGORY_FEEDS = {
 # ==============================================================================
 # 2. COMPLETE WORLD GEOPOLITICAL & VERIFIED PERSON DATABASE
 # ==============================================================================
-# Tiered Global Priority Countries for a US-Based Global Documentary Channel (BBC World / Johnny Harris / Nitish Rajput Standard)
+# Tiered global country rotation for a US-based international documentary channel.
 
 # Priority markets first; `get_all_country_rotation_catalog()` appends the full ISO catalogue when installed.
 GLOBAL_ALL_COUNTRIES_ROTATION = [
     # High-Audience Priority Wave A (Tier-1 Global & Regional Giants)
     ("UNITED STATES", "US", "United States White House Pentagon Wall Street Congress"),
-    ("INDIA", "IN", "India New Delhi Modi economy defense space"),
     ("UNITED KINGDOM", "GB", "UK Britain London Parliament economy defense"),
     ("CHINA", "CN", "China Beijing Xi Jinping military economy tech"),
-    ("RUSSIA", "RU", "Russia Moscow Kremlin Putin military energy"),
     ("GERMANY", "DE", "Germany Berlin Bundestag Europe economy industry"),
     ("FRANCE", "FR", "France Paris Macron Europe defense economy"),
     ("JAPAN", "JP", "Japan Tokyo defense economy technology yen"),
     ("CANADA", "CA", "Canada Ottawa economy trade energy politics"),
     ("AUSTRALIA", "AU", "Australia Canberra Indo-Pacific defense economy"),
+    ("INDIA", "IN", "India New Delhi Modi economy defense space"),
+    ("RUSSIA", "RU", "Russia Moscow Kremlin Putin military energy"),
     ("ISRAEL", "IL", "Israel Jerusalem Tel Aviv defense intelligence"),
     ("UNITED ARAB EMIRATES", "AE", "UAE Dubai Abu Dhabi economy sovereign wealth"),
     ("SAUDI ARABIA", "SA", "Saudi Arabia Riyadh oil OPEC Vision 2030"),
@@ -939,7 +923,7 @@ def get_prebuilt_vignette_overlay(W, H):
     """
     V1 BASE TEXTURE LAYER — PRE-CACHED 5% 35MM CINEMA FILM GRAIN + DEEP 4-EDGE VIGNETTE OVERLAY:
     Built ONCE per resolution (with authentic 5% organic luminance grain + radial edge darkening)
-    so every frame has Vox / Johnny Harris / Nitish Rajput cinema texture at 10x speed!
+    so every frame has consistent original World Talk Brief broadcast texture.
     """
     key = (W, H)
     if key in VIGNETTE_CACHE:
@@ -1230,7 +1214,7 @@ CHANNEL PERFORMANCE SIGNAL (use only for pacing/clarity, never as facts or topic
 
 Return ONLY valid JSON in this exact structure:
 {{
-  "viral_title": "A 100% original, high-CTR YouTube title (50-75 chars, curiosity-driven, e.g. 'Why X Just Triggered a Massive Global Shift')",
+  "viral_title": "An accurate, searchable YouTube title (50-75 chars) naming the real event and stakes; avoid hype or claims not supported by the facts",
   "thumb_line_1": "2 TO 3 specific CAPS WORDS from this story (max 15 chars)",
   "thumb_line_2": "2 TO 3 specific CAPS WORDS from this story (max 15 chars)",
   "core_subject": "2-4 word exact physical subject (e.g. 'British High Street Retail')",
@@ -1241,7 +1225,7 @@ Return ONLY valid JSON in this exact structure:
     {{
       "scene_num": 1,
       "context_pill": "SHORT CHAPTER TITLE (max 22 chars, ASCII only, e.g. 'THE SILENT COLLAPSE')",
-      "hook_tape": "ABHI & NIYU STYLE TOP IMPACT BANNER (max 34 chars, CAPS, e.g. '14% OF UK SHOPS ARE NOW EMPTY')",
+      "hook_tape": "Original WTB fact-led impact banner (max 34 chars, CAPS, supported by a supplied fact)",
       "stat_callout": "Key noted point or fact highlighted in this scene (max 28 chars, e.g. '14% RETAIL UNITS VACANT')",
       "source_fact_indices": [1],
       "mentioned_person": "If a specific named Person, Animal/Species (e.g. 'Bengal Tiger'), Iconic Machine/Telescope, or Historic Figure is the focus of this scene, write its exact Wikipedia name here (NEVER write generic job titles like 'Chancellor' without a person's name!). Otherwise write ''",
@@ -1405,7 +1389,7 @@ def lowpass_warm_filter(wave_arr, window_len=24):
     """
     STUDIO WARMTH LOW-PASS FILTER:
     Removes all metallic/harsh high-frequency buzz above ~900Hz so the background score
-    and transition textures sound warm, deep, and cinematic like Nitish Rajput / DW Documentaries!
+    and transition textures sound warm, deep, and cinematic in the original WTB mix.
     """
     if len(wave_arr) < window_len * 2:
         return wave_arr
@@ -1732,6 +1716,7 @@ def load_published_history():
                     "youtube_quota_day_pt": data.get("youtube_quota_day_pt", ""),
                     "youtube_general_units_reserved": int(data.get("youtube_general_units_reserved", 0)),
                     "youtube_caption_units_reserved": int(data.get("youtube_caption_units_reserved", 0)),
+                    "youtube_caption_upload_cursor": int(data.get("youtube_caption_upload_cursor", 0)),
                     "youtube_general_quota_exhausted_day_pt": data.get("youtube_general_quota_exhausted_day_pt", ""),
                     "youtube_channel_history_sync_ok": bool(data.get("youtube_channel_history_sync_ok", False)),
                     "youtube_channel_history_sync_at_utc": data.get("youtube_channel_history_sync_at_utc", "")
@@ -1752,6 +1737,7 @@ def load_published_history():
         "youtube_quota_day_pt": "",
         "youtube_general_units_reserved": 0,
         "youtube_caption_units_reserved": 0,
+        "youtube_caption_upload_cursor": 0,
         "youtube_general_quota_exhausted_day_pt": "",
         "youtube_channel_history_sync_ok": False,
         "youtube_channel_history_sync_at_utc": ""
@@ -1791,6 +1777,7 @@ def save_published_history(hist_obj):
                 "youtube_quota_day_pt": str(hist_obj.get("youtube_quota_day_pt", "")),
                 "youtube_general_units_reserved": int(hist_obj.get("youtube_general_units_reserved", 0)),
                 "youtube_caption_units_reserved": int(hist_obj.get("youtube_caption_units_reserved", 0)),
+                "youtube_caption_upload_cursor": int(hist_obj.get("youtube_caption_upload_cursor", 0)),
                 "youtube_general_quota_exhausted_day_pt": str(hist_obj.get("youtube_general_quota_exhausted_day_pt", "")),
                 "youtube_channel_history_sync_ok": bool(hist_obj.get("youtube_channel_history_sync_ok", False)),
                 "youtube_channel_history_sync_at_utc": str(hist_obj.get("youtube_channel_history_sync_at_utc", "")),
@@ -1916,7 +1903,7 @@ def clean_fact(text):
         return ""
     if len(re.findall(r"\b(WHO|WHAT|WHERE|WHEN|HOW TO FOLLOW)\s*:", text)) >= 2:
         return ""
-    if re.search(r"(https?:|www\.|\.gov\b|\.org\b|\.com\b)", text, flags=re.I):
+    if re.search(r"(https?:|www\.|\.(?:gov|org|com|net|co\.uk|org\.uk|ac\.uk|com\.au)\b)", text, flags=re.I):
         return ""
 
     text = re.sub(r"(?i)\bPopular on [A-Za-z]+\b", "", text)
@@ -2130,23 +2117,44 @@ def extract_primary_topic_anchor(dossier):
     return " ".join(content_nouns[:2]).title() if content_nouns else "Global Case Study"
 
 def build_100_percent_original_youtube_title(raw_title, pillar, c_prof, topic_anchor, is_update=False):
-    anchor_clean = topic_anchor.strip()
-    prefix = "BREAKING UPDATE: " if is_update else ""
-    suffix = f" | {pillar.replace('_', ' ').title()} Explained"
-    cand = f"{prefix}{raw_title}{suffix}"
-    if len(cand) <= 95 and not any(b in raw_title.lower() for b in ["dw ", "bbc", "reuters"]):
-        return cand
-    if len(f"{prefix}{raw_title}") <= 92:
-        return f"{prefix}{raw_title}"
-    # Word-safe truncation (never cuts 'Explained' into 'Explai'!)
-    words = f"{prefix}{raw_title}".split()
+    # Keep the real event in the title. Do not append the requested feed slot
+    # (which can be wrong for cross-feed results) or invent urgency.
+    clean_title = re.sub(r"\s+", " ", str(raw_title or "")).strip(" \t-–—|")
+    prefix = "Update: " if is_update and not clean_title.lower().startswith("update") else ""
+    if len(f"{prefix}{clean_title}") <= 95:
+        return f"{prefix}{clean_title}"
+    words = f"{prefix}{clean_title}".split()
     out = []
     for w in words:
         if len(" ".join(out + [w])) <= 90:
             out.append(w)
         else:
             break
-    return " ".join(out)
+    return " ".join(out).rstrip("-–—|,;:")
+
+def keep_story_grounded_youtube_title(candidate, dossier):
+    """Use a model title only when its key terms stay tied to the researched story."""
+    fallback = str((dossier or {}).get("original_yt_title") or (dossier or {}).get("title") or "").strip()
+    candidate = re.sub(r"\s+", " ", str(candidate or "")).strip()
+    if not candidate or not fallback:
+        return fallback or candidate
+    evidence_text = " ".join([
+        str((dossier or {}).get("title", "")),
+        str((dossier or {}).get("topic_anchor", "")),
+        " ".join(str(x) for x in ((dossier or {}).get("raw_facts") or [])[:5])
+    ]).lower()
+    evidence_words = {w for w in re.findall(r"[a-z0-9]{4,}", evidence_text)}
+    title_words = {w for w in re.findall(r"[a-z0-9]{4,}", candidate.lower())}
+    meaningful_source = {w for w in re.findall(r"[a-z0-9]{4,}", fallback.lower())}
+    min_overlap = 2 if len(meaningful_source) >= 4 else 1
+    if len(title_words.intersection(evidence_words)) < min_overlap:
+        print(f"ℹ️ [Grounded SEO Title] Reverted an unsupported model title to the sourced headline: {fallback[:90]}", flush=True)
+        return fallback[:95]
+    hype_terms = {"shocking", "massive", "explosive", "secret", "exposed", "stuns", "insane", "unbelievable"}
+    if any(w in hype_terms and w not in evidence_words for w in title_words):
+        print(f"ℹ️ [Grounded SEO Title] Removed unsupported hype by using the sourced headline: {fallback[:90]}", flush=True)
+        return fallback[:95]
+    return candidate[:95]
 
 PUBLISHER_NAMES_STRIP_REGEX = (
     r"\b(?:Al\s*Jazeera(?:\s+English)?|BBC(?:\s+News|\s+World)?|CNN(?:\s+International)?|"
@@ -2339,6 +2347,177 @@ def classify_story_mood_and_category(title, claims_text, pillar_name="WORLD"):
     p_cfg = CATEGORY_FEEDS.get(pillar_name, CATEGORY_FEEDS["WORLD"])
     return p_cfg.get("bgm_mood", "dark_geopolitics")
 
+
+STORY_TOPIC_MARKERS = {
+    "GEOPOLITICS": (
+        r"\b(?:geopolitic\w*|foreign policy|diplomac\w*|sanction\w*|treaty|ceasefire|invasion|war\b|armed conflict|"
+        r"military|defen[cs]e|missile\w*|border dispute|territorial|prime minister|\bpm\b|president|parliament|"
+        r"congress|senate|government|minister|embassy|nato|un security council|election|coup|sovereignty|"
+        r"foreign minister|arms deal|security pact|summit|coalition|trade dispute|tariff\w*|cross-border|"
+        r"alliance|diplomatic|air force|navy|troops|peace talks|political crisis)\b",
+    ),
+    "DEFENSE_MILITARY": (
+        r"\b(?:military|defen[cs]e|missile\w*|fighter jet\w*|air force|navy|army|troops|weapons|arms|"
+        r"drone strike|airstrike|military aid|weapons system|battlefield|warship|defense spending)\b",
+    ),
+    "SPORTS": (
+        r"\b(?:nba|nfl|nhl|mlb|wnba|warriors|lakers|rookie|basketball|football|soccer|tennis|athlete|"
+        r"sports?|team|match|playoff\w*|score|coach|points|league|club|player|draft|debut|championship|"
+        r"regular season|world cup|grand prix)\b",
+    ),
+    "ENTERTAINMENT": (
+        r"\b(?:celebrity|influencer|actor|actress|singer|film|movie|streaming|box office|album|fashion|"
+        r"swimsuit|girlfriend|boyfriend|viral photo|red carpet|reality tv|showbiz)\b",
+    ),
+    "TECHNOLOGY": (
+        r"\b(?:technology|tech company|artificial intelligence|\bai\b|robot\w*|semiconductor\w*|chip\w*|"
+        r"smartphone|software|app\b|cyber\w*|data breach|cloud computing|social media platform)\b",
+    ),
+    "SCIENCE": (
+        r"\b(?:scientist\w*|research\w*|study|studies|space|nasa|isro|astronom\w*|physics|quantum|"
+        r"climate model|fossil|species|experiment|laboratory|discovery|breakthrough)\b",
+    ),
+    "HEALTH": (
+        r"\b(?:health|medical|hospital|patient\w*|clinical|disease|cancer|vaccine|drug trial|treatment|"
+        r"public health|doctor\w*|healthcare|biotech|epidemic|outbreak)\b",
+    ),
+    "BUSINESS": (
+        r"\b(?:business|econom\w*|market\w*|stock\w*|company|companies|profit\w*|earnings|revenue|"
+        r"bank\w*|inflation|trade deal|supply chain|tariff\w*|merger|bankruptcy|jobs report)\b",
+    ),
+    "CYBER_INTELLIGENCE": (
+        r"\b(?:cyber\w*|hack\w*|ransomware|data breach|espionage|intelligence agency|surveillance|"
+        r"spyware|zero-day|phishing)\b",
+    ),
+    "MIND_BLOWING_FACTS": (
+        r"\b(?:archaeolog\w*|ancient|fossil|mystery|discovery|scientist\w*|space|quantum|experiment|"
+        r"engineering marvel|historical evidence)\b",
+    ),
+}
+
+def classify_story_topic_scores(text):
+    low = str(text or "").lower()
+    return {
+        # Count actual marker hits, not just whether the combined category regex matched.
+        category: sum(1 for pattern in patterns for _ in re.finditer(pattern, low, flags=re.I))
+        for category, patterns in STORY_TOPIC_MARKERS.items()
+    }
+
+def story_matches_requested_pillar(sub_pillar, title, summary="", country_profile=None):
+    """Fail closed when a feed returns an unrelated topic for the requested editorial slot."""
+    requested = str(sub_pillar or "WORLD").upper()
+    profile = country_profile or {}
+    story_text = f"{title} {summary}"
+    if re.search(
+        r"\b(?:sizzling|sexy|sultry|steamy)\b.{0,45}\b(?:swimsuit|bikini|lingerie)\b.{0,35}\b(?:photo|picture|snapshot)\b|"
+        r"\b(?:swimsuit|bikini)\s+(?:photo|picture|snapshot)\b",
+        story_text,
+        flags=re.I | re.S,
+    ):
+        return False
+    if requested == "INDIA_TRENDING":
+        return str(profile.get("name", "")).upper() == "INDIA"
+
+    scores = classify_story_topic_scores(story_text)
+    if requested in {"GEOPOLITICS", "GLOBAL_POWERS", "DEFENSE_MILITARY", "WORLD"}:
+        geo_score = scores["GEOPOLITICS"]
+        hard_geo = bool(re.search(
+            r"\b(?:war|invasion|ceasefire|sanctions?|coup|missile strike|airstrike|border clash|"
+            r"treaty|military operation|foreign minister|prime minister|\bpm\b|president|parliament|"
+            r"congress|government|election|foreign policy|diplomacy|nato|un security council|diplomatic crisis)\b",
+            story_text, flags=re.I
+        ))
+        if requested == "DEFENSE_MILITARY" and scores["DEFENSE_MILITARY"] == 0:
+            return False
+        if not hard_geo and geo_score < 2:
+            return False
+        strongest_non_geo = max(scores[k] for k in (
+            "SPORTS", "ENTERTAINMENT", "TECHNOLOGY", "SCIENCE", "HEALTH", "BUSINESS", "CYBER_INTELLIGENCE"
+        ))
+        return (hard_geo and strongest_non_geo <= 1) or geo_score >= max(2, strongest_non_geo)
+
+    category = {
+        "AI_ROBOTICS": "TECHNOLOGY",
+        "CYBER_INTELLIGENCE": "CYBER_INTELLIGENCE",
+        "MIND_BLOWING_FACTS": "MIND_BLOWING_FACTS",
+    }.get(requested, requested)
+    if category in scores:
+        return scores[category] > 0
+    return requested in {"DAILY_24H_MEGA_NEWS"}
+
+def get_story_display_category(dossier):
+    sub_pillar = str((dossier or {}).get("sub_pillar") or (dossier or {}).get("pillar") or "WORLD").upper()
+    profile = (dossier or {}).get("country_profile") or {}
+    if sub_pillar == "INDIA_TRENDING":
+        return "INDIA NEWS" if str(profile.get("name", "")).upper() == "INDIA" else "GLOBAL NEWS"
+    return {
+        "GLOBAL_POWERS": "GEOPOLITICS",
+        "DEFENSE_MILITARY": "GEOPOLITICS",
+        "AI_ROBOTICS": "TECHNOLOGY",
+        "CYBER_INTELLIGENCE": "CYBER SECURITY",
+        "MIND_BLOWING_FACTS": "SCIENCE & DISCOVERY",
+    }.get(sub_pillar, sub_pillar.replace("_", " "))
+
+def build_source_reference_block(dossier, max_sources=8):
+    """Return source links actually attached to the claims used by this story."""
+    links = []
+    seen = set()
+    claims = list((dossier or {}).get("verified_claims") or [])
+    lead_url = str((dossier or {}).get("source_url") or "").strip()
+    if lead_url:
+        claims.insert(0, {
+            "source_url": lead_url,
+            "source_name": (dossier or {}).get("source_name", "Primary source"),
+            "published_date": (dossier or {}).get("published_date", "")
+        })
+    for claim in claims:
+        url = str(claim.get("source_url") or "").strip()
+        if not url.startswith(("https://", "http://")) or url in seen:
+            continue
+        seen.add(url)
+        name = re.sub(r"\s+", " ", str(claim.get("source_name") or "Source")).strip(" -|")
+        date = str(claim.get("published_date") or "").strip()
+        label = name[:48] + (f" • {date[:16]}" if date else "")
+        links.append(f"- {label}: {url}")
+        if len(links) >= max_sources:
+            break
+    return "SOURCES:\n" + "\n".join(links) if links else "SOURCES: source links were unavailable in the feed metadata."
+
+def build_story_relevant_youtube_tags(dossier, extra_tags=None):
+    """Keep SEO tags tied to this story; reject global trend words from unrelated categories."""
+    story = " ".join([
+        str((dossier or {}).get("title", "")),
+        str((dossier or {}).get("topic_anchor", "")),
+        " ".join(str(x) for x in ((dossier or {}).get("raw_facts") or [])[:6])
+    ]).lower()
+    story_words = {w for w in re.findall(r"[a-z0-9]{4,}", story)}
+    pillar = str((dossier or {}).get("sub_pillar") or (dossier or {}).get("pillar") or "WORLD")
+    country = str(((dossier or {}).get("country_profile") or {}).get("name") or "").strip()
+    candidates = ["World Talk Brief", get_story_display_category(dossier), country]
+    candidates += list((dossier or {}).get("ai_seo_tags") or [])[:10]
+    candidates += list(extra_tags or [])
+    out = []
+    seen = set()
+    total_chars = 0
+    for raw in candidates:
+        tag = re.sub(r"\s+", " ", str(raw or "")).strip(" #,;|")
+        tag = sanitize_youtube_metadata_text(tag, 28)
+        key = tag.casefold()
+        if not tag or key in seen:
+            continue
+        tag_words = {w for w in re.findall(r"[a-z0-9]{4,}", tag.lower())}
+        if tag != "World Talk Brief" and tag != country and tag != get_story_display_category(dossier):
+            if not tag_words or not tag_words.intersection(story_words):
+                continue
+        if total_chars + len(tag) + (1 if out else 0) > 480:
+            continue
+        out.append(tag)
+        seen.add(key)
+        total_chars += len(tag) + (1 if out else 0)
+        if len(out) >= 20:
+            break
+    return out
+
 def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fingerprints):
     """
     100% LATEST & TRENDING 24-HOUR NEWS HARVESTER:
@@ -2419,6 +2598,10 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
 
             raw_sum = BeautifulSoup(getattr(entry, "summary", ""), "html.parser").get_text(separator=" ")
             summary = clean_fact(raw_sum)
+            candidate_profile = resolve_country_or_domain_profile(title, [summary], pillar_name=core_hub)
+            if not story_matches_requested_pillar(sub_pillar, title, summary, candidate_profile):
+                print(f"ℹ️ [Editorial Category Gate] Skipped mismatched item for {sub_pillar}: {title[:90]}", flush=True)
+                continue
 
             dup_status, prev_evt_title = check_semantic_duplicate_or_update(title, summary, hist_obj)
             if dup_status == "DUPLICATE":
@@ -3301,6 +3484,14 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str, s
         if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 25000:
             return None
 
+        # Do not disguise low-resolution footage as HD by upscaling it to 1080p.
+        cap_src = cv2.VideoCapture(raw_local)
+        src_w = int(cap_src.get(cv2.CAP_PROP_FRAME_WIDTH))
+        src_h = int(cap_src.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        cap_src.release()
+        if src_w < 1280 or src_h < 720:
+            return None
+
         start_offset = skip_intro_sec
         try:
             cap_p = cv2.VideoCapture(raw_local)
@@ -3403,6 +3594,14 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
         ]
         run_isolated_subprocess(cmd_dl, timeout_sec=14)
         if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 25000:
+            return None
+
+        # Require a true 720p-or-better landscape source before the 1080p export.
+        cap_src = cv2.VideoCapture(raw_local)
+        src_w = int(cap_src.get(cv2.CAP_PROP_FRAME_WIDTH))
+        src_h = int(cap_src.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        cap_src.release()
+        if src_w < 1280 or src_h < 720:
             return None
 
         cmd_tr = [
@@ -4158,7 +4357,7 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                             p = f"temp/{tag_id}_realnews.jpg"
                             with open(p, "wb") as f:
                                 f.write(ir.content)
-                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=780, min_h=440, story_title=d_obj.get("title", ""), query_context=clean_q)
+                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=1280, min_h=720, story_title=d_obj.get("title", ""), query_context=clean_q)
                             if vim is not None:
                                 print(f"   📸 [Topic-Locked HD Press Photo Locked]: {clean_q[:42]}", flush=True)
                                 return vim
@@ -4756,10 +4955,10 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     return None
 
 # ==============================================================================
-# 10. 10x FASTER "GOD-LEVEL" NITISH RAJPUT & ABHI & NIYU COMPOSITOR
+# 10. WTB ORIGINAL BROADCAST DOCUMENTARY COMPOSITOR
 #     - Pre-cached Vignettes, Pre-cached Subtitle Pills, Pre-cached Person Cards!
 #     - Abhi & Niyu Top Yellow/Red Impact Hook Tape!
-#     - Nitish Rajput Evidence Dossier & Source Verification Card!
+#     - Source-linked evidence notes and claim cards.
 # ==============================================================================
 def has_well_framed_face(im):
     if FACE_CASCADE is None:
@@ -4825,7 +5024,7 @@ def build_grounded_evidence_card(dossier, narration, headline, width=1920, heigh
     """Create an editorial text card when no story-matched real visual passed metadata checks."""
     image = Image.new("RGB", (width, height), (10, 18, 32))
     draw = ImageDraw.Draw(image)
-    pillar = str(dossier.get("sub_pillar") or dossier.get("pillar") or "WORLD").replace("_", " ").upper()
+    pillar = get_story_display_category(dossier)
     accent = CATEGORY_FEEDS.get(dossier.get("pillar", "WORLD"), CATEGORY_FEEDS["WORLD"]).get("accent_color", (0, 220, 230))
     for y in range(height):
         shade = int(22 * (y / max(height - 1, 1)))
@@ -5043,7 +5242,7 @@ def project_3d_globe_point(lat_deg, lon_deg, center_lat, center_lon, cx, cy, rad
 
 def render_motion_canvas_power_network_frame(beat, local_t, W, H, is_short=True):
     """
-    V21 MOTION-CANVAS / NITISH RAJPUT "FOLLOW THE MONEY & POWER WEB" NODE NETWORK ENGINE:
+    V21 MOTION-CANVAS / WTB "FOLLOW THE MONEY & POWER WEB" NODE NETWORK ENGINE:
     Renders an animated investigative network connecting the central subject/leader to 4 satellite
     evidence nodes via glowing Bezier conduits with traveling energy pulses over live video!
     """
@@ -5429,7 +5628,7 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
     return hud
 
 # ==============================================================================
-# 10B. V6 MULTI-LAYER TIMELINE ARCHITECTURE (V1–V5 Visuals: Vox / Johnny Harris / Nitish Rajput)
+# 10B. V6 ORIGINAL WTB MULTI-LAYER TIMELINE ARCHITECTURE
 #      - V3 Engine 1: Animated 2.5D Historical & Management Era Timeline (with B&W Cut-Outs & 30px Drop Shadows)
 #      - V2 Engine 2: Stylized Broadcast TV Interview & Pull-Quote Monitor Mockup (with Live Audio Waveform)
 #      - V3 Engine 3: Animated "Broken Corporate Ladder" / Power Organogram Flowchart (Top -> Middle Split -> Severed Bottom)
@@ -5439,9 +5638,9 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
 #      - V5 Layer: Kinetic Typography Number Scaling (90% -> 100% Cubic Bézier Ease Curve)
 # ==============================================================================
 
-def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_short=True):
+def render_wtb_investigative_split_board_frame(beat, local_t, W, H, is_short=True):
     """
-    NITISH RAJPUT / THINK SCHOOL SPLIT-CANVAS INVESTIGATIVE DOSSIER BOARD:
+    Original WTB split-canvas investigative dossier board:
     - Eliminates the 'face pasted over another face' issue forever!
     - Left/Top Panel: High-contrast framed Portrait of the named Person/Subject with Gold/Crimson border,
       Role Badge, and 'CLASSIFIED DOSSIER' header.
@@ -5565,7 +5764,7 @@ def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_
 
 def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_short=True):
     """
-    THINK SCHOOL / ABHI & NIYU KINETIC DATA & MONEY TRAIL SCORECARD OVERLAY:
+    WTB KINETIC DATA & MONEY TRAIL SCORECARD OVERLAY:
     - Renders over the darkened real scene photo whenever concrete numbers, percentages,
       dollar/pound figures, or multi-stat comparisons are spoken!
     - Animates the exact spoken numbers in giant 76pt Gold/Cyan typography with an animated
@@ -5628,7 +5827,7 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     draw.rounded_rectangle([(cx0, cy0), (cx0 + cw, cy0 + 68)], radius=24, fill=(18, 28, 52, 255))
     draw.text((cx0 + 32, cy0 + 18), f">> DATA & MONEY TRAIL // {point_hl}", fill=(255, 225, 0, 255), font=get_font(25))
 
-    # Left Panel: Giant Primary KPI Metric Card | Right Panel: Think School / Manim Multi-Bar + Spline Chart
+    # Left panel: primary metric | Right panel: animated comparison chart
     val_str = cleaned_nums[0]
     left_w = int((cw - 96) * 0.48)
     right_w = (cw - 96) - left_w - 28
@@ -5706,12 +5905,12 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
 
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False, sec_idx=0, beat_in_sec=0, is_short=False):
     """
-    V33 NITISH RAJPUT & THINK SCHOOL AUTHENTIC DOCUMENTARY COMPOSITOR SELECTOR:
+    V33 ORIGINAL WTB DOCUMENTARY COMPOSITOR SELECTOR:
     - Keeps pointless procedural dark screens ('prithvi ka gola' 3D globe & '100% ESCALATION' bars) 100% BANNED!
     - Activates authentic documentary visual layers over real 1080p HD photos & video backgrounds:
       1. `BROADCAST_INTERVIEW_QUOTE_MOCKUP`: When a sentence contains a direct official quote/warning/statement
          (at most 2 times per Long video, on beat_in_sec == 1).
-      2. `NITISH_DOSSIER_SPLIT_BOARD`: On analytical breakdown beats (`sec_idx in (2, 6)` and `beat_in_sec == 2`)
+      2. `WTB_INVESTIGATIVE_SPLIT_BOARD`: On analytical breakdown beats (`sec_idx in (2, 6)` and `beat_in_sec == 2`)
          where the real photo is framed on the left and 3 yellow-highlighted evidence points slide in on the right!
     """
     low = str(beat_text or "").lower()
@@ -5729,10 +5928,10 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     if is_short:
         return None
 
-    # 2. Nitish Rajput / Think School Split-Canvas Investigative Dossier Board on deep analytical beats (16:9 Long Documentaries)
-    if (not is_short) and beat_in_sec == 2 and sec_idx in (2, 6) and sim_counts.get("NITISH_DOSSIER_SPLIT_BOARD", 0) < 2:
-        sim_counts["NITISH_DOSSIER_SPLIT_BOARD"] = sim_counts.get("NITISH_DOSSIER_SPLIT_BOARD", 0) + 1
-        return "NITISH_DOSSIER_SPLIT_BOARD"
+    # 2. Original WTB split-canvas board on selected analytical beats.
+    if (not is_short) and beat_in_sec == 2 and sec_idx in (2, 6) and sim_counts.get("WTB_INVESTIGATIVE_SPLIT_BOARD", 0) < 2:
+        sim_counts["WTB_INVESTIGATIVE_SPLIT_BOARD"] = sim_counts.get("WTB_INVESTIGATIVE_SPLIT_BOARD", 0) + 1
+        return "WTB_INVESTIGATIVE_SPLIT_BOARD"
 
     return None
 
@@ -6478,7 +6677,7 @@ def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
     """
     b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
     low = b_txt.lower()
-    # V26: Always render the Nitish Rajput 3D Archival Newspaper / Official Case Evidence Cutout
+    # Use a clearly attributed source note; never imply a claim came from an official record.
     # on Beat 1 of each chapter (except on final subscribe/outro prompt) so every chapter displays
     # a highlighted documentary evidence clipping (`beech mein`)!
     if "subscribe to world talk brief" in low or "share your thoughts in the comments" in low:
@@ -6498,7 +6697,11 @@ def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
         d.line([(24, ny), (cw - 36, ny)], fill=(205, 198, 182, 95), width=1)
 
     topic_tag = fit_whole_words_limit(str(beat["story"].get("topic_anchor") or "INVESTIGATIVE FILE").upper(), 24)
-    doc_header = f"[+] OFFICIAL CASE EVIDENCE // {topic_tag}"
+    c_meta = beat.get("claim_meta") or {}
+    source_name = str(c_meta.get("source_name") or "Source not identified").strip()
+    source_name = re.sub(r"(?i)^google news(?:\s+.*)?$", "Google News feed", source_name)
+    source_name = fit_whole_words_limit(source_name.upper(), 24)
+    doc_header = f"SOURCE NOTE // {source_name}"
     d.text((24, 12), doc_header, fill=(255, 225, 0, 255), font=get_font(21))
 
     point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY FACT HIGHLIGHTED").upper(), 28)
@@ -6641,7 +6844,7 @@ def render_pro_editor_transition_effect(prev_frame_rgba, cur_frame_rgba, local_t
 
 def build_corner_person_dossier_badge_rgba(person_info, is_short=True):
     """
-    V30 NITISH RAJPUT / THINK SCHOOL CORNER PERSON DOSSIER BADGE:
+    V30 WTB CORNER PERSON DOSSIER BADGE:
     Displays the verified leader/speaker's circular portrait + Name + Role in the lower-right
     (or upper-right) corner so it enriches the documentary frame WITHOUT covering the center visual!
     """
@@ -6690,8 +6893,8 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     sim_mode = beat.get("special_sim_mode")
     if sim_mode == "BROADCAST_INTERVIEW_QUOTE_MOCKUP":
         frame = render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=is_short)
-    elif sim_mode == "NITISH_DOSSIER_SPLIT_BOARD":
-        frame = render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_short=is_short)
+    elif sim_mode == "WTB_INVESTIGATIVE_SPLIT_BOARD":
+        frame = render_wtb_investigative_split_board_frame(beat, local_t, W, H, is_short=is_short)
     elif b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg") is not None:
         vseg = beat["vseg"]
         vc = vseg["vclip"]
@@ -6740,7 +6943,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         ch_d.text((cx_b + 34, cy_b + 50), ch_title, fill=(255, 255, 255, ch_alpha), font=get_font(35))
         frame.alpha_composite(ch_ov)
 
-    # 3. Nitish Rajput 3D Highlighted Newspaper / Evidence Cutout Card (on Beat 1 of Chapters 2, 5, 8 when no special board is active)
+    # 3. Source-linked 3D evidence cutout card on selected beats.
     show_ev_cutout = (sim_mode is None) and (b_type != "VIDEO_BROLL_BEAT") and (beat_in_sec_cur == 1) and (sec_idx_cur in (1, 4, 7) if not is_short else (sec_idx_cur == 2))
     if show_ev_cutout:
         ev_card = build_evidence_paper_cutout_rgba(beat, local_t, is_short=is_short)
@@ -6782,7 +6985,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             bar_y = pt_y + pt_h - 11
             f_draw.rounded_rectangle([(bar_x1, bar_y), (bar_x2, bar_y + 5)], radius=2, fill=(255, 225, 0, 245))
 
-    # 6. Nitish Rajput / Think School Corner Verified Person Dossier Badge (when a real story figure is spoken)
+    # 6. WTB corner person dossier badge when a verified story figure is named.
     if beat.get("person_popup") is not None and sim_mode is None:
         p_badge = build_corner_person_dossier_badge_rgba(beat["person_popup"], is_short=is_short)
         if p_badge is not None:
@@ -6977,6 +7180,7 @@ def build_prop_driven_storyboard_1080p(
     failed_queries = []
     moving_video_beats = 0
     person_popup_beats = 0
+    grounded_card_beats = 0
     is_short = W < H
 
     # Pre-harvest 300+ topic-locked visual candidates AND topic-locked 1080p video/interview clips once per story!
@@ -7148,6 +7352,7 @@ def build_prop_driven_storyboard_1080p(
                 else:
                     beat_im = build_grounded_evidence_card(dossier, b_txt, sec_headline)
                     is_grounded_card = True
+                    grounded_card_beats += 1
                     print(f"ℹ️ [No Topic-Matched Photo] Using an evidence card for beat {global_beat_idx + 1} instead of unrelated B-roll.", flush=True)
 
                 stage_1 = build_clean_1080p_stage(beat_im, W, H)
@@ -7160,6 +7365,7 @@ def build_prop_driven_storyboard_1080p(
                 "section_idx": int(sec.get("chapter_index", sec_idx)),
                 "beat_in_section": b_i,
                 "beat_type": b_type,
+                "visual_source_kind": "source_card" if is_grounded_card else ("topic_video" if vseg is not None else "topic_photo"),
                 "camera_mode": global_beat_idx % 3,
                 "pan_dir": 1 if (global_beat_idx % 2 == 0) else -1,
                 "duration": round(beat_dur, 3),
@@ -7196,6 +7402,7 @@ def build_prop_driven_storyboard_1080p(
         "total_beats": len(planned_beats),
         "unique_real_photos": len(unique_real_photos),
         "moving_video_beats": moving_video_beats,
+        "grounded_card_beats": grounded_card_beats,
         "person_popup_beats": person_popup_beats,
         "failed_queries_count": len(failed_queries)
     }
@@ -8021,9 +8228,9 @@ def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
 
     if ai_pkg:
         if ai_pkg.get("viral_title") and not is_short:
-            dossier["original_yt_title"] = str(ai_pkg["viral_title"])[:95]
+            dossier["original_yt_title"] = keep_story_grounded_youtube_title(ai_pkg["viral_title"], dossier)
         elif ai_pkg.get("viral_title") and is_short and not dossier.get("original_yt_title"):
-            dossier["original_yt_title"] = str(ai_pkg["viral_title"])[:95]
+            dossier["original_yt_title"] = keep_story_grounded_youtube_title(ai_pkg["viral_title"], dossier)
         if ai_pkg.get("thumb_line_1") and ai_pkg.get("thumb_line_2"):
             dossier["ai_thumb_hook"] = (str(ai_pkg["thumb_line_1"]).upper()[:24], str(ai_pkg["thumb_line_2"]).upper()[:24])
         if ai_pkg.get("core_subject"):
@@ -8201,8 +8408,11 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     c_prof = dossier["country_profile"]
     c_name = str(c_prof.get("name", "GLOBAL")).upper()[:18]
     pillar = dossier.get("pillar", "WORLD")
-    sub_p = dossier.get("sub_pillar", pillar)
-    p_cfg = CATEGORY_FEEDS.get(pillar, CATEGORY_FEEDS["WORLD"])
+    sub_p = str(dossier.get("sub_pillar", pillar)).upper()
+    core_hub = PILLAR_TO_CORE_HUB.get(sub_p, sub_p)
+    p_cfg = CATEGORY_FEEDS.get(core_hub, CATEGORY_FEEDS.get(pillar, CATEGORY_FEEDS["WORLD"]))
+    display_category = get_story_display_category(dossier)
+    category_hashtag = re.sub(r"[^A-Za-z0-9]", "", display_category.upper())
     badge_col = p_cfg["badge_color"]
     accent_col = p_cfg["accent_color"]
     resample_mode = getattr(Image, "Resampling", Image).LANCZOS
@@ -8356,7 +8566,7 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
 
     # Extract a punchy red investigative pre-header badge (e.g. 'THE UNTOLD REALITY' or number from title)
     num_in_title = re.search(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?\s*(?:%|BILLION|MILLION|TRILLION|CITIES|YEARS|COUNTRIES)?)", dossier.get("title", "").upper())
-    pre_badge_txt = f"⚡ {num_in_title.group(1).strip()} IMPACT" if (num_in_title and len(num_in_title.group(1).strip()) >= 2) else f"⚡ {sub_p.replace('_', ' ')} INVESTIGATION"
+    pre_badge_txt = f"⚡ {num_in_title.group(1).strip()} IMPACT" if (num_in_title and len(num_in_title.group(1).strip()) >= 2) else f"⚡ {display_category} INVESTIGATION"
     pre_badge_txt, f_pre = get_font_fitting_width(draw, pre_badge_txt, 850, 30, 22)
     pw_pre = draw.textbbox((0, 0), pre_badge_txt, font=f_pre)[2] + 48
     draw.rounded_rectangle([(56, 568), (56 + pw_pre, 624)], radius=12, fill=(225, 20, 45, 255), outline=(255, 255, 255, 245), width=3)
@@ -8391,10 +8601,10 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
 
     return {
         "selected_thumbnail": out_path,
-        "thumbnail_category_style": sub_p,
+        "thumbnail_category_style": display_category,
         "thumbnail_2word_hook": f"{hook_line_1} // {hook_line_2}",
         "selected_title": dossier["original_yt_title"],
-        "hashtags": ["#WorldTalkBrief", f"#{sub_p.replace('_', '')}", f"#{c_prof['name'].replace(' ', '')}", "#Explained"]
+        "hashtags": ["#WorldTalkBrief", f"#{category_hashtag}", f"#{c_prof['name'].replace(' ', '')}", "#Explained"]
     }
 
 # ==============================================================================
@@ -8406,13 +8616,13 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
 # ==============================================================================
 CATEGORY_EDITING_DIRECTORS = {
     "GEOPOLITICS": {"target_beat_sec": 3.0, "primary_graphics": ["TACTICAL_GEOPOLITICAL_SIEGE_MAP", "MOTION_CANVAS_POWER_NETWORK"], "bgm_duck_db": -19.0, "accent_rgb": (0, 235, 255)},
-    "DEFENSE_MILITARY": {"target_beat_sec": 2.7, "primary_graphics": ["TACTICAL_GEOPOLITICAL_SIEGE_MAP", "THINK_SCHOOL_DATA_SCORECARD"], "bgm_duck_db": -18.5, "accent_rgb": (255, 65, 85)},
-    "AI_ROBOTICS": {"target_beat_sec": 2.8, "primary_graphics": ["MOTION_CANVAS_POWER_NETWORK", "THINK_SCHOOL_DATA_SCORECARD"], "bgm_duck_db": -19.5, "accent_rgb": (0, 245, 200)},
-    "TECHNOLOGY": {"target_beat_sec": 2.8, "primary_graphics": ["THINK_SCHOOL_DATA_SCORECARD", "MOTION_CANVAS_POWER_NETWORK"], "bgm_duck_db": -19.5, "accent_rgb": (0, 220, 255)},
-    "BUSINESS_ECONOMY": {"target_beat_sec": 3.1, "primary_graphics": ["THINK_SCHOOL_DATA_SCORECARD", "CORPORATE_POWER_ORGANOGRAM"], "bgm_duck_db": -20.0, "accent_rgb": (255, 215, 0)},
-    "SCIENCE_SPACE": {"target_beat_sec": 3.2, "primary_graphics": ["THINK_SCHOOL_DATA_SCORECARD", "ARCHIVAL_25D_TIMELINE"], "bgm_duck_db": -20.0, "accent_rgb": (130, 180, 255)},
+    "DEFENSE_MILITARY": {"target_beat_sec": 2.7, "primary_graphics": ["TACTICAL_GEOPOLITICAL_SIEGE_MAP", "WTB_DATA_SCORECARD"], "bgm_duck_db": -18.5, "accent_rgb": (255, 65, 85)},
+    "AI_ROBOTICS": {"target_beat_sec": 2.8, "primary_graphics": ["MOTION_CANVAS_POWER_NETWORK", "WTB_DATA_SCORECARD"], "bgm_duck_db": -19.5, "accent_rgb": (0, 245, 200)},
+    "TECHNOLOGY": {"target_beat_sec": 2.8, "primary_graphics": ["WTB_DATA_SCORECARD", "MOTION_CANVAS_POWER_NETWORK"], "bgm_duck_db": -19.5, "accent_rgb": (0, 220, 255)},
+    "BUSINESS_ECONOMY": {"target_beat_sec": 3.1, "primary_graphics": ["WTB_DATA_SCORECARD", "CORPORATE_POWER_ORGANOGRAM"], "bgm_duck_db": -20.0, "accent_rgb": (255, 215, 0)},
+    "SCIENCE_SPACE": {"target_beat_sec": 3.2, "primary_graphics": ["WTB_DATA_SCORECARD", "ARCHIVAL_25D_TIMELINE"], "bgm_duck_db": -20.0, "accent_rgb": (130, 180, 255)},
     "HISTORY": {"target_beat_sec": 3.4, "primary_graphics": ["ARCHIVAL_25D_TIMELINE", "TACTICAL_GEOPOLITICAL_SIEGE_MAP"], "bgm_duck_db": -20.5, "accent_rgb": (255, 205, 110)},
-    "MIND_BLOWING_FACTS": {"target_beat_sec": 2.6, "primary_graphics": ["THINK_SCHOOL_DATA_SCORECARD", "MOTION_CANVAS_POWER_NETWORK"], "bgm_duck_db": -19.0, "accent_rgb": (255, 185, 0)},
+    "MIND_BLOWING_FACTS": {"target_beat_sec": 2.6, "primary_graphics": ["WTB_DATA_SCORECARD", "MOTION_CANVAS_POWER_NETWORK"], "bgm_duck_db": -19.0, "accent_rgb": (255, 185, 0)},
     "WORLD": {"target_beat_sec": 3.0, "primary_graphics": ["TACTICAL_GEOPOLITICAL_SIEGE_MAP", "BROADCAST_INTERVIEW_QUOTE_MOCKUP"], "bgm_duck_db": -19.5, "accent_rgb": (0, 235, 255)},
 }
 
@@ -8443,10 +8653,25 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         "checks": {},
         "passed": False
     }
+
+    def _finish_qc(ok):
+        qc_report["passed"] = bool(ok)
+        try:
+            os.makedirs("output", exist_ok=True)
+            with open("output/wtb_qc_audit_report.json", "w", encoding="utf-8") as qf:
+                json.dump(qc_report, qf, indent=2)
+            os.makedirs("output/qc", exist_ok=True)
+            per_video_name = os.path.splitext(os.path.basename(video_path))[0] + "_qc.json"
+            with open(os.path.join("output/qc", per_video_name), "w", encoding="utf-8") as qf:
+                json.dump(qc_report, qf, indent=2)
+        except Exception:
+            pass
+        return bool(ok), qc_report
+
     try:
         if not os.path.exists(video_path) or os.path.getsize(video_path) < 100000:
             qc_report["checks"]["file_integrity"] = "FAIL: File missing or too small"
-            return False, qc_report
+            return _finish_qc(False)
 
         cap = cv2.VideoCapture(video_path)
         w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -8459,10 +8684,15 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         exp_size = (1080, 1920) if is_short else (1920, 1080)
         actual_aspect = w / float(max(h, 1))
         qc_report["checks"]["dimensions"] = f"{w}x{h} @ {fps:.1f}fps ({dur:.1f}s)"
-        if (w, h) != exp_size or abs(actual_aspect - exp_aspect) > 0.02 or dur < 15.0:
+        min_duration = 15.0 if is_short else 240.0
+        max_duration = 180.0 if is_short else float("inf")
+        if (w, h) != exp_size or abs(actual_aspect - exp_aspect) > 0.02 or dur < min_duration or dur > max_duration or fps < 23.0:
             cap.release()
-            qc_report["checks"]["resolution_aspect_or_duration"] = f"FAIL: expected {exp_size[0]}x{exp_size[1]} or longer video"
-            return False, qc_report
+            qc_report["checks"]["resolution_aspect_or_duration"] = (
+                f"FAIL: expected {exp_size[0]}x{exp_size[1]} at >=23fps and "
+                f"{min_duration:.0f}-{max_duration if is_short else 'unlimited'} seconds"
+            )
+            return _finish_qc(False)
 
         # Sample 8 frames across the video to check for black frames AND frozen frames
         black_frames = 0
@@ -8483,7 +8713,7 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         cap.release()
 
         # Verify audio stream presence & duration sync via ffprobe
-        audio_sync_ok = True
+        audio_sync_ok = False
         try:
             pr = subprocess.run(
                 ["ffprobe", "-v", "error", "-show_entries", "stream=codec_type,duration", "-of", "json", video_path],
@@ -8492,10 +8722,10 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
             if pr.returncode == 0 and pr.stdout:
                 p_data = json.loads(pr.stdout)
                 streams = p_data.get("streams") or []
+                audio_present = any(s.get("codec_type") == "audio" for s in streams)
                 v_durs = [float(s.get("duration", dur)) for s in streams if s.get("codec_type") == "video" and s.get("duration")]
                 a_durs = [float(s.get("duration", dur)) for s in streams if s.get("codec_type") == "audio" and s.get("duration")]
-                if v_durs and a_durs and abs(v_durs[0] - a_durs[0]) > 1.8:
-                    audio_sync_ok = False
+                audio_sync_ok = audio_present and (not (v_durs and a_durs) or abs(v_durs[0] - a_durs[0]) <= 1.8)
         except Exception:
             pass
 
@@ -8504,82 +8734,68 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         qc_report["checks"]["audio_sync_verified"] = audio_sync_ok
         qc_report["checks"]["licensing_and_attribution_audit"] = "NOT VERIFIED: visual source licences are not checked by this engine"
         if black_frames >= 3 or frozen_pairs >= 5 or not audio_sync_ok:
-            return False, qc_report
+            return _finish_qc(False)
 
-        qc_report["checks"]["total_beats_audited"] = len(planned_beats) if planned_beats else 0
-        qc_report["passed"] = True
-        try:
-            with open("output/wtb_qc_audit_report.json", "w") as qf:
-                json.dump(qc_report, qf, indent=2)
-        except Exception:
-            pass
+        beats = [b for b in (planned_beats or []) if isinstance(b, dict)]
+        card_beats = [b for b in beats if b.get("visual_source_kind") == "source_card"]
+        real_visual_beats = [b for b in beats if b.get("visual_source_kind") in {"topic_photo", "topic_video"}]
+        unique_visual_ids = {
+            id(b.get("vseg", {}).get("vclip") if b.get("visual_source_kind") == "topic_video" and isinstance(b.get("vseg"), dict)
+               else b.get("primary_im"))
+            for b in real_visual_beats
+            if (b.get("vseg", {}).get("vclip") if b.get("visual_source_kind") == "topic_video" and isinstance(b.get("vseg"), dict)
+                else b.get("primary_im")) is not None
+        }
+        source_linked_beats = [
+            b for b in beats if isinstance(b.get("claim_meta"), dict) and str(b["claim_meta"].get("source_url", "")).startswith(("http://", "https://"))
+        ]
+        visual_ratio = len(real_visual_beats) / float(max(1, len(beats)))
+        source_ratio = len(source_linked_beats) / float(max(1, len(beats)))
+        min_beats = 4 if is_short else 12
+        min_visual_ratio = 0.45 if is_short else 0.60
+        min_unique_visuals = 3 if is_short else 6
+        qc_report["checks"]["total_beats_audited"] = len(beats)
+        qc_report["checks"]["topic_matched_visual_beats"] = len(real_visual_beats)
+        qc_report["checks"]["source_card_beats"] = len(card_beats)
+        qc_report["checks"]["topic_visual_coverage"] = round(visual_ratio, 3)
+        qc_report["checks"]["unique_topic_visual_assets"] = len(unique_visual_ids)
+        qc_report["checks"]["source_link_coverage"] = round(source_ratio, 3)
+        if len(beats) < min_beats or visual_ratio < min_visual_ratio or len(unique_visual_ids) < min_unique_visuals or source_ratio < 0.80:
+            qc_report["checks"]["editorial_visual_and_source_gate"] = (
+                f"FAIL: need {min_beats}+ beats, {min_visual_ratio:.0%}+ topic-matched visuals, "
+                f"{min_unique_visuals}+ unique assets, and 80%+ source-linked beats"
+            )
+            return _finish_qc(False)
+        qc_report["checks"]["editorial_visual_and_source_gate"] = "PASS"
+        _finish_qc(True)
         print(f"✅ [AUTOMATIC PRE-UPLOAD QC GATE PASSED] {w}x{h} @ {fps:.0f}fps | Duration: {dur:.1f}s | 0 Black Frames!", flush=True)
         return True, qc_report
     except Exception as e:
         qc_report["checks"]["exception"] = str(e)
-        return False, qc_report
+        return _finish_qc(False)
 
 
 # ==============================================================================
-# V27 GLOBAL 20-COUNTRY MULTI-LANGUAGE YOUTUBE API LOCALIZATION, CC & DUB ENGINE
+# GLOBAL 15-LANGUAGE YOUTUBE LOCALIZATION, SUBTITLE & OPTIONAL DUB ENGINE
 # ==============================================================================
 # ==============================================================================
-# V31 GLOBAL 52-LANGUAGE YOUTUBE API LOCALIZATION, SUBTITLE (.SRT) & DUB ENGINE
-# Covers virtually every major language & country on the internet!
+# English-first channel with 14 selected metadata/subtitle languages.
 # ==============================================================================
 GLOBAL_20_LANGUAGES_CONFIG = [
-    ("hi", "hi", "Hindi (India)", "hi-IN-MadhurNeural"),
-    ("es", "es", "Spanish (Spain/LatAm/USA)", "es-ES-AlvaroNeural"),
-    ("fr", "fr", "French (France/Canada/Africa)", "fr-FR-HenriNeural"),
-    ("de", "de", "German (Germany/Austria/Swiss)", "de-DE-ConradNeural"),
-    ("ar", "ar", "Arabic (Middle East/UAE/Saudi)", "ar-SA-HamedNeural"),
-    ("pt", "pt", "Portuguese (Brazil/Portugal)", "pt-BR-AntonioNeural"),
-    ("ru", "ru", "Russian (Russia/CIS)", "ru-RU-DmitryNeural"),
-    ("ja", "ja", "Japanese (Japan)", "ja-JP-KeitaNeural"),
-    ("zh-Hans", "zh-CN", "Chinese Simplified (China/Singapore)", "zh-CN-YunxiNeural"),
-    ("zh-Hant", "zh-TW", "Chinese Traditional (Taiwan/HK)", "zh-TW-YunJheNeural"),
-    ("ko", "ko", "Korean (South Korea)", "ko-KR-InJoonNeural"),
-    ("tr", "tr", "Turkish (Turkey)", "tr-TR-AhmetNeural"),
-    ("it", "it", "Italian (Italy)", "it-IT-DiegoNeural"),
-    ("id", "id", "Indonesian (Indonesia)", "id-ID-ArdiNeural"),
-    ("fil", "tl", "Filipino (Philippines)", "fil-PH-AngeloNeural"),
-    ("ms", "ms", "Malay (Malaysia)", "ms-MY-OsmanNeural"),
-    ("vi", "vi", "Vietnamese (Vietnam)", "vi-VN-NamMinhNeural"),
-    ("th", "th", "Thai (Thailand)", "th-TH-NiwatNeural"),
-    ("bn", "bn", "Bengali (Bangladesh/India)", "bn-IN-BashkarNeural"),
-    ("ur", "ur", "Urdu (Pakistan/India)", "ur-PK-AsadNeural"),
-    ("ta", "ta", "Tamil (India/Singapore/Malaysia)", "ta-IN-ValluvarNeural"),
-    ("te", "te", "Telugu (India)", "te-IN-MohanNeural"),
-    ("mr", "mr", "Marathi (India)", "mr-IN-ManoharNeural"),
-    ("gu", "gu", "Gujarati (India)", "gu-IN-NiranjanNeural"),
-    ("kn", "kn", "Kannada (India)", "kn-IN-GaganNeural"),
-    ("ml", "ml", "Malayalam (India)", "ml-IN-MidhunNeural"),
-    ("pa", "pa", "Punjabi (India/Canada/UK)", "pa-IN-OjasNeural"),
-    ("nl", "nl", "Dutch (Netherlands/Belgium)", "nl-NL-MaartenNeural"),
-    ("pl", "pl", "Polish (Poland)", "pl-PL-MarekNeural"),
-    ("uk", "uk", "Ukrainian (Ukraine)", "uk-UA-OstapNeural"),
-    ("fa", "fa", "Persian (Iran)", "fa-IR-FaridNeural"),
-    ("he", "iw", "Hebrew (Israel)", "he-IL-AvriNeural"),
-    ("sv", "sv", "Swedish (Sweden)", "sv-SE-MattiasNeural"),
-    ("nb", "no", "Norwegian (Norway)", "nb-NO-FinnNeural"),
-    ("da", "da", "Danish (Denmark)", "da-DK-JeppeNeural"),
-    ("fi", "fi", "Finnish (Finland)", "fi-FI-HarriNeural"),
-    ("el", "el", "Greek (Greece)", "el-GR-NestorasNeural"),
-    ("cs", "cs", "Czech (Czechia)", "cs-CZ-AntoninNeural"),
-    ("ro", "ro", "Romanian (Romania)", "ro-RO-EmilNeural"),
-    ("hu", "hu", "Hungarian (Hungary)", "hu-HU-TamasNeural"),
-    ("sr", "sr", "Serbian (Serbia)", "sr-RS-NicholasNeural"),
-    ("hr", "hr", "Croatian (Croatia)", "hr-HR-SreckoNeural"),
-    ("bg", "bg", "Bulgarian (Bulgaria)", "bg-BG-BorislavNeural"),
-    ("sk", "sk", "Slovak (Slovakia)", "sk-SK-LukasNeural"),
-    ("lt", "lt", "Lithuanian (Lithuania)", "lt-LT-LeonasNeural"),
-    ("my", "my", "Burmese (Myanmar)", "my-MM-ThihaNeural"),
-    ("km", "km", "Khmer (Cambodia)", "km-KH-PisethNeural"),
-    ("ne", "ne", "Nepali (Nepal)", "ne-NP-SagarNeural"),
-    ("si", "si", "Sinhala (Sri Lanka)", "si-LK-SameeraNeural"),
-    ("sw", "sw", "Swahili (East Africa)", "sw-KE-RafikiNeural"),
-    ("am", "am", "Amharic (Ethiopia)", "am-ET-AmehaNeural"),
-    ("af", "af", "Afrikaans (South Africa)", "af-ZA-WillemNeural")
+    ("hi", "hi", "Hindi", "hi-IN-MadhurNeural"),
+    ("es", "es", "Spanish", "es-ES-AlvaroNeural"),
+    ("zh-Hans", "zh-CN", "Chinese (Simplified)", "zh-CN-YunxiNeural"),
+    ("fr", "fr", "French", "fr-FR-HenriNeural"),
+    ("de", "de", "German", "de-DE-ConradNeural"),
+    ("ar", "ar", "Arabic", "ar-SA-HamedNeural"),
+    ("pt", "pt", "Portuguese", "pt-BR-AntonioNeural"),
+    ("ru", "ru", "Russian", "ru-RU-DmitryNeural"),
+    ("ja", "ja", "Japanese", "ja-JP-KeitaNeural"),
+    ("id", "id", "Indonesian", "id-ID-ArdiNeural"),
+    ("bn", "bn", "Bengali", "bn-IN-BashkarNeural"),
+    ("ur", "ur", "Urdu", "ur-PK-AsadNeural"),
+    ("ko", "ko", "Korean", "ko-KR-InJoonNeural"),
+    ("pa", "pa", "Punjabi", "pa-IN-OjasNeural")
 ]
 
 def sanitize_youtube_metadata_text(txt, max_len=95):
@@ -8605,14 +8821,13 @@ def translate_text_free_google_gtx(text_str, target_lang_code):
                     return translated.strip()
     except Exception:
         pass
-    return text_str
+    return ""
 
 def build_20_country_youtube_localizations(en_title, en_description):
     """
-    V35 BULLETPROOF 52-LANGUAGE YOUTUBE LOCALIZATION ENGINE (INDIA + GLOBAL):
-    - Translates Title & Summary cleanly into all 52 languages (including Hindi, Gujarati, Marathi,
-      Tamil, Telugu, Bengali, Kannada, Malayalam, Punjabi, Urdu, Spanish, French, German, Arabic,
-      Russian, Japanese, Chinese, Korean, Portuguese, Indonesian, Filipino, Malay, Vietnamese, Thai).
+    Build English plus 14 selected global-language title/description localizations:
+    Hindi, Spanish, Simplified Chinese, French, German, Arabic, Portuguese, Russian,
+    Japanese, Indonesian, Bengali, Urdu, Korean, and Punjabi.
     - Translates Title and Description separately so Google Translate NEVER mangles separator tokens!
     """
     clean_en_t = sanitize_youtube_metadata_text(en_title, 92)
@@ -8623,14 +8838,14 @@ def build_20_country_youtube_localizations(en_title, en_description):
             "description": clean_en_d
         }
     }
-    short_desc = clean_en_d[:550]
+    short_desc = clean_en_d.split("\n\nSOURCES:", 1)[0][:550]
 
     def _trans_one(lang_tuple):
         yt_code, gtx_code, _, _ = lang_tuple
         t_tr = sanitize_youtube_metadata_text(translate_text_free_google_gtx(clean_en_t, gtx_code), 90)
         d_tr = sanitize_youtube_metadata_text(translate_text_free_google_gtx(short_desc, gtx_code), 4200)
-        if t_tr and len(t_tr) >= 3:
-            return yt_code, {"title": t_tr, "description": d_tr or clean_en_d}
+        if t_tr and len(t_tr) >= 3 and d_tr:
+            return yt_code, {"title": t_tr, "description": d_tr}
         return yt_code, None
 
     try:
@@ -8645,23 +8860,20 @@ def build_20_country_youtube_localizations(en_title, en_description):
                     pass
     except Exception:
         pass
-    print(f"🌍 [52-Language Global & Indian YouTube API] Built & sanitized native Title/Description localizations for {len(localizations)} languages!", flush=True)
+    print(f"🌍 [15-Language Global YouTube API] Built title/description localizations for {len(localizations)} languages including English.", flush=True)
     return localizations
 
 def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None, hist_obj=None):
     """
-    V35 MULTI-LANGUAGE SUBTITLES (.SRT) & NEURAL DUBBING ENGINE (INDIA + GLOBAL):
-    1. Generates timestamped `.srt` subtitle files in 18+ Indian & World languages (`hi`, `gu`, `mr`, `ta`, `te`,
-       `bn`, `es`, `fr`, `de`, `ar`, `ru`, `ja`, `zh-Hans`, `pt`, `id`, `fil`, `ko`, `tr`) in `output/subtitles/`.
-    2. Synthesizes full neural human-like dubbed audio tracks (`.mp3`) in 10 major languages (`Hindi`, `Gujarati`,
-       `Tamil`, `Spanish`, `French`, `German`, `Arabic`, `Russian`, `Japanese`, `Portuguese`) in `output/dubbed_audio/`!
-    3. Also muxes a Multi-Audio Dubbed Master MP4 (`output/<video_tag>_multilang_dubbed.mp4`) containing
-       English + Hindi + Spanish + Arabic + French audio streams selectable in any media player!
+    Creates English plus 14 localized subtitle files. Local voice dubs are opt-in because this
+    API does not publish alternate audio tracks; caption uploads rotate under the daily quota.
     """
     if not sections_list:
         return
     os.makedirs("output/subtitles", exist_ok=True)
-    os.makedirs("output/dubbed_audio", exist_ok=True)
+    build_local_dubs = os.environ.get("BUILD_LOCAL_DUB_ARTIFACTS", "false").lower() == "true"
+    if build_local_dubs:
+        os.makedirs("output/dubbed_audio", exist_ok=True)
 
     def _fmt_srt_time(sec_val):
         ms = int(round((sec_val - int(sec_val)) * 1000))
@@ -8692,24 +8904,57 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
     with open(en_srt_path, "w", encoding="utf-8") as f:
         f.write("\n".join(en_srt_lines))
 
-    newline_joined_en = "\n".join(s[2] for s in srt_segments)
-    srt_targets = GLOBAL_20_LANGUAGES_CONFIG[:18] if not is_short else GLOBAL_20_LANGUAGES_CONFIG[:12]
-    dub_voice_codes = {"hi", "gu", "ta", "es", "fr", "de", "ar", "ru", "ja", "pt"} if not is_short else {"hi", "gu", "es", "fr", "ar"}
+    srt_targets = GLOBAL_20_LANGUAGES_CONFIG
+    dub_voice_codes = {"hi", "es", "fr", "de", "ar", "ru", "ja", "pt"} if build_local_dubs else set()
     generated_dub_files = []
 
     def _process_lang_dub_and_srt(lang_tuple):
         yt_code, gtx_code, lang_label, voice_id = lang_tuple
         try:
-            tr_block = translate_text_free_google_gtx(newline_joined_en[:1850], gtx_code)
-            if not tr_block:
-                return None
-            tr_lines = [ln.strip() for ln in tr_block.splitlines() if ln.strip()]
-            if not tr_lines:
-                tr_lines = [tr_block]
-            srt_lines_tr = []
-            for idx_s, (st_t, ed_t, _) in enumerate(srt_segments, 1):
-                mapped_s = tr_lines[min(idx_s - 1, len(tr_lines) - 1)]
-                srt_lines_tr.append(f"{idx_s}\n{_fmt_srt_time(st_t)} --> {_fmt_srt_time(ed_t)}\n{mapped_s}\n")
+            # Translate complete, bounded chunks. The old code translated only the first
+            # 1,850 characters and reused one paragraph as every subtitle cue.
+            chunks = []
+            cur_chunk = []
+            cur_chars = 0
+            for seg in srt_segments:
+                seg_len = len(seg[2])
+                if cur_chunk and cur_chars + seg_len + 1 > 1600:
+                    chunks.append(cur_chunk)
+                    cur_chunk, cur_chars = [], 0
+                cur_chunk.append(seg)
+                cur_chars += seg_len + 1
+            if cur_chunk:
+                chunks.append(cur_chunk)
+
+            translated_cues = []
+            for chunk in chunks:
+                tr_block = translate_text_free_google_gtx("\n".join(x[2] for x in chunk), gtx_code)
+                if not tr_block:
+                    return None
+                tr_parts = [x.strip() for x in tr_block.splitlines() if x.strip()]
+                if len(tr_parts) != len(chunk):
+                    tr_parts = [x.strip() for x in split_into_complete_sentences(tr_block, split_long_for_visual_pacing=False) if x.strip()]
+                if not tr_parts:
+                    return None
+                if len(tr_parts) == len(chunk):
+                    translated_cues.extend((src[0], src[1], tr_parts[i]) for i, src in enumerate(chunk))
+                else:
+                    # Keep all translated content with an approximate source-time span;
+                    # never paste the whole translated paragraph onto every cue.
+                    n_bins = min(len(tr_parts), len(chunk))
+                    for bin_idx in range(n_bins):
+                        src_start = int(bin_idx * len(chunk) / n_bins)
+                        src_end = max(src_start + 1, int((bin_idx + 1) * len(chunk) / n_bins))
+                        tr_start = int(bin_idx * len(tr_parts) / n_bins)
+                        tr_end = max(tr_start + 1, int((bin_idx + 1) * len(tr_parts) / n_bins))
+                        translated_cues.append((
+                            chunk[src_start][0], chunk[min(src_end - 1, len(chunk) - 1)][1],
+                            " ".join(tr_parts[tr_start:tr_end])
+                        ))
+            srt_lines_tr = [
+                f"{idx_s}\n{_fmt_srt_time(st_t)} --> {_fmt_srt_time(ed_t)}\n{txt}\n"
+                for idx_s, (st_t, ed_t, txt) in enumerate(translated_cues, 1)
+            ]
             tr_srt_path = f"output/subtitles/{video_tag}_{yt_code}.srt"
             with open(tr_srt_path, "w", encoding="utf-8") as f:
                 f.write("\n".join(srt_lines_tr))
@@ -8718,7 +8963,7 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
                 dub_mp3_path = f"output/dubbed_audio/{video_tag}_{yt_code}.mp3"
                 txt_tmp = f"temp/dub_txt_{video_tag}_{yt_code}.txt"
                 with open(txt_tmp, "w", encoding="utf-8") as tf:
-                    tf.write(" ".join(tr_lines)[:1600])
+                    tf.write(" ".join(x[2] for x in translated_cues)[:1600])
                 run_isolated_subprocess(["edge-tts", "--voice", voice_id, "--file", txt_tmp, "--write-media", dub_mp3_path], timeout_sec=14)
                 if os.path.exists(dub_mp3_path) and os.path.getsize(dub_mp3_path) > 2000:
                     return (yt_code, lang_label, dub_mp3_path, tr_srt_path)
@@ -8732,11 +8977,11 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
             for r_d in results_dub:
                 if r_d is not None:
                     generated_dub_files.append(r_d)
-        print(f"🎙️ [Multi-Language SRT & Neural Dubs] Built {len(srt_targets)} subtitle tracks + {len(generated_dub_files)} neural audio dubs (Hindi/Global)!", flush=True)
+        print(f"📝 [Global Subtitle Files] Built English + {len(srt_targets)} localized subtitle tracks; optional local dubs: {len(generated_dub_files)}.", flush=True)
     except Exception:
         pass
 
-    # Mux Multi-Language Dubbed Audio Tracks (English + Hindi + Spanish + French + Arabic) into a Multi-Audio MP4 in `output/`
+    # Local multi-audio artifacts are opt-in and are not uploaded as selectable YouTube audio tracks.
     if video_path and os.path.exists(video_path) and generated_dub_files:
         try:
             multilang_mp4 = f"output/{video_tag}_multilang_dubbed.mp4"
@@ -8753,33 +8998,37 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
         except Exception:
             pass
 
-    # Caption inserts use 400 units each from the general daily quota; videos.insert uses a separate bucket.
+    # One caption insert per video, rotated across languages under a reserved daily budget.
     if yt_client is not None and video_id and not YOUTUBE_GENERAL_QUOTA_EXHAUSTED:
         from googleapiclient.http import MediaFileUpload
-        priority_cc = [("hi", "Hindi (India)", f"output/subtitles/{video_tag}_hi.srt"), ("en", "English", en_srt_path), ("es", "Spanish", f"output/subtitles/{video_tag}_es.srt")]
-        for cc_code, cc_name, cc_file in priority_cc:
-            if YOUTUBE_GENERAL_QUOTA_EXHAUSTED:
-                break
-            if not os.path.exists(cc_file):
-                continue
-            if not reserve_youtube_general_quota(hist_obj, f"captions.insert ({cc_code})", 400):
-                break
-            try:
-                yt_client.captions().insert(
-                    part="snippet",
-                    body={"snippet": {"videoId": video_id, "language": cc_code, "name": cc_name, "isDraft": False}},
-                    media_body=MediaFileUpload(cc_file, mimetype="application/octet-stream", resumable=False)
-                ).execute()
-                print(f"📝 [YouTube CC Track Uploaded] {cc_name} ({cc_code}) active on https://youtu.be/{video_id}!", flush=True)
-            except Exception as cc_err:
-                quota_exhausted = mark_youtube_general_quota_exhausted(cc_err, f"captions.insert ({cc_code})", hist_obj)
-                if quota_exhausted or "403" in str(cc_err):
-                    break
+        available_tracks = [("en", "English", en_srt_path)] + [
+            (code, name, f"output/subtitles/{video_tag}_{code}.srt")
+            for code, _, name, _ in GLOBAL_20_LANGUAGES_CONFIG
+            if os.path.exists(f"output/subtitles/{video_tag}_{code}.srt")
+        ]
+        if available_tracks:
+            cursor = int((hist_obj or {}).get("youtube_caption_upload_cursor", 0))
+            cc_code, cc_name, cc_file = available_tracks[cursor % len(available_tracks)]
+            if reserve_youtube_general_quota(hist_obj, f"captions.insert ({cc_code})", 400):
+                try:
+                    yt_client.captions().insert(
+                        part="snippet",
+                        body={"snippet": {"videoId": video_id, "language": cc_code, "name": cc_name, "isDraft": False}},
+                        media_body=MediaFileUpload(cc_file, mimetype="application/octet-stream", resumable=False)
+                    ).execute()
+                    if hist_obj is not None:
+                        hist_obj["youtube_caption_upload_cursor"] = cursor + 1
+                        save_published_history(hist_obj)
+                    print(f"📝 [Rotating YouTube Caption] {cc_name} ({cc_code}) uploaded for https://youtu.be/{video_id}.", flush=True)
+                except Exception as cc_err:
+                    quota_exhausted = mark_youtube_general_quota_exhausted(cc_err, f"captions.insert ({cc_code})", hist_obj)
+                    if quota_exhausted or "403" in str(cc_err):
+                        print(f"ℹ️ [Caption insert skipped] {str(cc_err)[:100]}", flush=True)
 
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
     is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway="",
-    linked_long_url=None, sections_list=None, hist_obj=None
+    linked_long_url=None, sections_list=None, hist_obj=None, planned_beats=None
 ):
     """
     QUOTA-AWARE YOUTUBE UPLOADER:
@@ -8789,7 +9038,9 @@ def try_youtube_auto_upload(
     4. After a general-quota error, skips remaining optional writes while continuing video uploads.
     5. OAuth failover does not increase a project's quota; each credential follows its own project limits.
     """
-    qc_ok, qc_rep = run_automatic_pre_upload_qc_gate(video_path, is_short=is_short, story_title=title)
+    qc_ok, qc_rep = run_automatic_pre_upload_qc_gate(
+        video_path, is_short=is_short, story_title=title, planned_beats=planned_beats
+    )
     if not qc_ok:
         print(f"🛑 [QC GATE BLOCKED UPLOAD] Critical quality check failed: {qc_rep}", flush=True)
         return None
@@ -8798,18 +9049,7 @@ def try_youtube_auto_upload(
     final_title = sanitize_youtube_metadata_text((title[:88] + " #Shorts") if is_short and "#shorts" not in title.lower() else title[:95], 95)
     localizations_map = build_20_country_youtube_localizations(final_title, description)
 
-    multilang_preview_lines = ["", "🌍 GLOBAL MULTI-LANGUAGE TITLES (52 LANGUAGES SUPPORTED):"]
-    preview_langs = [
-        ("hi", "🇮🇳 हिन्दी (Hindi)"), ("gu", "🇮🇳 ગુજરાતી (Gujarati)"), ("mr", "🇮🇳 मराठी (Marathi)"),
-        ("ta", "🇮🇳 தமிழ் (Tamil)"), ("te", "🇮🇳 తెలుగు (Telugu)"), ("bn", "🇮🇳 বাংলা (Bengali)"),
-        ("es", "🇪🇸 Español"), ("fr", "🇫🇷 Français"), ("de", "🇩🇪 Deutsch"),
-        ("ar", "🇸🇦 العربية"), ("ru", "🇷🇺 Русский"), ("ja", "🇯🇵 日本語"),
-        ("zh-Hans", "🇨🇳 中文"), ("pt", "🇧🇷 Português"), ("id", "🇮🇩 Indonesia")
-    ]
-    for l_code, l_flag in preview_langs:
-        if l_code in localizations_map and localizations_map[l_code].get("title"):
-            multilang_preview_lines.append(f"• {l_flag}: {localizations_map[l_code]['title']}")
-    full_desc_with_langs = sanitize_youtube_metadata_text(description[:3400] + "\n" + "\n".join(multilang_preview_lines), 4750)
+    full_desc_with_langs = sanitize_youtube_metadata_text(description, 4750)
     localizations_map["en"]["description"] = full_desc_with_langs
 
     # Collect configured OAuth credentials; quota buckets remain specific to their owning projects.
@@ -8947,6 +9187,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     beat_switch_times_l = []
     sfx_events_l = []
     shared_long_photos = []
+    all_long_beats = []
     shared_long_hashes = []
     shared_long_video_urls = set()
     shared_long_video_queries = set()
@@ -8975,6 +9216,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
             shared_image_urls=shared_long_image_urls
         )
         running_beat_offset += len(ch_beats)
+        all_long_beats.extend(ch_beats)
         for b in ch_beats:
             beat_switch_times_l.append(round(cur_lt, 2))
             sfx_events_l.append({
@@ -9012,25 +9254,25 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         t_acc += ch.get("duration", 16)
 
     long_hashtags_str = " ".join(pkg_report["hashtags"] + ["#CaseStudy", "#DeepDive"])
+    source_reference_block = build_source_reference_block(lead_long_dossier)
     ai_desc = lead_long_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] presents an original deep-dive case study.")
     clean_ai_desc = strip_news_publisher_mentions(ai_desc)
     long_seo_desc = (
         f"{pkg_report['selected_title']}\n\n"
         f"{clean_ai_desc}\n\n"
         f"CHAPTER TIMESTAMPS:\n" + "\n".join(chap_lines) + "\n\n"
-        f"{long_hashtags_str}"
+        f"{source_reference_block}\n\n{long_hashtags_str}"
     )
-    ai_tags = lead_long_dossier.get("ai_seo_tags", [])
-    long_seo_tags = [
-        "World Talk Brief", sub_pillar.replace("_", " ").title(), "Documentary Case Study",
-        lead_long_dossier["country_profile"]["name"].title()
-    ] + ai_tags[:6] + lead_long_entities[:4] + winning_keywords[:4] + viral_yt_tags[:4]
+    long_seo_tags = build_story_relevant_youtube_tags(
+        lead_long_dossier, extra_tags=lead_long_entities + winning_keywords + viral_yt_tags + ["Documentary Case Study"]
+    )
 
     long_vid_id = try_youtube_auto_upload(
         out_long, pkg_report["selected_title"], long_seo_desc, long_seo_tags,
         category_id=lead_long_dossier.get("yt_category_id", "25"), pillar=sub_pillar, is_short=False,
         thumbnail_path=pkg_report["selected_thumbnail"], playlist_map=playlist_map,
-        summary_takeaway=long_chapters[-1]["narration"], sections_list=long_chapters, hist_obj=hist_obj
+        summary_takeaway=long_chapters[-1]["narration"], sections_list=long_chapters, hist_obj=hist_obj,
+        planned_beats=all_long_beats
     )
     pkg_report["rendered_video_path"] = out_long
     pkg_report["youtube_video_id"] = long_vid_id
@@ -9106,25 +9348,26 @@ async def render_and_upload_short_unit(
         if linked_long_url else ""
     )
     short_hashtags_str = " ".join(short_pkg["hashtags"] + ["#Shorts", "#Explained"])
+    short_source_reference_block = build_source_reference_block(short_dossier)
     ai_desc = short_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] original #Shorts case study.")
     clean_short_ai_desc = strip_news_publisher_mentions(ai_desc)
     short_seo_desc = (
         f"{long_link_block}"
         f"{short_dossier['original_yt_title']}\n\n"
         f"{clean_short_ai_desc}\n\n"
+        f"{short_source_reference_block}\n\n"
         f"{short_hashtags_str}"
     )
-    ai_tags = short_dossier.get("ai_seo_tags", [])
-    short_seo_tags = [
-        "World Talk Brief", sub_pillar.replace("_", " ").title(), "Case Study Explained", "YouTube Shorts",
-        short_dossier["country_profile"]["name"].title()
-    ] + ai_tags[:6] + short_entities[:4] + winning_keywords[:4] + viral_yt_tags[:4]
+    short_seo_tags = build_story_relevant_youtube_tags(
+        short_dossier, extra_tags=short_entities + winning_keywords + viral_yt_tags + ["YouTube Shorts", "Case Study Explained"]
+    )
 
     short_vid_id = try_youtube_auto_upload(
         out_short, short_dossier["original_yt_title"], short_seo_desc, short_seo_tags,
         category_id=short_dossier.get("yt_category_id", "25"), pillar=sub_pillar, is_short=True,
         thumbnail_path=short_pkg["selected_thumbnail"], playlist_map=playlist_map,
-        summary_takeaway=short_sections[-1]["narration"], linked_long_url=linked_long_url, sections_list=short_sections, hist_obj=hist_obj
+        summary_takeaway=short_sections[-1]["narration"], linked_long_url=linked_long_url,
+        sections_list=short_sections, hist_obj=hist_obj, planned_beats=s_beats
     )
     s_stats["linked_long_url"] = linked_long_url
     s_stats["rendered_video_path"] = out_short
@@ -9203,18 +9446,14 @@ async def main():
         pairs_to_build = min(2, max(1, pairs_to_build))
 
         # ==============================================================================
-        # V31 4-VIDEO MULTI-COUNTRY & MULTI-CATEGORY SELECTION ENGINE:
-        # Pair #1 (Long #1 + Short #1): Top Geopolitics / Global Powers / Country #1 Breaking News Documentary
-        # Pair #2 (Long #2 + Short #2): Rotating Category & Country Documentary (Tech/AI, Defense, Business, Science, Mind-Blowing Facts, Global Powers)
+        # Four planned uploads per normal run: two long explainers plus two linked Shorts.
+        # The first pair is always global geopolitics; the second pair rotates through other categories,
+        # with a second geopolitics story on roughly three of every twelve runs.
         # ==============================================================================
         selected_dossiers = []
 
-        # PAIR #1 (ALWAYS GEOPOLITICS / INDIA & GLOBAL STRATEGIC AFFAIRS -> ~12-15 Geopolitics Videos/Day!):
-        geo_priority_order = ["GEOPOLITICS", "INDIA_TRENDING", "GLOBAL_POWERS", "DEFENSE_MILITARY"]
-        if rr_idx % 3 == 1:
-            geo_priority_order = ["INDIA_TRENDING", "GEOPOLITICS", "GLOBAL_POWERS", "DEFENSE_MILITARY"]
-        elif rr_idx % 3 == 2:
-            geo_priority_order = ["GLOBAL_POWERS", "GEOPOLITICS", "INDIA_TRENDING", "DEFENSE_MILITARY"]
+        # PAIR #1: global-only geopolitics (no India-first fallback).
+        geo_priority_order = ["GEOPOLITICS", "GLOBAL_POWERS", "DEFENSE_MILITARY"]
         for geo_pillar in geo_priority_order:
             gd = discover_dossier_for_pillar(geo_pillar, hist_obj, winning_keywords, batch_fingerprints)
             if gd is not None:
@@ -9222,15 +9461,14 @@ async def main():
                 selected_dossiers.append(gd)
                 break
 
-        # PAIR #2: All Categories Rotation (Trending in India + Global: Tech, Science, Healthcare, Business, AI, Defense, Geopolitics, Cyber, Facts)
+        # PAIR #2: global category rotation; avoid India-only feed slots on this US/global channel.
         rotating_categories = [
             "TECHNOLOGY", "SCIENCE", "HEALTH", "BUSINESS",
             "GEOPOLITICS", "AI_ROBOTICS", "DEFENSE_MILITARY",
-            "INDIA_TRENDING", "CYBER_INTELLIGENCE", "MIND_BLOWING_FACTS"
+            "CYBER_INTELLIGENCE", "MIND_BLOWING_FACTS"
         ]
         start_cat = rotating_categories[rr_idx % len(rotating_categories)]
-        # Three of twelve two-hour runs try a second fresh geopolitics dossier,
-        # targeting 15 geopolitics full stories/day while keeping other categories in rotation.
+        # At least three of each twelve two-hour runs target a second fresh global geopolitics dossier.
         if rr_idx % 4 == 0:
             ordered_rot = ["GEOPOLITICS"] + [c for c in rotating_categories if c != "GEOPOLITICS"]
         else:
