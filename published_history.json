@@ -1,15 +1,16 @@
 {
-  "updated_at": "2026-11-02T06:24:25.395554",
-  "round_robin_idx": 3,
-  "country_rot_idx": 84,
-  "bgm_track_counter": 922502714,
+  "updated_at": "2026-11-02T16:50:36.712759",
+  "round_robin_idx": 4,
+  "country_rot_idx": 100,
+  "bgm_track_counter": 948134400,
   "last_mega_24h_date": "2026-10-31",
-  "youtube_quota_day_pt": "2026-11-01",
-  "youtube_general_units_reserved": 50,
+  "youtube_quota_day_pt": "2026-11-02",
+  "youtube_general_units_reserved": 0,
   "youtube_caption_units_reserved": 0,
-  "youtube_general_quota_exhausted_day_pt": "2026-11-01",
+  "youtube_caption_upload_cursor": 0,
+  "youtube_general_quota_exhausted_day_pt": "",
   "youtube_channel_history_sync_ok": true,
-  "youtube_channel_history_sync_at_utc": "2026-11-02T06:03:36.099814",
+  "youtube_channel_history_sync_at_utc": "2026-11-02T15:57:30.160429",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
     "xbox_s_first_chief_operating_officer",
@@ -416,20 +417,6 @@
     "we_re_technology_savvy_military_says"
   ],
   "event_fingerprints": [
-    {
-      "title": "Sudan conflict: Peace efforts resume to end 'drone war' fuelling humanitarian crisis",
-      "tokens": [
-        "resume",
-        "crisis",
-        "humanitarian",
-        "conflict",
-        "efforts",
-        "drone",
-        "sudan",
-        "peace",
-        "fuelling"
-      ]
-    },
     {
       "title": "Israel detains dozens of Americans, including a congressional candidate, in West Bank",
       "tokens": [
@@ -7091,6 +7078,20 @@
         "savvy",
         "taliban",
         "technology"
+      ]
+    },
+    {
+      "title": "Match Thread: 2nd unofficial Test - India A vs New Zealand A, Day 3 | Global Powers Expl #Short",
+      "tokens": [
+        "expl",
+        "india",
+        "match",
+        "powers",
+        "short",
+        "test",
+        "thread",
+        "unofficial",
+        "zealand"
       ]
     }
   ],
