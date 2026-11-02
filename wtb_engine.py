@@ -13,6 +13,7 @@ import signal
 import traceback
 import subprocess
 import urllib.parse
+import textwrap
 try:
     from ddgs import DDGS
     DDGS_AVAILABLE = True
@@ -20,6 +21,7 @@ except Exception:
     DDGS_AVAILABLE = False
 import concurrent.futures
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from email.utils import parsedate_to_datetime
 import requests
 import feedparser
@@ -60,6 +62,64 @@ HEADERS_WIKI = {
 
 HISTORY_FILE = "published_history.json"
 GLOBAL_RSS_FEED_CACHE = {}
+YOUTUBE_GENERAL_QUOTA_EXHAUSTED = False
+
+def youtube_quota_day_pt():
+    return datetime.now(ZoneInfo("America/Los_Angeles")).date().isoformat()
+
+def initialize_youtube_quota_guard(hist_obj):
+    global YOUTUBE_GENERAL_QUOTA_EXHAUSTED
+    today_pt = youtube_quota_day_pt()
+    if hist_obj.get("youtube_quota_day_pt") != today_pt:
+        hist_obj["youtube_quota_day_pt"] = today_pt
+        hist_obj["youtube_general_units_reserved"] = 0
+        hist_obj["youtube_caption_units_reserved"] = 0
+        hist_obj["youtube_general_quota_exhausted_day_pt"] = ""
+    YOUTUBE_GENERAL_QUOTA_EXHAUSTED = hist_obj.get("youtube_general_quota_exhausted_day_pt") == today_pt
+
+def reserve_youtube_general_quota(hist_obj, operation, units):
+    """Persist a conservative daily reservation before optional Data API writes."""
+    global YOUTUBE_GENERAL_QUOTA_EXHAUSTED
+    if YOUTUBE_GENERAL_QUOTA_EXHAUSTED:
+        return False
+    if hist_obj is None:
+        return True
+    initialize_youtube_quota_guard(hist_obj)
+    budget = max(1000, int(os.environ.get("YOUTUBE_GENERAL_QUOTA_BUDGET", "9000") or "9000"))
+    units = max(0, int(units))
+    reserved = int(hist_obj.get("youtube_general_units_reserved", 0))
+    new_caption_reserved = None
+    if operation.startswith("captions.insert"):
+        caption_cap = max(0, int(os.environ.get("YOUTUBE_CAPTION_UNITS_PER_DAY", "4000") or "4000"))
+        caption_reserved = int(hist_obj.get("youtube_caption_units_reserved", 0))
+        if caption_reserved + units > caption_cap:
+            print(f"ℹ️ [Daily Caption Quota Budget] Skipping {operation}; {caption_reserved}/{caption_cap} caption units are reserved for this Pacific day.", flush=True)
+            return False
+        new_caption_reserved = caption_reserved + units
+    if reserved + units > budget:
+        print(f"ℹ️ [Daily YouTube Quota Budget] Skipping {operation}; {reserved}/{budget} general units are reserved for this Pacific day.", flush=True)
+        return False
+    hist_obj["youtube_general_units_reserved"] = reserved + units
+    if new_caption_reserved is not None:
+        hist_obj["youtube_caption_units_reserved"] = new_caption_reserved
+    save_published_history(hist_obj)
+    return True
+
+def mark_youtube_general_quota_exhausted(error, operation, hist_obj=None):
+    """Stop optional YouTube Data API writes after the separate general quota is exhausted."""
+    global YOUTUBE_GENERAL_QUOTA_EXHAUSTED
+    err_text = str(error).lower()
+    if not any(marker in err_text for marker in ("quotaexceeded", "dailylimitexceeded", "daily quota", "quota limit")):
+        return False
+    if not YOUTUBE_GENERAL_QUOTA_EXHAUSTED:
+        print(f"⚠️ [YouTube General Quota Exhausted] Skipping remaining optional API writes this run after {operation}; video uploads use their separate upload bucket.", flush=True)
+    YOUTUBE_GENERAL_QUOTA_EXHAUSTED = True
+    if hist_obj is not None:
+        today_pt = youtube_quota_day_pt()
+        hist_obj["youtube_quota_day_pt"] = today_pt
+        hist_obj["youtube_general_quota_exhausted_day_pt"] = today_pt
+        save_published_history(hist_obj)
+    return True
 
 # ==============================================================================
 # 1. 20 HIGH-CTR BREAKING & TRENDING CATEGORIES + GEOPOLITICS SURGE SYSTEM
@@ -127,7 +187,7 @@ DOCUMENTARY_MULTI_VOICE_POOL = [
     ("en-US-GuyNeural", "+1%", "-2Hz")                   # Senior Broadcast Narrator Voice
 ]
 
-STRICT_SAFE_SEARCH_SUFFIX = "-nsfw -nude -cartoon -game -logo"
+STRICT_SAFE_SEARCH_SUFFIX = "-nsfw -nude -cartoon -game -gaming -poppy -huggy -meme -toy -fictional -logo"
 
 ADULT_NSFW_BANNED_TERMS = [
     "nude", "nudity", "naked", "nsfw", "erotic", "erotica", "porn", "porno", "xxx", "sex ", "sexy",
@@ -1129,31 +1189,33 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
         format_label = "9-to-10 Minute Daily 24-Hour Global News Mega-Documentary (15 Deep-Dive Chapters)"
     elif is_short:
         num_scenes = 6
-        words_per_scene = "20 to 25 words (2 full crisp sentences in fast-paced Abhi & Niyu viral hook style)"
+        words_per_scene = "20 to 25 words (2 crisp, conversational sentences)"
         format_label = "YouTube Short Teaser (45-54 seconds, 6 fast-paced scenes that hook viewers to click the Full Documentary Link)"
     else:
-        num_scenes = 10
-        words_per_scene = "95 to 115 words (5 to 6 full, detailed Nitish Rajput & Think School style investigative sentences)"
-        format_label = "Full-Length YouTube Investigative Documentary (6.5 to 8.5 minutes, 10 deep-dive chapters)"
+        num_scenes = 8
+        words_per_scene = "65 to 85 words, using only evidence that advances this specific story"
+        format_label = "Original YouTube documentary (aim for 6 to 8 minutes only when the verified evidence supports it)"
 
-    top_hits_str = ", ".join(top_channel_hits[:3]) if top_channel_hits else "High-impact geopolitical shifts, defense tech, AI breakthroughs, and mind-blowing mysteries"
+    top_hits_str = ", ".join(top_channel_hits[:3]) if top_channel_hits else "No reliable category-specific performance data is available."
 
     sys_prompt = (
-        "You are the world's #1 YouTube Documentary Showrunner, combining the exact editorial structure of four legendary broadcasters: "
-        "(1) BBC WORLD NEWS (authoritative breaking-news factual precision, verified international dates, exact locations, and balanced global context), "
-        "(2) NITISH RAJPUT (forensic chronological reconstruction where every leader, minister, lawyer, or institution is named with exact roles and hard evidence), "
-        "(3) THINK SCHOOL (explosive cold-open contradiction hook, 'Follow-the-Money' financial/geopolitical math breakdown, and strategic winners vs losers), and "
-        "(4) ABHI & NIYU (high-energy public-impact storytelling, crystal-clear everyday explanation, India & global relevance, and numbered 'Big Lessons' takeaway at the end). "
-        "CRITICAL A-TO-Z SCRIPT & VISUAL MATCHING RULES: "
-        "1. SCENE 1 (BREAKING COLD-OPEN & CONTRADICTION HOOK): Open immediately with the breaking event, the exact countries/leaders involved, and the 3 core questions this documentary will answer. "
-        "2. SCENES 2-4 (CHRONOLOGICAL TIMELINE & BBC/NITISH GROUND REALITY): Walk through the exact sequence of events with concrete dates, cities, full names + official titles of key figures, and verified ground facts. "
-        "3. SCENES 5-7 (THINK SCHOOL FOLLOW-THE-MONEY & STRATEGIC MECHANISM): Break down the exact billions/trillions, percentages, military/tech capabilities, supply chains, or laws in clear, engaging numbers. "
-        "4. SCENES 8-10 (GLOBAL & INDIA IMPACT + ABHI & NIYU LESSONS & VERDICT): Explain how this shift impacts India and global power balances, deliver clear numbered takeaways ('Lesson #1', 'Lesson #2'), and close with a thought-provoking question for the comments. "
-        "5. 100% SCRIPT-LOCKED VISUAL MAPPING: Every single sentence in `beat_visuals` MUST have a concrete, real-world `photo_query` that describes the EXACT country, leader, military hardware, laboratory, hospital, parliament, or street event spoken in THAT sentence (NEVER generic tourism/nature scenery and NEVER mention external news channels like BBC or Al Jazeera in narration). "
-        "Output STRICT JSON only."
+        "Write original, evidence-led documentary scripts. Use broad craft principles only: a clear opening question, "
+        "human stakes when established by sources, a simple explanation of the mechanism, chronological context, "
+        "and a careful conclusion. Do not imitate any named creator or channel. "
+        "The category controls the story arc: geopolitics may explain diplomacy, security, and regional effects; "
+        "health may explain the study, biology, limits, and clinical relevance; technology may explain the product, "
+        "deployment, privacy or safety evidence; science may explain method, findings, uncertainty, and significance; "
+        "business may explain incentives, costs, and documented market effects. For every category, use only what the "
+        "provided verified facts support. Define a technical or medical term in everyday language the first time it appears; "
+        "expand acronyms before using them and prefer short spoken sentences. Never add generic inflation, housing, protest, election, India-impact, or "
+        "follow-the-money sections unless the supplied facts directly support them. Keep speculation clearly labeled. "
+        "Every scene must identify the source fact or facts that support it. Every visual query must describe the exact "
+        "named subject/event in its sentence; do not claim a visual is verified based on a search query alone. "
+        "Return strict JSON only."
     )
 
-    c_prof_name = dossier.get("country_profile", {}).get("name", "Global")
+    c_prof = dossier.get("country_profile", {})
+    c_prof_name = c_prof.get("name", "GLOBAL") if not c_prof.get("is_global_topic") else "no single country"
     t_anchor_hint = dossier.get("topic_anchor") or raw_title[:40]
     usr_prompt = f"""
 Create a complete {format_label} package for the category [{pillar}].
@@ -1164,13 +1226,13 @@ PRIMARY TOPIC ANCHOR: {t_anchor_hint}
 VERIFIED LATEST FACTS:
 {chr(10).join('- ' + f for f in raw_facts)}
 
-OUR CHANNEL'S TOP PERFORMING VIDEO THEMES: {top_hits_str}
+CHANNEL PERFORMANCE SIGNAL (use only for pacing/clarity, never as facts or topic material): {top_hits_str}
 
 Return ONLY valid JSON in this exact structure:
 {{
   "viral_title": "A 100% original, high-CTR YouTube title (50-75 chars, curiosity-driven, e.g. 'Why X Just Triggered a Massive Global Shift')",
-  "thumb_line_1": "2 TO 3 CAPS WORDS (max 15 chars, e.g. 'GLOBAL SHOCK')",
-  "thumb_line_2": "2 TO 3 CAPS WORDS (max 15 chars, e.g. 'THE REAL TRUTH')",
+  "thumb_line_1": "2 TO 3 specific CAPS WORDS from this story (max 15 chars)",
+  "thumb_line_2": "2 TO 3 specific CAPS WORDS from this story (max 15 chars)",
   "core_subject": "2-4 word exact physical subject (e.g. 'British High Street Retail')",
   "story_emotion": "Pick ONE best emotional theme: dark_geopolitics | cyberpunk_tech | cosmic_mystery | high_stakes_finance | inspiring_science | stadium_action | emotional_human_story | ancient_history_epic | investigative_thriller | mind_bending_wonder",
   "seo_description": "A compelling 3-paragraph YouTube SEO description summarizing the core case study.",
@@ -1181,39 +1243,41 @@ Return ONLY valid JSON in this exact structure:
       "context_pill": "SHORT CHAPTER TITLE (max 22 chars, ASCII only, e.g. 'THE SILENT COLLAPSE')",
       "hook_tape": "ABHI & NIYU STYLE TOP IMPACT BANNER (max 34 chars, CAPS, e.g. '14% OF UK SHOPS ARE NOW EMPTY')",
       "stat_callout": "Key noted point or fact highlighted in this scene (max 28 chars, e.g. '14% RETAIL UNITS VACANT')",
+      "source_fact_indices": [1],
       "mentioned_person": "If a specific named Person, Animal/Species (e.g. 'Bengal Tiger'), Iconic Machine/Telescope, or Historic Figure is the focus of this scene, write its exact Wikipedia name here (NEVER write generic job titles like 'Chancellor' without a person's name!). Otherwise write ''",
       "person_role": "Short 2-4 word label for mentioned_person (e.g. 'UK CHANCELLOR', 'APEX PREDATOR', 'DEEP SPACE TELESCOPE'), or ''",
       "narration": "Engaging spoken narration ({words_per_scene}) in natural human conversational English with contractions (here's, it's, didn't, that's). Keep important statistics and figures clear (e.g. $100 million, 28%, 2026) so data scorecards and evidence cards display exact metrics.",
-      "video_broll_query": "Exact 4-5 word real-world footage search query INCLUDING the country/subject '{c_prof_name}' (e.g. 'London UK shopping street pedestrians')",
+      "video_broll_query": "Short real-world footage query for the exact scene subject; include a country only when a supplied fact names it",
       "beat_visuals": [
         {{
           "point_highlight": "3 to 5 CAPS words stating the exact factual takeaway of Sentence 1 (e.g. '14% UK SHOPS NOW VACANT' — NEVER write 'POINT 1' or broken verbs!)",
           "mentioned_person": "Exact Wikipedia name of any Person, Animal, or Specific Entity highlighted in Sentence 1, else ''",
           "person_role": "Short role/category tag if mentioned_person is set, else ''",
-          "photo_query": "Exact 5-7 word real news photo query for Sentence 1 INCLUDING '{c_prof_name}' and concrete physical nouns (e.g. 'closed empty retail shopfront UK high street Britain photo')",
-          "ai_prompt": "Real editorial photojournalism of Sentence 1 in {c_prof_name}"
+          "photo_query": "Exact 5-7 word real news photo query for Sentence 1 with concrete physical nouns",
+          "ai_prompt": "Editorial illustration of the exact evidence in Sentence 1"
         }},
         {{
           "point_highlight": "3 to 5 CAPS words stating the exact factual takeaway of Sentence 2 (e.g. 'LOCAL ECONOMY IN CRISIS')",
           "mentioned_person": "Exact Wikipedia name of any Person, Animal, or Specific Entity highlighted in Sentence 2, else ''",
           "person_role": "Short role/category tag if mentioned_person is set, else ''",
-          "photo_query": "Exact 5-7 word real news photo query for Sentence 2 INCLUDING '{c_prof_name}' and concrete physical nouns",
-          "ai_prompt": "Real editorial photojournalism of Sentence 2 in {c_prof_name}"
+          "photo_query": "Exact 5-7 word real news photo query for Sentence 2 with concrete physical nouns",
+          "ai_prompt": "Editorial illustration of the exact evidence in Sentence 2"
         }},
         {{
           "point_highlight": "3 to 5 CAPS words stating the exact factual takeaway of Sentence 3 (e.g. 'EMERGENCY TAX RELIEF DEBATE')",
           "mentioned_person": "Exact Wikipedia name of any Person, Animal, or Specific Entity highlighted in Sentence 3, else ''",
           "person_role": "Short role/category tag if mentioned_person is set, else ''",
-          "photo_query": "Exact 5-7 word real news photo query for Sentence 3 INCLUDING '{c_prof_name}' and concrete physical nouns",
-          "ai_prompt": "Real editorial photojournalism of Sentence 3 in {c_prof_name}"
+          "photo_query": "Exact 5-7 word real news photo query for Sentence 3 with concrete physical nouns",
+          "ai_prompt": "Editorial illustration of the exact evidence in Sentence 3"
         }}
       ]
     }}
   ]
 }}
 CRITICAL RULES:
-1. Generate EXACTLY {num_scenes} scenes in "scenes".
-2. Every `photo_query` and `video_broll_query` MUST include the specific country/subject context ({c_prof_name} / {t_anchor_hint}) and concrete physical nouns so search engines return 100% point-to-point real photos and never return video games or wrong countries!
+1. Return up to {num_scenes} scenes. Do not invent or repeat facts to reach a target length; fewer scenes are allowed when evidence is limited.
+2. For each scene, set `source_fact_indices` to the 1-based indices of the supplied verified facts it uses. A query is only a search hint, never proof that an image is relevant.
+3. Include country names and locations only when the source facts name them. Search queries must describe the exact person, place, object, or event in that scene.
 3. Every `point_highlight` MUST be a complete, meaningful 3-5 word headline takeaway (e.g. '14% SHOPS SITTING EMPTY', 'ONLINE GIANTS CRUSH MARGINS') — NEVER output truncated verbs like 'ISNT JUST TREND' or 'ARGUE WITHOUT DEEPER'!
 4. Never put a generic job title like 'Chancellor of the Exchequer' or 'Prime Minister' in `mentioned_person` — use the person's actual name (e.g. 'Rachel Reeves', 'Keir Starmer') or a specific animal/species/machine name!
 """
@@ -1525,24 +1589,32 @@ def sync_all_8_playlists_and_organize_channel(yt):
 
 def run_youtube_api_full_intelligence(hist_obj=None):
     """
-    V34 ZERO-QUOTA CHANNEL UPLOADS DEDUPLICATION:
-    Syncs the channel's recent uploads into `hist_obj` using `yt-dlp --flat-playlist` (costs 0 YouTube API
-    quota units and works even when the 10,000 daily API quota is 100% full!), saving 100% of API quota
-    exclusively for uploading videos and setting thumbnails!
+    Sync recent long-video and Shorts lists without YouTube Data API calls.
+    Stop the run when both lists cannot be verified so stale history cannot silently permit duplicates.
     """
     default_viral_kws = [
         "geopolitics", "military", "sanctions", "summit", "parliament", "treaty",
         "defense", "crisis", "economy", "breakthrough", "intelligence", "minister"
     ]
     if hist_obj is not None:
+        successful_tabs = 0
         try:
             for ch_tab in ["https://www.youtube.com/@WorldTalkBrief/videos", "https://www.youtube.com/@WorldTalkBrief/shorts"]:
                 proc = subprocess.Popen(
-                    ["yt-dlp", "--flat-playlist", "--dump-json", "--no-warnings", "--quiet", "--playlist-end", "25", ch_tab],
+                    ["yt-dlp", "--flat-playlist", "--dump-json", "--no-warnings", "--quiet", "--playlist-end", "100", "--socket-timeout", "10", "--retries", "2", "--extractor-retries", "2", ch_tab],
                     stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                     start_new_session=True, text=True
                 )
-                out_j, _ = proc.communicate(timeout=10)
+                try:
+                    out_j, _ = proc.communicate(timeout=35)
+                except subprocess.TimeoutExpired:
+                    proc.kill()
+                    proc.communicate()
+                    print(f"⚠️ [Channel History Sync] Timed out while reading {ch_tab}.", flush=True)
+                    continue
+                if proc.returncode != 0 or not out_j.strip():
+                    print(f"⚠️ [Channel History Sync] Could not confirm channel history for {ch_tab} (exit {proc.returncode}).", flush=True)
+                    continue
                 synced_cnt = 0
                 for line in (out_j or "").splitlines():
                     if not line.strip():
@@ -1553,19 +1625,26 @@ def run_youtube_api_full_intelligence(hist_obj=None):
                         register_story_in_history(v_title, v_title, hist_obj)
                         synced_cnt += 1
                 if synced_cnt > 0:
+                    successful_tabs += 1
                     save_published_history(hist_obj)
-                    print(f"🔒 [Zero-Quota Channel History Sync] Verified {synced_cnt} recent uploads from {ch_tab.split('/')[-1]}!", flush=True)
-        except Exception:
-            pass
+                    print(f"🔒 [Zero-Quota Channel History Sync] Verified {synced_cnt} uploads from {ch_tab.split('/')[-1]}.", flush=True)
+            hist_obj["youtube_channel_history_sync_ok"] = successful_tabs == 2
+            hist_obj["youtube_channel_history_sync_at_utc"] = datetime.utcnow().isoformat()
+            save_published_history(hist_obj)
+        except Exception as sync_error:
+            hist_obj["youtube_channel_history_sync_ok"] = False
+            print(f"⚠️ [Channel History Sync] Failed: {str(sync_error)[:150]}", flush=True)
     return default_viral_kws, [], {}, []
 
-def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_takeaway, playlist_map, linked_long_url=None):
+def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_takeaway, playlist_map, linked_long_url=None, hist_obj=None):
     """
-    V34 QUOTA-SAVER PINNED LINK COMMENT:
-    Only posts a comment when `linked_long_url` is present (on a Short to link to the Full Documentary),
-    saving 100+ quota units per pair!
+    Optional linked-Short comment. Disabled by default because it consumes general daily quota.
     """
-    if not video_id or not linked_long_url:
+    if not video_id or not linked_long_url or YOUTUBE_GENERAL_QUOTA_EXHAUSTED:
+        return
+    if os.environ.get("YOUTUBE_ENABLE_LINKED_COMMENTS", "false").lower() != "true":
+        return
+    if not reserve_youtube_general_quota(hist_obj, "commentThreads.insert", 50):
         return
     try:
         comment_txt = (
@@ -1587,8 +1666,8 @@ def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_tak
             }
         ).execute()
         print(f"💬 [YouTube Linked Documentary Comment Posted] on Short {video_id} -> {linked_long_url}", flush=True)
-    except Exception:
-        pass
+    except Exception as comment_error:
+        mark_youtube_general_quota_exhausted(comment_error, "commentThreads.insert", hist_obj)
 
 # ==============================================================================
 # 6. HOT GEOPOLITICS SURGE DETECTOR, 24H FRESHNESS SCORER & HISTORY MANAGER
@@ -1649,7 +1728,13 @@ def load_published_history():
                     "round_robin_idx": int(data.get("round_robin_idx", 0)),
                     "country_rot_idx": int(data.get("country_rot_idx", 0)),
                     "bgm_track_counter": int(data.get("bgm_track_counter", 0)),
-                    "last_mega_24h_date": data.get("last_mega_24h_date", "")
+                    "last_mega_24h_date": data.get("last_mega_24h_date", ""),
+                    "youtube_quota_day_pt": data.get("youtube_quota_day_pt", ""),
+                    "youtube_general_units_reserved": int(data.get("youtube_general_units_reserved", 0)),
+                    "youtube_caption_units_reserved": int(data.get("youtube_caption_units_reserved", 0)),
+                    "youtube_general_quota_exhausted_day_pt": data.get("youtube_general_quota_exhausted_day_pt", ""),
+                    "youtube_channel_history_sync_ok": bool(data.get("youtube_channel_history_sync_ok", False)),
+                    "youtube_channel_history_sync_at_utc": data.get("youtube_channel_history_sync_at_utc", "")
                 }
         except Exception:
             pass
@@ -1663,7 +1748,13 @@ def load_published_history():
         "round_robin_idx": 0,
         "country_rot_idx": 0,
         "bgm_track_counter": 0,
-        "last_mega_24h_date": ""
+        "last_mega_24h_date": "",
+        "youtube_quota_day_pt": "",
+        "youtube_general_units_reserved": 0,
+        "youtube_caption_units_reserved": 0,
+        "youtube_general_quota_exhausted_day_pt": "",
+        "youtube_channel_history_sync_ok": False,
+        "youtube_channel_history_sync_at_utc": ""
     }
 
 def register_story_in_history(title, summary_or_fact, hist_obj, story_key=None):
@@ -1683,27 +1774,43 @@ def register_story_in_history(title, summary_or_fact, hist_obj, story_key=None):
             })
 
 def save_published_history(hist_obj):
+    tmp_path = f"{HISTORY_FILE}.tmp"
     try:
         pk_list = hist_obj.get("published_keys_list") or []
         for k in hist_obj.get("published_keys", set()):
             if k not in pk_list:
                 pk_list.append(k)
         hist_obj["published_keys_list"] = pk_list[-800:]
-        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+        with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump({
                 "updated_at": datetime.utcnow().isoformat(),
                 "round_robin_idx": int(hist_obj.get("round_robin_idx", 0)),
                 "country_rot_idx": int(hist_obj.get("country_rot_idx", 0)),
                 "bgm_track_counter": int(hist_obj.get("bgm_track_counter", 0)),
                 "last_mega_24h_date": str(hist_obj.get("last_mega_24h_date", "")),
+                "youtube_quota_day_pt": str(hist_obj.get("youtube_quota_day_pt", "")),
+                "youtube_general_units_reserved": int(hist_obj.get("youtube_general_units_reserved", 0)),
+                "youtube_caption_units_reserved": int(hist_obj.get("youtube_caption_units_reserved", 0)),
+                "youtube_general_quota_exhausted_day_pt": str(hist_obj.get("youtube_general_quota_exhausted_day_pt", "")),
+                "youtube_channel_history_sync_ok": bool(hist_obj.get("youtube_channel_history_sync_ok", False)),
+                "youtube_channel_history_sync_at_utc": str(hist_obj.get("youtube_channel_history_sync_at_utc", "")),
                 "published_keys": hist_obj["published_keys_list"][-800:],
                 "event_fingerprints": hist_obj["event_fingerprints"][-400:],
                 "last_categories": hist_obj["last_categories"][-40:],
                 "last_sources": hist_obj["last_sources"][-40:],
                 "last_countries": hist_obj.get("last_countries", [])[-50:]
             }, f, indent=2)
-    except Exception:
-        pass
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, HISTORY_FILE)
+    except Exception as history_error:
+        print(f"🛑 [History Save Failed] {str(history_error)[:160]}", flush=True)
+        try:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+        except Exception:
+            pass
+        raise
 
 def sync_history_to_github_now(hist_obj=None):
     """
@@ -1762,21 +1869,6 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
 
     return ("NEW_STORY", None)
 
-    for past in hist_obj["event_fingerprints"]:
-        past_fp = set(past.get("tokens", []))
-        if not past_fp:
-            continue
-        inter_cnt = len(cur_fp.intersection(past_fp))
-        union_cnt = max(1, len(cur_fp.union(past_fp)))
-        jaccard = inter_cnt / float(union_cnt)
-        min_ov = inter_cnt / float(min(len(cur_fp), len(past_fp)))
-        if jaccard >= 0.62:
-            return ("DUPLICATE", None)
-        if 0.22 <= jaccard < 0.62 or (min_ov >= 0.38 and jaccard < 0.62):
-            return ("FOLLOWUP_UPDATE", past.get("title"))
-
-    return ("NEW_STORY", None)
-
 BANNED_ARTICLE_TITLES = [
     "salon", "hairdresser", "vat cut", "council tax", "local council", "pub ", "pubs ",
     "uti", "utis", "urinary", "bladder", "bowel", "diarrhea", "constipation", "erectile", "sexually transmitted",
@@ -1808,7 +1900,7 @@ BANNED_PHRASES = [
     "photograph:", "image source:", "getty images", "tells the bbc", "tells bbc",
     "send us your questions", "share your story", "tell us what you think", "contact us",
     "have you been affected", "tap here to", "click here to", "listen to our podcast",
-    "in this file photo", "sound bite of", "archived recording"
+    "in this file photo", "sound bite of", "archived recording", "mija.net", "added comment from"
 ]
 
 def clean_fact(text):
@@ -1857,6 +1949,8 @@ def clean_fact(text):
         if bp in low:
             return ""
 
+    if re.search(r"(?i)\bupdate\s+[a-z]+\s+\d{1,2}\b.{0,80}\badded comment\b", text):
+        return ""
     if text.endswith("...") or text.endswith(".."):
         return ""
     words_check = [re.sub(r"[^a-zA-Z]", "", w).lower() for w in text.split()]
@@ -1890,6 +1984,7 @@ def proofread_and_deduplicate_narration(raw_narration, seen_sentences, dossier, 
 
     # Grammar & natural English fixes
     grammar_fixes = [
+        (r"(?i)[$€£₹]\s*(\d+(?:\.\d+)?)\s*%\s*((?:annual\s+)?interest rate)", r"\1 percent \2"),
         (r"(?i)\bgravitational waves and it travel\b", "gravitational waves and they travel"),
         (r"(?i)\bwaves and it travel\b", "waves and they travel"),
         (r"(?i)\bripples and it travel\b", "ripples and they travel"),
@@ -1939,7 +2034,7 @@ def proofread_and_deduplicate_narration(raw_narration, seen_sentences, dossier, 
             seen_sentences.append(c_words)
             return cand
 
-    return f"Researchers and international analysts emphasize that the long-term structural implications of {dossier.get('topic_anchor', 'this shift')} are now unfolding faster than previously projected."
+    return ""
 
 def split_into_complete_sentences(paragraph_text, split_long_for_visual_pacing=False):
     protected = re.sub(r"\b(U\.S|U\.K|U\.N|E\.U|Oct|Nov|Dec|Jan|Feb|Mar|Apr|Aug|Sept|Mr|Mrs|Ms|Dr|Prof|St|Gen|Col|Sen|Rep|S)\.", r"\1<DOT>", paragraph_text)
@@ -2181,26 +2276,28 @@ def resolve_country_or_domain_profile(title, raw_facts_list, pillar_name="WORLD"
             if re.search(rf"\b{re.escape(c_name.lower())}\b", body_low):
                 return build_country_dict_from_db(c_name, is_global_topic=False)
 
-    hub_names = {
-        "MIND_BLOWING_FACTS": ("MIND-BLOWING FACT", "Global Discovery", "World Wonders"),
-        "TECHNOLOGY": ("GLOBAL TECH & AI", "Silicon Valley", "Global Tech Sector"),
-        "SCIENCE": ("SPACE & SCIENCE", "Global Research", "Scientific Community"),
-        "HEALTH": ("MEDICAL SCIENCE", "Global Health", "Biotech & Medicine"),
-        "BUSINESS": ("GLOBAL MARKETS", "Wall Street", "Global Economy"),
-        "SPORTS": ("SPORTS ARENA", "International Arena", "Global Sports"),
-        "ENTERTAINMENT": ("GLOBAL CINEMA", "Hollywood", "Entertainment Industry"),
-        "WORLD": ("INTERNATIONAL", "United Nations", "Global Affairs")
+    # Domain labels are not countries. Keep the profile explicitly global so the
+    # script, map, thumbnail, and B-roll search cannot treat a category as a place.
+    hub_regions = {
+        "MIND_BLOWING_FACTS": "Global Discovery",
+        "TECHNOLOGY": "Global Tech Sector",
+        "SCIENCE": "Scientific Community",
+        "HEALTH": "Global Health",
+        "BUSINESS": "Global Economy",
+        "SPORTS": "Global Sports",
+        "ENTERTAINMENT": "Global Entertainment",
+        "WORLD": "Global Affairs"
     }
-    h_name, h_cap, h_reg = hub_names.get(pillar_name, ("GLOBAL BRIEFING", "International Hub", "Global"))
+    h_reg = hub_regions.get(pillar_name, "Global Affairs")
     return {
-        "name": h_name,
-        "iso2": "UN",
-        "iso3": "USA",
-        "capital": h_cap,
-        "population": "8 billion",
+        "name": "GLOBAL",
+        "iso2": "",
+        "iso3": "",
+        "capital": "",
+        "population": "",
         "region": h_reg,
-        "lat": 37.386,
-        "lon": -122.083,
+        "lat": None,
+        "lon": None,
         "flag_img": None,
         "is_global_topic": True
     }
@@ -3688,7 +3785,8 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         "voice of america", "noaa", "cira", "geocolor", "satellite loop", "intro", "bumper", "logo",
         "chalkboard", "blackboard", "subic", "charcuterie", "cheese board", "cowboy", "western movie",
         "the edge tv", "steamship", "shipwreck", "wreck", "sunken", "nazi", "treasure", "dancing thief",
-        "thieves", "pachaiyappa", "landmarks", "places to visit", "things to do", "travel guide"
+        "thieves", "pachaiyappa", "landmarks", "places to visit", "things to do", "travel guide",
+        "huggy wuggy", "poppy playtime", "fictional character", "fan art", "plush toy", "mascot costume"
     ]
 
     story_ctx_low = f"{story_title} {topic_anchor} {dossier.get('country_profile', {}).get('name', '')}".lower()
@@ -3844,7 +3942,7 @@ def caption_metadata_matches_story(img_caption, img_url, story_title, query_cont
         "pxhere", "freeimages", "freestock", "free stock photo", "free images :", "free photo",
         "most dancing", "drinking beer", "lowest obesity", "terrible maps", "mapporn", "chalkboard",
         "blackboard", "1+1", "2+2", "making of a myth", "alexander the great", "voa ", "voice of america",
-        "green lantern", "dc live action", "tampilan", "tips for a sustainable", "epoka university",
+        "green lantern", "dc live action", "huggy wuggy", "poppy playtime", "tampilan", "tips for a sustainable", "epoka university",
         "punjab university", "dunya news", "aurangabad", "nicki's news", "recipe", "avocado", "oatmeal",
         "basketball", "tennis racket", "badminton", "office worker", "ancient egypt", "pharaoh",
         "hieroglyph", "tomb painting", "wall painting", "papyrus", "mummy", "isometric",
@@ -3861,7 +3959,8 @@ def caption_metadata_matches_story(img_caption, img_url, story_title, query_cont
         "shipwreck", "dancing thief", "pachaiyappa", "pagoda", "cherry blossom", "cherry blossoms",
         "sakura", "mount fuji", "mt fuji", "mt. fuji", "osaka castle", "himeji castle", "nachi falls",
         "waterfall", "waterfalls", "shinto shrine", "torii gate", "autumn leaves", "spring in japan",
-        "visit japan", "japan travel", "postcard", "wallpaper", "screensaver"
+        "visit japan", "japan travel", "postcard", "wallpaper", "screensaver", "video game",
+        "game screenshot", "gaming character", "fictional character", "plush toy", "mascot costume", "fan art", "cartoon character"
     ]
     if any(bm in cap_low for bm in bad_markers):
         return False
@@ -4285,9 +4384,6 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         if any(cb in comb_meta for cb in ["bitcoin", "crypto", "cryptocurrency", "blockchain", "nft", "memecoin", "altcoin", "mining rig"]):
             return False
 
-    if query_str in ("multi_site_original_article", "direct_article"):
-        return True
-
     geo_tokens, ev_tokens = get_story_anchor_and_context_tokens(dossier)
     caption_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{2,}", comb_meta)}
     if not caption_tokens:
@@ -4311,7 +4407,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
 
     story_title = dossier.get("title", "")
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
-    neg_guard = "-cartoon -illustration -chart -infographic -table -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
+    neg_guard = "-cartoon -illustration -chart -infographic -table -game -gaming -video-game -character -toy -plush -meme -fan-art -fictional -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
 
     search_angles = extract_topic_master_queries(dossier, sections_list=sections_list)
     raw_candidates = []
@@ -4320,24 +4416,14 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     for cap_obj in (dossier.get("article_captioned_photos") or []):
         cu = cap_obj.get("url", "")
         ccap = cap_obj.get("caption", "")
-        if cu and cu not in seen_cand_urls and not any(b in cu.lower() for b in ["livingcost", "numbeo", "statista", "chart"]):
+        if cu and len(str(ccap).strip()) >= 8 and cu not in seen_cand_urls and not any(b in cu.lower() for b in ["livingcost", "numbeo", "statista", "chart"]):
             seen_cand_urls.add(cu)
             raw_candidates.append({
                 "url": cu,
-                "caption": f"{ccap} {story_title} {topic_anchor}",
+                "caption": str(ccap).strip(),
                 "media_type": "image",
-                "source_angle": "multi_site_original_article",
+                "source_angle": "article_caption",
                 "base_priority": 65
-            })
-    for a_u in ([dossier.get("lead_img")] if dossier.get("lead_img") else []) + list(dossier.get("article_inline_images") or []):
-        if a_u and a_u not in seen_cand_urls and not any(b in a_u.lower() for b in ["livingcost", "numbeo", "statista", "chart"]):
-            seen_cand_urls.add(a_u)
-            raw_candidates.append({
-                "url": a_u,
-                "caption": f"{story_title} {topic_anchor} primary article photo",
-                "media_type": "image",
-                "source_angle": "direct_article",
-                "base_priority": 60
             })
 
     def fetch_angle_candidates(angle_idx_and_q):
@@ -4453,7 +4539,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     pre_passed.sort(key=lambda x: x["relevance_score"], reverse=True)
     audit12_passed = []
     for cand in pre_passed[:160]:
-        if cand["source_angle"] in ("multi_site_original_article", "direct_article") or caption_metadata_matches_story(cand["caption"], cand["url"], story_title, cand["source_angle"], dossier=dossier):
+        if caption_metadata_matches_story(cand["caption"], cand["url"], story_title, cand["source_angle"], dossier=dossier):
             audit12_passed.append(cand)
             if len(audit12_passed) >= 110:
                 break
@@ -4596,7 +4682,7 @@ def select_best_visual_from_200_pool(beat_text, search_q, dossier, used_image_ur
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat", used_image_urls=None, beat_text="", bv_dict=None):
     if used_image_urls is None:
         used_image_urls = set()
-    neg_guard = "-cartoon -illustration -chart -infographic -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
+    neg_guard = "-cartoon -illustration -chart -infographic -game -gaming -video-game -character -toy -plush -meme -fan-art -fictional -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
     topic_anchor = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
     story_title = dossier.get("title", "")
 
@@ -4665,14 +4751,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Fallback to any remaining unused photo in the 200+ audited vault before returning None
-    pool = dossier.get("_cached_200_audited_pool") or []
-    for item in pool:
-        if item["url"] not in used_image_urls and not any(int(np.sum(item["dhash"] != old_h)) < 8 for old_h in existing_hashes):
-            used_image_urls.add(item["url"])
-            existing_hashes.append(item["dhash"])
-            return item["im"]
-
+    # Do not silently reuse a merely related story photo for this sentence.
     failed_queries.append(topic_anchor)
     return None
 
@@ -4741,6 +4820,30 @@ def build_clean_1080p_stage(im, W, H):
     over_w, over_h = int(W * 1.08), int(H * 1.08)
     fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
     return ("FULL_BLEED_CREATOR_STAGE", fg, None)
+
+def build_grounded_evidence_card(dossier, narration, headline, width=1920, height=1080):
+    """Create an editorial text card when no story-matched real visual passed metadata checks."""
+    image = Image.new("RGB", (width, height), (10, 18, 32))
+    draw = ImageDraw.Draw(image)
+    pillar = str(dossier.get("sub_pillar") or dossier.get("pillar") or "WORLD").replace("_", " ").upper()
+    accent = CATEGORY_FEEDS.get(dossier.get("pillar", "WORLD"), CATEGORY_FEEDS["WORLD"]).get("accent_color", (0, 220, 230))
+    for y in range(height):
+        shade = int(22 * (y / max(height - 1, 1)))
+        draw.line((0, y, width, y), fill=(10 + shade // 3, 18 + shade // 2, 32 + shade))
+    draw.rectangle((70, 70, width - 70, height - 70), outline=tuple(accent), width=4)
+    draw.rounded_rectangle((120, 120, 860, 184), radius=18, fill=(20, 36, 58))
+    draw.text((150, 136), f"WORLD TALK BRIEF  /  {pillar[:32]}", fill=(235, 242, 250), font=get_font(30))
+    title_text = fit_whole_words_limit(str(headline or "DOCUMENTED DETAIL").upper(), 56)
+    draw.text((135, 260), title_text, fill=(255, 220, 65), font=get_font(72), stroke_width=2, stroke_fill=(0, 0, 0))
+    clean_body = re.sub(r"\s+", " ", str(narration or "")).strip()
+    lines = textwrap.wrap(clean_body, width=52, break_long_words=False, break_on_hyphens=False)[:5]
+    y = 420
+    for line in lines:
+        draw.text((140, y), line, fill=(243, 246, 250), font=get_font(46))
+        y += 76
+    draw.line((140, height - 200, width - 140, height - 200), fill=tuple(accent), width=3)
+    draw.text((140, height - 160), "EVIDENCE-LED EXPLAINER", fill=(180, 198, 215), font=get_font(28))
+    return image
 
 
 # ==============================================================================
@@ -6794,8 +6897,25 @@ def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used
 
     master_qs = extract_topic_master_queries(dossier, sections_list=sections_list)
     video_angles = []
-    for mq in master_qs[:10]:
-        if mq not in video_angles:
+    for section in sections_list or []:
+        queries = [section.get("video_broll_query", "")]
+        queries.extend(
+            beat.get("photo_query", "")
+            for beat in (section.get("beat_visuals") or [])[:2]
+            if isinstance(beat, dict)
+        )
+        for query in queries:
+            clean_query = str(query or "").strip()
+            if len(clean_query) >= 8 and clean_query.lower() not in {q.lower() for q in video_angles}:
+                video_angles.append(clean_query)
+            if len(video_angles) >= 10:
+                break
+        if len(video_angles) >= 10:
+            break
+    for mq in master_qs:
+        if len(video_angles) >= 10:
+            break
+        if mq and mq.lower() not in {q.lower() for q in video_angles}:
             video_angles.append(mq)
 
     pool_clips = list(dossier.get("_cached_video_broll_pool") or [])
@@ -6974,7 +7094,25 @@ def build_prop_driven_storyboard_1080p(
             vseg = None
             if videos_in_section < 2 and b_i in (0, 2) and v_pool:
                 unit_used_vclips = dossier.setdefault("_unit_used_vclips", set())
+                anchor_tokens, event_tokens = get_story_anchor_and_context_tokens(dossier)
+                beat_tokens = {
+                    w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", f"{b_txt} {search_q}")
+                    if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in METAPHOR_NOISE_WORDS
+                }
+                _, _, must_match_tokens = extract_sentence_proper_entities_and_query(b_txt, cur_bv_dict, dossier)
+                ranked_video_candidates = []
                 for cand_vp in v_pool:
+                    label_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", str(cand_vp.get("label", "")))}
+                    exact_overlap = len(beat_tokens.intersection(label_tokens))
+                    event_overlap = len(event_tokens.intersection(label_tokens))
+                    entity_overlap = len((must_match_tokens or set()).intersection(label_tokens))
+                    if must_match_tokens and entity_overlap == 0:
+                        continue
+                    if not must_match_tokens and exact_overlap < 1 and event_overlap < 1:
+                        continue
+                    ranked_video_candidates.append((exact_overlap * 4 + entity_overlap * 8 + event_overlap * 2, cand_vp))
+                ranked_video_candidates.sort(key=lambda item: item[0], reverse=True)
+                for _, cand_vp in ranked_video_candidates:
                     vc_id = id(cand_vp.get("vclip"))
                     if vc_id not in unit_used_vclips:
                         vseg = cand_vp
@@ -6989,6 +7127,7 @@ def build_prop_driven_storyboard_1080p(
                 moving_video_beats += 1
                 beat_im = unique_real_photos[-1] if unique_real_photos else Image.new("RGB", (1920, 1080), (12, 18, 32))
                 stage_1 = build_clean_1080p_stage(beat_im, W, H)
+                is_grounded_card = False
             else:
                 b_type = "CINEMA_HERO_ZOOM"
                 beat_im = fetch_verified_news_or_wiki_visual(
@@ -7004,29 +7143,14 @@ def build_prop_driven_storyboard_1080p(
                 if beat_im is not None:
                     unique_real_photos.append(beat_im)
                     unit_used_photos.add(id(beat_im))
-                elif unique_real_photos:
-                    unused_photos = [p_im for p_im in unique_real_photos if id(p_im) not in unit_used_photos]
-                    if unused_photos:
-                        beat_im = unused_photos[0]
-                        unit_used_photos.add(id(beat_im))
-                    else:
-                        pool_all = [it["im"] for it in (dossier.get("_cached_200_audited_pool") or []) if it.get("im") is not None]
-                        unused_pool_ims = [p_im for p_im in pool_all if id(p_im) not in unit_used_photos]
-                        if unused_pool_ims:
-                            beat_im = unused_pool_ims[0]
-                            unit_used_photos.add(id(beat_im))
-                            unique_real_photos.append(beat_im)
-                        else:
-                            beat_im = create_distinct_editorial_composition_variant(unique_real_photos[global_beat_idx % len(unique_real_photos)], global_beat_idx)
-                elif beat_person_popup is not None and beat_person_popup.get("portrait_im") is not None:
-                    p_bg = beat_person_popup["portrait_im"].resize((1920, 1080)).filter(ImageFilter.GaussianBlur(radius=28))
-                    beat_im = ImageEnhance.Brightness(p_bg).enhance(0.38)
                 else:
-                    beat_im = Image.new("RGB", (1920, 1080), (12, 18, 32))
+                    beat_im = build_grounded_evidence_card(dossier, b_txt, sec_headline)
+                    is_grounded_card = True
+                    print(f"ℹ️ [No Topic-Matched Photo] Using an evidence card for beat {global_beat_idx + 1} instead of unrelated B-roll.", flush=True)
 
                 stage_1 = build_clean_1080p_stage(beat_im, W, H)
 
-            secondary_im = unique_real_photos[(len(unique_real_photos) - 2) % len(unique_real_photos)] if len(unique_real_photos) >= 2 else beat_im
+            secondary_im = unique_real_photos[(len(unique_real_photos) - 2) % len(unique_real_photos)] if len(unique_real_photos) >= 2 and not is_grounded_card else beat_im
             prev_stage = planned_beats[-1]["stage_1"] if planned_beats else None
 
             beat_sit_mood = detect_sentence_situation_mood(b_txt, base_mood=dossier.get("category", "dark_geopolitics"), beat_idx=global_beat_idx)
@@ -7098,7 +7222,14 @@ class VoiceAndSubtitleEngine:
         r"\bAttalah\b": "Ah-tah-lah",
         r"\bMada Masr\b": "Mah-dah Mah-ser",
         r"\bAzhari\b": "Ahz-hah-ree",
-        r"\bAfreximbank\b": "Af-rex-im-bank"
+        r"\bAfreximbank\b": "Af-rex-im-bank",
+        r"\bSu[- ]35\b": "Soo thirty-five",
+        r"\bS[- ]400\b": "S four hundred",
+        r"\bEritrea\b": "Eh-rih-tree-uh",
+        r"\bC-reactive protein\b": "C reactive protein",
+        r"\bNF-kB\b": "N F kappa B",
+        r"\binterleukin[- ]6\b": "interleukin six",
+        r"\bC-reactive\b": "C reactive"
     }
 
     async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD", is_short=False):
@@ -7121,8 +7252,8 @@ class VoiceAndSubtitleEngine:
         # V35 SINGLE CONSISTENT HUMAN DOCUMENTARY NARRATOR VOICE PER VIDEO:
         # Never switches voices mid-video! Uses ONE warm, expressive human narrator voice
         # (`en-US-AndrewMultilingualNeural`) consistently from Chapter 1 to Chapter 10!
-        edge_voice = "en-US-AndrewMultilingualNeural"
-        rate = "+4%" if is_short else "+2%"
+        edge_voice = short_v if is_short else long_v
+        rate = short_rate if is_short else long_rate
         pitch = "-1Hz"
 
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
@@ -7438,8 +7569,7 @@ def build_long_documentary_script(dossier):
             h_short = c.get("headline_short") or make_clean_context_headline(c["text"], max_words=6)
             base_nar = paraphrase_into_original_creator_voice(c["text"], idx)
             lead_in = lead_transitions[idx % len(lead_transitions)]
-            closer_line = mega_context_closers[idx % len(mega_context_closers)]
-            expanded_nar = f"{lead_in} {base_nar} {closer_line}"
+            expanded_nar = f"{lead_in} {base_nar}"
             if idx == 0:
                 expanded_nar = f"Welcome to World Talk Brief's special twenty-four hour global intelligence roundup. Here are the biggest geopolitical, economic, and scientific developments from around the world today. {expanded_nar}"
             if idx == len(claims[:15]) - 1:
@@ -7467,7 +7597,7 @@ def build_long_documentary_script(dossier):
     for idx_c, c in enumerate(claims):
         ps = paraphrase_into_original_creator_voice(c["text"], idx_c)
         if len(ps) > 35 and ps not in unique_sents:
-            unique_sents.append(ps)
+            unique_sents.append((ps, c))
 
     chunk_size = 2 if len(unique_sents) < 12 else 3
     sent_groups = [unique_sents[i:i + chunk_size] for i in range(0, len(unique_sents), chunk_size)][:8]
@@ -7480,15 +7610,10 @@ def build_long_documentary_script(dossier):
     t_anc = dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)
     chapters = []
     for idx, grp in enumerate(sent_groups):
-        body_txt = strip_news_publisher_mentions(" ".join(grp))
-        if idx == 0:
-            hook_intro = f"What just unfolded around {t_anc} has triggered an immediate global shockwave, and here is the real story behind the headlines."
-            body_txt = f"{hook_intro} {paraphrase_into_original_creator_voice(dossier['title'], 0, dossier=dossier)} {body_txt}"
-        if idx == len(sent_groups) - 1:
-            verdict_outro = build_domain_grounded_conclusion(dossier, body_txt)
-            body_txt = f"{body_txt} {verdict_outro}"
-        c_meta = claims[min(idx, len(claims) - 1)]
-        ch_head = make_clean_context_headline(grp[0], max_words=6)
+        body_txt = strip_news_publisher_mentions(" ".join(item[0] for item in grp))
+        # The title stays on screen; narration opens with the source-backed event.
+        c_meta = grp[0][1]
+        ch_head = make_clean_context_headline(grp[0][0], max_words=6)
         chapters.append({
             "chapter_num": idx + 1,
             "chapter_title": ch_head,
@@ -7637,18 +7762,23 @@ def enrich_dossier_with_deep_research_and_proofs(dossier):
                     if m_tag and m_tag.get("content"):
                         iu = m_tag["content"].strip()
                         if iu.startswith("https://") and not any(b in iu.lower() for b in BANNED_IMAGE_SOURCES + ["logo", "icon", "avatar"]):
-                            site_photos.append({"url": iu, "caption": f"{s_title} {topic_anchor} original article photo"})
+                            alt_meta = soup.find("meta", property="og:image:alt") or soup.find("meta", attrs={"name": "twitter:image:alt"})
+                            image_alt = clean_fact(alt_meta.get("content", "")) if alt_meta else ""
+                            if len(image_alt) >= 8:
+                                site_photos.append({"url": iu, "caption": image_alt})
                 for fig in soup.find_all(["figure", "article"])[:8]:
                     fcap = fig.find("figcaption")
-                    cap_txt = clean_fact(fcap.get_text(" ")) if fcap else f"{s_title} {topic_anchor}"
+                    cap_txt = clean_fact(fcap.get_text(" ")) if fcap else ""
                     for im_t in fig.find_all("img")[:4]:
                         iu = im_t.get("src") or im_t.get("data-src") or ""
-                        alt_t = im_t.get("alt") or ""
+                        alt_t = clean_fact(im_t.get("alt") or "")
                         if iu.startswith("https://") and any(ext in iu.lower() for ext in [".jpg", ".jpeg", ".png", ".webp"]):
                             if not any(b in iu.lower() for b in BANNED_IMAGE_SOURCES + ["logo", "icon", "avatar", "sprite", "1x1", "pixel"]):
                                 if "bbci.co.uk" in iu:
                                     iu = re.sub(r"/standard/\d+/", "/standard/1024/", iu)
-                                site_photos.append({"url": iu, "caption": f"{alt_t} {cap_txt} {s_title}".strip()})
+                                photo_caption = " ".join(part for part in (alt_t, cap_txt) if len(part) >= 8).strip()
+                                if len(photo_caption) >= 8:
+                                    site_photos.append({"url": iu, "caption": photo_caption})
                 for p_tag in soup.find_all("p")[:18]:
                     if p_tag.find_parent(["figcaption", "footer", "aside", "nav"]):
                         continue
@@ -7715,8 +7845,8 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
     - Script Audit #1 (Factual & Proof Citation Check): Ensures every section is backed by a verified `claim_meta` source.
     - Script Audit #2 (Zero-Repetition & Narrative Flow Check): Eliminates any duplicate/overlapping sentence across the entire video.
     - Script Audit #3 (Grammar, Spoken Cadence & Boilerplate Removal): Fixes grammar glitches and strips generic filler.
-    - Script Audit #4 (Sentence-by-Sentence Visual & Proof Blueprint): Maps EVERY finalized sentence to its exact
-      concrete `photo_query`, `point_highlight`, and `mentioned_person` so visuals match 100% point-to-point!
+    - Script Audit #4: Creates a concrete visual search hint per sentence. Metadata filters are safeguards,
+      not proof that an image depicts the event; unmatched beats use a branded evidence card.
     """
     if not sections:
         return sections
@@ -7731,7 +7861,11 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
         raw_nar = str(sec.get("narration", "")).strip()
         clean_nar = proofread_and_deduplicate_narration(raw_nar, seen_audit_sentences, dossier, scene_idx=idx)
         if len(clean_nar) < 20:
-            clean_nar = proofread_and_deduplicate_narration(claims[idx % len(claims)]["text"], seen_audit_sentences, dossier, scene_idx=idx)
+            if claims:
+                clean_nar = proofread_and_deduplicate_narration(claims[idx % len(claims)]["text"], seen_audit_sentences, dossier, scene_idx=idx)
+        if len(clean_nar) < 20:
+            print(f"ℹ️ [Script Audit] Dropped empty/repeated scene #{idx + 1} instead of inserting generic narration.", flush=True)
+            continue
         if clean_nar and clean_nar[-1] not in ".!?":
             clean_nar += "."
 
@@ -7782,111 +7916,96 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
     return audited_sections
 
 def ensure_full_length_6_to_8_min_documentary(sections, dossier):
-    """
-    V32 FULL-LENGTH 6.5 TO 8.5 MINUTE DOCUMENTARY DEPTH GUARANTEE:
-    Fixes the issue where LLMs wrote short 35-45 word chapters that finished in 2m45s!
-    1. Guarantees at least 10 deep-dive chapters for every Long Documentary.
-    2. Expands every chapter to 92-110 words using verified multi-source claims + story-grounded
-       investigative analysis so every Long Documentary is 950 to 1,100+ words (6.5 to 8.0 minutes)!
-    """
+    """Add only unused, source-backed claims; never pad with generic or invented narration."""
     if not sections:
         return sections
 
     claims = list(dossier.get("verified_claims") or [])
-    raw_facts = list(dossier.get("raw_facts") or [c.get("text", "") for c in claims])
-    t_anc = str(dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)).strip()
-    if "regelt" in t_anc.lower():
-        t_anc = make_clean_context_headline(dossier.get("title", ""), 4)
-    c_name = dossier.get("country_profile", {}).get("name", "Global").title()
-    cap_city = dossier.get("country_profile", {}).get("capital", c_name)
+    if not claims:
+        return sections
 
-    used_text_low = " ".join(str(s.get("narration", "")).lower() for s in sections)
-    unused_claims = []
-    for cl in claims:
-        ct = clean_fact(str(cl.get("text", "")))
-        if len(ct) >= 40 and ct[:30].lower() not in used_text_low:
-            unused_claims.append(cl)
+    def claim_key(claim):
+        return re.sub(r"\W+", " ", str(claim.get("text", "")).lower()).strip()[:180]
 
-    deep_investigative_matrix = [
-        f"To understand the full scale of what is unfolding in {c_name}, we have to examine the structural pressures that built up long before this crisis reached the front pages.",
-        f"Behind the immediate headlines surrounding {t_anc}, official records and field reports point to a much deeper institutional struggle over economic survival and state accountability.",
-        f"Analysts tracking developments out of {cap_city} note that when policy decisions fail to shield ordinary households from compounding cost shocks, public anger rapidly transforms into street-level action.",
-        f"What makes this flashpoint in {c_name} so critical for international observers is the speed at which a domestic dispute escalated into a high-stakes test of governance.",
-        f"Looking closely at the sequence of events around {t_anc}, every emergency measure deployed on the ground has triggered secondary shockwaves across local businesses and financial institutions.",
-        f"From a strategic Follow-the-Money perspective, the numbers behind {t_anc} expose a widening gap between state intervention budgets and the actual cost borne by working families in {c_name}.",
-        f"When we compare the current trajectory in {c_name} with neighboring economies, a clear pattern emerges: structural inflation and supply bottlenecks cannot be solved by short-term subsidies alone.",
-        f"For the younger generation across {c_name}, the debate over {t_anc} is no longer an abstract policy question, but a direct struggle over housing, energy affordability, and future social mobility.",
-        f"Security and policy experts warn that heavy-handed enforcement in {cap_city} may restore temporary order on the streets, yet it leaves the underlying economic grievances completely unresolved.",
-        f"Across global markets connected to {c_name}, institutional investors and diplomatic missions are now closely monitoring how leadership in {cap_city} responds to this mounting pressure.",
-        f"History shows that when economic strain collides with political gridlock in a major hub like {c_name}, the resulting policy shift reshapes both domestic elections and international trade.",
-        f"Independent researchers auditing the fallout of {t_anc} emphasize that transparency and structural reform are the only mechanisms capable of rebuilding public trust.",
-        f"Every indicator coming out of {c_name} confirms that the decisions made by authorities over the next several weeks will define the nation's economic stability for years to come.",
-        f"Rather than viewing {t_anc} as an isolated incident, geopolitical strategists see it as a warning signal for every major economy facing similar demographic and fiscal strain.",
-        f"Inside {cap_city}, policy advisors are now debating whether to overhaul the existing fiscal framework or risk facing even larger waves of civic mobilization in the months ahead.",
-        f"Meanwhile, local chambers of commerce and industry leaders in {c_name} have called for urgent dialogue to prevent further disruption to vital commercial corridors.",
-        f"The data surrounding {t_anc} demonstrates that when real wages lag behind essential living expenses, the social contract between citizens and the state begins to fracture.",
-        f"International correspondents reporting from {c_name} highlight that the intensity of public reaction caught many traditional political commentators completely off guard.",
-        f"At the heart of the controversy in {c_name} lies a fundamental question of priorities: how national resources are allocated during a period of acute economic transition.",
-        f"Ultimately, the unfolding case study of {t_anc} in {c_name} serves as a textbook example of how rapidly economic pressure can redraw the political landscape."
+    used_claims = {
+        claim_key(sec.get("claim_meta") or {})
+        for sec in sections if isinstance(sec.get("claim_meta"), dict)
+    }
+    used_narration = [str(sec.get("narration", "")).lower() for sec in sections]
+    remaining = [
+        claim for claim in claims
+        if claim_key(claim) and claim_key(claim) not in used_claims
+        and len(clean_fact(str(claim.get("text", "")))) >= 45
     ]
-    matrix_cursor = 0
+    word_total = sum(len(str(sec.get("narration", "")).split()) for sec in sections)
+    def content_tokens(text):
+        return {w.lower() for w in re.findall(r"[a-zA-Z]{4,}", text)}
+    used_token_sets = [content_tokens(text) for text in used_narration]
+    target_words = 930
+    max_scenes = 14
 
-    extra_roles = [
-        ("THE CATALYST", "THE ROOT TRIGGER"),
-        ("GROUND REALITY", "ON THE GROUND IN " + c_name.upper()[:14]),
-        ("FOLLOW THE MONEY", "THE ECONOMIC MATH"),
-        ("INSTITUTIONAL RESPONSE", cap_city.upper()[:14] + " POWER PLAY"),
-        ("REGIONAL RIPPLE EFFECT", "WIDER SHOCKWAVES"),
-        ("FINAL VERDICT", "THE ROAD AHEAD")
-    ]
-    while len(sections) < 10:
-        r_lbl, h_lbl = extra_roles[len(sections) % len(extra_roles)]
-        if unused_claims:
-            cl_item = unused_claims.pop(0)
-            seed_nar = paraphrase_into_original_creator_voice(cl_item["text"], len(sections), dossier=dossier)
-        else:
-            seed_nar = deep_investigative_matrix[matrix_cursor % len(deep_investigative_matrix)]
-            matrix_cursor += 1
-            cl_item = claims[len(sections) % len(claims)] if claims else {"text": seed_nar, "source_name": "Global Wire", "published_date": ""}
-        if not seed_nar.endswith((".", "!", "?")):
-            seed_nar += "."
-        insert_pos = max(1, len(sections) - 1)
-        sections.insert(insert_pos, {
-            "role": r_lbl,
-            "headline": fit_whole_words_limit(h_lbl, 24),
-            "chapter_title": fit_whole_words_limit(h_lbl, 24),
-            "hook_tape": fit_whole_words_limit(h_lbl, 32),
-            "stat_callout": f"CASE EVIDENCE #{len(sections) + 1}",
+    while remaining and word_total < target_words and len(sections) < max_scenes:
+        claim = remaining.pop(0)
+        narration = paraphrase_into_original_creator_voice(str(claim.get("text", "")), len(sections), dossier=dossier).strip()
+        if len(narration.split()) < 8:
+            continue
+        candidate_tokens = content_tokens(narration)
+        if candidate_tokens and any(
+            len(candidate_tokens.intersection(prev_tokens)) / float(max(1, min(len(candidate_tokens), len(prev_tokens)))) >= 0.55
+            for prev_tokens in used_token_sets if prev_tokens
+        ):
+            continue
+        if narration[-1] not in ".!?":
+            narration += "."
+        headline = make_clean_context_headline(str(claim.get("text", "")), 5)
+        sections.append({
+            "role": "DOCUMENTED CONTEXT",
+            "headline": headline,
+            "chapter_title": headline,
+            "hook_tape": fit_whole_words_limit(headline.upper(), 32),
+            "stat_callout": "SOURCE-BACKED DETAIL",
             "mentioned_person": "",
             "person_role": "",
-            "narration": seed_nar,
-            "video_broll_query": f"{c_name} {t_anc}",
+            "narration": narration,
+            "video_broll_query": extract_primary_topic_anchor(dossier),
             "beat_visuals": [],
-            "claim_meta": cl_item
+            "claim_meta": claim
         })
+        used_claims.add(claim_key(claim))
+        used_narration.append(narration.lower())
+        used_token_sets.append(candidate_tokens)
+        word_total += len(narration.split())
 
-    for idx_s, sec in enumerate(sections):
-        nar = str(sec.get("narration", "")).strip()
-        if nar and nar[-1] not in ".!?":
-            nar += "."
-        while len(nar.split()) < 94:
-            if unused_claims:
-                next_cl = unused_claims.pop(0)
-                add_s = paraphrase_into_original_creator_voice(next_cl["text"], idx_s, dossier=dossier).strip()
-            else:
-                add_s = deep_investigative_matrix[matrix_cursor % len(deep_investigative_matrix)]
-                matrix_cursor += 1
-            if add_s and add_s[:28].lower() not in nar.lower():
-                if add_s[-1] not in ".!?":
-                    add_s += "."
-                nar = f"{nar} {add_s}"
-            else:
-                matrix_cursor += 1
-                if matrix_cursor > len(deep_investigative_matrix) * 3:
-                    break
-        sec["narration"] = nar
-
+    # A 6-8 minute runtime is a target, not a reason to fabricate details.
+    if word_total < target_words:
+        print(f"ℹ️ [Evidence-Limited Runtime] {word_total} source-backed narration words; generic filler was not added.", flush=True)
     return sections
+
+def select_scene_source_claim(scene, claims, narration, fallback_index=0):
+    """Use explicit source-fact indices, then choose the closest supporting fact by text overlap."""
+    if not claims:
+        return None
+    raw_indices = scene.get("source_fact_indices", []) if isinstance(scene, dict) else []
+    if not isinstance(raw_indices, list):
+        raw_indices = [raw_indices]
+    for value in raw_indices:
+        try:
+            index = int(value) - 1
+            if 0 <= index < len(claims):
+                return claims[index]
+        except (TypeError, ValueError):
+            continue
+
+    stop = HEADLINE_STOP_VERBS_ADJS | COMMON_SENTENCE_START_WORDS
+    narration_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", narration) if w.lower() not in stop}
+    best_claim, best_score = None, 0.0
+    for claim in claims:
+        fact_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", str(claim.get("text", ""))) if w.lower() not in stop}
+        overlap = len(narration_tokens.intersection(fact_tokens))
+        score = overlap / float(max(1, len(narration_tokens)))
+        if overlap >= 2 and score > best_score:
+            best_claim, best_score = claim, score
+    return best_claim or claims[min(max(0, fallback_index), len(claims) - 1)]
 
 def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
     # Phase 1: Deep Multi-Source Research & Proof Gathering FIRST!
@@ -7923,7 +8042,11 @@ def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
         for idx, sc in enumerate(ai_pkg["scenes"]):
             nar = proofread_and_deduplicate_narration(str(sc.get("narration", "")), seen_narration_sentences, dossier, scene_idx=idx)
             if len(nar) < 20:
-                nar = proofread_and_deduplicate_narration(claims[idx % len(claims)]["text"], seen_narration_sentences, dossier, scene_idx=idx)
+                if claims:
+                    nar = proofread_and_deduplicate_narration(claims[idx % len(claims)]["text"], seen_narration_sentences, dossier, scene_idx=idx)
+            if len(nar) < 20:
+                print(f"ℹ️ [AI Script] Dropped empty/repeated scene #{idx + 1}.", flush=True)
+                continue
             if nar[-1] not in ".!?":
                 nar += "."
             pill = fit_whole_words_limit(re.sub(r"[^\x20-\x7E]", "", str(sc.get("context_pill", dossier["topic_anchor"]))).upper().strip(), 26)
@@ -7940,12 +8063,15 @@ def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
                 "narration": nar,
                 "video_broll_query": str(sc.get("video_broll_query", "")).strip(),
                 "beat_visuals": sc.get("beat_visuals", []) if isinstance(sc.get("beat_visuals"), list) else [],
-                "claim_meta": claims[min(idx, len(claims) - 1)]
+                "claim_meta": select_scene_source_claim(sc, claims, nar, fallback_index=idx)
             })
+        if not sections:
+            if is_short:
+                sections = build_short_script(dossier)
+            else:
+                sections = build_long_documentary_script(dossier)
         if not is_short and sections:
             sections = ensure_full_length_6_to_8_min_documentary(sections, dossier)
-            if "subscribe to world talk brief" not in sections[-1]["narration"].lower():
-                sections[-1]["narration"] = f"{sections[-1]['narration'].rstrip('.!?')}. Share your thoughts in the comments below, and subscribe to World Talk Brief."
         elif is_short and sections:
             if "description" not in sections[-1]["narration"].lower():
                 sections[-1]["narration"] = f"{sections[-1]['narration']} Watch the full documentary via the link in the description and pinned comment!"
@@ -8042,9 +8168,20 @@ def build_story_specific_thumbnail_hook(dossier):
         return (line_1, line_2)
     return (fit_whole_words_limit(t_anchor, 18), "INSIDE THE STORY")
 
+def get_font_fitting_width(draw, text, max_width, initial_size, minimum_size=30):
+    """Shrink thumbnail typography until the complete text fits its safe canvas width."""
+    clean_text = str(text or "").strip()
+    for size in range(int(initial_size), int(minimum_size) - 1, -4):
+        font = get_font(size)
+        bbox = draw.textbbox((0, 0), clean_text, font=font, stroke_width=0)
+        if (bbox[2] - bbox[0]) <= max_width:
+            return clean_text, font
+    shortened = fit_whole_words_limit(clean_text, max(3, int(len(clean_text) * 0.75)))
+    return shortened, get_font(minimum_size)
+
 def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, watermark, out_path="output/WTB_1080p_Thumb_1.jpg"):
     """
-    V33 100% ORIGINAL NITISH RAJPUT / THINK SCHOOL / DHRUV RATHEE MULTI-LAYER STUDIO THUMBNAIL COMPOSITOR:
+    Original World Talk Brief multi-layer documentary thumbnail compositor:
     Never looks like a copied news screenshot! Builds an original 5-layer graphic poster composition:
     - Layer 1 (Dramatic Split-Graded Cinema Stage): High-contrast Teal-Crimson graded primary scene on the left/center
       with custom dark atmospheric studio lighting & subtle investigative grid texture on the outer rim.
@@ -8075,6 +8212,7 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     face_photos = [im for im in all_cand_ims if has_well_framed_face(im)]
     non_face_photos = [im for im in all_cand_ims if im not in face_photos]
 
+    # The 200-photo pool is sorted by caption/topic relevance; use its strongest candidate first.
     hero_bg_im = non_face_photos[0] if non_face_photos else (all_cand_ims[0] if all_cand_ims else None)
     if hero_bg_im is None:
         hero_bg_im = fetch_verified_news_or_wiki_visual(
@@ -8200,6 +8338,7 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
 
     kicker_top = f"● CASE DOSSIER // {c_name}"
     f_ktop = get_font(25)
+    kicker_top = fit_whole_words_limit(kicker_top, 28)
     kw_top = draw.textbbox((0, 0), kicker_top, font=f_ktop)[2] + 44
     draw.rounded_rectangle([(cur_tx, 54), (cur_tx + kw_top, 106)], radius=26, fill=(10, 18, 34, 230), outline=(0, 240, 255, 225), width=2)
     draw.text((cur_tx + 22, 65), kicker_top, fill=(0, 240, 255, 255), font=f_ktop)
@@ -8216,13 +8355,13 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     # Extract a punchy red investigative pre-header badge (e.g. 'THE UNTOLD REALITY' or number from title)
     num_in_title = re.search(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?\s*(?:%|BILLION|MILLION|TRILLION|CITIES|YEARS|COUNTRIES)?)", dossier.get("title", "").upper())
     pre_badge_txt = f"⚡ {num_in_title.group(1).strip()} IMPACT" if (num_in_title and len(num_in_title.group(1).strip()) >= 2) else f"⚡ {sub_p.replace('_', ' ')} INVESTIGATION"
-    f_pre = get_font(30)
+    pre_badge_txt, f_pre = get_font_fitting_width(draw, pre_badge_txt, 850, 30, 22)
     pw_pre = draw.textbbox((0, 0), pre_badge_txt, font=f_pre)[2] + 48
     draw.rounded_rectangle([(56, 568), (56 + pw_pre, 624)], radius=12, fill=(225, 20, 45, 255), outline=(255, 255, 255, 245), width=3)
     draw.text((80, 579), pre_badge_txt, fill=(255, 255, 255, 255), font=f_pre)
 
-    f_giant = get_font(104 if len(hook_line_1) <= 14 else 92)
-    f_sub = get_font(94 if len(hook_line_2) <= 15 else 82)
+    hook_line_1, f_giant = get_font_fitting_width(draw, hook_line_1, 880, 104 if len(hook_line_1) <= 14 else 92, 42)
+    hook_line_2, f_sub = get_font_fitting_width(draw, hook_line_2, 730, 94 if len(hook_line_2) <= 15 else 82, 38)
 
     # Line 1: 3D Extruded Pure Bright White Poster Headline
     for d_off in range(12, 0, -2):
@@ -8240,7 +8379,7 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
 
     # Bottom Investigative Sub-Kicker Bar
     sub_teaser = fit_whole_words_limit(make_clean_context_headline(dossier["original_yt_title"], max_words=7).upper(), 42)
-    f_kicker_b = get_font(34)
+    sub_teaser, f_kicker_b = get_font_fitting_width(draw, sub_teaser, 1750, 34, 24)
     draw.text((62, 948), f">> {sub_teaser}", fill=accent_col + (255,), font=f_kicker_b, stroke_width=4, stroke_fill=(0, 0, 0, 255))
 
     # Outer 6px Cinema Gold/Cyan Frame Border so the thumbnail pops in YouTube dark & light mode feeds!
@@ -8507,7 +8646,7 @@ def build_20_country_youtube_localizations(en_title, en_description):
     print(f"🌍 [52-Language Global & Indian YouTube API] Built & sanitized native Title/Description localizations for {len(localizations)} languages!", flush=True)
     return localizations
 
-def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None):
+def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None, hist_obj=None):
     """
     V35 MULTI-LANGUAGE SUBTITLES (.SRT) & NEURAL DUBBING ENGINE (INDIA + GLOBAL):
     1. Generates timestamped `.srt` subtitle files in 18+ Indian & World languages (`hi`, `gu`, `mr`, `ta`, `te`,
@@ -8612,13 +8751,17 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
         except Exception:
             pass
 
-    # Upload Top Multi-Language Closed Caption (.SRT) Tracks (Hindi, English, Spanish) to YouTube API (after video & thumbnail are already live!)
-    if yt_client is not None and video_id:
+    # Caption inserts use 400 units each from the general daily quota; videos.insert uses a separate bucket.
+    if yt_client is not None and video_id and not YOUTUBE_GENERAL_QUOTA_EXHAUSTED:
         from googleapiclient.http import MediaFileUpload
         priority_cc = [("hi", "Hindi (India)", f"output/subtitles/{video_tag}_hi.srt"), ("en", "English", en_srt_path), ("es", "Spanish", f"output/subtitles/{video_tag}_es.srt")]
         for cc_code, cc_name, cc_file in priority_cc:
+            if YOUTUBE_GENERAL_QUOTA_EXHAUSTED:
+                break
             if not os.path.exists(cc_file):
                 continue
+            if not reserve_youtube_general_quota(hist_obj, f"captions.insert ({cc_code})", 400):
+                break
             try:
                 yt_client.captions().insert(
                     part="snippet",
@@ -8627,24 +8770,22 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
                 ).execute()
                 print(f"📝 [YouTube CC Track Uploaded] {cc_name} ({cc_code}) active on https://youtu.be/{video_id}!", flush=True)
             except Exception as cc_err:
-                if "quotaExceeded" in str(cc_err) or "403" in str(cc_err):
+                quota_exhausted = mark_youtube_general_quota_exhausted(cc_err, f"captions.insert ({cc_code})", hist_obj)
+                if quota_exhausted or "403" in str(cc_err):
                     break
 
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
     is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway="",
-    linked_long_url=None, sections_list=None
+    linked_long_url=None, sections_list=None, hist_obj=None
 ):
     """
-    V34 QUOTA-OPTIMIZED YOUTUBE UPLOADER + MULTI-TOKEN AUTOMATIC FAILOVER:
-    1. Eliminates the `HttpError 400 "The request metadata is invalid"` double-insert bug by calling
-       `yt.videos().insert(part="snippet,status")` ONCE (saving 1,600 wasted quota units per video!).
-    2. Calls `yt.thumbnails().set` IMMEDIATELY after `videos().insert` (50 units) so the V33 Studio Thumbnail
-       is ALWAYS applied first!
-    3. Calls `yt.videos().update(part="snippet,localizations")` (50 units) with YouTube's official ISO codes
-       AND embeds the 12-Language Global Headlines Box directly in `description`.
-    4. Supports automatic rotation across multiple OAuth tokens (`YOUTUBE_TOKEN_JSON_B64`, `YOUTUBE_TOKEN_JSON_B64_2`,
-       `YOUTUBE_TOKEN_JSON_B64_3`, `YOUTUBE_TOKEN_JSON_B64_4`) if Project #1 hits its 10,000 daily quota!
+    QUOTA-AWARE YOUTUBE UPLOADER:
+    1. Calls `videos.insert` once per video. It uses YouTube's separate daily video-upload bucket.
+    2. Thumbnail/localization/comment writes use the general daily quota; caption inserts cost 400 units each.
+    3. Persisted Pacific-time reservations keep optional writes within configured daily budgets.
+    4. After a general-quota error, skips remaining optional writes while continuing video uploads.
+    5. OAuth failover does not increase a project's quota; each credential follows its own project limits.
     """
     qc_ok, qc_rep = run_automatic_pre_upload_qc_gate(video_path, is_short=is_short, story_title=title)
     if not qc_ok:
@@ -8669,7 +8810,7 @@ def try_youtube_auto_upload(
     full_desc_with_langs = sanitize_youtube_metadata_text(description[:3400] + "\n" + "\n".join(multilang_preview_lines), 4750)
     localizations_map["en"]["description"] = full_desc_with_langs
 
-    # Collect all configured YouTube OAuth tokens (supports 1 to 5 projects for unlimited daily uploads!)
+    # Collect configured OAuth credentials; quota buckets remain specific to their owning projects.
     candidate_tokens = []
     for env_k in ["YOUTUBE_TOKEN_JSON_B64", "YOUTUBE_TOKEN_JSON_B64_2", "YOUTUBE_TOKEN_JSON_B64_3", "YOUTUBE_TOKEN_JSON_B64_4", "YOUTUBE_TOKEN_JSON_B64_5"]:
         tk_val = os.environ.get(env_k, "").strip()
@@ -8677,7 +8818,7 @@ def try_youtube_auto_upload(
             candidate_tokens.append(tk_val)
 
     if not candidate_tokens:
-        build_and_upload_multilang_captions_and_dubs(None, None, sections_list, video_tag=video_tag, is_short=is_short, video_path=video_path)
+        build_and_upload_multilang_captions_and_dubs(None, None, sections_list, video_tag=video_tag, is_short=is_short, video_path=video_path, hist_obj=hist_obj)
         print("ℹ️ [GitHub Cloud Test Mode] No YouTube API token set yet; saved to GitHub Artifacts:", video_path, flush=True)
         return None
 
@@ -8721,40 +8862,53 @@ def try_youtube_auto_upload(
             vid_id = resp["id"]
             print(f"✅ [YOUTUBE LIVE UPLOAD SUCCESS (Token #{tk_idx}) - {pillar}] https://youtu.be/{vid_id}", flush=True)
 
-            # 1. Set Custom V33 5-Layer Studio Thumbnail IMMEDIATELY (50 units)
-            if thumbnail_path and os.path.exists(thumbnail_path):
+            # 1. Set the custom thumbnail (50 units from the general daily quota).
+            if thumbnail_path and os.path.exists(thumbnail_path) and not YOUTUBE_GENERAL_QUOTA_EXHAUSTED and reserve_youtube_general_quota(hist_obj, "thumbnails.set", 50):
                 try:
                     yt.thumbnails().set(videoId=vid_id, media_body=MediaFileUpload(thumbnail_path)).execute()
                     print(f"🖼️ [Custom V33 Studio Thumbnail Locked] on https://youtu.be/{vid_id}", flush=True)
                 except Exception as te:
                     print("⚠️ Thumbnail set warning:", str(te)[:110], flush=True)
+                    mark_youtube_general_quota_exhausted(te, "thumbnails.set", hist_obj)
 
             # 2. Apply Multi-Language Localizations via clean `videos().update` (50 units)
-            try:
+            if not YOUTUBE_GENERAL_QUOTA_EXHAUSTED and reserve_youtube_general_quota(hist_obj, "videos.update(localizations)", 50):
                 safe_locs = dict(localizations_map)
                 try:
                     yt.videos().update(
                         part="snippet,localizations",
                         body={"id": vid_id, "snippet": body_basic["snippet"], "localizations": safe_locs}
                     ).execute()
-                except Exception:
+                    print(f"🌍 [YouTube Multi-Language Localizations Locked] {len(safe_locs)} languages active on https://youtu.be/{vid_id}!", flush=True)
+                except Exception as loc_first_error:
+                    quota_exhausted = mark_youtube_general_quota_exhausted(loc_first_error, "videos.update(localizations)", hist_obj)
+                    if quota_exhausted:
+                        print("ℹ️ [Localizations Skipped] General YouTube API quota is exhausted.", flush=True)
+                    else:
                     # Keep the known-good subset if one locale code is rejected by YouTube.
-                    core_20_keys = ["en", "hi", "gu", "mr", "ta", "te", "bn", "kn", "ml", "pa", "ur", "es", "fr", "de", "ar", "pt", "ru", "ja", "zh-Hans", "ko", "tr", "it", "id", "vi", "th", "nl", "pl"]
-                    safe_locs = {k: localizations_map[k] for k in core_20_keys if k in localizations_map}
-                    yt.videos().update(
-                        part="snippet,localizations",
-                        body={"id": vid_id, "snippet": body_basic["snippet"], "localizations": safe_locs}
-                    ).execute()
-                print(f"🌍 [YouTube Multi-Language Localizations Locked] {len(safe_locs)} languages active on https://youtu.be/{vid_id}!", flush=True)
-            except Exception as loc_e:
-                print("ℹ️ [Multi-Language Description Active; API localizations note]:", str(loc_e)[:95], flush=True)
+                        core_20_keys = ["en", "hi", "gu", "mr", "ta", "te", "bn", "kn", "ml", "pa", "ur", "es", "fr", "de", "ar", "pt", "ru", "ja", "zh-Hans", "ko", "tr", "it", "id", "vi", "th", "nl", "pl"]
+                        safe_locs = {k: localizations_map[k] for k in core_20_keys if k in localizations_map}
+                        if reserve_youtube_general_quota(hist_obj, "videos.update(localizations retry)", 50):
+                            try:
+                                yt.videos().update(
+                                    part="snippet,localizations",
+                                    body={"id": vid_id, "snippet": body_basic["snippet"], "localizations": safe_locs}
+                                ).execute()
+                                print(f"🌍 [YouTube Localizations Locked] {len(safe_locs)} supported languages on https://youtu.be/{vid_id}.", flush=True)
+                            except Exception as loc_retry_error:
+                                mark_youtube_general_quota_exhausted(loc_retry_error, "videos.update(localizations retry)", hist_obj)
+                                print("ℹ️ [Multi-Language Description Active; API localizations note]:", str(loc_retry_error)[:95], flush=True)
+                        else:
+                            print("ℹ️ [Localizations Skipped] Daily general quota budget reached.", flush=True)
+            elif YOUTUBE_GENERAL_QUOTA_EXHAUSTED:
+                print("ℹ️ [Localizations Skipped] General YouTube API quota is exhausted.", flush=True)
 
-            # 3. Generate local multi-language .srt & dubbed audio tracks (0 API quota units!)
-            build_and_upload_multilang_captions_and_dubs(yt, vid_id, sections_list, video_tag=video_tag, is_short=is_short, video_path=video_path)
+            # 3. Local subtitle/dub files cost no YouTube API quota; each caption upload costs 400 units.
+            build_and_upload_multilang_captions_and_dubs(yt, vid_id, sections_list, video_tag=video_tag, is_short=is_short, video_path=video_path, hist_obj=hist_obj)
 
             # 4. If this is a Short, post the Linked Full Documentary comment
             add_video_to_category_playlist_and_comment(
-                yt, vid_id, pillar, summary_takeaway or title, playlist_map or {}, linked_long_url=linked_long_url
+                yt, vid_id, pillar, summary_takeaway or title, playlist_map or {}, linked_long_url=linked_long_url, hist_obj=hist_obj
             )
             return vid_id
         except Exception as e:
@@ -8874,7 +9028,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         out_long, pkg_report["selected_title"], long_seo_desc, long_seo_tags,
         category_id=lead_long_dossier.get("yt_category_id", "25"), pillar=sub_pillar, is_short=False,
         thumbnail_path=pkg_report["selected_thumbnail"], playlist_map=playlist_map,
-        summary_takeaway=long_chapters[-1]["narration"], sections_list=long_chapters
+        summary_takeaway=long_chapters[-1]["narration"], sections_list=long_chapters, hist_obj=hist_obj
     )
     pkg_report["rendered_video_path"] = out_long
     pkg_report["youtube_video_id"] = long_vid_id
@@ -8968,7 +9122,7 @@ async def render_and_upload_short_unit(
         out_short, short_dossier["original_yt_title"], short_seo_desc, short_seo_tags,
         category_id=short_dossier.get("yt_category_id", "25"), pillar=sub_pillar, is_short=True,
         thumbnail_path=short_pkg["selected_thumbnail"], playlist_map=playlist_map,
-        summary_takeaway=short_sections[-1]["narration"], linked_long_url=linked_long_url, sections_list=short_sections
+        summary_takeaway=short_sections[-1]["narration"], linked_long_url=linked_long_url, sections_list=short_sections, hist_obj=hist_obj
     )
     s_stats["linked_long_url"] = linked_long_url
     s_stats["rendered_video_path"] = out_short
@@ -9008,7 +9162,18 @@ async def main():
         watermark = build_wtb_watermark(width=164, height=98)
         voice_sub_dir = VoiceAndSubtitleEngine()
         hist_obj = load_published_history()
+        initialize_youtube_quota_guard(hist_obj)
         winning_keywords, viral_yt_tags, playlist_map, top_channel_hits = run_youtube_api_full_intelligence(hist_obj)
+        if not hist_obj.get("youtube_channel_history_sync_ok"):
+            with open("output/wtb_1080p_report.json", "w", encoding="utf-8") as f:
+                json.dump({
+                    "status": "channel_history_sync_failed",
+                    "videos_produced_in_run": 0,
+                    "message": "Could not verify both recent channel uploads and Shorts; skipped generation to avoid a duplicate publication.",
+                    "total_run_minutes": round((time.time() - run_start_wall) / 60.0, 1)
+                }, f, indent=2)
+            print("🛑 [Run Stopped] Could not verify both channel upload lists. Skipping generation to avoid duplicate videos.", flush=True)
+            return
 
         now_utc = datetime.utcnow()
         today_str = now_utc.strftime("%Y-%m-%d")
@@ -9062,7 +9227,12 @@ async def main():
             "INDIA_TRENDING", "CYBER_INTELLIGENCE", "MIND_BLOWING_FACTS"
         ]
         start_cat = rotating_categories[rr_idx % len(rotating_categories)]
-        ordered_rot = [start_cat] + [c for c in rotating_categories if c != start_cat]
+        # Three of twelve two-hour runs try a second fresh geopolitics dossier,
+        # targeting 15 geopolitics full stories/day while keeping other categories in rotation.
+        if rr_idx % 4 == 0:
+            ordered_rot = ["GEOPOLITICS"] + [c for c in rotating_categories if c != "GEOPOLITICS"]
+        else:
+            ordered_rot = [start_cat] + [c for c in rotating_categories if c != start_cat]
         for op in ordered_rot:
             od = discover_dossier_for_pillar(op, hist_obj, winning_keywords, batch_fingerprints)
             if od is not None:
