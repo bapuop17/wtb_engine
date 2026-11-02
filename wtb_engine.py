@@ -7122,12 +7122,14 @@ def build_prop_driven_storyboard_1080p(
                 # NEVER repeat an already-shown video clip (`vseg`)! Once each unique clip in `v_pool` has played once,
                 # subsequent chapters use fresh, unique 1080p HD photos instead of looping the same video clip!
 
+            # Each beat starts as a photo/video scene. Only the explicit
+            # evidence-card fallback below changes this flag to True.
+            is_grounded_card = False
             if vseg is not None:
                 b_type = "VIDEO_BROLL_BEAT"
                 moving_video_beats += 1
                 beat_im = unique_real_photos[-1] if unique_real_photos else Image.new("RGB", (1920, 1080), (12, 18, 32))
                 stage_1 = build_clean_1080p_stage(beat_im, W, H)
-                is_grounded_card = False
             else:
                 b_type = "CINEMA_HERO_ZOOM"
                 beat_im = fetch_verified_news_or_wiki_visual(
