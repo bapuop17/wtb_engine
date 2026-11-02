@@ -12,9 +12,9 @@ on:
         required: false
         default: '2'
   schedule:
-    # Hourly safety trigger; the cadence guard allows production only once per 2-hour window.
-    # Runs at :07 IST (:37 UTC), away from the UTC top-of-hour load peak.
-    - cron: '7 * * * *'
+    # Two safety checks per hour; the cadence guard allows a full batch only once per 2-hour window.
+    # Local :17/:47 IST maps to UTC :47/:17, away from the exact top of the hour.
+    - cron: '17,47 * * * *'
       timezone: 'Asia/Kolkata'
 
 permissions:
@@ -191,7 +191,7 @@ jobs:
             echo "## WTB production check"
             echo
             echo "No video batch was started: ${CADENCE_REASON:-cadence guard skipped this safety tick}."
-            echo "The schedule checks again in one hour."
+            echo "The schedule checks again in about 30 minutes."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Summarize Rendered and Uploaded Videos
