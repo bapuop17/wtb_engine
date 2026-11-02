@@ -1,7 +1,7 @@
 {
   "last_started_at_utc": "2026-11-02T23:13:44.270338+00:00",
-  "last_finished_at_utc": "2026-11-02T16:50:36.972902+00:00",
-  "last_run_status": "running",
+  "last_finished_at_utc": "2026-11-02T23:39:28.563274+00:00",
+  "last_run_status": "failure",
   "target_unfilled_videos": 4,
   "last_uploaded_count": 0,
   "last_run_id": "41543750361",

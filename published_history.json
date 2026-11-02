@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-02T16:50:36.712759",
-  "round_robin_idx": 4,
-  "country_rot_idx": 100,
-  "bgm_track_counter": 948134400,
+  "updated_at": "2026-11-02T23:39:28.178892",
+  "round_robin_idx": 5,
+  "country_rot_idx": 116,
+  "bgm_track_counter": 1008572456,
   "last_mega_24h_date": "2026-10-31",
   "youtube_quota_day_pt": "2026-11-02",
   "youtube_general_units_reserved": 0,
@@ -10,7 +10,7 @@
   "youtube_caption_upload_cursor": 0,
   "youtube_general_quota_exhausted_day_pt": "",
   "youtube_channel_history_sync_ok": true,
-  "youtube_channel_history_sync_at_utc": "2026-11-02T15:57:30.160429",
+  "youtube_channel_history_sync_at_utc": "2026-11-02T23:15:27.067239",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
     "xbox_s_first_chief_operating_officer",
