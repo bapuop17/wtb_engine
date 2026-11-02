@@ -1,9 +1,15 @@
 {
-  "updated_at": "2026-11-02T00:39:14.577231",
+  "updated_at": "2026-11-02T02:53:50.503034",
   "round_robin_idx": 1,
   "country_rot_idx": 52,
   "bgm_track_counter": 875998470,
   "last_mega_24h_date": "2026-10-31",
+  "youtube_quota_day_pt": "2026-11-01",
+  "youtube_general_units_reserved": 0,
+  "youtube_caption_units_reserved": 0,
+  "youtube_general_quota_exhausted_day_pt": "",
+  "youtube_channel_history_sync_ok": true,
+  "youtube_channel_history_sync_at_utc": "2026-11-02T02:53:50.502610",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
     "xbox_s_first_chief_operating_officer",
@@ -352,7 +358,57 @@
     "china_africa_green_mobility_cooperation_gains",
     "ethiopia_s_russian_fighter_jets_raise",
     "why_ethiopia_s_russian_jets_could",
-    "flock_keeps_ignoring_requests_to_cancel"
+    "flock_keeps_ignoring_requests_to_cancel",
+    "why_us_farmers_are_betraying_the",
+    "obama_vs_trump_the_midterm_war",
+    "egypt_silences_last_free_voice_lina",
+    "turkey_s_secret_libya_deal_just",
+    "serbian_students_just_broke_europe_s",
+    "breaking_update_egypt_fines_prominent_editor",
+    "canada_s_historic_spacewalk_iss_power",
+    "why_israel_s_new_power_brokers",
+    "why_israel_s_election_hinges_on",
+    "why_kylian_mbappe_just_lost_everything",
+    "why_gaza_s_fourth_winter_is",
+    "oscars_just_went_global_the_youtube",
+    "trump_s_midterm_nightmare_why_polls",
+    "why_manchester_united_is_structurally_broken",
+    "black_holes_can_split_the_spinning",
+    "yemen_s_taiz_is_dying_the",
+    "why_uk_high_streets_are_quietly",
+    "boeing_says_it_won_t_significantly",
+    "why_one_word_cost_mbapp_his",
+    "the_astronomers_secrets_discovery_that_surprised",
+    "why_meta_s_ai_director_just",
+    "jailed_for_reporting_the_french_journalist",
+    "the_radio_echo_that_broke_physics",
+    "what_causes_mysterious_long_delayed_radio",
+    "nasa_just_broke_the_rules_the",
+    "the_nasa_discovery_that_surprised_scientists",
+    "nasa_just_broke_its_own_rules",
+    "why_spacex_s_330_foot_rocket",
+    "why_an_alibaba_ai_tried_to",
+    "why_your_city_is_fighting_over",
+    "why_your_spittle_might_save_your",
+    "why_the_october_moon_looked_giant",
+    "anthropic_s_ipo_why_the_ai",
+    "why_chris_brown_didn_t_go",
+    "how_tiny_magnets_are_giving_prosthetic",
+    "why_the_us_court_just_blocked",
+    "tiny_magnets_just_hacked_the_human",
+    "how_harry_kane_s_consistency_shocked",
+    "why_spain_owns_women_s_football",
+    "anthropic_s_16b_secret_the_ai",
+    "the_hidden_ph_secret_killing_chemical",
+    "why_brazil_s_currency_just_crashed",
+    "man_utd_fans_expose_the_real",
+    "meta_s_95_billion_gamble_anthropic",
+    "this_gene_keeps_your_brain_young",
+    "serbia_s_student_revolution_how_they",
+    "why_the_vikings_are_the_nfl",
+    "why_american_airlines_just_cut_its",
+    "salon_owners_urge_budget_vat_cut",
+    "how_troy_premier_changed_everything_in"
   ],
   "event_fingerprints": [
     {
@@ -6253,6 +6309,692 @@
         "keeps",
         "requests",
         "technology"
+      ]
+    },
+    {
+      "title": "Why US Farmers Are Betraying The GOP Before Midterms",
+      "tokens": [
+        "before",
+        "betraying",
+        "farmers",
+        "midterms"
+      ]
+    },
+    {
+      "title": "Obama vs Trump: The Midterm War That Broke America",
+      "tokens": [
+        "america",
+        "broke",
+        "midterm",
+        "obama",
+        "trump"
+      ]
+    },
+    {
+      "title": "Egypt Silences Last Free Voice: Lina Attalah Arrested",
+      "tokens": [
+        "arrested",
+        "attalah",
+        "egypt",
+        "free",
+        "last",
+        "lina",
+        "silences",
+        "voice"
+      ]
+    },
+    {
+      "title": "Turkey's Secret Libya Deal Just Broke The Mediterranean",
+      "tokens": [
+        "broke",
+        "deal",
+        "just",
+        "libya",
+        "mediterranean",
+        "turkey"
+      ]
+    },
+    {
+      "title": "Serbian Students Just Broke Europe's Political Model",
+      "tokens": [
+        "broke",
+        "europe",
+        "just",
+        "model",
+        "political",
+        "serbian",
+        "students"
+      ]
+    },
+    {
+      "title": "BREAKING UPDATE: Egypt fines prominent editor Lina Attalah and shuts independent news",
+      "tokens": [
+        "attalah",
+        "breaking",
+        "editor",
+        "egypt",
+        "fines",
+        "independent",
+        "lina",
+        "prominent",
+        "shuts",
+        "update"
+      ]
+    },
+    {
+      "title": "Canada's Historic Spacewalk: ISS Power Upgraded",
+      "tokens": [
+        "canada",
+        "historic",
+        "spacewalk",
+        "upgraded"
+      ]
+    },
+    {
+      "title": "Why Israel's New Power Brokers Are Changing Everything",
+      "tokens": [
+        "brokers",
+        "changing",
+        "everything",
+        "israel"
+      ]
+    },
+    {
+      "title": "China's secretive space plane caught on camera in incredible new photo released by US",
+      "tokens": [
+        "camera",
+        "caught",
+        "china",
+        "incredible",
+        "photo",
+        "plane",
+        "released",
+        "secretive",
+        "space"
+      ]
+    },
+    {
+      "title": "Why Israel's Election Hinges On 17 Arab Seats",
+      "tokens": [
+        "arab",
+        "election",
+        "hinges",
+        "israel",
+        "seats"
+      ]
+    },
+    {
+      "title": "Why Kylian Mbappe Just Lost Everything in China",
+      "tokens": [
+        "china",
+        "everything",
+        "just",
+        "kylian",
+        "lost",
+        "mbappe"
+      ]
+    },
+    {
+      "title": "Why Gaza's Fourth Winter Is The Ultimate Test Of Survival",
+      "tokens": [
+        "fourth",
+        "gaza",
+        "survival",
+        "test",
+        "ultimate",
+        "winter"
+      ]
+    },
+    {
+      "title": "Oscars Just Went Global: The YouTube Shock",
+      "tokens": [
+        "just",
+        "oscars",
+        "shock",
+        "went",
+        "youtube"
+      ]
+    },
+    {
+      "title": "Trump's Midterm Nightmare: Why Polls Lie",
+      "tokens": [
+        "midterm",
+        "nightmare",
+        "polls",
+        "trump"
+      ]
+    },
+    {
+      "title": "Why Manchester United Is Structurally Broken",
+      "tokens": [
+        "broken",
+        "manchester",
+        "structurally",
+        "united"
+      ]
+    },
+    {
+      "title": "Black Holes Can Split? The Spinning Loophole",
+      "tokens": [
+        "black",
+        "holes",
+        "loophole",
+        "spinning",
+        "split"
+      ]
+    },
+    {
+      "title": "Yemen's Taiz Is Dying: The Siege Map You Need To See",
+      "tokens": [
+        "dying",
+        "need",
+        "siege",
+        "taiz",
+        "yemen"
+      ]
+    },
+    {
+      "title": "Why UK High Streets Are Quietly Dying",
+      "tokens": [
+        "dying",
+        "high",
+        "quietly",
+        "streets"
+      ]
+    },
+    {
+      "title": "Arsenal knocked out of League Cup by fourth-tier Fleetwood Town | Geopolitics Explained",
+      "tokens": [
+        "arsenal",
+        "fleetwood",
+        "fourth",
+        "geopolitics",
+        "knocked",
+        "league",
+        "tier",
+        "town"
+      ]
+    },
+    {
+      "title": "Cowboy Space unveils 'Big Iron' rocket to launch 20,000 AI data centers | Science Explained",
+      "tokens": [
+        "centers",
+        "cowboy",
+        "data",
+        "iron",
+        "launch",
+        "rocket",
+        "science",
+        "space",
+        "unveils"
+      ]
+    },
+    {
+      "title": "Boeing says it won't significantly ramp up 737 Max production until late 2027",
+      "tokens": [
+        "boeing",
+        "late",
+        "production",
+        "ramp",
+        "significantly",
+        "until"
+      ]
+    },
+    {
+      "title": "Why One Word Cost Mbapp His China Empire",
+      "tokens": [
+        "china",
+        "cost",
+        "mbapp",
+        "word"
+      ]
+    },
+    {
+      "title": "Beyond Bad Cholesterol: Scientists Uncover a Hidden Driver of Heart Disease | Mind Blowing Fact",
+      "tokens": [
+        "beyond",
+        "blowing",
+        "cholesterol",
+        "disease",
+        "driver",
+        "fact",
+        "heart",
+        "hidden",
+        "mind",
+        "scientists",
+        "uncover"
+      ]
+    },
+    {
+      "title": "Egypt court fines journalist Lina Attalah and orders news site's closure | Global Powers Explai",
+      "tokens": [
+        "attalah",
+        "closure",
+        "court",
+        "egypt",
+        "explai",
+        "fines",
+        "journalist",
+        "lina",
+        "orders",
+        "powers",
+        "site"
+      ]
+    },
+    {
+      "title": "The Astronomers Secrets Discovery That Surprised Scientists",
+      "tokens": [
+        "astronomers",
+        "discovery",
+        "scientists",
+        "secrets",
+        "surprised"
+      ]
+    },
+    {
+      "title": "Why Meta's AI Director Just Quit To Build This",
+      "tokens": [
+        "build",
+        "director",
+        "just",
+        "meta",
+        "quit"
+      ]
+    },
+    {
+      "title": "Jailed for Reporting: The French Journalist's Silent Struggle",
+      "tokens": [
+        "french",
+        "jailed",
+        "journalist",
+        "reporting",
+        "silent",
+        "struggle"
+      ]
+    },
+    {
+      "title": "The Radio Echo That Broke Physics: 90 Years of Mystery",
+      "tokens": [
+        "broke",
+        "echo",
+        "mystery",
+        "physics",
+        "radio",
+        "years"
+      ]
+    },
+    {
+      "title": "What causes mysterious long delayed radio echoes in Earth's atmosphere? | Science Explained",
+      "tokens": [
+        "atmosphere",
+        "causes",
+        "delayed",
+        "earth",
+        "echoes",
+        "long",
+        "mysterious",
+        "radio",
+        "science"
+      ]
+    },
+    {
+      "title": "NASA Just Broke The Rules: The New Mission Race",
+      "tokens": [
+        "broke",
+        "just",
+        "mission",
+        "nasa",
+        "race",
+        "rules"
+      ]
+    },
+    {
+      "title": "The NASA Discovery That Surprised Scientists",
+      "tokens": [
+        "discovery",
+        "nasa",
+        "scientists",
+        "surprised"
+      ]
+    },
+    {
+      "title": "NASA Just Broke Its Own Rules For Speed",
+      "tokens": [
+        "broke",
+        "just",
+        "nasa",
+        "rules",
+        "speed"
+      ]
+    },
+    {
+      "title": "Why SpaceX's 330-Foot Rocket Just Broke History",
+      "tokens": [
+        "broke",
+        "foot",
+        "just",
+        "rocket",
+        "spacex"
+      ]
+    },
+    {
+      "title": "Why an Alibaba AI Tried to Upload Files to Beijing \u2013 The Hidden Risks",
+      "tokens": [
+        "alibaba",
+        "beijing",
+        "files",
+        "hidden",
+        "risks",
+        "tried",
+        "upload"
+      ]
+    },
+    {
+      "title": "Why Your City Is Fighting Over These Massive Power Hogs",
+      "tokens": [
+        "city",
+        "fighting",
+        "hogs",
+        "your"
+      ]
+    },
+    {
+      "title": "Macklemore begins Free Palestine tour after Ed Sheeran fallout | Entertainment Explained",
+      "tokens": [
+        "begins",
+        "entertainment",
+        "fallout",
+        "free",
+        "macklemore",
+        "palestine",
+        "sheeran",
+        "tour"
+      ]
+    },
+    {
+      "title": "Why Your Spittle Might Save Your Life (Cancer Breakthrough)",
+      "tokens": [
+        "breakthrough",
+        "cancer",
+        "life",
+        "might",
+        "save",
+        "spittle",
+        "your"
+      ]
+    },
+    {
+      "title": "Why The October Moon Looked Giant And Orange Tonight",
+      "tokens": [
+        "giant",
+        "looked",
+        "moon",
+        "october",
+        "orange",
+        "tonight"
+      ]
+    },
+    {
+      "title": "Anthropic's IPO: Why The AI Risk Warning Is Terrifying Investors",
+      "tokens": [
+        "anthropic",
+        "investors",
+        "risk",
+        "terrifying",
+        "warning"
+      ]
+    },
+    {
+      "title": "Why Chris Brown Didn't Go To Jail For This Attack",
+      "tokens": [
+        "attack",
+        "brown",
+        "chris",
+        "didn",
+        "jail"
+      ]
+    },
+    {
+      "title": "Beyond Bad Cholesterol: Scientists Uncover a Hidden Driver of Heart Disease | Mind Blowing",
+      "tokens": [
+        "beyond",
+        "blowing",
+        "cholesterol",
+        "disease",
+        "driver",
+        "heart",
+        "hidden",
+        "mind",
+        "scientists",
+        "uncover"
+      ]
+    },
+    {
+      "title": "Egypt court fines journalist Lina Attalah and orders news site's closure | Global Powers E",
+      "tokens": [
+        "attalah",
+        "closure",
+        "court",
+        "egypt",
+        "fines",
+        "journalist",
+        "lina",
+        "orders",
+        "powers",
+        "site"
+      ]
+    },
+    {
+      "title": "How Tiny Magnets Are Giving Prosthetic Hands Real Feel of Movement",
+      "tokens": [
+        "feel",
+        "giving",
+        "hands",
+        "magnets",
+        "movement",
+        "prosthetic",
+        "real",
+        "tiny"
+      ]
+    },
+    {
+      "title": "Why The US Court Just Blocked Trump's Ballot Move",
+      "tokens": [
+        "ballot",
+        "blocked",
+        "court",
+        "just",
+        "move",
+        "trump"
+      ]
+    },
+    {
+      "title": "Tiny Magnets Just Hacked The Human Sense Of Touch",
+      "tokens": [
+        "hacked",
+        "human",
+        "just",
+        "magnets",
+        "sense",
+        "tiny",
+        "touch"
+      ]
+    },
+    {
+      "title": "How Harry Kane\u2019s Consistency Shocked the World and Won the Ballon d\u2019Or (And Why It Matters",
+      "tokens": [
+        "ballon",
+        "consistency",
+        "harry",
+        "kane",
+        "matters",
+        "shocked"
+      ]
+    },
+    {
+      "title": "Why Spain Owns Women's Football Forever? The Shocking Stat",
+      "tokens": [
+        "football",
+        "forever",
+        "owns",
+        "shocking",
+        "spain",
+        "stat",
+        "women"
+      ]
+    },
+    {
+      "title": "Anthropic's $16B Secret: The AI Bubble Truth",
+      "tokens": [
+        "anthropic",
+        "bubble",
+        "truth"
+      ]
+    },
+    {
+      "title": "The Hidden pH Secret Killing Chemical Reactions",
+      "tokens": [
+        "chemical",
+        "hidden",
+        "killing",
+        "reactions"
+      ]
+    },
+    {
+      "title": "Why Brazil's Currency Just Crashed 12% Overnight",
+      "tokens": [
+        "brazil",
+        "crashed",
+        "currency",
+        "just",
+        "overnight"
+      ]
+    },
+    {
+      "title": "Man Utd Fans Expose The Real Culprit Behind The Collapse",
+      "tokens": [
+        "behind",
+        "collapse",
+        "culprit",
+        "expose",
+        "fans",
+        "real"
+      ]
+    },
+    {
+      "title": "Meta's $95 Billion Gamble & Anthropic's IPO Shock",
+      "tokens": [
+        "anthropic",
+        "billion",
+        "gamble",
+        "meta",
+        "shock"
+      ]
+    },
+    {
+      "title": "This Gene Keeps Your Brain Young Even With Alzheimer's",
+      "tokens": [
+        "alzheimer",
+        "brain",
+        "even",
+        "gene",
+        "keeps",
+        "young",
+        "your"
+      ]
+    },
+    {
+      "title": "Serbia's Student Revolution: How They Just Ended Vucic's Grip",
+      "tokens": [
+        "ended",
+        "grip",
+        "just",
+        "revolution",
+        "serbia",
+        "student",
+        "they",
+        "vucic"
+      ]
+    },
+    {
+      "title": "Why The Vikings Are The NFL's Only Unbeaten Team",
+      "tokens": [
+        "only",
+        "team",
+        "unbeaten",
+        "vikings"
+      ]
+    },
+    {
+      "title": "Why American Airlines Just Cut Its 2026 Outlook",
+      "tokens": [
+        "airlines",
+        "american",
+        "just",
+        "outlook"
+      ]
+    },
+    {
+      "title": "Vikings are last unbeaten team as Chiefs lose | Sports Explained",
+      "tokens": [
+        "chiefs",
+        "last",
+        "lose",
+        "sports",
+        "team",
+        "unbeaten",
+        "vikings"
+      ]
+    },
+    {
+      "title": "Salon owners urge Budget VAT cut as staffing pressures grow | Business Explained",
+      "tokens": [
+        "budget",
+        "business",
+        "grow",
+        "owners",
+        "pressures",
+        "salon",
+        "staffing",
+        "urge"
+      ]
+    },
+    {
+      "title": "Tiny Atomic Defects Reveal a Quantum Secret Hidden Inside an Unusual Metal | Mind Blowing",
+      "tokens": [
+        "atomic",
+        "blowing",
+        "defects",
+        "hidden",
+        "inside",
+        "metal",
+        "mind",
+        "quantum",
+        "reveal",
+        "tiny",
+        "unusual"
+      ]
+    },
+    {
+      "title": "The French government is hiding behind a 'riots' narrative | World Explained",
+      "tokens": [
+        "behind",
+        "french",
+        "government",
+        "hiding",
+        "narrative",
+        "riots"
+      ]
+    },
+    {
+      "title": "How Troy Premier Changed Everything in the Championship Race",
+      "tokens": [
+        "championship",
+        "changed",
+        "everything",
+        "premier",
+        "race",
+        "troy"
       ]
     }
   ],
