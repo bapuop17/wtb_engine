@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-01T19:24:32.462508",
-  "round_robin_idx": 0,
-  "country_rot_idx": 36,
-  "bgm_track_counter": 848293600,
+  "updated_at": "2026-11-02T00:39:14.577231",
+  "round_robin_idx": 1,
+  "country_rot_idx": 52,
+  "bgm_track_counter": 875998470,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -348,7 +348,11 @@
     "italy_hit_by_nationwide_protests_over",
     "why_italy_s_cost_of_living",
     "a_nutrient_found_in_red_meat",
-    "why_a_common_red_meat_nutrient"
+    "why_a_common_red_meat_nutrient",
+    "china_africa_green_mobility_cooperation_gains",
+    "ethiopia_s_russian_fighter_jets_raise",
+    "why_ethiopia_s_russian_jets_could",
+    "flock_keeps_ignoring_requests_to_cancel"
   ],
   "event_fingerprints": [
     {
@@ -6137,11 +6141,122 @@
         "nutrient",
         "worse"
       ]
+    },
+    {
+      "title": "China-Africa green mobility cooperation gains momentum at automotive partnership gathering",
+      "tokens": [
+        "africa",
+        "automotive",
+        "china",
+        "cooperation",
+        "gains",
+        "gathering",
+        "green",
+        "mobility",
+        "momentum",
+        "partnership"
+      ]
+    },
+    {
+      "title": "China-Africa green mobility cooperation gains momentum at automotive partnership gatheri #Short",
+      "tokens": [
+        "africa",
+        "automotive",
+        "china",
+        "cooperation",
+        "gains",
+        "gatheri",
+        "green",
+        "mobility",
+        "momentum",
+        "partnership",
+        "short"
+      ]
+    },
+    {
+      "title": "Ethiopia's Russian fighter jets raise stakes in Eritrea standoff",
+      "tokens": [
+        "abiy",
+        "ahmed",
+        "could",
+        "eritrea",
+        "ethiopia",
+        "fighter",
+        "jets",
+        "latest",
+        "martin",
+        "military",
+        "minister",
+        "plaut",
+        "prime",
+        "purchases",
+        "rais",
+        "raise",
+        "russian",
+        "stakes",
+        "standoff",
+        "transform"
+      ]
+    },
+    {
+      "title": "Why Ethiopia's Russian Jets Could Ignite a New Horn of Africa War",
+      "tokens": [
+        "africa",
+        "could",
+        "eritrea",
+        "ethiopia",
+        "fighter",
+        "horn",
+        "ignite",
+        "jets",
+        "raise",
+        "russian",
+        "stakes",
+        "standoff"
+      ]
+    },
+    {
+      "title": "Flock keeps ignoring requests to cancel its contracts",
+      "tokens": [
+        "cancel",
+        "canceling",
+        "cities",
+        "city",
+        "contracts",
+        "council",
+        "difficult",
+        "discovering",
+        "flock",
+        "ignoring",
+        "instances",
+        "just",
+        "keeps",
+        "many",
+        "minnesota",
+        "more",
+        "plymouth",
+        "requests",
+        "safety",
+        "some",
+        "their",
+        "vote",
+        "while"
+      ]
+    },
+    {
+      "title": "Flock keeps ignoring requests to cancel its contracts | Technology Explained",
+      "tokens": [
+        "cancel",
+        "contracts",
+        "flock",
+        "ignoring",
+        "keeps",
+        "requests",
+        "technology"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "ENTERTAINMENT",
     "GEOPOLITICS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -6179,11 +6294,11 @@
     "GEOPOLITICS",
     "CYBER_INTELLIGENCE",
     "INDIA_TRENDING",
-    "MIND_BLOWING_FACTS"
+    "MIND_BLOWING_FACTS",
+    "GEOPOLITICS",
+    "TECHNOLOGY"
   ],
   "last_sources": [
-    "Al Jazeera Global",
-    "Hollywood Reporter",
     "Al Jazeera Global",
     "Al Jazeera Global",
     "Al Jazeera Global",
@@ -6221,7 +6336,9 @@
     "Top Viral News [RUSSIA]",
     "Google News Global Tech 24h",
     "Top Viral News [ITALY]",
-    "SciTechDaily Discoveries"
+    "SciTechDaily Discoveries",
+    "Country Documentary Wire [ETHIOPIA]",
+    "The Verge Tech"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -6259,6 +6376,8 @@
     "RUSSIA",
     "GLOBAL TECH & AI",
     "ITALY",
-    "MIND-BLOWING FACT"
+    "MIND-BLOWING FACT",
+    "ETHIOPIA",
+    "GLOBAL TECH & AI"
   ]
 }
