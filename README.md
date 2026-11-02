@@ -3,7 +3,7 @@
 ## Production schedule
 
 - GitHub Actions checks twice an hour at 17 and 47 minutes India time. A saved cadence marker allows a full video batch only once every two hours; a missed check gets another chance in about 30 minutes.
-- A normal batch targets two long documentaries and two linked vertical Shorts (four uploads). If a run publishes only part of its batch, the next hourly check can fill the gap.
+- A normal batch targets two long documentaries and two linked vertical Shorts (four uploads). If a run publishes only part of its batch, the next half-hour check can fill the gap.
 - Code pushes do not start production. Use **Run workflow** for an immediate manual run; automatic production remains schedule-driven.
 - GitHub scheduled events are best-effort. The run summary and `output/wtb_1080p_report.json` distinguish videos rendered from videos YouTube confirmed as uploaded.
 
