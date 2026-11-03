@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-03T11:07:09.587972",
-  "round_robin_idx": 8,
-  "country_rot_idx": 14,
-  "bgm_track_counter": 1104665133,
+  "updated_at": "2026-11-03T12:21:56.145467",
+  "round_robin_idx": 9,
+  "country_rot_idx": 30,
+  "bgm_track_counter": 1133673253,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -419,58 +419,12 @@
     "cuba_s_health_collapse_how_us",
     "uk_and_eu_agree_draft_deal",
     "uk_also_affected_by_cyber_attack",
-    "europe_s_fridge_hack_the_ai"
+    "europe_s_fridge_hack_the_ai",
+    "bangladesh_garment_workers_halt_production_as",
+    "germany_news_merz_hopes_for_korean",
+    "bangladesh_garment_crisis_679_factories_shut"
   ],
   "event_fingerprints": [
-    {
-      "title": "Israeli attacks in Gaza kill four, including a young girl",
-      "tokens": [
-        "young",
-        "girl",
-        "attacks",
-        "four",
-        "including",
-        "kill",
-        "gaza",
-        "israeli"
-      ]
-    },
-    {
-      "title": "Newborn twins fight for survival as conflict fuels Yemen's hunger crisis",
-      "tokens": [
-        "twins",
-        "crisis",
-        "newborn",
-        "fight",
-        "hunger",
-        "survival",
-        "conflict",
-        "yemen",
-        "fuels"
-      ]
-    },
-    {
-      "title": "Wildwood's director says AI is 'antithetical to everything that we are at this studio'",
-      "tokens": [
-        "antithetical",
-        "studio",
-        "director",
-        "wildwood",
-        "everything"
-      ]
-    },
-    {
-      "title": "Ukraine and Russia exchange strikes after US envoy visit to the Kremlin",
-      "tokens": [
-        "russia",
-        "kremlin",
-        "ukraine",
-        "exchange",
-        "strikes",
-        "visit",
-        "envoy"
-      ]
-    },
     {
       "title": "'I wasn't thinking straight' says five jobs civil servant",
       "tokens": [
@@ -7161,11 +7115,84 @@
         "supermarket",
         "which"
       ]
+    },
+    {
+      "title": "Bangladesh garment workers halt production as wage protests enter fourth day",
+      "tokens": [
+        "bangladesh",
+        "edge",
+        "enter",
+        "factories",
+        "fashionnetwork",
+        "fourth",
+        "france",
+        "garment",
+        "halt",
+        "industry",
+        "keep",
+        "production",
+        "protests",
+        "reopen",
+        "wage",
+        "workers"
+      ]
+    },
+    {
+      "title": "Germany news: Merz hopes for Korean reunification at DMZ",
+      "tokens": [
+        "border",
+        "chancellor",
+        "china",
+        "during",
+        "expressed",
+        "fortified",
+        "friedrich",
+        "germany",
+        "heavily",
+        "held",
+        "hope",
+        "hopes",
+        "korean",
+        "meanwhile",
+        "merz",
+        "president",
+        "reunification",
+        "steinmeier",
+        "talks",
+        "visit"
+      ]
+    },
+    {
+      "title": "Bangladesh Garment Crisis: 679 Factories Shut, Wage War Escalates",
+      "tokens": [
+        "bangladesh",
+        "enter",
+        "escalates",
+        "factories",
+        "fourth",
+        "garment",
+        "halt",
+        "production",
+        "protests",
+        "shut",
+        "wage",
+        "workers"
+      ]
+    },
+    {
+      "title": "Germany news: Merz hopes for Korean reunification at DMZ | Stock Markets Explained",
+      "tokens": [
+        "germany",
+        "hopes",
+        "korean",
+        "markets",
+        "merz",
+        "reunification",
+        "stock"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "GLOBAL_POWERS",
     "GEOPOLITICS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -7203,11 +7230,11 @@
     "GEOPOLITICS",
     "GLOBAL_POWERS",
     "INDIA_TRENDING",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "GLOBAL_POWERS",
+    "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Al Jazeera Global",
-    "The Guardian World",
     "Al Jazeera Global",
     "Al Jazeera International",
     "France24 Global Affairs",
@@ -7245,7 +7272,9 @@
     "Top Viral News [KAZAKHSTAN]",
     "Top Viral News [OMAN]",
     "Country Documentary Wire [UNITED KINGDOM]",
-    "BBC Technology"
+    "BBC Technology",
+    "Top Viral News [BANGLADESH]",
+    "DW Business & Trade"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -7295,6 +7324,8 @@
     "IRAN",
     "OMAN",
     "UNITED KINGDOM",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "BANGLADESH",
+    "GERMANY"
   ]
 }
