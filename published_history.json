@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-03T10:20:45.070161",
+  "updated_at": "2026-11-03T11:07:09.587972",
   "round_robin_idx": 8,
   "country_rot_idx": 14,
-  "bgm_track_counter": 1127183871,
+  "bgm_track_counter": 1104665133,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -415,26 +415,13 @@
     "hormuz_attack_leaves_hole_in_merchant",
     "why_the_qeshm_island_blasts_could",
     "why_the_hormuz_attack_could_redraw",
-    "cuba_s_hospitals_on_the_brink",
-    "apple_watch_s_ai_features_for",
+    "apple_watch_ai_rewind_privacy_war",
     "cuba_s_health_collapse_how_us",
-    "apple_watch_ai_rewind_privacy_war"
+    "uk_and_eu_agree_draft_deal",
+    "uk_also_affected_by_cyber_attack",
+    "europe_s_fridge_hack_the_ai"
   ],
   "event_fingerprints": [
-    {
-      "title": "Bulgaria: Concerns about security in the Black Sea dominate presidential election campaign",
-      "tokens": [
-        "election",
-        "about",
-        "black",
-        "presidential",
-        "security",
-        "campaign",
-        "bulgaria",
-        "concerns",
-        "dominate"
-      ]
-    },
     {
       "title": "Israeli attacks in Gaza kill four, including a young girl",
       "tokens": [
@@ -7086,47 +7073,12 @@
       ]
     },
     {
-      "title": "Cuba's hospitals on the brink as US sanctions and oil crisis cripple healthcare",
-      "tokens": [
-        "blam",
-        "caught",
-        "cripple",
-        "cuba",
-        "cubans",
-        "healthcare",
-        "hospitals",
-        "india",
-        "middle",
-        "million",
-        "more",
-        "nine",
-        "sanctions",
-        "than",
-        "times"
-      ]
-    },
-    {
-      "title": "Apple Watch's AI features for rewinding and recapping conversations begin beta testing",
+      "title": "Apple Watch AI Rewind: Privacy War Begins",
       "tokens": [
         "apple",
-        "audio",
-        "begin",
-        "beta",
-        "conversations",
-        "feature",
-        "features",
-        "four",
-        "help",
-        "includes",
-        "intelligence",
-        "notes",
-        "recapping",
-        "remember",
-        "rewinding",
-        "someone",
-        "take",
-        "technology",
-        "testing",
+        "begins",
+        "privacy",
+        "rewind",
         "watch"
       ]
     },
@@ -7134,10 +7086,8 @@
       "title": "Cuba's Health Collapse: How US Sanctions and Oil Shortages Are Killing Hospitals",
       "tokens": [
         "collapse",
-        "cripple",
         "cuba",
         "health",
-        "healthcare",
         "hospitals",
         "killing",
         "sanctions",
@@ -7145,20 +7095,71 @@
       ]
     },
     {
-      "title": "Apple Watch AI Rewind: Privacy War Begins",
+      "title": "UK and EU agree draft deal to scrap Brexit red tape over food exports",
       "tokens": [
-        "apple",
-        "begin",
-        "begins",
-        "beta",
-        "conversations",
-        "features",
-        "privacy",
-        "recapping",
-        "rewind",
-        "rewinding",
-        "testing",
-        "watch"
+        "agree",
+        "agreed",
+        "ahead",
+        "brexit",
+        "called",
+        "checks",
+        "deal",
+        "draft",
+        "exports",
+        "food",
+        "later",
+        "month",
+        "most",
+        "part",
+        "remove",
+        "reset",
+        "scrap",
+        "significant",
+        "summit",
+        "tape"
+      ]
+    },
+    {
+      "title": "UK also affected by cyber-attack which hit European supermarket fridges",
+      "tokens": [
+        "affected",
+        "also",
+        "attack",
+        "being",
+        "belgium",
+        "countries",
+        "cyber",
+        "european",
+        "freezers",
+        "fridges",
+        "hiked",
+        "including",
+        "ireland",
+        "monday",
+        "reported",
+        "supermarket",
+        "supermarkets",
+        "suspected",
+        "sweden",
+        "temperature",
+        "which"
+      ]
+    },
+    {
+      "title": "Europe's Fridge Hack: The AI Cyber War Is Here",
+      "tokens": [
+        "affected",
+        "also",
+        "attack",
+        "cyber",
+        "europe",
+        "european",
+        "fridge",
+        "fridges",
+        "hack",
+        "here",
+        "supermarket",
+        "which"
       ]
     }
   ],
@@ -7243,8 +7244,8 @@
     "Top Viral News [VENEZUELA]",
     "Top Viral News [KAZAKHSTAN]",
     "Top Viral News [OMAN]",
-    "Country Documentary Wire [CUBA]",
-    "TechCrunch AI"
+    "Country Documentary Wire [UNITED KINGDOM]",
+    "BBC Technology"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -7293,7 +7294,7 @@
     "GLOBAL TECH & AI",
     "IRAN",
     "OMAN",
-    "CUBA",
+    "UNITED KINGDOM",
     "GLOBAL TECH & AI"
   ]
 }
