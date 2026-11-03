@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-03T22:27:16.692622",
-  "round_robin_idx": 16,
-  "country_rot_idx": 67,
-  "bgm_track_counter": 1243721952,
+  "updated_at": "2026-11-03T23:57:55.564913",
+  "round_robin_idx": 17,
+  "country_rot_idx": 8,
+  "bgm_track_counter": 1258144644,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -7416,8 +7416,6 @@
     "Top Viral News [ROMANIA]"
   ],
   "last_countries": [
-    "UKRAINE",
-    "YEMEN",
     "SPACE & SCIENCE",
     "SAUDI ARABIA",
     "UNITED STATES",
@@ -7465,6 +7463,8 @@
     "SPAIN",
     "GLOBAL MARKETS",
     "UNITED KINGDOM",
-    "FINLAND"
+    "FINLAND",
+    "IRAN",
+    "INDIA"
   ]
 }
