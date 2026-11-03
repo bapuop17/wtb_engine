@@ -1,4 +1,4 @@
-name: WTB News Engine V38 (24x7 Self-Chaining Auto-Upload • Point-to-Point HD Visuals • Global Countries + Stock Markets)
+name: WTB News Engine V39 (24x7 Smart-Paced Auto-Upload • Point-to-Point HD Visuals • Global Countries + Stock Markets)
 
 on:
   workflow_dispatch:
@@ -8,9 +8,9 @@ on:
         required: false
         default: 'false'
       pairs_per_run:
-        description: 'Number of Long+Short video pairs per run (2 = 2 Long + 2 Linked Shorts = 4 Videos)'
+        description: 'Number of Long+Short video pairs per run (1 = 1 Long + 1 Short = 2 Videos every ~1.5-2h = 20-24 Videos/Day)'
         required: false
-        default: '2'
+        default: '1'
   push:
     branches:
       - main
@@ -18,11 +18,9 @@ on:
       - 'wtb_engine.py'
       - '.github/workflows/**'
   schedule:
-    # 4 Staggered Hourly Cron Triggers + Self-Chaining Auto-Trigger below = 100% Guaranteed 24x7 Execution!
-    - cron: '7 * * * *'
-    - cron: '24 * * * *'
-    - cron: '41 * * * *'
-    - cron: '56 * * * *'
+    # Staggered Cron Triggers + Smart-Paced Self-Chaining Auto-Trigger below = 20-24 Videos Smoothly Spread Across 24 Hours!
+    - cron: '12 */2 * * *'
+    - cron: '42 1,5,9,13,17,21 * * *'
 
 permissions:
   contents: write
@@ -39,7 +37,7 @@ env:
 jobs:
   build_and_publish:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 120
 
     steps:
       - name: Checkout Repository
@@ -70,7 +68,7 @@ jobs:
             fonts-freefont-ttf \
             fonts-noto-core
 
-      - name: Install Python V38 Documentary & Motion-Graphics Libraries
+      - name: Install Python V39 Documentary & Motion-Graphics Libraries
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
@@ -93,7 +91,7 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V38 Documentary News Engine (2 Long + 2 Shorts = 4 Videos)
+      - name: Run WTB V39 Documentary News Engine
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
@@ -104,7 +102,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FORCE_MEGA_NEWS: ${{ github.event.inputs.force_mega_news || 'false' }}
-          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || '2' }}
+          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || '1' }}
         run: |
           python3 -u wtb_engine.py
 
@@ -117,7 +115,7 @@ jobs:
           git checkout -- .github/workflows/ || true
           git rm -f --ignore-unmatch workflow_schedule_state.json .github/scripts/claim_schedule_slot.py || true
           test -f published_history.json && git add published_history.json || true
-          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V38]"
+          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V39]"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main || (sleep 3 && git pull --rebase -X theirs origin main && git push origin HEAD:main) || true
 
@@ -133,12 +131,12 @@ jobs:
           if-no-files-found: ignore
           retention-days: 3
 
-      - name: Self-Chaining 24x7 Auto-Scheduler (Triggers Next Batch After 18-Min Cooldown)
+      - name: Smart-Paced 24x7 Auto-Scheduler (Spaces Uploads Across 24 Hours to Respect YouTube Channel Limit)
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh workflow enable "test_and_run.yml" || true
-          echo "⏳ Waiting 18 minutes before auto-triggering next 4-video batch (so 24-hour continuous production never relies on GitHub cron lag)..."
-          sleep 1080
+          echo "⏳ Waiting 60 minutes before auto-triggering next batch so 20-24 daily uploads are smoothly spread across 24 hours..."
+          sleep 3600
           gh workflow run "test_and_run.yml" --ref main || true
