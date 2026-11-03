@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-03T02:54:42.284791",
-  "round_robin_idx": 6,
-  "country_rot_idx": 57,
-  "bgm_track_counter": 1039747503,
+  "updated_at": "2026-11-03T04:21:03.314213",
+  "round_robin_idx": 7,
+  "country_rot_idx": 73,
+  "bgm_track_counter": 1075100037,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -410,62 +410,13 @@
     "we_re_technology_savvy_military_says",
     "secretary_rubio_s_meeting_with_venezuelan",
     "at_home_in_space_opens_caps",
-    "why_rubio_s_venezuela_meeting_could"
+    "why_rubio_s_venezuela_meeting_could",
+    "several_blasts_reported_on_iran_s",
+    "hormuz_attack_leaves_hole_in_merchant",
+    "why_the_qeshm_island_blasts_could",
+    "why_the_hormuz_attack_could_redraw"
   ],
   "event_fingerprints": [
-    {
-      "title": "Trump, Putin and Xi at one table, without Ukraine. What Moscow wants from the proposal and why Beijing might agree.",
-      "tokens": [
-        "agree",
-        "beijing",
-        "ukraine",
-        "might",
-        "proposal",
-        "wants",
-        "without",
-        "trump",
-        "moscow",
-        "table",
-        "putin"
-      ]
-    },
-    {
-      "title": "Fate unknown of many returned to DPR Korea from China: UN independent experts",
-      "tokens": [
-        "returned",
-        "fate",
-        "unknown",
-        "korea",
-        "independent",
-        "experts",
-        "china",
-        "many"
-      ]
-    },
-    {
-      "title": "Putin releases American Stephen Hubbard from Russian prison",
-      "tokens": [
-        "stephen",
-        "putin",
-        "american",
-        "prison",
-        "releases",
-        "russian",
-        "hubbard"
-      ]
-    },
-    {
-      "title": "Macron accuses foreign leaders of exploiting French riots",
-      "tokens": [
-        "exploiting",
-        "riots",
-        "french",
-        "accuses",
-        "foreign",
-        "leaders",
-        "macron"
-      ]
-    },
     {
       "title": "Russia arrests German man, calls him a Ukraine 'mercenary'",
       "tokens": [
@@ -7104,11 +7055,80 @@
         "venezuela",
         "venezuelan"
       ]
+    },
+    {
+      "title": "Several blasts reported on Iran's Qeshm Island near Strait of Hormuz",
+      "tokens": [
+        "azerbaijan",
+        "bandar",
+        "blasts",
+        "explosions",
+        "heard",
+        "hormuz",
+        "iran",
+        "island",
+        "latest",
+        "lengeh",
+        "media",
+        "near",
+        "qeshm",
+        "reported",
+        "several",
+        "strait"
+      ]
+    },
+    {
+      "title": "Hormuz attack leaves hole in merchant vessel off Oman",
+      "tokens": [
+        "attack",
+        "authorities",
+        "hole",
+        "hormuz",
+        "india",
+        "indian",
+        "killed",
+        "leaves",
+        "merchant",
+        "oman",
+        "sailor",
+        "tradewinds",
+        "vessel"
+      ]
+    },
+    {
+      "title": "Why the Qeshm Island Blasts Could Redraw Global Power Maps",
+      "tokens": [
+        "blasts",
+        "could",
+        "hormuz",
+        "iran",
+        "island",
+        "maps",
+        "near",
+        "qeshm",
+        "redraw",
+        "reported",
+        "several",
+        "strait"
+      ]
+    },
+    {
+      "title": "Why the Hormuz Attack Could Redraw Global Shipping Power",
+      "tokens": [
+        "attack",
+        "could",
+        "hole",
+        "hormuz",
+        "leaves",
+        "merchant",
+        "oman",
+        "redraw",
+        "shipping",
+        "vessel"
+      ]
     }
   ],
   "last_categories": [
-    "DAILY_24H_MEGA_NEWS",
-    "SCIENCE",
     "AI_ROBOTICS",
     "GEOPOLITICS",
     "GLOBAL_POWERS",
@@ -7146,11 +7166,11 @@
     "SCIENCE",
     "GLOBAL_POWERS",
     "HEALTH",
+    "GLOBAL_POWERS",
+    "GEOPOLITICS",
     "GLOBAL_POWERS"
   ],
   "last_sources": [
-    "Global Wire Services",
-    "Space.com Breaking",
     "TechCrunch AI",
     "Al Jazeera Global",
     "Al Jazeera Global",
@@ -7188,7 +7208,9 @@
     "Space.com Breaking",
     "Top Viral News [NEW ZEALAND]",
     "Country Documentary Wire [AFGHANISTAN]",
-    "Top Viral News [VENEZUELA]"
+    "Top Viral News [VENEZUELA]",
+    "Top Viral News [KAZAKHSTAN]",
+    "Top Viral News [OMAN]"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -7234,6 +7256,8 @@
     "INDIA",
     "PAKISTAN",
     "UNITED STATES",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "IRAN",
+    "OMAN"
   ]
 }
