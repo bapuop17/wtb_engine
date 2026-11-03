@@ -1,4 +1,4 @@
-name: WTB News Engine V36 (Auto-Scheduled 4 Videos • 7-Source 1080p HD Visuals • Geopolitics + All Categories • 52 Languages)
+name: WTB News Engine V38 (24x7 Self-Chaining Auto-Upload • Point-to-Point HD Visuals • Global Countries + Stock Markets)
 
 on:
   workflow_dispatch:
@@ -18,9 +18,11 @@ on:
       - 'wtb_engine.py'
       - '.github/workflows/**'
   schedule:
-    # Runs every 1.5 hours at off-peak minute 7 & 37 (~16 runs/day = 15+ Geopolitics videos + All Categories!)
+    # 4 Staggered Hourly Cron Triggers + Self-Chaining Auto-Trigger below = 100% Guaranteed 24x7 Execution!
     - cron: '7 * * * *'
-    - cron: '37 1,3,5,7,9,11,13,15,17,19,21,23 * * *'
+    - cron: '24 * * * *'
+    - cron: '41 * * * *'
+    - cron: '56 * * * *'
 
 permissions:
   contents: write
@@ -68,7 +70,7 @@ jobs:
             fonts-freefont-ttf \
             fonts-noto-core
 
-      - name: Install Python V36 Documentary & Motion-Graphics Libraries
+      - name: Install Python V38 Documentary & Motion-Graphics Libraries
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
@@ -91,7 +93,7 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V36 Documentary News Engine (2 Long + 2 Shorts = 4 Videos)
+      - name: Run WTB V38 Documentary News Engine (2 Long + 2 Shorts = 4 Videos)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
@@ -115,16 +117,9 @@ jobs:
           git checkout -- .github/workflows/ || true
           git rm -f --ignore-unmatch workflow_schedule_state.json .github/scripts/claim_schedule_slot.py || true
           test -f published_history.json && git add published_history.json || true
-          git diff --staged --quiet || git commit -m "Auto-sync published_history.json & clean schedule state"
+          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V38]"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main || (sleep 3 && git pull --rebase -X theirs origin main && git push origin HEAD:main) || true
-
-      - name: Ensure Workflow Schedule stays Active on GitHub
-        if: always()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh workflow enable "test_and_run.yml" || true
 
       - name: Upload Generated 1080p Videos, Thumbnails & QC Reports to GitHub Artifacts
         if: always()
@@ -137,3 +132,13 @@ jobs:
             output/*.json
           if-no-files-found: ignore
           retention-days: 3
+
+      - name: Self-Chaining 24x7 Auto-Scheduler (Triggers Next Batch After 18-Min Cooldown)
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow enable "test_and_run.yml" || true
+          echo "⏳ Waiting 18 minutes before auto-triggering next 4-video batch (so 24-hour continuous production never relies on GitHub cron lag)..."
+          sleep 1080
+          gh workflow run "test_and_run.yml" --ref main || true
