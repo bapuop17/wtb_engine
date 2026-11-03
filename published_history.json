@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-11-03T15:21:04.623286",
+  "updated_at": "2026-11-03T15:42:25.130618",
   "round_robin_idx": 11,
-  "country_rot_idx": 62,
+  "country_rot_idx": 3,
   "bgm_track_counter": 1212432891,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
@@ -429,31 +429,11 @@
     "why_is_government_silent_on_ok",
     "after_seven_strikes_on_cargo_ships",
     "why_ghana_s_mp_is_stuck",
-    "black_sea_crisis_seven_missing_sailors"
+    "black_sea_crisis_seven_missing_sailors",
+    "election_day_here_s_what_to",
+    "us_seeks_deeper_myanmar_ties_access"
   ],
   "event_fingerprints": [
-    {
-      "title": "Barclays cutting 5,000 jobs as it increases reliance on AI",
-      "tokens": [
-        "jobs",
-        "cutting",
-        "barclays",
-        "reliance",
-        "increases"
-      ]
-    },
-    {
-      "title": "Inside the 27-Kilometer Machine Recreating the First Second of the Universe",
-      "tokens": [
-        "first",
-        "inside",
-        "kilometer",
-        "machine",
-        "recreating",
-        "second",
-        "universe"
-      ]
-    },
     {
       "title": "On this day in space! Oct. 22, 1992: Ashes of 'Star Trek' creator Gene Roddenberry launch into space on NASA shuttle",
       "tokens": [
@@ -7303,6 +7283,52 @@
         "strikes",
         "would"
       ]
+    },
+    {
+      "title": "Election Day: Here's what to know before you cast a ballot in Florida or Georgia",
+      "tokens": [
+        "amendments",
+        "among",
+        "ballot",
+        "before",
+        "cast",
+        "early",
+        "election",
+        "florida",
+        "georgia",
+        "here",
+        "know",
+        "leading",
+        "many",
+        "mean",
+        "questions",
+        "states",
+        "votes",
+        "voting"
+      ]
+    },
+    {
+      "title": "US seeks deeper Myanmar ties, access to 'bountiful' rare earths",
+      "tokens": [
+        "access",
+        "backed",
+        "bountiful",
+        "china",
+        "counter",
+        "deepen",
+        "deeper",
+        "earths",
+        "edge",
+        "engagement",
+        "government",
+        "malaysia",
+        "military",
+        "myanmar",
+        "plans",
+        "rare",
+        "seeks",
+        "ties"
+      ]
     }
   ],
   "last_categories": [
@@ -7390,8 +7416,6 @@
     "Top Viral News [ROMANIA]"
   ],
   "last_countries": [
-    "RUSSIA",
-    "MIND-BLOWING FACT",
     "FRANCE",
     "SPAIN",
     "GLOBAL TECH & AI",
@@ -7439,6 +7463,8 @@
     "VIETNAM",
     "SPACE & SCIENCE",
     "NETHERLANDS",
-    "ROMANIA"
+    "ROMANIA",
+    "GEORGIA",
+    "MYANMAR"
   ]
 }
