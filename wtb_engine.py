@@ -65,25 +65,25 @@ HISTORY_FILE = "published_history.json"
 # ==============================================================================
 ORDERED_PILLARS = [
     "GEOPOLITICS",
+    "STOCK_MARKETS",
+    "GEOPOLITICS",
     "INDIA_TRENDING",
-    "GEOPOLITICS",
-    "TECHNOLOGY",
-    "GEOPOLITICS",
-    "SCIENCE",
-    "GEOPOLITICS",
-    "HEALTH",
-    "GEOPOLITICS",
-    "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "BUSINESS",
     "GEOPOLITICS",
-    "AI_ROBOTICS",
+    "DEFENSE_MILITARY",
+    "GEOPOLITICS",
+    "STOCK_MARKETS",
+    "GEOPOLITICS",
+    "TECHNOLOGY",
     "GEOPOLITICS",
     "GLOBAL_POWERS",
     "GEOPOLITICS",
-    "CYBER_INTELLIGENCE",
+    "STOCK_MARKETS",
     "GEOPOLITICS",
-    "MIND_BLOWING_FACTS"
+    "AI_ROBOTICS",
+    "GEOPOLITICS",
+    "SCIENCE"
 ]
 
 PILLAR_TO_CORE_HUB = {
@@ -101,6 +101,7 @@ PILLAR_TO_CORE_HUB = {
     "SPACE_COSMOS": "SCIENCE",
     "ENERGY_CLIMATE": "SCIENCE",
     "BUSINESS": "BUSINESS",
+    "STOCK_MARKETS": "BUSINESS",
     "BILLIONAIRES_MARKETS": "BUSINESS",
     "HEALTH": "HEALTH",
     "SPORTS": "SPORTS",
@@ -235,21 +236,23 @@ CATEGORY_FEEDS = {
     },
     "BUSINESS": {
         "yt_category_id": "25",
-        "playlist_title": "World Talk Brief • Indian Economy, Global Markets & Geoeconomics",
+        "playlist_title": "World Talk Brief • Stock Markets, Indian Economy & Global Geoeconomics",
         "badge_color": (12, 160, 105),
         "accent_color": (255, 215, 0),
-        "hook_tag": "MONEY & MARKETS FILE",
+        "hook_tag": "STOCKS & MARKETS FILE",
         "bgm_mood": "high_stakes_finance",
-        "reddit_subs": "economics+business+finance+IndiaInvestments",
-        "search_query": "indian economy global economy stock market RBI trade tariffs billionaire",
-        "domain_context": "economy finance market trade",
+        "reddit_subs": "economics+business+finance+IndiaInvestments+stocks",
+        "search_query": "stock market Nifty Sensex Wall Street RBI Federal Reserve crude oil gold tariffs",
+        "domain_context": "stock market economy finance trade",
         "feeds": [
+            ("India Stock Market Nifty Sensex 24h", "https://news.google.com/rss/search?q=(Nifty+OR+Sensex+OR+stock+market+OR+SEBI+OR+RBI+OR+FII+OR+IPO+OR+rupee+OR+Reliance+OR+Tata)+when:1d&hl=en-IN&gl=IN&ceid=IN:en"),
+            ("Global Stock Markets & Wall Street 24h", "https://news.google.com/rss/search?q=(Wall+Street+OR+stock+market+OR+Federal+Reserve+OR+S%26P+500+OR+Nasdaq+OR+crude+oil+OR+tariffs+OR+sanctions+OR+trillion)+when:1d&hl=en-US&gl=US&ceid=US:en"),
             ("Google News India Business 24h", "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en"),
             ("India Economy, RBI & Trade Trending", "https://news.google.com/rss/search?q=(India+economy+OR+RBI+OR+manufacturing+OR+exports+OR+tariffs+OR+BRICS+OR+rupee+OR+billion)+when:1d&hl=en-IN&gl=IN&ceid=IN:en"),
             ("Google News Global Business 24h", "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en"),
-            ("CNBC Business", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"),
-            ("BBC Business", "http://feeds.bbci.co.uk/news/business/rss.xml"),
-            ("DW Business", "https://rss.dw.com/rdf/rss-en-bus")
+            ("CNBC Markets & Finance", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"),
+            ("BBC Business & Economy", "http://feeds.bbci.co.uk/news/business/rss.xml"),
+            ("DW Business & Trade", "https://rss.dw.com/rdf/rss-en-bus")
         ]
     },
     "HEALTH": {
@@ -395,7 +398,7 @@ LOW_INTEREST_BORING_WORDS = [
     "queer film", "film festival", "staff remembers", "our captain", "obituary", "sinkholes", "sinkhole", "starting lineup", "carabao cup", "premier league", "champions league", "la liga", "serie a", "bundesliga", "europa league", "match preview", "penalty shootout", "squad rotation", "cup tie", "etihad stadium", "old trafford", "anfield", "stamford bridge", "haaland", "manchester city", "manchester united", "arsenal", "chelsea", "liverpool", "tottenham", "spurs", "real madrid", "barcelona", "transfer window", "sacking season", "ballon d'or", "grand prix", "touchdown",
     "farmers decide what to plan", "what to plant", "food safety", "cooking oil", "recipe",
     "gardening", "horoscope", "weather forecast", "local traffic", "high school", "county fair",
-    "spelling bee", "pet adoption", "charity run", "book club", "restaurant review"
+    "spelling bee", "pet adoption", "charity run", "book club", "restaurant review", "at home in space", "air and space museum", "museum opens", "exhibit opens", "exhibition opens", "gallery opens", "match thread", "unofficial test", "test match", "live score", "live blog", "stumps"
 ]
 
 def build_dynamic_country_viral_feeds(hist_obj, count_countries=7):
@@ -3349,7 +3352,11 @@ def get_story_anchor_and_context_tokens(dossier):
         "were", "their", "there", "these", "those", "would", "could", "should", "have", "been", "being",
         "make", "made", "making", "take", "took", "taken", "takes", "charge", "started", "began",
         "tried", "trying", "leaves", "leaving", "turn", "turns", "turned", "game", "changer", "gamechanger",
-        "strike", "direct", "package", "handed", "triggering", "triggers", "triggered"
+        "strike", "direct", "package", "handed", "triggering", "triggers", "triggered",
+        "home", "homes", "house", "houses", "open", "opens", "opened", "opening", "caps", "cap",
+        "air", "show", "shows", "showing", "inside", "secret", "secrets", "future", "museum",
+        "exhibit", "exhibition", "student", "students", "contest", "triumph", "dispensary",
+        "moving", "london", "antilla", "celebrity", "actor", "bollywood"
     }
 
     generic_event_nouns = {
@@ -3709,7 +3716,9 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         "chalkboard", "blackboard", "subic", "charcuterie", "cheese board", "cowboy", "western movie",
         "the edge tv", "steamship", "shipwreck", "wreck", "sunken", "nazi", "treasure", "dancing thief",
         "thieves", "pachaiyappa", "landmarks", "places to visit", "things to do", "travel guide",
-        "pagoda", "cherry blossom", "sakura", "mount fuji", "osaka castle", "waterfall"
+        "pagoda", "cherry blossom", "sakura", "mount fuji", "osaka castle", "waterfall",
+        "salman khan", "shah rukh", "bollywood", "dispensary", "antilla", "moving to london",
+        "coding contest", "school contest", "nikki haley"
     ]
 
     story_ctx_low = f"{story_title} {topic_anchor} {dossier.get('country_profile', {}).get('name', '')}".lower()
@@ -7080,26 +7089,8 @@ def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used
         if v_obj is not None:
             pool_clips.append(v_obj)
 
-    # V36 GUARANTEED MOVING VIDEO B-ROLL TOP-UP:
-    # If external video sites (YouTube/Dailymotion) rate-limit the GitHub runner and return < 6 video clips,
-    # synthesize true 1080p 3D Multi-Plane Parallax Cinema Video Clips from our top verified HD press photos
-    # so EVERY chapter in the documentary has smooth moving video B-roll!
-    audited_photos = dossier.get("_cached_200_audited_pool") or []
-    if len(pool_clips) < 6 and audited_photos:
-        needed_v = min(6 - len(pool_clips), len(audited_photos))
-        for p_idx in range(needed_v):
-            p_item = audited_photos[p_idx]
-            syn_v = synthesize_3d_parallax_broadcast_video_broll(
-                p_item["im"],
-                tag_id=f"{tag_prefix}_3dvp{p_idx}",
-                caption_str=p_item.get("caption", dossier.get("title", ""))[:44],
-                motion_idx=p_idx
-            )
-            if syn_v is not None:
-                pool_clips.append(syn_v)
-
     dossier["_cached_video_broll_pool"] = pool_clips
-    print(f"🎬 [V36 7-Source HD Video & Parallax B-Roll Pool Ready] Locked {len(pool_clips)} Distinct 1080p Moving Clips for '{dossier.get('title', '')[:44]}'!", flush=True)
+    print(f"🎬 [V37 Real 1080p Video & Interview Pool Ready] Locked {len(pool_clips)} Verified Moving Video Clips (Zero Duplicate Photo-Video Loops!) for '{dossier.get('title', '')[:44]}'!", flush=True)
     return pool_clips
 
 def extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.30, blur_radius=14):
@@ -7148,10 +7139,7 @@ def build_prop_driven_storyboard_1080p(
 
     # Pre-harvest 300+ topic-locked visual candidates AND topic-locked 1080p video/interview clips once per story!
     if start_beat_offset == 0 and dossier.get("_cached_200_audited_pool") is None:
-        audited_pool_items = harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=sections_list)
-        for p_item in audited_pool_items[:8]:
-            if p_item["im"] not in unique_real_photos:
-                unique_real_photos.append(p_item["im"])
+        harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=sections_list)
     if start_beat_offset == 0 and not dossier.get("_cached_video_broll_pool"):
         harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used_video_queries, tag_prefix=tag_prefix)
 
@@ -8070,69 +8058,140 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
 
 def ensure_full_length_6_to_8_min_documentary(sections, dossier):
     """
-    V32 FULL-LENGTH 6.5 TO 8.5 MINUTE DOCUMENTARY DEPTH GUARANTEE:
-    Fixes the issue where LLMs wrote short 35-45 word chapters that finished in 2m45s!
-    1. Guarantees at least 10 deep-dive chapters for every Long Documentary.
-    2. Expands every chapter to 92-110 words using verified multi-source claims + story-grounded
-       investigative analysis so every Long Documentary is 950 to 1,100+ words (6.5 to 8.0 minutes)!
+    V37 DOMAIN-GROUNDED 6.5 TO 8.5 MINUTE DOCUMENTARY DEPTH ENGINE:
+    1. Guarantees 10 deep-dive chapters (92–110 words each) for every Long Documentary.
+    2. Filters out raw RSS headline fragments from `unused_claims` so mid-paragraph sentences always
+       read like natural broadcast journalism (never pasted headlines!).
+    3. Uses 5 Domain-Specific Analytical Matrices (Geopolitics/Diplomacy/Energy, Stock Markets/Economy,
+       Space/Science/Defense, AI/Semiconductors/Tech, Healthcare/Biotech) so an energy diplomacy story,
+       stock market rally/crash, or NASA space lab story NEVER gets generic 'street riots' sentences!
     """
     if not sections:
         return sections
 
     claims = list(dossier.get("verified_claims") or [])
-    raw_facts = list(dossier.get("raw_facts") or [c.get("text", "") for c in claims])
     t_anc = str(dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)).strip()
     if "regelt" in t_anc.lower():
         t_anc = make_clean_context_headline(dossier.get("title", ""), 4)
-    c_name = dossier.get("country_profile", {}).get("name", "Global").title()
-    cap_city = dossier.get("country_profile", {}).get("capital", c_name)
+    c_prof = dossier.get("country_profile", {})
+    c_name = "the global market" if c_prof.get("is_global_topic") else str(c_prof.get("name", "Global")).title()
+    cap_city = "major financial centers" if c_prof.get("is_global_topic") else str(c_prof.get("capital", c_name))
+    pillar = str(dossier.get("sub_pillar") or dossier.get("pillar", "WORLD")).upper()
+    story_low = f"{dossier.get('title', '')} {t_anc} {' '.join(str(f) for f in (dossier.get('raw_facts') or [])[:6])}".lower()
 
     used_text_low = " ".join(str(s.get("narration", "")).lower() for s in sections)
     unused_claims = []
     for cl in claims:
         ct = clean_fact(str(cl.get("text", "")))
-        if len(ct) >= 40 and ct[:30].lower() not in used_text_low:
+        # Reject short headline-style fragments (< 12 words or missing normal sentence verbs/articles)
+        words_ct = ct.split()
+        has_article_or_verb = any(w.lower() in {"the", "a", "an", "is", "are", "was", "were", "has", "have", "had", "will", "would", "could", "after", "while", "during"} for w in words_ct)
+        if len(ct) >= 65 and len(words_ct) >= 12 and has_article_or_verb and ct[:30].lower() not in used_text_low:
             unused_claims.append(cl)
 
-    deep_investigative_matrix = [
-        f"To understand the full scale of what is unfolding in {c_name}, we have to examine the structural pressures that built up long before this crisis reached the front pages.",
-        f"Behind the immediate headlines surrounding {t_anc}, official records and field reports point to a much deeper institutional struggle over economic survival and state accountability.",
-        f"Analysts tracking developments out of {cap_city} note that when policy decisions fail to shield ordinary households from compounding cost shocks, public anger rapidly transforms into street-level action.",
-        f"What makes this flashpoint in {c_name} so critical for international observers is the speed at which a domestic dispute escalated into a high-stakes test of governance.",
-        f"Looking closely at the sequence of events around {t_anc}, every emergency measure deployed on the ground has triggered secondary shockwaves across local businesses and financial institutions.",
-        f"From a strategic Follow-the-Money perspective, the numbers behind {t_anc} expose a widening gap between state intervention budgets and the actual cost borne by working families in {c_name}.",
-        f"When we compare the current trajectory in {c_name} with neighboring economies, a clear pattern emerges: structural inflation and supply bottlenecks cannot be solved by short-term subsidies alone.",
-        f"For the younger generation across {c_name}, the debate over {t_anc} is no longer an abstract policy question, but a direct struggle over housing, energy affordability, and future social mobility.",
-        f"Security and policy experts warn that heavy-handed enforcement in {cap_city} may restore temporary order on the streets, yet it leaves the underlying economic grievances completely unresolved.",
-        f"Across global markets connected to {c_name}, institutional investors and diplomatic missions are now closely monitoring how leadership in {cap_city} responds to this mounting pressure.",
-        f"History shows that when economic strain collides with political gridlock in a major hub like {c_name}, the resulting policy shift reshapes both domestic elections and international trade.",
-        f"Independent researchers auditing the fallout of {t_anc} emphasize that transparency and structural reform are the only mechanisms capable of rebuilding public trust.",
-        f"Every indicator coming out of {c_name} confirms that the decisions made by authorities over the next several weeks will define the nation's economic stability for years to come.",
-        f"Rather than viewing {t_anc} as an isolated incident, geopolitical strategists see it as a warning signal for every major economy facing similar demographic and fiscal strain.",
-        f"Inside {cap_city}, policy advisors are now debating whether to overhaul the existing fiscal framework or risk facing even larger waves of civic mobilization in the months ahead.",
-        f"Meanwhile, local chambers of commerce and industry leaders in {c_name} have called for urgent dialogue to prevent further disruption to vital commercial corridors.",
-        f"The data surrounding {t_anc} demonstrates that when real wages lag behind essential living expenses, the social contract between citizens and the state begins to fracture.",
-        f"International correspondents reporting from {c_name} highlight that the intensity of public reaction caught many traditional political commentators completely off guard.",
-        f"At the heart of the controversy in {c_name} lies a fundamental question of priorities: how national resources are allocated during a period of acute economic transition.",
-        f"Ultimately, the unfolding case study of {t_anc} in {c_name} serves as a textbook example of how rapidly economic pressure can redraw the political landscape."
-    ]
-    matrix_cursor = 0
+    # Select Domain-Specific Analytical Matrix matching the exact story subject!
+    if pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS") or any(k in story_low for k in ["stock", "market", "nifty", "sensex", "wall street", "tariff", "rbi", "fed", "Crude", "oil", "refinery", "reliance", "trade", "billion", "economy", "gdp", "inflation", "bank"]):
+        domain_matrix = [
+            f"From a Follow-the-Money perspective, the capital flows surrounding {t_anc} reveal how institutional investors and sovereign funds are repricing risk across {c_name}.",
+            f"Market analysts tracking {t_anc} point out that supply-chain bottlenecks, energy input costs, and central bank liquidity directly determine which corporations capture the highest margins.",
+            f"When we examine the balance-sheet math behind {t_anc}, the real leverage belongs to whoever controls refining capacity, shipping corridors, and long-term financing terms.",
+            f"Across trading desks in {cap_city} and Mumbai, portfolio managers are closely watching how {t_anc} shifts quarterly earnings expectations, currency stability, and commodity benchmarks.",
+            f"Strategic economists note that bilateral trade agreements and sanction waivers around {t_anc} are designed to lock in multi-year supply security without triggering domestic price spikes.",
+            f"For both retail investors and industrial giants in {c_name}, the trajectory of {t_anc} demonstrates how geopolitical bargaining now drives stock market valuations and energy security.",
+            f"Looking deeper into the financial architecture of {t_anc}, every percentage-point shift in import tariffs or crude differentials translates into billions of dollars in sovereign revenue.",
+            f"Historical market cycles show that when major economies restructure their trade and energy partnerships around {t_anc}, new industrial winners emerge across refining, logistics, and banking.",
+            f"Corporate filings and trade telemetry confirm that the decisions taken in {cap_city} over the coming quarters will set the benchmark for global market resilience.",
+            f"Ultimately, the case study of {t_anc} proves that modern economic power is built on resilient supply chains, disciplined capital allocation, and strategic market access."
+        ]
+        extra_roles = [
+            ("THE MARKET CATALYST", "THE FINANCIAL TRIGGER"),
+            ("FOLLOW THE MONEY", "THE BILLION-DOLLAR MATH"),
+            ("SUPPLY CHAIN LEVERAGE", "WHO CONTROLS THE FLOW"),
+            ("WALL ST & DALAL ST", "MARKET VALUATION IMPACT"),
+            ("GEOECONOMIC WINNERS", "THE STRATEGIC BALANCE"),
+            ("FINAL MARKET VERDICT", "WHAT INVESTORS WATCH NEXT")
+        ]
+    elif pillar in ("SCIENCE", "SPACE_COSMOS", "ENERGY_CLIMATE") or any(k in story_low for k in ["nasa", "isro", "space", "orbit", "satellite", "rocket", "astronaut", "lunar", "mars", "quantum", "fusion", "telescope"]):
+        domain_matrix = [
+            f"Behind the engineering milestone of {t_anc}, mission telemetry and aerospace research show how {c_name} is redefining the economics of orbital and deep-space operations.",
+            f"Aerospace engineers evaluating {t_anc} emphasize that payload reliability, autonomous navigation, and radiation-hardened systems are the true bottlenecks of next-generation exploration.",
+            f"From a strategic space-economy standpoint, every breakthrough connected to {t_anc} lowers launch and operating costs while opening critical commercial and defense capabilities.",
+            f"Comparing global space programs across {c_name}, India's ISRO, and international partners reveals how frugal engineering and AI-assisted flight control are accelerating mission timelines.",
+            f"Inside mission control centers, scientists note that data gathered through {t_anc} will directly inform future lunar habitats, satellite constellations, and planetary defense architectures.",
+            f"What makes {t_anc} a watershed moment for modern science is the convergence of reusable propulsion, orbital robotics, and real-time autonomous telemetry.",
+            f"Independent research teams tracking {t_anc} point out that whoever masters low-Earth orbit infrastructure today will set the technical standards for the next fifty years of spaceflight.",
+            f"Ultimately, the scientific legacy of {t_anc} demonstrates how disciplined systems engineering can turn an ambitious theoretical concept into operational reality."
+        ]
+        extra_roles = [
+            ("THE MISSION TRIGGER", "THE SCIENTIFIC BREAKTHROUGH"),
+            ("ENGINEERING ARCHITECTURE", "HOW THE SYSTEM WORKS"),
+            ("ORBITAL ECONOMICS", "THE COST & PAYLOAD MATH"),
+            ("GLOBAL SPACE RACE", "ISRO, NASA & GLOBAL RIVALS"),
+            ("FUTURE CAPABILITIES", "THE NEXT FRONTIER"),
+            ("SCIENTIFIC VERDICT", "WHY THIS CHANGES EVERYTHING")
+        ]
+    elif pillar in ("TECHNOLOGY", "AI_ROBOTICS", "CYBER_INTELLIGENCE") or any(k in story_low for k in ["ai", "artificial intelligence", "semiconductor", "chip", "nvidia", "openai", "robot", "cyber", "compute", "data center"]):
+        domain_matrix = [
+            f"Beneath the surface of {t_anc}, systems architects and semiconductor analysts highlight a fierce global race over compute clusters, silicon wafer yields, and energy-efficient algorithms.",
+            f"From a Follow-the-Money perspective, the billions of dollars flowing into {t_anc} reflect a structural shift in how sovereign nations and tech giants build digital infrastructure.",
+            f"Cybersecurity and AI researchers examining {t_anc} note that real-world deployment depends on low-latency inference, secure supply chains, and proprietary training data.",
+            f"Across technology hubs from {cap_city} to Bengaluru, engineering teams are racing to integrate the capabilities of {t_anc} into enterprise cloud systems and autonomous hardware.",
+            f"Strategic industry benchmarks show that the efficiency gains unlocked by {t_anc} can compress years of traditional research and development into a single product cycle.",
+            f"What separates winners from laggards in the era of {t_anc} is control over the full technology stack—from advanced lithography and custom accelerators to foundational software.",
+            f"Ultimately, {t_anc} marks a decisive turning point in the global technology balance, reshaping both enterprise productivity and national digital sovereignty."
+        ]
+        extra_roles = [
+            ("THE TECH BREAKTHROUGH", "INSIDE THE ARCHITECTURE"),
+            ("COMPUTE & SILICON MATH", "THE INFRASTRUCTURE COST"),
+            ("REAL-WORLD DEPLOYMENT", "HOW IT TRANSFORMS INDUSTRY"),
+            ("GLOBAL AI & CHIP RACE", "US, INDIA & GLOBAL IMPACT"),
+            ("SECURITY & RISK AUDIT", "THE HIDDEN VULNERABILITIES"),
+            ("FINAL TECH VERDICT", "THE FUTURE ROADMAP")
+        ]
+    elif pillar == "HEALTH" or any(k in story_low for k in ["health", "medical", "hospital", "vaccine", "clinical", "patient", "doctor", "disease", "biotech"]):
+        domain_matrix = [
+            f"Clinical researchers and public-health specialists analyzing {t_anc} emphasize that early diagnostic precision and scalable treatment protocols are critical to improving patient outcomes.",
+            f"From a healthcare-economics standpoint, the findings around {t_anc} highlight the urgent need to modernize hospital supply chains, preventive screening, and regulatory review.",
+            f"Across major medical institutes in {c_name} and India, doctors note that translating {t_anc} into everyday clinical practice can significantly reduce long-term hospitalization burdens.",
+            f"Epidemiological data connected to {t_anc} shows how combining genomic research with real-time clinical monitoring allows health systems to stay ahead of emerging threats.",
+            f"Ultimately, the medical evidence behind {t_anc} offers a clear roadmap for building more resilient, accessible, and science-driven healthcare infrastructure."
+        ]
+        extra_roles = [
+            ("THE CLINICAL EVIDENCE", "INSIDE THE MEDICAL DATA"),
+            ("BIOLOGICAL MECHANISM", "HOW IT AFFECTS THE BODY"),
+            ("HOSPITAL & COST IMPACT", "THE HEALTHCARE MATH"),
+            ("GLOBAL & INDIA RELEVANCE", "WHAT DOCTORS RECOMMEND"),
+            ("PREVENTIVE STRATEGY", "KEY HEALTH TAKEAWAYS"),
+            ("MEDICAL VERDICT", "THE ROAD AHEAD")
+        ]
+    else:
+        domain_matrix = [
+            f"To understand the strategic calculus behind {t_anc}, diplomatic historians and defense analysts point to the shifting balance of power centered around {c_name}.",
+            f"Behind the official communiques from {cap_city}, intelligence assessments and bilateral trade data reveal a calculated effort to secure long-term geopolitical leverage.",
+            f"From a Follow-the-Money and strategic deterrence perspective, the commitments surrounding {t_anc} directly reshape defense budgets, energy corridors, and regional alliances.",
+            f"International observers tracking {t_anc} note that every diplomatic concession or security pact in {c_name} triggers immediate counter-moves across Washington, New Delhi, Beijing, and European capitals.",
+            f"When we examine the hard numbers behind {t_anc}, it becomes clear that modern geopolitics is fought as much through supply chains, sanctions, and sovereign finance as through military hardware.",
+            f"For strategic planners in {cap_city} and across the Indo-Pacific, {t_anc} serves as a live test of how nations protect their national interest in a multipolar world.",
+            f"Defense and foreign-policy experts emphasize that the agreements forged around {t_anc} will define regional security architecture and trade routes for the next decade.",
+            f"Ultimately, the unfolding case study of {t_anc} in {c_name} demonstrates how rapidly a targeted diplomatic or defense shift can redraw the global power map."
+        ]
+        extra_roles = [
+            ("THE STRATEGIC TRIGGER", "THE DIPLOMATIC CALCULUS"),
+            ("GROUND REALITY", "INSIDE " + c_name.upper()[:16]),
+            ("FOLLOW THE MONEY", "THE GEOPOLITICAL MATH"),
+            ("ALLIANCES & RIVALS", cap_city.upper()[:14] + " POWER PLAY"),
+            ("INDIA & GLOBAL IMPACT", "THE MULTIPOLAR SHIFT"),
+            ("FINAL VERDICT", "THE ROAD AHEAD")
+        ]
 
-    extra_roles = [
-        ("THE CATALYST", "THE ROOT TRIGGER"),
-        ("GROUND REALITY", "ON THE GROUND IN " + c_name.upper()[:14]),
-        ("FOLLOW THE MONEY", "THE ECONOMIC MATH"),
-        ("INSTITUTIONAL RESPONSE", cap_city.upper()[:14] + " POWER PLAY"),
-        ("REGIONAL RIPPLE EFFECT", "WIDER SHOCKWAVES"),
-        ("FINAL VERDICT", "THE ROAD AHEAD")
-    ]
+    matrix_cursor = 0
     while len(sections) < 10:
         r_lbl, h_lbl = extra_roles[len(sections) % len(extra_roles)]
         if unused_claims:
             cl_item = unused_claims.pop(0)
             seed_nar = paraphrase_into_original_creator_voice(cl_item["text"], len(sections), dossier=dossier)
         else:
-            seed_nar = deep_investigative_matrix[matrix_cursor % len(deep_investigative_matrix)]
+            seed_nar = domain_matrix[matrix_cursor % len(domain_matrix)]
             matrix_cursor += 1
             cl_item = claims[len(sections) % len(claims)] if claims else {"text": seed_nar, "source_name": "Global Wire", "published_date": ""}
         if not seed_nar.endswith((".", "!", "?")):
@@ -8161,7 +8220,7 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
                 next_cl = unused_claims.pop(0)
                 add_s = paraphrase_into_original_creator_voice(next_cl["text"], idx_s, dossier=dossier).strip()
             else:
-                add_s = deep_investigative_matrix[matrix_cursor % len(deep_investigative_matrix)]
+                add_s = domain_matrix[matrix_cursor % len(domain_matrix)]
                 matrix_cursor += 1
             if add_s and add_s[:28].lower() not in nar.lower():
                 if add_s[-1] not in ".!?":
@@ -8169,7 +8228,7 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
                 nar = f"{nar} {add_s}"
             else:
                 matrix_cursor += 1
-                if matrix_cursor > len(deep_investigative_matrix) * 3:
+                if matrix_cursor > len(domain_matrix) * 3:
                     break
         sec["narration"] = nar
 
@@ -8525,10 +8584,10 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     draw.line([poly_pts[2], poly_pts[3]], fill=(255, 225, 0, 255), width=5)
     draw.text((84, 796), hook_line_2, fill=(255, 235, 0, 255), font=f_sub, stroke_width=7, stroke_fill=(0, 0, 0, 255))
 
-    # Bottom Investigative Sub-Kicker Bar
-    sub_teaser = fit_whole_words_limit(make_clean_context_headline(dossier["original_yt_title"], max_words=7).upper(), 42)
-    f_kicker_b = get_font(34)
-    draw.text((62, 948), f">> {sub_teaser}", fill=accent_col + (255,), font=f_kicker_b, stroke_width=4, stroke_fill=(0, 0, 0, 255))
+    # Bottom Investigative Sub-Kicker Bar (Always complete, never truncated mid-phrase!)
+    sub_teaser = f"FULL INVESTIGATIVE DOCUMENTARY • {c_name} // {sub_p.replace('_', ' ')}"
+    f_kicker_b = get_font(32)
+    draw.text((62, 948), f"● {sub_teaser[:52]}", fill=accent_col + (255,), font=f_kicker_b, stroke_width=4, stroke_fill=(0, 0, 0, 255))
 
     # Outer 6px Cinema Gold/Cyan Frame Border so the thumbnail pops in YouTube dark & light mode feeds!
     draw.rectangle([(0, 0), (W - 1, H - 1)], outline=(255, 215, 0, 235), width=6)
@@ -8752,169 +8811,27 @@ def translate_text_free_google_gtx(text_str, target_lang_code):
         pass
     return text_str
 
+GLOBAL_UPLOAD_TOKEN_COUNTER = {"idx": 0}
+
 def build_20_country_youtube_localizations(en_title, en_description):
     """
-    V35 BULLETPROOF 52-LANGUAGE YOUTUBE LOCALIZATION ENGINE (INDIA + GLOBAL):
-    - Translates Title & Summary cleanly into all 52 languages (including Hindi, Gujarati, Marathi,
-      Tamil, Telugu, Bengali, Kannada, Malayalam, Punjabi, Urdu, Spanish, French, German, Arabic,
-      Russian, Japanese, Chinese, Korean, Portuguese, Indonesian, Filipino, Malay, Vietnamese, Thai).
-    - Translates Title and Description separately so Google Translate NEVER mangles separator tokens!
+    V37 ULTRA-LIGHTWEIGHT METADATA HELPER (ZERO EXTRA YOUTUBE API QUOTA CALLS!):
+    Keeps English metadata crisp and clean without making 52 Google Translate calls or burning
+    YouTube API `localizations` / `captions().insert` quota units!
     """
     clean_en_t = sanitize_youtube_metadata_text(en_title, 92)
     clean_en_d = sanitize_youtube_metadata_text(en_description, 4500)
-    localizations = {
-        "en": {
-            "title": clean_en_t,
-            "description": clean_en_d
-        }
-    }
-    short_desc = clean_en_d[:550]
-
-    def _trans_one(lang_tuple):
-        yt_code, gtx_code, _, _ = lang_tuple
-        t_tr = sanitize_youtube_metadata_text(translate_text_free_google_gtx(clean_en_t, gtx_code), 90)
-        d_tr = sanitize_youtube_metadata_text(translate_text_free_google_gtx(short_desc, gtx_code), 4200)
-        if t_tr and len(t_tr) >= 3:
-            return yt_code, {"title": t_tr, "description": d_tr or clean_en_d}
-        return yt_code, None
-
-    try:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=16) as ex:
-            futs = [ex.submit(_trans_one, lt) for lt in GLOBAL_20_LANGUAGES_CONFIG]
-            for ft in concurrent.futures.as_completed(futs):
-                try:
-                    yt_c, loc_obj = ft.result()
-                    if loc_obj:
-                        localizations[yt_c] = loc_obj
-                except Exception:
-                    pass
-    except Exception:
-        pass
-    print(f"🌍 [52-Language Global & Indian YouTube API] Built & sanitized native Title/Description localizations for {len(localizations)} languages!", flush=True)
-    return localizations
+    return {"en": {"title": clean_en_t, "description": clean_en_d}}
 
 def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None):
     """
-    V35 MULTI-LANGUAGE SUBTITLES (.SRT) & NEURAL DUBBING ENGINE (INDIA + GLOBAL):
-    1. Generates timestamped `.srt` subtitle files in 18+ Indian & World languages (`hi`, `gu`, `mr`, `ta`, `te`,
-       `bn`, `es`, `fr`, `de`, `ar`, `ru`, `ja`, `zh-Hans`, `pt`, `id`, `fil`, `ko`, `tr`) in `output/subtitles/`.
-    2. Synthesizes full neural human-like dubbed audio tracks (`.mp3`) in 10 major languages (`Hindi`, `Gujarati`,
-       `Tamil`, `Spanish`, `French`, `German`, `Arabic`, `Russian`, `Japanese`, `Portuguese`) in `output/dubbed_audio/`!
-    3. Also muxes a Multi-Audio Dubbed Master MP4 (`output/<video_tag>_multilang_dubbed.mp4`) containing
-       English + Hindi + Spanish + Arabic + French audio streams selectable in any media player!
+    V37 ZERO-QUOTA CAPTION GUARD:
+    In YouTube Data API v3, each `captions().insert()` call costs 400 quota units (3 tracks = 1,200 units per video,
+    or 2,400 units for 1 Long + 1 Short!). Because our videos already feature burned-in dynamic broadcast subtitles
+    and YouTube auto-generates captions for 0 quota units, we NEVER call `captions().insert()` — saving 2,400 quota
+    units per pair so 15+ Geopolitics & Stock Market videos can upload every day without hitting quota limits!
     """
-    if not sections_list:
-        return
-    os.makedirs("output/subtitles", exist_ok=True)
-    os.makedirs("output/dubbed_audio", exist_ok=True)
-
-    def _fmt_srt_time(sec_val):
-        ms = int(round((sec_val - int(sec_val)) * 1000))
-        s_int = int(sec_val)
-        hh = s_int // 3600
-        mm = (s_int % 3600) // 60
-        ss = s_int % 60
-        return f"{hh:02d}:{mm:02d}:{ss:02d},{ms:03d}"
-
-    srt_segments = []
-    cur_t = 0.0
-    for sec in sections_list:
-        dur = float(sec.get("duration") or 12.0)
-        nar = str(sec.get("narration") or "").strip()
-        sents = [s.strip() for s in split_into_complete_sentences(nar) if s.strip()]
-        if not sents:
-            sents = [nar]
-        tot_c = max(sum(len(s) for s in sents), 1)
-        for s_txt in sents:
-            s_dur = dur * (len(s_txt) / float(tot_c))
-            srt_segments.append((cur_t, cur_t + s_dur, s_txt))
-            cur_t += s_dur
-
-    en_srt_lines = []
-    for idx_s, (st_t, ed_t, txt_s) in enumerate(srt_segments, 1):
-        en_srt_lines.append(f"{idx_s}\n{_fmt_srt_time(st_t)} --> {_fmt_srt_time(ed_t)}\n{txt_s}\n")
-    en_srt_path = f"output/subtitles/{video_tag}_en.srt"
-    with open(en_srt_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(en_srt_lines))
-
-    newline_joined_en = "\n".join(s[2] for s in srt_segments)
-    srt_targets = GLOBAL_20_LANGUAGES_CONFIG[:18] if not is_short else GLOBAL_20_LANGUAGES_CONFIG[:12]
-    dub_voice_codes = {"hi", "gu", "ta", "es", "fr", "de", "ar", "ru", "ja", "pt"} if not is_short else {"hi", "gu", "es", "fr", "ar"}
-    generated_dub_files = []
-
-    def _process_lang_dub_and_srt(lang_tuple):
-        yt_code, gtx_code, lang_label, voice_id = lang_tuple
-        try:
-            tr_block = translate_text_free_google_gtx(newline_joined_en[:1850], gtx_code)
-            if not tr_block:
-                return None
-            tr_lines = [ln.strip() for ln in tr_block.splitlines() if ln.strip()]
-            if not tr_lines:
-                tr_lines = [tr_block]
-            srt_lines_tr = []
-            for idx_s, (st_t, ed_t, _) in enumerate(srt_segments, 1):
-                mapped_s = tr_lines[min(idx_s - 1, len(tr_lines) - 1)]
-                srt_lines_tr.append(f"{idx_s}\n{_fmt_srt_time(st_t)} --> {_fmt_srt_time(ed_t)}\n{mapped_s}\n")
-            tr_srt_path = f"output/subtitles/{video_tag}_{yt_code}.srt"
-            with open(tr_srt_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(srt_lines_tr))
-
-            if yt_code in dub_voice_codes:
-                dub_mp3_path = f"output/dubbed_audio/{video_tag}_{yt_code}.mp3"
-                txt_tmp = f"temp/dub_txt_{video_tag}_{yt_code}.txt"
-                with open(txt_tmp, "w", encoding="utf-8") as tf:
-                    tf.write(" ".join(tr_lines)[:1600])
-                run_isolated_subprocess(["edge-tts", "--voice", voice_id, "--file", txt_tmp, "--write-media", dub_mp3_path], timeout_sec=14)
-                if os.path.exists(dub_mp3_path) and os.path.getsize(dub_mp3_path) > 2000:
-                    return (yt_code, lang_label, dub_mp3_path, tr_srt_path)
-        except Exception:
-            pass
-        return None
-
-    try:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
-            results_dub = list(ex.map(_process_lang_dub_and_srt, srt_targets))
-            for r_d in results_dub:
-                if r_d is not None:
-                    generated_dub_files.append(r_d)
-        print(f"🎙️ [Multi-Language SRT & Neural Dubs] Built {len(srt_targets)} subtitle tracks + {len(generated_dub_files)} neural audio dubs (Hindi/Global)!", flush=True)
-    except Exception:
-        pass
-
-    # Mux Multi-Language Dubbed Audio Tracks (English + Hindi + Spanish + French + Arabic) into a Multi-Audio MP4 in `output/`
-    if video_path and os.path.exists(video_path) and generated_dub_files:
-        try:
-            multilang_mp4 = f"output/{video_tag}_multilang_dubbed.mp4"
-            cmd_mux = ["ffmpeg", "-nostdin", "-y", "-i", video_path]
-            for _, _, dub_mp3, _ in generated_dub_files[:5]:
-                cmd_mux.extend(["-i", dub_mp3])
-            cmd_mux.extend(["-map", "0:v:0", "-map", "0:a:0"])
-            for idx_d in range(len(generated_dub_files[:5])):
-                cmd_mux.extend(["-map", f"{idx_d + 1}:a:0"])
-            cmd_mux.extend(["-c:v", "copy", "-c:a", "aac", "-shortest", multilang_mp4])
-            run_isolated_subprocess(cmd_mux, timeout_sec=16)
-            if os.path.exists(multilang_mp4) and os.path.getsize(multilang_mp4) > 50000:
-                print(f"🎧 [Multi-Language Dubbed MP4 Ready] {multilang_mp4} (Original + {len(generated_dub_files[:5])} Dubbed Audio Tracks!)", flush=True)
-        except Exception:
-            pass
-
-    # Upload Top Multi-Language Closed Caption (.SRT) Tracks (Hindi, English, Spanish) to YouTube API (after video & thumbnail are already live!)
-    if yt_client is not None and video_id:
-        from googleapiclient.http import MediaFileUpload
-        priority_cc = [("hi", "Hindi (India)", f"output/subtitles/{video_tag}_hi.srt"), ("en", "English", en_srt_path), ("es", "Spanish", f"output/subtitles/{video_tag}_es.srt")]
-        for cc_code, cc_name, cc_file in priority_cc:
-            if not os.path.exists(cc_file):
-                continue
-            try:
-                yt_client.captions().insert(
-                    part="snippet",
-                    body={"snippet": {"videoId": video_id, "language": cc_code, "name": cc_name, "isDraft": False}},
-                    media_body=MediaFileUpload(cc_file, mimetype="application/octet-stream", resumable=False)
-                ).execute()
-                print(f"📝 [YouTube CC Track Uploaded] {cc_name} ({cc_code}) active on https://youtu.be/{video_id}!", flush=True)
-            except Exception as cc_err:
-                if "quotaExceeded" in str(cc_err) or "403" in str(cc_err):
-                    break
+    return
 
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
@@ -8922,40 +8839,23 @@ def try_youtube_auto_upload(
     linked_long_url=None, sections_list=None
 ):
     """
-    V34 QUOTA-OPTIMIZED YOUTUBE UPLOADER + MULTI-TOKEN AUTOMATIC FAILOVER:
-    1. Eliminates the `HttpError 400 "The request metadata is invalid"` double-insert bug by calling
-       `yt.videos().insert(part="snippet,status")` ONCE (saving 1,600 wasted quota units per video!).
-    2. Calls `yt.thumbnails().set` IMMEDIATELY after `videos().insert` (50 units) so the V33 Studio Thumbnail
-       is ALWAYS applied first!
-    3. Calls `yt.videos().update(part="snippet,localizations")` (50 units) with YouTube's official ISO codes
-       AND embeds the 12-Language Global Headlines Box directly in `description`.
-    4. Supports automatic rotation across multiple OAuth tokens (`YOUTUBE_TOKEN_JSON_B64`, `YOUTUBE_TOKEN_JSON_B64_2`,
-       `YOUTUBE_TOKEN_JSON_B64_3`, `YOUTUBE_TOKEN_JSON_B64_4`) if Project #1 hits its 10,000 daily quota!
+    V37 ULTRA-LOW-QUOTA YOUTUBE UPLOADER + MULTI-TOKEN LOAD BALANCER:
+    1. Costs ONLY ~100-150 units per video instead of 1,350 units (90% Quota Savings!):
+       - Calls `yt.videos().insert(part="snippet,status")` ONCE.
+       - Calls `yt.thumbnails().set` ONLY on Long 16:9 Documentaries (Shorts use vertical frame preview).
+       - NEVER calls `yt.captions().insert()` (saves 1,200 units per video!).
+       - NEVER calls `yt.videos().update(localizations)` (saves 50 units per video!).
+    2. Rotates/Failovers across all configured OAuth tokens (`YOUTUBE_TOKEN_JSON_B64`..`YOUTUBE_TOKEN_JSON_B64_5`)
+       so 15+ Geopolitics + Stock Market + All Category videos upload smoothly every day!
     """
     qc_ok, qc_rep = run_automatic_pre_upload_qc_gate(video_path, is_short=is_short, story_title=title)
     if not qc_ok:
         print(f"🛑 [QC GATE BLOCKED UPLOAD] Critical quality check failed: {qc_rep}", flush=True)
         return None
 
-    video_tag = os.path.splitext(os.path.basename(video_path))[0].lower()
     final_title = sanitize_youtube_metadata_text((title[:88] + " #Shorts") if is_short and "#shorts" not in title.lower() else title[:95], 95)
-    localizations_map = build_20_country_youtube_localizations(final_title, description)
+    clean_desc = sanitize_youtube_metadata_text(description, 4750)
 
-    multilang_preview_lines = ["", "🌍 GLOBAL MULTI-LANGUAGE TITLES (52 LANGUAGES SUPPORTED):"]
-    preview_langs = [
-        ("hi", "🇮🇳 हिन्दी (Hindi)"), ("gu", "🇮🇳 ગુજરાતી (Gujarati)"), ("mr", "🇮🇳 मराठी (Marathi)"),
-        ("ta", "🇮🇳 தமிழ் (Tamil)"), ("te", "🇮🇳 తెలుగు (Telugu)"), ("bn", "🇮🇳 বাংলা (Bengali)"),
-        ("es", "🇪🇸 Español"), ("fr", "🇫🇷 Français"), ("de", "🇩🇪 Deutsch"),
-        ("ar", "🇸🇦 العربية"), ("ru", "🇷🇺 Русский"), ("ja", "🇯🇵 日本語"),
-        ("zh-Hans", "🇨🇳 中文"), ("pt", "🇧🇷 Português"), ("id", "🇮🇩 Indonesia")
-    ]
-    for l_code, l_flag in preview_langs:
-        if l_code in localizations_map and localizations_map[l_code].get("title"):
-            multilang_preview_lines.append(f"• {l_flag}: {localizations_map[l_code]['title']}")
-    full_desc_with_langs = sanitize_youtube_metadata_text(description[:3400] + "\n" + "\n".join(multilang_preview_lines), 4750)
-    localizations_map["en"]["description"] = full_desc_with_langs
-
-    # Collect all configured YouTube OAuth tokens (supports 1 to 5 projects for unlimited daily uploads!)
     candidate_tokens = []
     for env_k in ["YOUTUBE_TOKEN_JSON_B64", "YOUTUBE_TOKEN_JSON_B64_2", "YOUTUBE_TOKEN_JSON_B64_3", "YOUTUBE_TOKEN_JSON_B64_4", "YOUTUBE_TOKEN_JSON_B64_5"]:
         tk_val = os.environ.get(env_k, "").strip()
@@ -8963,7 +8863,6 @@ def try_youtube_auto_upload(
             candidate_tokens.append(tk_val)
 
     if not candidate_tokens:
-        build_and_upload_multilang_captions_and_dubs(None, None, sections_list, video_tag=video_tag, is_short=is_short, video_path=video_path)
         print("ℹ️ [GitHub Cloud Test Mode] No YouTube API token set yet; saved to GitHub Artifacts:", video_path, flush=True)
         return None
 
@@ -8974,7 +8873,13 @@ def try_youtube_auto_upload(
 
     clean_tags = [sanitize_youtube_metadata_text(t, 28) for t in tags[:20] if sanitize_youtube_metadata_text(t, 28)]
 
-    for tk_idx, token_b64 in enumerate(candidate_tokens, 1):
+    # Start from the current active token index and failover cleanly across all tokens if any token hits quotaExceeded
+    start_tk = GLOBAL_UPLOAD_TOKEN_COUNTER["idx"] % len(candidate_tokens)
+    ordered_tokens = [(start_tk + i) % len(candidate_tokens) for i in range(len(candidate_tokens))]
+
+    for tk_pos in ordered_tokens:
+        tk_idx = tk_pos + 1
+        token_b64 = candidate_tokens[tk_pos]
         try:
             t_file = f"temp/token_upload_{tk_idx}.json"
             with open(t_file, "wb") as tf:
@@ -8987,7 +8892,7 @@ def try_youtube_auto_upload(
             body_basic = {
                 "snippet": {
                     "title": final_title,
-                    "description": full_desc_with_langs,
+                    "description": clean_desc,
                     "tags": clean_tags,
                     "categoryId": str(category_id),
                     "defaultLanguage": "en",
@@ -9005,41 +8910,28 @@ def try_youtube_auto_upload(
                 _, resp = req.next_chunk()
 
             vid_id = resp["id"]
-            print(f"✅ [YOUTUBE LIVE UPLOAD SUCCESS (Token #{tk_idx}) - {pillar}] https://youtu.be/{vid_id}", flush=True)
+            print(f"✅ [YOUTUBE LIVE UPLOAD SUCCESS (Token #{tk_idx} • Quota-Saver Mode) - {pillar}] https://youtu.be/{vid_id}", flush=True)
 
-            # 1. Set Custom V33 5-Layer Studio Thumbnail IMMEDIATELY (50 units)
-            if thumbnail_path and os.path.exists(thumbnail_path):
+            # Set Custom 5-Layer Studio Thumbnail ONLY on Long 16:9 Documentaries (saves 50 quota units on every Short!)
+            if (not is_short) and thumbnail_path and os.path.exists(thumbnail_path):
                 try:
                     yt.thumbnails().set(videoId=vid_id, media_body=MediaFileUpload(thumbnail_path)).execute()
-                    print(f"🖼️ [Custom V33 Studio Thumbnail Locked] on https://youtu.be/{vid_id}", flush=True)
+                    print(f"🖼️ [Custom Studio Thumbnail Locked] on https://youtu.be/{vid_id}", flush=True)
                 except Exception as te:
                     print("⚠️ Thumbnail set warning:", str(te)[:110], flush=True)
 
-            # 2. Apply Multi-Language Localizations via clean `videos().update` (50 units)
-            try:
-                core_20_keys = ["en", "hi", "gu", "mr", "ta", "te", "bn", "kn", "ml", "pa", "ur", "es", "fr", "de", "ar", "pt", "ru", "ja", "zh-Hans", "ko", "tr", "it", "id", "vi", "th", "nl", "pl"]
-                safe_locs = {k: localizations_map[k] for k in core_20_keys if k in localizations_map}
-                yt.videos().update(
-                    part="snippet,localizations",
-                    body={"id": vid_id, "snippet": body_basic["snippet"], "localizations": safe_locs}
-                ).execute()
-                print(f"🌍 [YouTube Multi-Language Localizations Locked] {len(safe_locs)} languages active on https://youtu.be/{vid_id}!", flush=True)
-            except Exception as loc_e:
-                print("ℹ️ [Multi-Language Description Active; API localizations note]:", str(loc_e)[:95], flush=True)
-
-            # 3. Generate local multi-language .srt & dubbed audio tracks (0 API quota units!)
-            build_and_upload_multilang_captions_and_dubs(yt, vid_id, sections_list, video_tag=video_tag, is_short=is_short, video_path=video_path)
-
-            # 4. If this is a Short, post the Linked Full Documentary comment
-            add_video_to_category_playlist_and_comment(
-                yt, vid_id, pillar, summary_takeaway or title, playlist_map or {}, linked_long_url=linked_long_url
-            )
+            # If this is a Short, post the Linked Full Documentary comment (50 units)
+            if is_short and linked_long_url:
+                add_video_to_category_playlist_and_comment(
+                    yt, vid_id, pillar, summary_takeaway or title, playlist_map or {}, linked_long_url=linked_long_url
+                )
             return vid_id
         except Exception as e:
             err_str = str(e)
             print(f"⚠️ YouTube upload attempt (Token #{tk_idx}) note: {err_str[:130]}", flush=True)
-            if ("quotaExceeded" in err_str or "403" in err_str) and tk_idx < len(candidate_tokens):
-                print(f"🔄 [Quota Failover] Switching automatically from Token #{tk_idx} to Token #{tk_idx + 1}...", flush=True)
+            if "quotaExceeded" in err_str or "403" in err_str or "uploadLimitExceeded" in err_str:
+                GLOBAL_UPLOAD_TOKEN_COUNTER["idx"] = tk_pos + 1
+                print(f"🔄 [Quota Failover] Switching automatically from Token #{tk_idx} to next available Token...", flush=True)
                 continue
             break
     return None
@@ -9182,10 +9074,9 @@ async def render_and_upload_short_unit(
     short_dossier["_unit_used_photo_ids"] = set()
     short_dossier["_unit_sim_counts"] = {}
     short_dossier["_unit_shown_persons"] = set()
-    seed_photos = list(preloaded_photos) if preloaded_photos else []
     s_beats, s_unique_photos, s_stats = build_prop_driven_storyboard_1080p(
         short_sections, short_dossier, short_entities, 1080, 1920,
-        tag_prefix=f"short_{unit_num}", shared_photo_pool=seed_photos
+        tag_prefix=f"short_{unit_num}", shared_photo_pool=[]
     )
 
     short_clips = []
@@ -9323,11 +9214,11 @@ async def main():
                 selected_dossiers.append(gd)
                 break
 
-        # PAIR #2: All Categories Rotation (Trending in India + Global: Tech, Science, Healthcare, Business, AI, Defense, Geopolitics, Cyber, Facts)
+        # PAIR #2: Stock Markets + Geopolitics + All Categories Rotation (15+ Geopolitics & Stock Market Videos/Day!)
         rotating_categories = [
-            "TECHNOLOGY", "SCIENCE", "HEALTH", "BUSINESS",
-            "GEOPOLITICS", "AI_ROBOTICS", "DEFENSE_MILITARY",
-            "INDIA_TRENDING", "CYBER_INTELLIGENCE", "MIND_BLOWING_FACTS"
+            "STOCK_MARKETS", "GEOPOLITICS", "BUSINESS", "DEFENSE_MILITARY",
+            "STOCK_MARKETS", "TECHNOLOGY", "GLOBAL_POWERS", "AI_ROBOTICS",
+            "STOCK_MARKETS", "SCIENCE", "INDIA_TRENDING", "HEALTH"
         ]
         start_cat = rotating_categories[rr_idx % len(rotating_categories)]
         ordered_rot = [start_cat] + [c for c in rotating_categories if c != start_cat]
