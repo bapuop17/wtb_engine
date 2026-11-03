@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-03T12:21:56.145467",
-  "round_robin_idx": 9,
-  "country_rot_idx": 30,
-  "bgm_track_counter": 1133673253,
+  "updated_at": "2026-11-03T13:48:43.311397",
+  "round_robin_idx": 10,
+  "country_rot_idx": 46,
+  "bgm_track_counter": 1161911957,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -422,65 +422,12 @@
     "europe_s_fridge_hack_the_ai",
     "bangladesh_garment_workers_halt_production_as",
     "germany_news_merz_hopes_for_korean",
-    "bangladesh_garment_crisis_679_factories_shut"
+    "bangladesh_garment_crisis_679_factories_shut",
+    "tesla_samsung_oppose_new_us_tariffs",
+    "why_does_betelgeuse_keep_fading_the",
+    "betelgeuse_is_dying_the_650_light"
   ],
   "event_fingerprints": [
-    {
-      "title": "'I wasn't thinking straight' says five jobs civil servant",
-      "tokens": [
-        "five",
-        "servant",
-        "straight",
-        "wasn",
-        "civil",
-        "jobs",
-        "thinking"
-      ]
-    },
-    {
-      "title": "'Cabin leak suspected': Artemis II astronaut reveals how a warning nearly derailed NASA's epic moon mission",
-      "tokens": [
-        "cabin",
-        "leak",
-        "astronaut",
-        "artemis",
-        "nearly",
-        "warning",
-        "derailed",
-        "mission",
-        "moon",
-        "suspected",
-        "nasa",
-        "reveals",
-        "epic"
-      ]
-    },
-    {
-      "title": "The Secret Ocean Graveyard Where NASA Crashes Dying Spacecraft",
-      "tokens": [
-        "crashes",
-        "dying",
-        "graveyard",
-        "nasa",
-        "ocean",
-        "secret",
-        "spacecraft",
-        "where"
-      ]
-    },
-    {
-      "title": "First human case of Shamonda virus detected in France, officials say",
-      "tokens": [
-        "human",
-        "shamonda",
-        "case",
-        "officials",
-        "virus",
-        "france",
-        "detected",
-        "first"
-      ]
-    },
     {
       "title": "Severely ill ICE detainees face imminent deportation to unknown African states, advocates say",
       "tokens": [
@@ -7190,11 +7137,89 @@
         "reunification",
         "stock"
       ]
+    },
+    {
+      "title": "Tesla, Samsung oppose new US tariffs on Vietnam #business #businessnews #borneobulletin #Tesla #Samsung #oppose #new #UStariffs #on #Vietnam",
+      "tokens": [
+        "borneobulletin",
+        "business",
+        "businessnews",
+        "chain",
+        "concerns",
+        "ends",
+        "intellectual",
+        "month",
+        "oppose",
+        "probe",
+        "property",
+        "samsung",
+        "supply",
+        "tariffs",
+        "tesla",
+        "ustariffs",
+        "vietnam"
+      ]
+    },
+    {
+      "title": "Why does Betelgeuse keep fading? The mystery of Orion's giant star",
+      "tokens": [
+        "astronomers",
+        "betelgeuse",
+        "betelguese",
+        "brightness",
+        "changing",
+        "clouds",
+        "companion",
+        "does",
+        "dust",
+        "fading",
+        "famous",
+        "giant",
+        "keep",
+        "keeps",
+        "mysterious",
+        "mystery",
+        "orion",
+        "piecing",
+        "pulsations",
+        "star",
+        "stellar",
+        "supergiant",
+        "together"
+      ]
+    },
+    {
+      "title": "Tesla, Samsung oppose new US tariffs on Vietnam #business #businessnews #borneobulletin",
+      "tokens": [
+        "borneobulletin",
+        "business",
+        "businessnews",
+        "oppose",
+        "samsung",
+        "tariffs",
+        "tesla",
+        "ustariffs",
+        "vietnam"
+      ]
+    },
+    {
+      "title": "Betelgeuse Is Dying: The 650 Light-Year Mystery",
+      "tokens": [
+        "betelgeuse",
+        "does",
+        "dying",
+        "fading",
+        "giant",
+        "keep",
+        "light",
+        "mystery",
+        "orion",
+        "star",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
@@ -7232,11 +7257,11 @@
     "INDIA_TRENDING",
     "AI_ROBOTICS",
     "GLOBAL_POWERS",
-    "STOCK_MARKETS"
+    "STOCK_MARKETS",
+    "GEOPOLITICS",
+    "SCIENCE"
   ],
   "last_sources": [
-    "Al Jazeera Global",
-    "Al Jazeera International",
     "France24 Global Affairs",
     "Global Wire Services",
     "The Guardian International",
@@ -7274,11 +7299,11 @@
     "Country Documentary Wire [UNITED KINGDOM]",
     "BBC Technology",
     "Top Viral News [BANGLADESH]",
-    "DW Business & Trade"
+    "DW Business & Trade",
+    "Country Documentary Wire [VIETNAM]",
+    "Space.com Breaking"
   ],
   "last_countries": [
-    "UNITED STATES",
-    "INDIA",
     "GLOBAL MARKETS",
     "CANADA",
     "RUSSIA",
@@ -7326,6 +7351,8 @@
     "UNITED KINGDOM",
     "GLOBAL TECH & AI",
     "BANGLADESH",
-    "GERMANY"
+    "GERMANY",
+    "VIETNAM",
+    "SPACE & SCIENCE"
   ]
 }
