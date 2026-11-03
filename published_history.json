@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-03T13:48:43.311397",
-  "round_robin_idx": 10,
-  "country_rot_idx": 46,
-  "bgm_track_counter": 1161911957,
+  "updated_at": "2026-11-03T15:21:04.623286",
+  "round_robin_idx": 11,
+  "country_rot_idx": 62,
+  "bgm_track_counter": 1212432891,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -425,74 +425,13 @@
     "bangladesh_garment_crisis_679_factories_shut",
     "tesla_samsung_oppose_new_us_tariffs",
     "why_does_betelgeuse_keep_fading_the",
-    "betelgeuse_is_dying_the_650_light"
+    "betelgeuse_is_dying_the_650_light",
+    "why_is_government_silent_on_ok",
+    "after_seven_strikes_on_cargo_ships",
+    "why_ghana_s_mp_is_stuck",
+    "black_sea_crisis_seven_missing_sailors"
   ],
   "event_fingerprints": [
-    {
-      "title": "Severely ill ICE detainees face imminent deportation to unknown African states, advocates say",
-      "tokens": [
-        "deportation",
-        "face",
-        "states",
-        "detainees",
-        "advocates",
-        "imminent",
-        "african",
-        "severely",
-        "unknown"
-      ]
-    },
-    {
-      "title": "Teenage Engineering launched an instrument amp with a ton of built-in effects",
-      "tokens": [
-        "teenage",
-        "instrument",
-        "engineering",
-        "built",
-        "launched",
-        "effects"
-      ]
-    },
-    {
-      "title": "What NASA's Voyager 1 Just Detected Beyond the Edge of Our Solar System",
-      "tokens": [
-        "beyond",
-        "detected",
-        "edge",
-        "just",
-        "nasa",
-        "solar",
-        "system",
-        "voyager"
-      ]
-    },
-    {
-      "title": "Agencies and Producers Back U.S. Tax Incentive as 'First Step' Toward Hollywood Recovery",
-      "tokens": [
-        "hollywood",
-        "producers",
-        "first",
-        "recovery",
-        "incentive",
-        "agencies",
-        "toward",
-        "back",
-        "step"
-      ]
-    },
-    {
-      "title": "Nigeria confirms Ebola case as outbreak spreads into western Africa",
-      "tokens": [
-        "western",
-        "nigeria",
-        "africa",
-        "spreads",
-        "ebola",
-        "outbreak",
-        "case",
-        "confirms"
-      ]
-    },
     {
       "title": "Barclays cutting 5,000 jobs as it increases reliance on AI",
       "tokens": [
@@ -7217,11 +7156,156 @@
         "star",
         "year"
       ]
+    },
+    {
+      "title": "Why is government silent on OK Frimpong's continued detention in the Netherlands? - Ex-MP",
+      "tokens": [
+        "akyem",
+        "asante",
+        "continued",
+        "detention",
+        "frimpong",
+        "ghana",
+        "government",
+        "kwame",
+        "member",
+        "mounting",
+        "netherlands",
+        "north",
+        "ohene",
+        "parliament",
+        "questions",
+        "response",
+        "silent"
+      ]
+    },
+    {
+      "title": "After seven strikes on cargo ships near NATO members Romania and Bulgaria last month, the US-led military alliance said it would deploy mari",
+      "tokens": [
+        "ablaze",
+        "adad",
+        "aircraft",
+        "alliance",
+        "black",
+        "bolster",
+        "bulgaria",
+        "cargo",
+        "coast",
+        "deploy",
+        "drones",
+        "eastern",
+        "flank",
+        "last",
+        "maritime",
+        "members",
+        "military",
+        "missing",
+        "month",
+        "more",
+        "nato",
+        "near",
+        "patrol",
+        "radars",
+        "read",
+        "romania",
+        "romanian",
+        "sailors",
+        "seven",
+        "ships",
+        "strikes",
+        "website",
+        "would"
+      ]
+    },
+    {
+      "title": "Why Ghana's MP Is Stuck in Dutch Jail While Govt Stays Silent",
+      "tokens": [
+        "continued",
+        "detention",
+        "dutch",
+        "frimpong",
+        "ghana",
+        "government",
+        "govt",
+        "jail",
+        "netherlands",
+        "silent",
+        "stays",
+        "stuck",
+        "while"
+      ]
+    },
+    {
+      "title": "After seven strikes on cargo ships near NATO members Romania and Bulgaria last month, the US-led military alliance said it would deploy mari",
+      "tokens": [
+        "ablaze",
+        "adad",
+        "aircraft",
+        "alliance",
+        "black",
+        "bolster",
+        "bulgaria",
+        "cargo",
+        "coast",
+        "deploy",
+        "drones",
+        "eastern",
+        "flank",
+        "last",
+        "maritime",
+        "members",
+        "military",
+        "missing",
+        "month",
+        "more",
+        "nato",
+        "near",
+        "patrol",
+        "radars",
+        "read",
+        "romania",
+        "romanian",
+        "sailors",
+        "seven",
+        "ships",
+        "strikes",
+        "website",
+        "would"
+      ]
+    },
+    {
+      "title": "Black Sea Crisis: Seven Missing Sailors, NATO's Race to Stop Drone Strikes",
+      "tokens": [
+        "aircraft",
+        "alliance",
+        "black",
+        "bulgaria",
+        "cargo",
+        "deploy",
+        "drone",
+        "drones",
+        "last",
+        "maritime",
+        "members",
+        "military",
+        "missing",
+        "month",
+        "nato",
+        "near",
+        "patrol",
+        "race",
+        "radars",
+        "romania",
+        "sailors",
+        "seven",
+        "ships",
+        "stop",
+        "strikes",
+        "would"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
-    "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "MIND_BLOWING_FACTS",
@@ -7259,11 +7343,11 @@
     "GLOBAL_POWERS",
     "STOCK_MARKETS",
     "GEOPOLITICS",
-    "SCIENCE"
+    "SCIENCE",
+    "INDIA_TRENDING",
+    "INDIA_TRENDING"
   ],
   "last_sources": [
-    "France24 Global Affairs",
-    "Global Wire Services",
     "The Guardian International",
     "BBC World Global",
     "Phys.org Breakthroughs",
@@ -7301,11 +7385,11 @@
     "Top Viral News [BANGLADESH]",
     "DW Business & Trade",
     "Country Documentary Wire [VIETNAM]",
-    "Space.com Breaking"
+    "Space.com Breaking",
+    "Top Viral News [NETHERLANDS]",
+    "Top Viral News [ROMANIA]"
   ],
   "last_countries": [
-    "GLOBAL MARKETS",
-    "CANADA",
     "RUSSIA",
     "MIND-BLOWING FACT",
     "FRANCE",
@@ -7353,6 +7437,8 @@
     "BANGLADESH",
     "GERMANY",
     "VIETNAM",
-    "SPACE & SCIENCE"
+    "SPACE & SCIENCE",
+    "NETHERLANDS",
+    "ROMANIA"
   ]
 }
