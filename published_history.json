@@ -1,16 +1,9 @@
 {
-  "updated_at": "2026-11-02T23:39:28.178892",
-  "round_robin_idx": 5,
-  "country_rot_idx": 116,
-  "bgm_track_counter": 1008572456,
+  "updated_at": "2026-11-03T02:54:42.284791",
+  "round_robin_idx": 6,
+  "country_rot_idx": 57,
+  "bgm_track_counter": 1039747503,
   "last_mega_24h_date": "2026-10-31",
-  "youtube_quota_day_pt": "2026-11-02",
-  "youtube_general_units_reserved": 0,
-  "youtube_caption_units_reserved": 0,
-  "youtube_caption_upload_cursor": 0,
-  "youtube_general_quota_exhausted_day_pt": "",
-  "youtube_channel_history_sync_ok": true,
-  "youtube_channel_history_sync_at_utc": "2026-11-02T23:15:27.067239",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
     "xbox_s_first_chief_operating_officer",
@@ -414,54 +407,12 @@
     "metroid_prime_needs_some_resident_evil",
     "why_metroid_prime_s_sci_fi",
     "match_thread_2nd_unofficial_test_india",
-    "we_re_technology_savvy_military_says"
+    "we_re_technology_savvy_military_says",
+    "secretary_rubio_s_meeting_with_venezuelan",
+    "at_home_in_space_opens_caps",
+    "why_rubio_s_venezuela_meeting_could"
   ],
   "event_fingerprints": [
-    {
-      "title": "Israel detains dozens of Americans, including a congressional candidate, in West Bank",
-      "tokens": [
-        "including",
-        "congressional",
-        "dozens",
-        "israel",
-        "west",
-        "bank",
-        "americans",
-        "candidate",
-        "detains"
-      ]
-    },
-    {
-      "title": "Macron visits Riyadh to show solidarity amid Houthi attacks, ease tensions at home via fuel deal",
-      "tokens": [
-        "fuel",
-        "tensions",
-        "visits",
-        "riyadh",
-        "solidarity",
-        "show",
-        "attacks",
-        "home",
-        "macron",
-        "deal",
-        "ease",
-        "houthi"
-      ]
-    },
-    {
-      "title": "Rosenberg: US diplomatic push offers little hope for imminent Ukraine peace",
-      "tokens": [
-        "hope",
-        "rosenberg",
-        "ukraine",
-        "imminent",
-        "offers",
-        "push",
-        "little",
-        "diplomatic",
-        "peace"
-      ]
-    },
     {
       "title": "Trump, Putin and Xi at one table, without Ukraine. What Moscow wants from the proposal and why Beijing might agree.",
       "tokens": [
@@ -7093,10 +7044,69 @@
         "unofficial",
         "zealand"
       ]
+    },
+    {
+      "title": "Secretary Rubio's Meeting with Venezuelan Foreign Minister Blanco",
+      "tokens": [
+        "blanco",
+        "first",
+        "foreign",
+        "marco",
+        "meeting",
+        "meets",
+        "minister",
+        "more",
+        "political",
+        "prisoners",
+        "release",
+        "rubio",
+        "secretary",
+        "talks",
+        "urges",
+        "venezuela",
+        "venezuelan",
+        "washington"
+      ]
+    },
+    {
+      "title": "At Home in Space opens, caps Air and Space Museum renovation",
+      "tokens": [
+        "back",
+        "caps",
+        "debuted",
+        "exhibition",
+        "home",
+        "last",
+        "museum",
+        "national",
+        "october",
+        "open",
+        "opens",
+        "renovation",
+        "returning",
+        "smithsonian",
+        "space",
+        "spaceflight"
+      ]
+    },
+    {
+      "title": "Why Rubio's Venezuela Meeting Could Redraw Global Energy Power",
+      "tokens": [
+        "blanco",
+        "could",
+        "energy",
+        "foreign",
+        "meeting",
+        "minister",
+        "redraw",
+        "rubio",
+        "secretary",
+        "venezuela",
+        "venezuelan"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "DAILY_24H_MEGA_NEWS",
     "SCIENCE",
     "AI_ROBOTICS",
@@ -7135,10 +7145,10 @@
     "INDIA_TRENDING",
     "SCIENCE",
     "GLOBAL_POWERS",
-    "HEALTH"
+    "HEALTH",
+    "GLOBAL_POWERS"
   ],
   "last_sources": [
-    "Al Jazeera Global",
     "Global Wire Services",
     "Space.com Breaking",
     "TechCrunch AI",
@@ -7177,7 +7187,8 @@
     "Google Trends India Viral 24h",
     "Space.com Breaking",
     "Top Viral News [NEW ZEALAND]",
-    "Country Documentary Wire [AFGHANISTAN]"
+    "Country Documentary Wire [AFGHANISTAN]",
+    "Top Viral News [VENEZUELA]"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -7221,6 +7232,8 @@
     "GLOBAL",
     "GLOBAL",
     "INDIA",
-    "PAKISTAN"
+    "PAKISTAN",
+    "UNITED STATES",
+    "GLOBAL TECH & AI"
   ]
 }
