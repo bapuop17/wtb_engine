@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-03T04:21:03.314213",
-  "round_robin_idx": 7,
-  "country_rot_idx": 73,
-  "bgm_track_counter": 1075100037,
+  "updated_at": "2026-11-03T10:20:45.070161",
+  "round_robin_idx": 8,
+  "country_rot_idx": 14,
+  "bgm_track_counter": 1127183871,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -414,55 +414,13 @@
     "several_blasts_reported_on_iran_s",
     "hormuz_attack_leaves_hole_in_merchant",
     "why_the_qeshm_island_blasts_could",
-    "why_the_hormuz_attack_could_redraw"
+    "why_the_hormuz_attack_could_redraw",
+    "cuba_s_hospitals_on_the_brink",
+    "apple_watch_s_ai_features_for",
+    "cuba_s_health_collapse_how_us",
+    "apple_watch_ai_rewind_privacy_war"
   ],
   "event_fingerprints": [
-    {
-      "title": "Russia arrests German man, calls him a Ukraine 'mercenary'",
-      "tokens": [
-        "mercenary",
-        "ukraine",
-        "russia",
-        "arrests",
-        "calls",
-        "german"
-      ]
-    },
-    {
-      "title": "Summit in Samarkand, a boon for child wellbeing and health",
-      "tokens": [
-        "health",
-        "boon",
-        "child",
-        "wellbeing",
-        "summit",
-        "samarkand"
-      ]
-    },
-    {
-      "title": "Fighting rages in Yemen's Taiz as UN warns nearly 260,000 now displaced",
-      "tokens": [
-        "taiz",
-        "nearly",
-        "fighting",
-        "rages",
-        "yemen",
-        "displaced",
-        "warns"
-      ]
-    },
-    {
-      "title": "Russia agrees to resume trilateral peace talks on Ukraine war",
-      "tokens": [
-        "trilateral",
-        "talks",
-        "agrees",
-        "peace",
-        "russia",
-        "ukraine",
-        "resume"
-      ]
-    },
     {
       "title": "Bulgaria: Concerns about security in the Black Sea dominate presidential election campaign",
       "tokens": [
@@ -7126,11 +7084,85 @@
         "shipping",
         "vessel"
       ]
+    },
+    {
+      "title": "Cuba's hospitals on the brink as US sanctions and oil crisis cripple healthcare",
+      "tokens": [
+        "blam",
+        "caught",
+        "cripple",
+        "cuba",
+        "cubans",
+        "healthcare",
+        "hospitals",
+        "india",
+        "middle",
+        "million",
+        "more",
+        "nine",
+        "sanctions",
+        "than",
+        "times"
+      ]
+    },
+    {
+      "title": "Apple Watch's AI features for rewinding and recapping conversations begin beta testing",
+      "tokens": [
+        "apple",
+        "audio",
+        "begin",
+        "beta",
+        "conversations",
+        "feature",
+        "features",
+        "four",
+        "help",
+        "includes",
+        "intelligence",
+        "notes",
+        "recapping",
+        "remember",
+        "rewinding",
+        "someone",
+        "take",
+        "technology",
+        "testing",
+        "watch"
+      ]
+    },
+    {
+      "title": "Cuba's Health Collapse: How US Sanctions and Oil Shortages Are Killing Hospitals",
+      "tokens": [
+        "collapse",
+        "cripple",
+        "cuba",
+        "health",
+        "healthcare",
+        "hospitals",
+        "killing",
+        "sanctions",
+        "shortages"
+      ]
+    },
+    {
+      "title": "Apple Watch AI Rewind: Privacy War Begins",
+      "tokens": [
+        "apple",
+        "begin",
+        "begins",
+        "beta",
+        "conversations",
+        "features",
+        "privacy",
+        "recapping",
+        "rewind",
+        "rewinding",
+        "testing",
+        "watch"
+      ]
     }
   ],
   "last_categories": [
-    "AI_ROBOTICS",
-    "GEOPOLITICS",
     "GLOBAL_POWERS",
     "GLOBAL_POWERS",
     "GEOPOLITICS",
@@ -7168,11 +7200,11 @@
     "HEALTH",
     "GLOBAL_POWERS",
     "GEOPOLITICS",
-    "GLOBAL_POWERS"
+    "GLOBAL_POWERS",
+    "INDIA_TRENDING",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "TechCrunch AI",
-    "Al Jazeera Global",
     "Al Jazeera Global",
     "The Guardian World",
     "Al Jazeera Global",
@@ -7210,7 +7242,9 @@
     "Country Documentary Wire [AFGHANISTAN]",
     "Top Viral News [VENEZUELA]",
     "Top Viral News [KAZAKHSTAN]",
-    "Top Viral News [OMAN]"
+    "Top Viral News [OMAN]",
+    "Country Documentary Wire [CUBA]",
+    "TechCrunch AI"
   ],
   "last_countries": [
     "UNITED STATES",
@@ -7258,6 +7292,8 @@
     "UNITED STATES",
     "GLOBAL TECH & AI",
     "IRAN",
-    "OMAN"
+    "OMAN",
+    "CUBA",
+    "GLOBAL TECH & AI"
   ]
 }
