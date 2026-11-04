@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T03:13:16.820246",
-  "round_robin_idx": 19,
-  "country_rot_idx": 40,
-  "bgm_track_counter": 1293986522,
+  "updated_at": "2026-11-04T04:32:22.892329",
+  "round_robin_idx": 0,
+  "country_rot_idx": 56,
+  "bgm_track_counter": 1315396331,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -435,36 +435,11 @@
     "china_accuses_philippine_politicians_of_intolerable",
     "china_s_red_line_the_philippines",
     "seven_flights_across_europe_targeted_by",
-    "europe_s_sky_under_siege_7"
+    "europe_s_sky_under_siege_7",
+    "the_us_is_negotiating_a_long",
+    "us_venezuela_oil_deal_secret_troops"
   ],
   "event_fingerprints": [
-    {
-      "title": "Private care home investors a risk to public sector, regulator says",
-      "tokens": [
-        "private",
-        "care",
-        "risk",
-        "sector",
-        "investors",
-        "regulator",
-        "public",
-        "home"
-      ]
-    },
-    {
-      "title": "Hospitals deliberately targeted by Sudan's RSF fighters, international dispatches investigation finds",
-      "tokens": [
-        "sudan",
-        "hospitals",
-        "international",
-        "investigation",
-        "dispatches",
-        "targeted",
-        "fighters",
-        "finds",
-        "deliberately"
-      ]
-    },
     {
       "title": "Elon Musk invests about $1 billion in Skydance",
       "tokens": [
@@ -7357,10 +7332,74 @@
         "threats",
         "under"
       ]
+    },
+    {
+      "title": "The US is negotiating a long-term military presence in Venezuela, The New York Times reported, as Washington expands its influence over the ",
+      "tokens": [
+        "abduction",
+        "adversaries",
+        "agreement",
+        "attacked",
+        "been",
+        "countries",
+        "country",
+        "expands",
+        "following",
+        "have",
+        "influence",
+        "legal",
+        "long",
+        "maduro",
+        "marco",
+        "military",
+        "negotiating",
+        "nicols",
+        "presence",
+        "president",
+        "reported",
+        "rubio",
+        "secretary",
+        "sector",
+        "starting",
+        "state",
+        "states",
+        "talks",
+        "term",
+        "times",
+        "united",
+        "venezuela",
+        "washington",
+        "year",
+        "york"
+      ]
+    },
+    {
+      "title": "US\u2011Venezuela Oil Deal: Secret Troops, Hidden Profits & Global Power Play",
+      "tokens": [
+        "abduc",
+        "country",
+        "deal",
+        "expands",
+        "following",
+        "hidden",
+        "influence",
+        "long",
+        "military",
+        "negotiating",
+        "presence",
+        "profits",
+        "reported",
+        "sector",
+        "term",
+        "times",
+        "troops",
+        "venezuela",
+        "washington",
+        "york"
+      ]
     }
   ],
   "last_categories": [
-    "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
@@ -7399,10 +7438,10 @@
     "INDIA_TRENDING",
     "INDIA_TRENDING",
     "GLOBAL_POWERS",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "INDIA_TRENDING"
   ],
   "last_sources": [
-    "Phys.org Breakthroughs",
     "France24 Global Affairs",
     "France24 Global Affairs",
     "Global Wire Services",
@@ -7441,11 +7480,10 @@
     "Top Viral News [NETHERLANDS]",
     "Top Viral News [ROMANIA]",
     "Country Documentary Wire [PHILIPPINES]",
-    "Top Viral News [ITALY]"
+    "Top Viral News [ITALY]",
+    "Country Documentary Wire [VENEZUELA]"
   ],
   "last_countries": [
-    "ISRAEL",
-    "IRAN",
     "GLOBAL MARKETS",
     "EGYPT",
     "INDIA",
@@ -7493,6 +7531,8 @@
     "CHINA",
     "GLOBAL TECH & AI",
     "BULGARIA",
-    "UNITED STATES"
+    "UNITED STATES",
+    "VENEZUELA",
+    "GLOBAL TECH & AI"
   ]
 }
