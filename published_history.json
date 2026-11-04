@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T17:58:46.627737",
-  "round_robin_idx": 3,
-  "country_rot_idx": 13,
-  "bgm_track_counter": 1346216667,
+  "updated_at": "2026-11-04T20:35:17.911741",
+  "round_robin_idx": 4,
+  "country_rot_idx": 21,
+  "bgm_track_counter": 1361435426,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -441,44 +441,11 @@
     "jon_ossoff_wins_georgia_senate_race",
     "how_ossoff_s_shock_win_redefined",
     "germany_s_11_6b_bet_why",
-    "canada_s_trade_surplus_widens_to"
+    "canada_s_trade_surplus_widens_to",
+    "cvs_to_split_off_drugstore_business",
+    "cvs_s_117b_breakup_pharmacy_vs"
   ],
   "event_fingerprints": [
-    {
-      "title": "The Ancient Lake Sealed Under 4 Kilometers of Antarctic Ice for 15 Million Years",
-      "tokens": [
-        "ancient",
-        "antarctic",
-        "kilometers",
-        "lake",
-        "million",
-        "sealed",
-        "under",
-        "years"
-      ]
-    },
-    {
-      "title": "Latest estimate for Starship launches required to support a Moon landing? 22.",
-      "tokens": [
-        "support",
-        "latest",
-        "moon",
-        "required",
-        "starship",
-        "launches",
-        "estimate",
-        "landing"
-      ]
-    },
-    {
-      "title": "Have Man Utd become the unmanageable club?",
-      "tokens": [
-        "club",
-        "have",
-        "become",
-        "unmanageable"
-      ]
-    },
     {
       "title": "Lights will stay on this winter, grid operator says after concerns",
       "tokens": [
@@ -7426,10 +7393,72 @@
         "widens",
         "year"
       ]
+    },
+    {
+      "title": "Canada's trade surplus widens to more than four-year high in September Click the link in #Short",
+      "tokens": [
+        "canada",
+        "click",
+        "four",
+        "high",
+        "link",
+        "more",
+        "september",
+        "short",
+        "surplus",
+        "than",
+        "trade",
+        "widens",
+        "year"
+      ]
+    },
+    {
+      "title": "CVS to split off drugstore business in major breakup of healthcare giant; shares fall 10%",
+      "tokens": [
+        "announced",
+        "breakup",
+        "breakups",
+        "business",
+        "companies",
+        "company",
+        "corporate",
+        "drugstore",
+        "fall",
+        "first",
+        "giant",
+        "half",
+        "health",
+        "healthcare",
+        "largest",
+        "major",
+        "plans",
+        "public",
+        "separate",
+        "shares",
+        "split",
+        "wednesd",
+        "would"
+      ]
+    },
+    {
+      "title": "CVS's $117B Breakup: Pharmacy vs Insurance Shock",
+      "tokens": [
+        "breakup",
+        "business",
+        "drugstore",
+        "fall",
+        "giant",
+        "healthcare",
+        "insurance",
+        "major",
+        "pharmacy",
+        "shares",
+        "shock",
+        "split"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -7468,10 +7497,10 @@
     "INDIA_TRENDING",
     "GEOPOLITICS",
     "INDIA_TRENDING",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Google Trends 200K+ Viral [INDIA]",
     "Google Trends 200K+ Viral [SWITZERLAND]",
     "Country Documentary Wire [EGYPT]",
     "Country Documentary Wire [QATAR]",
@@ -7510,10 +7539,10 @@
     "Country Documentary Wire [VENEZUELA]",
     "Top Viral News [GEORGIA]",
     "Country Documentary Wire [GERMANY]",
-    "Country Documentary Wire [CANADA]"
+    "Country Documentary Wire [CANADA]",
+    "CNBC Markets & Finance"
   ],
   "last_countries": [
-    "UKRAINE",
     "CANADA",
     "GLOBAL TECH & AI",
     "SERBIA",
@@ -7562,6 +7591,7 @@
     "GEORGIA",
     "RUSSIA",
     "GLOBAL BRIEFING",
-    "CANADA"
+    "CANADA",
+    "GLOBAL MARKETS"
   ]
 }
