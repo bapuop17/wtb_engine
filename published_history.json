@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T01:52:05.993537",
-  "round_robin_idx": 18,
-  "country_rot_idx": 24,
-  "bgm_track_counter": 1286303171,
+  "updated_at": "2026-11-04T03:13:16.820246",
+  "round_robin_idx": 19,
+  "country_rot_idx": 40,
+  "bgm_track_counter": 1293986522,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -433,32 +433,11 @@
     "election_day_here_s_what_to",
     "us_seeks_deeper_myanmar_ties_access",
     "china_accuses_philippine_politicians_of_intolerable",
-    "china_s_red_line_the_philippines"
+    "china_s_red_line_the_philippines",
+    "seven_flights_across_europe_targeted_by",
+    "europe_s_sky_under_siege_7"
   ],
   "event_fingerprints": [
-    {
-      "title": "Switch 2 security takes a hit as hackers unlock homebrew access",
-      "tokens": [
-        "homebrew",
-        "access",
-        "takes",
-        "switch",
-        "security",
-        "hackers",
-        "unlock"
-      ]
-    },
-    {
-      "title": "What Deep-Sea Submarines Discovered at the Bottom of the Mariana Trench",
-      "tokens": [
-        "bottom",
-        "deep",
-        "discovered",
-        "mariana",
-        "submarines",
-        "trench"
-      ]
-    },
     {
       "title": "Private care home investors a risk to public sector, regulator says",
       "tokens": [
@@ -7341,10 +7320,46 @@
         "rise",
         "tensions"
       ]
+    },
+    {
+      "title": "Seven flights across Europe targeted by suspected bomb threats",
+      "tokens": [
+        "across",
+        "affected",
+        "bomb",
+        "bulgaria",
+        "europe",
+        "flights",
+        "hours",
+        "landing",
+        "poland",
+        "seven",
+        "spain",
+        "suspected",
+        "targeted",
+        "threats",
+        "within"
+      ]
+    },
+    {
+      "title": "Europe's Sky Under Siege: 7 Flights, 1 Mystery Threat",
+      "tokens": [
+        "across",
+        "bomb",
+        "europe",
+        "flights",
+        "mystery",
+        "seven",
+        "siege",
+        "suspected",
+        "targeted",
+        "threat",
+        "threats",
+        "under"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -7383,10 +7398,10 @@
     "SCIENCE",
     "INDIA_TRENDING",
     "INDIA_TRENDING",
-    "GLOBAL_POWERS"
+    "GLOBAL_POWERS",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "BBC World Global",
     "Phys.org Breakthroughs",
     "France24 Global Affairs",
     "France24 Global Affairs",
@@ -7425,11 +7440,10 @@
     "Space.com Breaking",
     "Top Viral News [NETHERLANDS]",
     "Top Viral News [ROMANIA]",
-    "Country Documentary Wire [PHILIPPINES]"
+    "Country Documentary Wire [PHILIPPINES]",
+    "Top Viral News [ITALY]"
   ],
   "last_countries": [
-    "UNITED STATES",
-    "SPACE & SCIENCE",
     "ISRAEL",
     "IRAN",
     "GLOBAL MARKETS",
@@ -7477,6 +7491,8 @@
     "IRAN",
     "INDIA",
     "CHINA",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "BULGARIA",
+    "UNITED STATES"
   ]
 }
