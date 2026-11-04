@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T08:38:56.661783",
-  "round_robin_idx": 1,
-  "country_rot_idx": 72,
-  "bgm_track_counter": 1318074098,
+  "updated_at": "2026-11-04T12:43:14.144357",
+  "round_robin_idx": 2,
+  "country_rot_idx": 13,
+  "bgm_track_counter": 1340672411,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -439,39 +439,11 @@
     "the_us_is_negotiating_a_long",
     "us_venezuela_oil_deal_secret_troops",
     "jon_ossoff_wins_georgia_senate_race",
-    "how_ossoff_s_shock_win_redefined"
+    "how_ossoff_s_shock_win_redefined",
+    "zelensky_counts_on_11_6b_german",
+    "germany_s_11_6b_bet_why"
   ],
   "event_fingerprints": [
-    {
-      "title": "Europe's Space Rider vehicle comes crashing down during drop test",
-      "tokens": [
-        "crashing",
-        "comes",
-        "rider",
-        "europe",
-        "vehicle",
-        "down",
-        "drop",
-        "space",
-        "test",
-        "during"
-      ]
-    },
-    {
-      "title": "After Starshield interruption, Ukraine wants to build its own satellite communication network with ICEYE and Nokia",
-      "tokens": [
-        "communication",
-        "build",
-        "iceye",
-        "network",
-        "interruption",
-        "nokia",
-        "starshield",
-        "wants",
-        "ukraine",
-        "satellite"
-      ]
-    },
     {
       "title": "Manchester United labelled 'babies' by club legend Wayne Rooney",
       "tokens": [
@@ -7409,10 +7381,50 @@
         "shock",
         "wins"
       ]
+    },
+    {
+      "title": "Zelensky Counts on 11.6B German Aid, Energy Support as Russian Strikes Intensify",
+      "tokens": [
+        "bloc",
+        "confirms",
+        "continued",
+        "counts",
+        "energy",
+        "german",
+        "intensify",
+        "kyiv",
+        "leaders",
+        "post",
+        "real",
+        "russian",
+        "sanct",
+        "strikes",
+        "support",
+        "thanks",
+        "their",
+        "zelensky"
+      ]
+    },
+    {
+      "title": "Germany's \u20ac11.6B Bet: Why Ukraine's Grid is Now Europe's Lifeline",
+      "tokens": [
+        "counts",
+        "energy",
+        "europe",
+        "german",
+        "germany",
+        "grid",
+        "intensify",
+        "lifeline",
+        "russian",
+        "strikes",
+        "support",
+        "ukraine",
+        "zelensky"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -7451,10 +7463,10 @@
     "GLOBAL_POWERS",
     "GEOPOLITICS",
     "INDIA_TRENDING",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "INDIA_TRENDING"
   ],
   "last_sources": [
-    "France24 Global Affairs",
     "Global Wire Services",
     "Google Trends 200K+ Viral [INDIA]",
     "Google Trends 200K+ Viral [SWITZERLAND]",
@@ -7493,11 +7505,10 @@
     "Country Documentary Wire [PHILIPPINES]",
     "Top Viral News [ITALY]",
     "Country Documentary Wire [VENEZUELA]",
-    "Top Viral News [GEORGIA]"
+    "Top Viral News [GEORGIA]",
+    "Country Documentary Wire [GERMANY]"
   ],
   "last_countries": [
-    "INDIA",
-    "MIND-BLOWING FACT",
     "UKRAINE",
     "CANADA",
     "GLOBAL TECH & AI",
@@ -7545,6 +7556,8 @@
     "VENEZUELA",
     "GLOBAL TECH & AI",
     "GEORGIA",
-    "RUSSIA"
+    "RUSSIA",
+    "UKRAINE",
+    "FRANCE"
   ]
 }
