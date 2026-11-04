@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T13:20:43.495028",
-  "round_robin_idx": 2,
-  "country_rot_idx": 5,
-  "bgm_track_counter": 1325110598,
+  "updated_at": "2026-11-04T17:58:46.627737",
+  "round_robin_idx": 3,
+  "country_rot_idx": 13,
+  "bgm_track_counter": 1346216667,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -440,37 +440,10 @@
     "us_venezuela_oil_deal_secret_troops",
     "jon_ossoff_wins_georgia_senate_race",
     "how_ossoff_s_shock_win_redefined",
-    "germany_s_11_6b_bet_why"
+    "germany_s_11_6b_bet_why",
+    "canada_s_trade_surplus_widens_to"
   ],
   "event_fingerprints": [
-    {
-      "title": "After Starshield interruption, Ukraine wants to build its own satellite communication network with ICEYE and Nokia",
-      "tokens": [
-        "communication",
-        "build",
-        "iceye",
-        "network",
-        "interruption",
-        "nokia",
-        "starshield",
-        "wants",
-        "ukraine",
-        "satellite"
-      ]
-    },
-    {
-      "title": "Manchester United labelled 'babies' by club legend Wayne Rooney",
-      "tokens": [
-        "manchester",
-        "babies",
-        "united",
-        "club",
-        "labelled",
-        "legend",
-        "rooney",
-        "wayne"
-      ]
-    },
     {
       "title": "The Ancient Lake Sealed Under 4 Kilometers of Antarctic Ice for 15 Million Years",
       "tokens": [
@@ -7405,10 +7378,57 @@
         "lifeline",
         "ukraine"
       ]
+    },
+    {
+      "title": "Canada's trade surplus widens to more than four-year high in September Click the link in the comments below.",
+      "tokens": [
+        "below",
+        "biggest",
+        "billion",
+        "canada",
+        "click",
+        "comments",
+        "drive",
+        "exports",
+        "four",
+        "fresh",
+        "gold",
+        "high",
+        "link",
+        "marked",
+        "more",
+        "record",
+        "september",
+        "surplus",
+        "than",
+        "trade",
+        "widening",
+        "widens",
+        "year",
+        "years"
+      ]
+    },
+    {
+      "title": "Canada's trade surplus widens to more than four-year high in September Click the link in",
+      "tokens": [
+        "below",
+        "canada",
+        "click",
+        "comments",
+        "four",
+        "high",
+        "link",
+        "more",
+        "september",
+        "surplus",
+        "than",
+        "trade",
+        "widens",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
@@ -7447,10 +7467,10 @@
     "GEOPOLITICS",
     "INDIA_TRENDING",
     "GEOPOLITICS",
-    "INDIA_TRENDING"
+    "INDIA_TRENDING",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "Global Wire Services",
     "Google Trends 200K+ Viral [INDIA]",
     "Google Trends 200K+ Viral [SWITZERLAND]",
     "Country Documentary Wire [EGYPT]",
@@ -7489,10 +7509,10 @@
     "Top Viral News [ITALY]",
     "Country Documentary Wire [VENEZUELA]",
     "Top Viral News [GEORGIA]",
-    "Country Documentary Wire [GERMANY]"
+    "Country Documentary Wire [GERMANY]",
+    "Country Documentary Wire [CANADA]"
   ],
   "last_countries": [
-    "MIND-BLOWING FACT",
     "UKRAINE",
     "CANADA",
     "GLOBAL TECH & AI",
@@ -7541,6 +7561,7 @@
     "GLOBAL TECH & AI",
     "GEORGIA",
     "RUSSIA",
-    "GLOBAL BRIEFING"
+    "GLOBAL BRIEFING",
+    "CANADA"
   ]
 }
