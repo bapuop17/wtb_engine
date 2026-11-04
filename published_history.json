@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T12:43:14.144357",
+  "updated_at": "2026-11-04T13:20:43.495028",
   "round_robin_idx": 2,
-  "country_rot_idx": 13,
-  "bgm_track_counter": 1340672411,
+  "country_rot_idx": 5,
+  "bgm_track_counter": 1325110598,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -440,10 +440,24 @@
     "us_venezuela_oil_deal_secret_troops",
     "jon_ossoff_wins_georgia_senate_race",
     "how_ossoff_s_shock_win_redefined",
-    "zelensky_counts_on_11_6b_german",
     "germany_s_11_6b_bet_why"
   ],
   "event_fingerprints": [
+    {
+      "title": "After Starshield interruption, Ukraine wants to build its own satellite communication network with ICEYE and Nokia",
+      "tokens": [
+        "communication",
+        "build",
+        "iceye",
+        "network",
+        "interruption",
+        "nokia",
+        "starshield",
+        "wants",
+        "ukraine",
+        "satellite"
+      ]
+    },
     {
       "title": "Manchester United labelled 'babies' by club legend Wayne Rooney",
       "tokens": [
@@ -7383,44 +7397,13 @@
       ]
     },
     {
-      "title": "Zelensky Counts on 11.6B German Aid, Energy Support as Russian Strikes Intensify",
-      "tokens": [
-        "bloc",
-        "confirms",
-        "continued",
-        "counts",
-        "energy",
-        "german",
-        "intensify",
-        "kyiv",
-        "leaders",
-        "post",
-        "real",
-        "russian",
-        "sanct",
-        "strikes",
-        "support",
-        "thanks",
-        "their",
-        "zelensky"
-      ]
-    },
-    {
       "title": "Germany's \u20ac11.6B Bet: Why Ukraine's Grid is Now Europe's Lifeline",
       "tokens": [
-        "counts",
-        "energy",
         "europe",
-        "german",
         "germany",
         "grid",
-        "intensify",
         "lifeline",
-        "russian",
-        "strikes",
-        "support",
-        "ukraine",
-        "zelensky"
+        "ukraine"
       ]
     }
   ],
@@ -7509,6 +7492,7 @@
     "Country Documentary Wire [GERMANY]"
   ],
   "last_countries": [
+    "MIND-BLOWING FACT",
     "UKRAINE",
     "CANADA",
     "GLOBAL TECH & AI",
@@ -7557,7 +7541,6 @@
     "GLOBAL TECH & AI",
     "GEORGIA",
     "RUSSIA",
-    "UKRAINE",
-    "FRANCE"
+    "GLOBAL BRIEFING"
   ]
 }
