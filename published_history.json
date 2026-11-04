@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T20:35:17.911741",
-  "round_robin_idx": 4,
-  "country_rot_idx": 21,
-  "bgm_track_counter": 1361435426,
+  "updated_at": "2026-11-04T23:46:34.525289",
+  "round_robin_idx": 5,
+  "country_rot_idx": 29,
+  "bgm_track_counter": 1365557269,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -443,32 +443,11 @@
     "germany_s_11_6b_bet_why",
     "canada_s_trade_surplus_widens_to",
     "cvs_to_split_off_drugstore_business",
-    "cvs_s_117b_breakup_pharmacy_vs"
+    "cvs_s_117b_breakup_pharmacy_vs",
+    "vance_says_the_iran_war_cost",
+    "how_the_iran_war_sank_the"
   ],
   "event_fingerprints": [
-    {
-      "title": "Lights will stay on this winter, grid operator says after concerns",
-      "tokens": [
-        "operator",
-        "winter",
-        "grid",
-        "stay",
-        "concerns",
-        "will",
-        "lights"
-      ]
-    },
-    {
-      "title": "Why This Giant Crater in the Desert Has Been Burning for Over 50 Years",
-      "tokens": [
-        "been",
-        "burning",
-        "crater",
-        "desert",
-        "giant",
-        "years"
-      ]
-    },
     {
       "title": "'Bespoke' mRNA vaccine significantly reduces risk of melanoma recurrence or death, clinical trial shows",
       "tokens": [
@@ -7456,10 +7435,39 @@
         "shock",
         "split"
       ]
+    },
+    {
+      "title": "Vance says the Iran war cost Republicans the midterms",
+      "tokens": [
+        "blaming",
+        "cost",
+        "inside",
+        "iran",
+        "losses",
+        "midterms",
+        "ongoing",
+        "post",
+        "president",
+        "republicans",
+        "vance",
+        "vice"
+      ]
+    },
+    {
+      "title": "How the Iran War Sank the GOP in 2026: Vance's Brutal Truth",
+      "tokens": [
+        "brutal",
+        "cost",
+        "iran",
+        "midterms",
+        "republicans",
+        "sank",
+        "truth",
+        "vance"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
@@ -7498,10 +7506,10 @@
     "GEOPOLITICS",
     "INDIA_TRENDING",
     "GEOPOLITICS",
-    "STOCK_MARKETS"
+    "STOCK_MARKETS",
+    "GLOBAL_POWERS"
   ],
   "last_sources": [
-    "Google Trends 200K+ Viral [SWITZERLAND]",
     "Country Documentary Wire [EGYPT]",
     "Country Documentary Wire [QATAR]",
     "Top Viral News [UNITED KINGDOM]",
@@ -7540,10 +7548,10 @@
     "Top Viral News [GEORGIA]",
     "Country Documentary Wire [GERMANY]",
     "Country Documentary Wire [CANADA]",
-    "CNBC Markets & Finance"
+    "CNBC Markets & Finance",
+    "Top Viral News [IRAN]"
   ],
   "last_countries": [
-    "CANADA",
     "GLOBAL TECH & AI",
     "SERBIA",
     "INTERNATIONAL",
@@ -7592,6 +7600,7 @@
     "RUSSIA",
     "GLOBAL BRIEFING",
     "CANADA",
-    "GLOBAL MARKETS"
+    "GLOBAL MARKETS",
+    "IRAN"
   ]
 }
