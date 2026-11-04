@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-03T23:57:55.564913",
-  "round_robin_idx": 17,
-  "country_rot_idx": 8,
-  "bgm_track_counter": 1258144644,
+  "updated_at": "2026-11-04T01:52:05.993537",
+  "round_robin_idx": 18,
+  "country_rot_idx": 24,
+  "bgm_track_counter": 1286303171,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -431,36 +431,11 @@
     "why_ghana_s_mp_is_stuck",
     "black_sea_crisis_seven_missing_sailors",
     "election_day_here_s_what_to",
-    "us_seeks_deeper_myanmar_ties_access"
+    "us_seeks_deeper_myanmar_ties_access",
+    "china_accuses_philippine_politicians_of_intolerable",
+    "china_s_red_line_the_philippines"
   ],
   "event_fingerprints": [
-    {
-      "title": "On this day in space! Oct. 22, 1992: Ashes of 'Star Trek' creator Gene Roddenberry launch into space on NASA shuttle",
-      "tokens": [
-        "gene",
-        "creator",
-        "space",
-        "nasa",
-        "launch",
-        "shuttle",
-        "trek",
-        "ashes",
-        "star",
-        "roddenberry"
-      ]
-    },
-    {
-      "title": "Trump says Musk has restored access to Ukraine's Starlink network",
-      "tokens": [
-        "access",
-        "network",
-        "ukraine",
-        "starlink",
-        "restored",
-        "musk",
-        "trump"
-      ]
-    },
     {
       "title": "Switch 2 security takes a hit as hackers unlock homebrew access",
       "tokens": [
@@ -7329,10 +7304,46 @@
         "seeks",
         "ties"
       ]
+    },
+    {
+      "title": "China accuses Philippine politicians of 'intolerable' conduct as tensions rise",
+      "tokens": [
+        "accuses",
+        "china",
+        "conduct",
+        "diplomat",
+        "intolerable",
+        "morning",
+        "philippine",
+        "philippines",
+        "politicians",
+        "post",
+        "rein",
+        "rise",
+        "south",
+        "tensions",
+        "urges",
+        "wang"
+      ]
+    },
+    {
+      "title": "China's Red Line: The Philippines Diplomatic Crisis",
+      "tokens": [
+        "accuses",
+        "china",
+        "conduct",
+        "diplomatic",
+        "intolerable",
+        "line",
+        "philippine",
+        "philippines",
+        "politicians",
+        "rise",
+        "tensions"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
@@ -7371,10 +7382,10 @@
     "GEOPOLITICS",
     "SCIENCE",
     "INDIA_TRENDING",
-    "INDIA_TRENDING"
+    "INDIA_TRENDING",
+    "GLOBAL_POWERS"
   ],
   "last_sources": [
-    "The Guardian International",
     "BBC World Global",
     "Phys.org Breakthroughs",
     "France24 Global Affairs",
@@ -7413,11 +7424,10 @@
     "Country Documentary Wire [VIETNAM]",
     "Space.com Breaking",
     "Top Viral News [NETHERLANDS]",
-    "Top Viral News [ROMANIA]"
+    "Top Viral News [ROMANIA]",
+    "Country Documentary Wire [PHILIPPINES]"
   ],
   "last_countries": [
-    "SPACE & SCIENCE",
-    "SAUDI ARABIA",
     "UNITED STATES",
     "SPACE & SCIENCE",
     "ISRAEL",
@@ -7465,6 +7475,8 @@
     "UNITED KINGDOM",
     "FINLAND",
     "IRAN",
-    "INDIA"
+    "INDIA",
+    "CHINA",
+    "GLOBAL TECH & AI"
   ]
 }
