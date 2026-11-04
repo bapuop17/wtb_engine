@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T04:32:22.892329",
-  "round_robin_idx": 0,
-  "country_rot_idx": 56,
-  "bgm_track_counter": 1315396331,
+  "updated_at": "2026-11-04T08:38:56.661783",
+  "round_robin_idx": 1,
+  "country_rot_idx": 72,
+  "bgm_track_counter": 1318074098,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -437,32 +437,11 @@
     "seven_flights_across_europe_targeted_by",
     "europe_s_sky_under_siege_7",
     "the_us_is_negotiating_a_long",
-    "us_venezuela_oil_deal_secret_troops"
+    "us_venezuela_oil_deal_secret_troops",
+    "jon_ossoff_wins_georgia_senate_race",
+    "how_ossoff_s_shock_win_redefined"
   ],
   "event_fingerprints": [
-    {
-      "title": "Elon Musk invests about $1 billion in Skydance",
-      "tokens": [
-        "elon",
-        "billion",
-        "invests",
-        "skydance",
-        "about",
-        "musk"
-      ]
-    },
-    {
-      "title": "Inside the Doomsday Vault Hidden Deep Inside an Arctic Mountain",
-      "tokens": [
-        "arctic",
-        "deep",
-        "doomsday",
-        "hidden",
-        "inside",
-        "mountain",
-        "vault"
-      ]
-    },
     {
       "title": "Europe's Space Rider vehicle comes crashing down during drop test",
       "tokens": [
@@ -7397,10 +7376,42 @@
         "washington",
         "york"
       ]
+    },
+    {
+      "title": "Jon Ossoff Wins Georgia Senate Race Against Mike Collins",
+      "tokens": [
+        "against",
+        "collins",
+        "defeated",
+        "democratic",
+        "georgia",
+        "mike",
+        "ossoff",
+        "projects",
+        "race",
+        "senate",
+        "times",
+        "wins",
+        "york"
+      ]
+    },
+    {
+      "title": "How Ossoff's Shock Win Redefined Georgia's Power Play",
+      "tokens": [
+        "against",
+        "collins",
+        "georgia",
+        "mike",
+        "ossoff",
+        "race",
+        "redefined",
+        "senate",
+        "shock",
+        "wins"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
@@ -7439,10 +7450,10 @@
     "INDIA_TRENDING",
     "GLOBAL_POWERS",
     "GEOPOLITICS",
-    "INDIA_TRENDING"
+    "INDIA_TRENDING",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "France24 Global Affairs",
     "France24 Global Affairs",
     "Global Wire Services",
     "Google Trends 200K+ Viral [INDIA]",
@@ -7481,11 +7492,10 @@
     "Top Viral News [ROMANIA]",
     "Country Documentary Wire [PHILIPPINES]",
     "Top Viral News [ITALY]",
-    "Country Documentary Wire [VENEZUELA]"
+    "Country Documentary Wire [VENEZUELA]",
+    "Top Viral News [GEORGIA]"
   ],
   "last_countries": [
-    "GLOBAL MARKETS",
-    "EGYPT",
     "INDIA",
     "MIND-BLOWING FACT",
     "UKRAINE",
@@ -7533,6 +7543,8 @@
     "BULGARIA",
     "UNITED STATES",
     "VENEZUELA",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "GEORGIA",
+    "RUSSIA"
   ]
 }
