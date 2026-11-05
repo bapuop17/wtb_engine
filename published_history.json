@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T10:49:38.513515",
-  "round_robin_idx": 9,
-  "country_rot_idx": 61,
-  "bgm_track_counter": 1452200139,
+  "updated_at": "2026-11-05T12:05:08.456339",
+  "round_robin_idx": 10,
+  "country_rot_idx": 69,
+  "bgm_track_counter": 1456576856,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -452,43 +452,12 @@
     "how_qatar_airways_new_caracas_link",
     "artificial_intelligence_could_add_79_billion",
     "india_s_79_billion_ai_bet",
-    "zelenskyy_hopes_us_democrats_victory_will"
+    "zelenskyy_hopes_us_democrats_victory_will",
+    "prime_minister_babi_and_cabinet_ministers",
+    "uk_political_chaos_burnham_s_shock",
+    "36_years_later_hungary_opens_communist"
   ],
   "event_fingerprints": [
-    {
-      "title": "The Impossible Galaxy Discovered by the James Webb Space Telescope",
-      "tokens": [
-        "discovered",
-        "galaxy",
-        "impossible",
-        "james",
-        "space",
-        "telescope",
-        "webb"
-      ]
-    },
-    {
-      "title": "Never finishing the fight: Where did Xbox go wrong with Halo?",
-      "tokens": [
-        "finishing",
-        "where",
-        "fight",
-        "never",
-        "halo",
-        "wrong",
-        "xbox"
-      ]
-    },
-    {
-      "title": "The iPhone Duo should have been an iPad",
-      "tokens": [
-        "been",
-        "should",
-        "iphone",
-        "have",
-        "ipad"
-      ]
-    },
     {
       "title": "American Express is cutting 5% of its workforce to 'prepare for AI'",
       "tokens": [
@@ -7500,34 +7469,83 @@
     {
       "title": "Zelenskyy hopes US Democrats' victory will lead to increased support for Ukraine",
       "tokens": [
-        "assistance",
-        "bring",
-        "could",
         "democrats",
-        "financial",
-        "help",
         "hopes",
         "increased",
         "lead",
-        "military",
-        "peace",
-        "president",
-        "pressure",
-        "putin",
         "support",
         "ukraine",
-        "ukrainian",
         "victory",
-        "vladimir",
-        "volodymyr",
-        "washington",
         "will",
         "zelenskyy"
+      ]
+    },
+    {
+      "title": "Prime Minister Babi and cabinet ministers to address Prague security conference",
+      "tokens": [
+        "address",
+        "babi",
+        "becomes",
+        "burnham",
+        "cabin",
+        "cabinet",
+        "conference",
+        "international",
+        "minister",
+        "ministers",
+        "naming",
+        "prague",
+        "prime",
+        "radio",
+        "security",
+        "starts",
+        "updates"
+      ]
+    },
+    {
+      "title": "UK Political Chaos: Burnham's Shock Cabinet",
+      "tokens": [
+        "address",
+        "babi",
+        "burnham",
+        "cabinet",
+        "chaos",
+        "conference",
+        "minister",
+        "ministers",
+        "political",
+        "prague",
+        "prime",
+        "security",
+        "shock"
+      ]
+    },
+    {
+      "title": "36 years later: Hungary opens Communist-era secret service files",
+      "tokens": [
+        "about",
+        "communist",
+        "debate",
+        "decades",
+        "disclosure",
+        "files",
+        "fresh",
+        "guilt",
+        "hungary",
+        "informants",
+        "later",
+        "opens",
+        "releasing",
+        "responsibility",
+        "rule",
+        "service",
+        "soviet",
+        "sparking",
+        "years"
       ]
     }
   ],
   "last_categories": [
-    "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
@@ -7566,10 +7584,10 @@
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
     "AI_ROBOTICS",
-    "INDIA_TRENDING"
+    "INDIA_TRENDING",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Global Wire Services",
     "Country Documentary Wire [EGYPT]",
     "BBC World Global",
     "Top Viral News [UKRAINE]",
@@ -7608,10 +7626,10 @@
     "France24 Strategic Reports",
     "Country Documentary Wire [COLOMBIA]",
     "India AI & Semiconductor Trending",
-    "Country Documentary Wire [AUSTRIA]"
+    "Country Documentary Wire [CZECHIA]",
+    "DW Global In-Depth"
   ],
   "last_countries": [
-    "RUSSIA",
     "GLOBAL TECH & AI",
     "ITALY",
     "MIND-BLOWING FACT",
@@ -7660,6 +7678,7 @@
     "GLOBAL BRIEFING",
     "QATAR",
     "GLOBAL TECH & AI",
-    "UKRAINE"
+    "UNITED KINGDOM",
+    "HUNGARY"
   ]
 }
