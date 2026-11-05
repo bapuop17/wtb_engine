@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T12:05:08.456339",
-  "round_robin_idx": 10,
-  "country_rot_idx": 69,
-  "bgm_track_counter": 1456576856,
+  "updated_at": "2026-11-05T13:28:08.438286",
+  "round_robin_idx": 12,
+  "country_rot_idx": 10,
+  "bgm_track_counter": 1514233404,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -455,56 +455,13 @@
     "zelenskyy_hopes_us_democrats_victory_will",
     "prime_minister_babi_and_cabinet_ministers",
     "uk_political_chaos_burnham_s_shock",
-    "36_years_later_hungary_opens_communist"
+    "36_years_later_hungary_opens_communist",
+    "vance_privately_accused_netanyahu_of_being",
+    "vance_vs_netanyahu_inside_the_secret",
+    "rheinmetall_shares_plunge_17_after_outlook",
+    "rheinmetall_s_17_crash_why_germany"
   ],
   "event_fingerprints": [
-    {
-      "title": "American Express is cutting 5% of its workforce to 'prepare for AI'",
-      "tokens": [
-        "cutting",
-        "prepare",
-        "express",
-        "american",
-        "workforce"
-      ]
-    },
-    {
-      "title": "The Secret Ocean Graveyard Where Space Agencies Crash Dying Spacecraft",
-      "tokens": [
-        "agencies",
-        "crash",
-        "dying",
-        "graveyard",
-        "ocean",
-        "secret",
-        "space",
-        "spacecraft",
-        "where"
-      ]
-    },
-    {
-      "title": "Kompany taken to hospital after collapsing at training",
-      "tokens": [
-        "kompany",
-        "collapsing",
-        "training",
-        "hospital",
-        "taken"
-      ]
-    },
-    {
-      "title": "Abandoned Popcorn Time apps had to be disabled to prevent a zombie army",
-      "tokens": [
-        "time",
-        "prevent",
-        "apps",
-        "abandoned",
-        "popcorn",
-        "disabled",
-        "army",
-        "zombie"
-      ]
-    },
     {
       "title": "Deadly shooting near Paris is a 'racist terrorist attack', Macron says",
       "tokens": [
@@ -7543,11 +7500,93 @@
         "sparking",
         "years"
       ]
+    },
+    {
+      "title": "Vance privately accused Netanyahu of being 'wrong on everything' about Iran: report",
+      "tokens": [
+        "about",
+        "accused",
+        "administration",
+        "behind",
+        "being",
+        "closed",
+        "divided",
+        "doors",
+        "everything",
+        "iran",
+        "military",
+        "minister",
+        "netanyahu",
+        "possible",
+        "prime",
+        "privately",
+        "readies",
+        "renewed",
+        "trump",
+        "vance",
+        "wrong"
+      ]
+    },
+    {
+      "title": "Vance vs. Netanyahu: Inside the Secret US\u2011Israel Iran Power Struggle",
+      "tokens": [
+        "about",
+        "accused",
+        "being",
+        "everything",
+        "inside",
+        "iran",
+        "israel",
+        "netanyahu",
+        "privately",
+        "struggle",
+        "vance",
+        "wrong"
+      ]
+    },
+    {
+      "title": "Rheinmetall shares plunge 17% after outlook cut as military contracts stall",
+      "tokens": [
+        "ammunition",
+        "artillery",
+        "citing",
+        "contracts",
+        "delays",
+        "deliveries",
+        "german",
+        "military",
+        "months",
+        "more",
+        "outlook",
+        "plunge",
+        "projects",
+        "rheinmetall",
+        "second",
+        "shares",
+        "stall",
+        "three",
+        "time"
+      ]
+    },
+    {
+      "title": "Rheinmetall's 17% Crash: Why Germany's Warship Dream Died",
+      "tokens": [
+        "contracts",
+        "crash",
+        "died",
+        "dream",
+        "germany",
+        "military",
+        "outlook",
+        "plunge",
+        "rheinmetall",
+        "shares",
+        "stall",
+        "warship"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
@@ -7585,11 +7624,11 @@
     "GEOPOLITICS",
     "AI_ROBOTICS",
     "INDIA_TRENDING",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GEOPOLITICS",
+    "DEFENSE_MILITARY"
   ],
   "last_sources": [
-    "Country Documentary Wire [EGYPT]",
-    "BBC World Global",
     "Top Viral News [UKRAINE]",
     "Top Viral News [CANADA]",
     "Country Documentary Wire [PHILIPPINES]",
@@ -7627,11 +7666,11 @@
     "Country Documentary Wire [COLOMBIA]",
     "India AI & Semiconductor Trending",
     "Country Documentary Wire [CZECHIA]",
-    "DW Global In-Depth"
+    "DW Global In-Depth",
+    "Country Documentary Wire [UNITED STATES]",
+    "Top Viral News [GERMANY]"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
-    "ITALY",
     "MIND-BLOWING FACT",
     "ETHIOPIA",
     "GLOBAL TECH & AI",
@@ -7679,6 +7718,8 @@
     "QATAR",
     "GLOBAL TECH & AI",
     "UNITED KINGDOM",
-    "HUNGARY"
+    "HUNGARY",
+    "ISRAEL",
+    "GERMANY"
   ]
 }
