@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T09:17:42.992083",
-  "round_robin_idx": 7,
-  "country_rot_idx": 45,
-  "bgm_track_counter": 1399279457,
+  "updated_at": "2026-11-05T10:01:19.554276",
+  "round_robin_idx": 8,
+  "country_rot_idx": 53,
+  "bgm_track_counter": 1429318862,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -449,35 +449,11 @@
     "south_africans_vote_in_key_municipal",
     "anc_collapse_south_africa_votes_as",
     "qatar_airways_connects_doha_to_caracas",
-    "how_qatar_airways_new_caracas_link"
+    "how_qatar_airways_new_caracas_link",
+    "artificial_intelligence_could_add_79_billion",
+    "india_s_79_billion_ai_bet"
   ],
   "event_fingerprints": [
-    {
-      "title": "First personalised cancer vaccine cuts risk of disease returning in major trial",
-      "tokens": [
-        "cuts",
-        "disease",
-        "major",
-        "vaccine",
-        "cancer",
-        "trial",
-        "personalised",
-        "risk",
-        "returning",
-        "first"
-      ]
-    },
-    {
-      "title": "'I'm 96 and have 15 million followers': The grannies taking over TikTok",
-      "tokens": [
-        "followers",
-        "tiktok",
-        "taking",
-        "grannies",
-        "million",
-        "have"
-      ]
-    },
     {
       "title": "Seven shot dead by gunmen at church funeral in Jordan, officials say",
       "tokens": [
@@ -7497,10 +7473,44 @@
         "redraws",
         "venezuela"
       ]
+    },
+    {
+      "title": "Artificial intelligence could add $79 billion to India's economy in a decade",
+      "tokens": [
+        "artifi",
+        "artificial",
+        "bharat",
+        "billion",
+        "could",
+        "cybersecurity",
+        "decade",
+        "defenders",
+        "digital",
+        "economy",
+        "evolving",
+        "guru",
+        "india",
+        "intelligence",
+        "investment",
+        "navigating"
+      ]
+    },
+    {
+      "title": "India's $79 Billion AI Bet: The $8 Trillion Shock",
+      "tokens": [
+        "artificial",
+        "billion",
+        "could",
+        "decade",
+        "economy",
+        "india",
+        "intelligence",
+        "shock",
+        "trillion"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
@@ -7539,10 +7549,10 @@
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Top Viral News [UNITED KINGDOM]",
     "Top Viral News [IRAN]",
     "Global Wire Services",
     "Country Documentary Wire [EGYPT]",
@@ -7581,10 +7591,10 @@
     "CNBC Markets & Finance",
     "Top Viral News [IRAN]",
     "France24 Strategic Reports",
-    "Country Documentary Wire [COLOMBIA]"
+    "Country Documentary Wire [COLOMBIA]",
+    "India AI & Semiconductor Trending"
   ],
   "last_countries": [
-    "INTERNATIONAL",
     "GLOBAL TECH & AI",
     "RUSSIA",
     "GLOBAL TECH & AI",
@@ -7633,6 +7643,7 @@
     "GLOBAL MARKETS",
     "IRAN",
     "GLOBAL BRIEFING",
-    "QATAR"
+    "QATAR",
+    "GLOBAL TECH & AI"
   ]
 }
