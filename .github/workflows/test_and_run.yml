@@ -1,4 +1,4 @@
-name: WTB News Engine V40 (24x7 Auto-Scheduled • Zero Sleep Hang • Point-to-Point HD Visuals • Global Countries + Stock Markets)
+name: WTB News Engine V44 (24x7 Every-15m Cron + Auto-Chaining • 2 Pairs/Run • 10 Trending + 5 Underrated + 5 Categories)
 
 on:
   workflow_dispatch:
@@ -8,9 +8,9 @@ on:
         required: false
         default: 'false'
       pairs_per_run:
-        description: 'Number of Long+Short video pairs per run (1 = 1 Long + 1 Short = 2 Videos per run)'
+        description: 'Number of Long+Short video pairs per run (2 = 2 Long + 2 Short = 4 Videos per run)'
         required: false
-        default: '1'
+        default: '2'
   push:
     branches:
       - main
@@ -18,9 +18,11 @@ on:
       - 'wtb_engine.py'
       - '.github/workflows/**'
   schedule:
-    # Runs automatically every 2 hours (12 runs/day x 2 videos = 24 videos/day smoothly spaced across 24 hours!)
-    - cron: '12 */2 * * *'
-    - cron: '42 1,5,9,13,17,21 * * *'
+    # 4 Staggered Cron Triggers Every Hour (Every 15 Minutes = 96 Triggers/Day!) so GitHub peak-hour cron drops NEVER stall for hours!
+    - cron: '7 * * * *'
+    - cron: '22 * * * *'
+    - cron: '37 * * * *'
+    - cron: '52 * * * *'
 
 permissions:
   contents: write
@@ -37,7 +39,7 @@ env:
 jobs:
   build_and_publish:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 150
 
     steps:
       - name: Checkout Repository
@@ -47,7 +49,7 @@ jobs:
 
       - name: Auto-Remove Broken Schedule Blocker Files (Self-Healing Cleanup)
         run: |
-          rm -f workflow_schedule_state.json .github/scripts/claim_schedule_slot.py || true
+          rm -f workflow_schedule_state.json .github/scripts/claim_schedule_slot.py temp/channel_cap_hit.flag || true
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -68,7 +70,7 @@ jobs:
             fonts-freefont-ttf \
             fonts-noto-core
 
-      - name: Install Python V40 Documentary & Motion-Graphics Libraries
+      - name: Install Python V44 Documentary & Motion-Graphics Libraries
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
@@ -91,7 +93,7 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V40 Documentary News Engine
+      - name: Run WTB V44 Documentary News Engine (2 Long + 2 Short Videos Per Run)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
@@ -102,7 +104,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FORCE_MEGA_NEWS: ${{ github.event.inputs.force_mega_news || 'false' }}
-          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || '1' }}
+          PAIRS_PER_RUN: ${{ github.event.inputs.pairs_per_run || '2' }}
         run: |
           python3 -u wtb_engine.py
 
@@ -115,7 +117,7 @@ jobs:
           git checkout -- .github/workflows/ || true
           git rm -f --ignore-unmatch workflow_schedule_state.json .github/scripts/claim_schedule_slot.py || true
           test -f published_history.json && git add published_history.json || true
-          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V40]"
+          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V44]"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main || (sleep 3 && git pull --rebase -X theirs origin main && git push origin HEAD:main) || true
 
@@ -131,10 +133,16 @@ jobs:
           if-no-files-found: ignore
           retention-days: 3
 
-      - name: Keep Scheduled Workflow Enabled (Finishes Immediately Without Sleep Hang)
+      - name: Active 24x7 Auto-Chaining Trigger (Prevents GitHub Cron Stalls!)
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh workflow enable "test_and_run.yml" || true
-          
+          if [ ! -f temp/channel_cap_hit.flag ]; then
+            echo "🚀 Upload succeeded! Auto-triggering next batch in the 20-Slot Lineup..."
+            sleep 15
+            gh workflow run "test_and_run.yml" --ref main || true
+          else
+            echo "⏸️ Channel 24h cap currently full; next 15-min cron trigger will auto-resume when rolling 24h slot opens."
+          fi
