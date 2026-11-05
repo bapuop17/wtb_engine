@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T20:36:32.207630",
-  "round_robin_idx": 2,
-  "country_rot_idx": 15,
-  "bgm_track_counter": 1693660406,
+  "updated_at": "2026-11-05T21:40:47.874736",
+  "round_robin_idx": 4,
+  "country_rot_idx": 31,
+  "bgm_track_counter": 1741246634,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -476,51 +476,13 @@
     "france_bracing_for_220_protests_nationwide",
     "france_on_edge_220_protests_70",
     "where_injured_motogp_riders_stand_ahead",
-    "racing_on_the_edge_injured_motogp"
+    "racing_on_the_edge_injured_motogp",
+    "how_mercedes_can_win_f1_s",
+    "mercedes_final_sprint_how_brazil_could",
+    "manhunt_in_western_turkey_after_eight",
+    "turkish_village_massacre_8_killed_manhunt"
   ],
   "event_fingerprints": [
-    {
-      "title": "Building collapse in Nairobi search for survivors under way",
-      "tokens": [
-        "under",
-        "search",
-        "nairobi",
-        "collapse",
-        "survivors",
-        "building"
-      ]
-    },
-    {
-      "title": "Startups don't need to go viral to win customers",
-      "tokens": [
-        "startups",
-        "viral",
-        "customers",
-        "need"
-      ]
-    },
-    {
-      "title": "Why Scientists Sealed the Deepest Hole Ever Drilled Into Earth",
-      "tokens": [
-        "deepest",
-        "drilled",
-        "earth",
-        "ever",
-        "hole",
-        "scientists",
-        "sealed"
-      ]
-    },
-    {
-      "title": "Canada inflict back-to-back losses on England",
-      "tokens": [
-        "england",
-        "inflict",
-        "back",
-        "losses",
-        "canada"
-      ]
-    },
     {
       "title": "France braces for another day of mass protests as security on high alert",
       "tokens": [
@@ -7708,11 +7670,82 @@
         "stand",
         "stars"
       ]
+    },
+    {
+      "title": "How Mercedes can win F1's world constructors' title at Brazil GP",
+      "tokens": [
+        "brazil",
+        "brazilian",
+        "championship",
+        "constructors",
+        "does",
+        "fight",
+        "golden",
+        "mercedes",
+        "need",
+        "opportunity",
+        "seize",
+        "title"
+      ]
+    },
+    {
+      "title": "Mercedes' Final Sprint: How Brazil Could Crown Their 2026 F1 Dynasty",
+      "tokens": [
+        "brazil",
+        "constructors",
+        "could",
+        "crown",
+        "dynasty",
+        "final",
+        "mercedes",
+        "sprint",
+        "their",
+        "title"
+      ]
+    },
+    {
+      "title": "Manhunt in western Turkey after eight killed in series of shootings",
+      "tokens": [
+        "across",
+        "cars",
+        "eight",
+        "gunman",
+        "horror",
+        "killed",
+        "killing",
+        "manhunt",
+        "passing",
+        "people",
+        "series",
+        "shootings",
+        "suspected",
+        "targets",
+        "three",
+        "turkey",
+        "villages",
+        "western"
+      ]
+    },
+    {
+      "title": "Turkish Village Massacre: 8 Killed, Manhunt Unfolds Amid Market Shock",
+      "tokens": [
+        "eight",
+        "killed",
+        "manhunt",
+        "market",
+        "massacre",
+        "series",
+        "shock",
+        "shootings",
+        "turkey",
+        "turkish",
+        "unfolds",
+        "village",
+        "western"
+      ]
     }
   ],
   "last_categories": [
-    "INDIA_TRENDING",
-    "SCIENCE",
     "GLOBAL_POWERS",
     "HEALTH",
     "GLOBAL_POWERS",
@@ -7750,11 +7783,11 @@
     "GLOBAL_POWERS",
     "TECHNOLOGY",
     "GEOPOLITICS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "GEOPOLITICS",
+    "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Google Trends India Viral 24h",
-    "Space.com Breaking",
     "Top Viral News [NEW ZEALAND]",
     "Country Documentary Wire [AFGHANISTAN]",
     "Top Viral News [VENEZUELA]",
@@ -7792,11 +7825,11 @@
     "Country Documentary Wire [KAZAKHSTAN]",
     "India AI & Semiconductor Trending",
     "Top Viral News [FRANCE]",
-    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)"
+    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
+    "Top Viral News [BRAZIL]",
+    "Top Viral News [TURKEY]"
   ],
   "last_countries": [
-    "OMAN",
-    "UNITED KINGDOM",
     "GLOBAL TECH & AI",
     "BANGLADESH",
     "GERMANY",
@@ -7844,6 +7877,8 @@
     "AZERBAIJAN",
     "INDIA",
     "FRANCE",
-    "QATAR"
+    "QATAR",
+    "BRAZIL",
+    "TURKEY"
   ]
 }
