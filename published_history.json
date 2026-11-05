@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T17:53:53.189251",
-  "round_robin_idx": 18,
-  "country_rot_idx": 58,
-  "bgm_track_counter": 1606818744,
+  "updated_at": "2026-11-05T19:02:53.905323",
+  "round_robin_idx": 0,
+  "country_rot_idx": 74,
+  "bgm_track_counter": 1638681144,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -469,49 +469,12 @@
     "marvel_s_multiverse_endgame_doomsday_secret",
     "daily_brief_egypt_eritrea_sudan_somalia",
     "finland_jails_russian_captain_and_azerbaijani",
-    "finland_locks_up_russian_captain_for"
+    "finland_locks_up_russian_captain_for",
+    "azerbaijan_s_parliament_speaker_makes_working",
+    "why_azerbaijan_s_parliament_speaker_is",
+    "can_india_become_the_world_s"
   ],
   "event_fingerprints": [
-    {
-      "title": "'A different kid': from karting to F1 champion-elect, Antonelli's ability has always stood out",
-      "tokens": [
-        "ability",
-        "antonelli",
-        "different",
-        "always",
-        "karting",
-        "stood",
-        "elect",
-        "champion"
-      ]
-    },
-    {
-      "title": "US sanctions target Iran's rail sector as Tehran shifts cargo from sea routes to overland corridors",
-      "tokens": [
-        "rail",
-        "overland",
-        "routes",
-        "corridors",
-        "tehran",
-        "sanctions",
-        "target",
-        "sector",
-        "shifts",
-        "iran",
-        "cargo"
-      ]
-    },
-    {
-      "title": "GP says she was forced out of job after raising concerns about gender treatment",
-      "tokens": [
-        "gender",
-        "about",
-        "raising",
-        "concerns",
-        "forced",
-        "treatment"
-      ]
-    },
     {
       "title": "Elon Musk's dangerous grip on outer space",
       "tokens": [
@@ -7663,11 +7626,62 @@
         "russian",
         "sabotage"
       ]
+    },
+    {
+      "title": "Azerbaijan's Parliament Speaker makes working visit to Kazakhstan",
+      "tokens": [
+        "agency",
+        "arrived",
+        "azerbaijan",
+        "azerbaijani",
+        "gafarova",
+        "kazakhstan",
+        "makes",
+        "parliament",
+        "sahiba",
+        "speaker",
+        "trend",
+        "visit",
+        "working"
+      ]
+    },
+    {
+      "title": "Why Azerbaijan\u2019s Parliament Speaker Is Courting Kazakhstan \u2013 A Geopolitical Power Play",
+      "tokens": [
+        "azerbaijan",
+        "courting",
+        "geopolitical",
+        "kazakhstan",
+        "makes",
+        "parliament",
+        "speaker",
+        "visit",
+        "working"
+      ]
+    },
+    {
+      "title": "Can India become the world's Silicon capital?",
+      "tokens": [
+        "become",
+        "capital",
+        "controlling",
+        "critical",
+        "essci",
+        "future",
+        "import",
+        "india",
+        "modi",
+        "preferred",
+        "semicon",
+        "semicondu",
+        "silicon",
+        "sovereignty",
+        "steps",
+        "taking"
+      ]
     }
   ],
   "last_categories": [
-    "INDIA_TRENDING",
-    "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
     "TECHNOLOGY",
     "INDIA_TRENDING",
@@ -7705,11 +7719,11 @@
     "GEOPOLITICS",
     "SCIENCE",
     "GEOPOLITICS",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GLOBAL_POWERS",
+    "TECHNOLOGY"
   ],
   "last_sources": [
-    "Top Viral News [ITALY]",
-    "SciTechDaily Discoveries",
     "Country Documentary Wire [ETHIOPIA]",
     "The Verge Tech",
     "Google Trends India Viral 24h",
@@ -7747,11 +7761,11 @@
     "Country Documentary Wire [POLAND]",
     "Space.com Breaking",
     "Country Documentary Wire [ETHIOPIA]",
-    "Top Viral News [FINLAND]"
+    "Top Viral News [FINLAND]",
+    "Country Documentary Wire [KAZAKHSTAN]",
+    "India AI & Semiconductor Trending"
   ],
   "last_countries": [
-    "PAKISTAN",
-    "UNITED STATES",
     "GLOBAL TECH & AI",
     "IRAN",
     "OMAN",
@@ -7799,6 +7813,8 @@
     "RUSSIA",
     "SPACE & SCIENCE",
     "EGYPT",
-    "FINLAND"
+    "FINLAND",
+    "AZERBAIJAN",
+    "INDIA"
   ]
 }
