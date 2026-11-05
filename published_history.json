@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T21:40:47.874736",
-  "round_robin_idx": 4,
-  "country_rot_idx": 31,
-  "bgm_track_counter": 1741246634,
+  "updated_at": "2026-11-05T23:03:26.145893",
+  "round_robin_idx": 6,
+  "country_rot_idx": 47,
+  "bgm_track_counter": 1757044850,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -480,60 +480,13 @@
     "how_mercedes_can_win_f1_s",
     "mercedes_final_sprint_how_brazil_could",
     "manhunt_in_western_turkey_after_eight",
-    "turkish_village_massacre_8_killed_manhunt"
+    "turkish_village_massacre_8_killed_manhunt",
+    "nccn_and_viet_nam_national_cancer",
+    "vietnam_s_cancer_crisis_the_us",
+    "arrests_and_investigations_as_serbia_begins",
+    "serbia_s_justice_avalanche_how_the"
   ],
   "event_fingerprints": [
-    {
-      "title": "France braces for another day of mass protests as security on high alert",
-      "tokens": [
-        "france",
-        "high",
-        "mass",
-        "another",
-        "braces",
-        "alert",
-        "security",
-        "protests"
-      ]
-    },
-    {
-      "title": "How citizen science is tracking changes in shorelines around the world",
-      "tokens": [
-        "science",
-        "shorelines",
-        "citizen",
-        "changes",
-        "tracking",
-        "world",
-        "around"
-      ]
-    },
-    {
-      "title": "The Spooky Quantum Physics Phenomenon That Einstein Refused to Believe",
-      "tokens": [
-        "believe",
-        "einstein",
-        "phenomenon",
-        "physics",
-        "quantum",
-        "refused",
-        "spooky"
-      ]
-    },
-    {
-      "title": "Fewer people are flying as airfare soars. Here's why airlines aren't worried",
-      "tokens": [
-        "airfare",
-        "fewer",
-        "aren",
-        "flying",
-        "people",
-        "worried",
-        "airlines",
-        "here",
-        "soars"
-      ]
-    },
     {
       "title": "NASA updates lander plans for Moon landings, finally solves long-festering Orion issue",
       "tokens": [
@@ -7743,11 +7696,101 @@
         "village",
         "western"
       ]
+    },
+    {
+      "title": "NCCN and Viet Nam National Cancer Hospital Expand Collaboration to Advance Cancer Care Resources in Vietnam",
+      "tokens": [
+        "adaptation",
+        "additional",
+        "advance",
+        "agreement",
+        "cancer",
+        "care",
+        "collaboration",
+        "efforts",
+        "enhance",
+        "expand",
+        "guideline",
+        "hematologic",
+        "hospital",
+        "inclusion",
+        "information",
+        "national",
+        "nccn",
+        "ongoing",
+        "resources",
+        "sign",
+        "solid",
+        "tumor",
+        "viet",
+        "vietnam"
+      ]
+    },
+    {
+      "title": "Vietnam's Cancer Crisis: The US Medical Power Play",
+      "tokens": [
+        "advance",
+        "cancer",
+        "care",
+        "collaboration",
+        "expand",
+        "hospital",
+        "medical",
+        "national",
+        "nccn",
+        "resources",
+        "viet",
+        "vietnam"
+      ]
+    },
+    {
+      "title": "Arrests and investigations as Serbia begins post-election clean-up",
+      "tokens": [
+        "arrests",
+        "begins",
+        "blockage",
+        "cases",
+        "clean",
+        "election",
+        "general",
+        "have",
+        "investigations",
+        "justice",
+        "landslide",
+        "list",
+        "long",
+        "movin",
+        "post",
+        "removed",
+        "seems",
+        "serbia",
+        "stalled",
+        "students",
+        "suddenly",
+        "system",
+        "victory"
+      ]
+    },
+    {
+      "title": "Serbia's Justice Avalanche: How the Students' List Unleashed a Post\u2011Election Crackdown",
+      "tokens": [
+        "arrests",
+        "avalanche",
+        "begins",
+        "clean",
+        "crackdown",
+        "election",
+        "investigations",
+        "justice",
+        "list",
+        "post",
+        "serbia",
+        "students",
+        "unleashed"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "HEALTH",
     "GLOBAL_POWERS",
     "GEOPOLITICS",
     "GLOBAL_POWERS",
@@ -7785,11 +7828,11 @@
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
-    "STOCK_MARKETS"
+    "STOCK_MARKETS",
+    "GLOBAL_POWERS",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Top Viral News [NEW ZEALAND]",
-    "Country Documentary Wire [AFGHANISTAN]",
     "Top Viral News [VENEZUELA]",
     "Top Viral News [KAZAKHSTAN]",
     "Top Viral News [OMAN]",
@@ -7827,11 +7870,11 @@
     "Top Viral News [FRANCE]",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "Top Viral News [BRAZIL]",
-    "Top Viral News [TURKEY]"
+    "Top Viral News [TURKEY]",
+    "Top Viral News [VIETNAM]",
+    "DW Global In-Depth"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
-    "BANGLADESH",
     "GERMANY",
     "VIETNAM",
     "SPACE & SCIENCE",
@@ -7879,6 +7922,8 @@
     "FRANCE",
     "QATAR",
     "BRAZIL",
-    "TURKEY"
+    "TURKEY",
+    "VIETNAM",
+    "SERBIA"
   ]
 }
