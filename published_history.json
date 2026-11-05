@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T15:05:09.263448",
-  "round_robin_idx": 14,
-  "country_rot_idx": 26,
-  "bgm_track_counter": 1541475926,
+  "updated_at": "2026-11-05T16:33:45.146435",
+  "round_robin_idx": 16,
+  "country_rot_idx": 42,
+  "bgm_track_counter": 1565798180,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -463,63 +463,12 @@
     "hegseth_proposes_u_s_asean_defense",
     "hegseth_s_bold_us_asean_defense",
     "pakistan_tests_indigenously_developed_air_to",
-    "pakistan_s_new_missile_changes_everything"
+    "pakistan_s_new_missile_changes_everything",
+    "prime_minister_donald_tusk_warned_of",
+    "upcoming_marvel_movies_and_tv_shows",
+    "marvel_s_multiverse_endgame_doomsday_secret"
   ],
   "event_fingerprints": [
-    {
-      "title": "Carrick refuses to rule out dropping Fernandes in emotional address",
-      "tokens": [
-        "dropping",
-        "refuses",
-        "fernandes",
-        "rule",
-        "emotional",
-        "carrick",
-        "address"
-      ]
-    },
-    {
-      "title": "Why Two Islands Separated by Just 4 Kilometers Are 21 Hours Apart in Time",
-      "tokens": [
-        "apart",
-        "hours",
-        "islands",
-        "just",
-        "kilometers",
-        "separated",
-        "time"
-      ]
-    },
-    {
-      "title": "Restaurant earnings will test whether owning more brands pays off",
-      "tokens": [
-        "more",
-        "earnings",
-        "will",
-        "test",
-        "owning",
-        "restaurant",
-        "whether",
-        "brands",
-        "pays"
-      ]
-    },
-    {
-      "title": "Russia's attacks on Ukraine's capital, Kyiv, are intensifying. DW asked people on the ground what life is like",
-      "tokens": [
-        "ground",
-        "russia",
-        "like",
-        "people",
-        "asked",
-        "life",
-        "ukraine",
-        "kyiv",
-        "capital",
-        "attacks",
-        "intensifying"
-      ]
-    },
     {
       "title": "Jack Dorsey's Block made an AI model that talks to you like an awkward new friend",
       "tokens": [
@@ -7597,11 +7546,92 @@
         "pakistan",
         "tests"
       ]
+    },
+    {
+      "title": "Prime Minister Donald Tusk warned of the risk of sabotage and armed individuals infiltrating the country's territory",
+      "tokens": [
+        "armed",
+        "country",
+        "donald",
+        "early",
+        "first",
+        "half",
+        "individuals",
+        "infiltrating",
+        "minister",
+        "november",
+        "prime",
+        "risk",
+        "sabot",
+        "sabotage",
+        "territory",
+        "there",
+        "tusk",
+        "warned"
+      ]
+    },
+    {
+      "title": "Prime Minister Donald Tusk warned of the risk of sabotage and armed individuals",
+      "tokens": [
+        "armed",
+        "country",
+        "donald",
+        "individuals",
+        "infiltrating",
+        "minister",
+        "prime",
+        "risk",
+        "sabotage",
+        "territory",
+        "tusk",
+        "warned"
+      ]
+    },
+    {
+      "title": "Upcoming Marvel movies and TV shows: Avengers: Doomsday, Secret Wars, X-Men & more",
+      "tokens": [
+        "advice",
+        "avengers",
+        "deals",
+        "doomsday",
+        "exclusive",
+        "expert",
+        "exploring",
+        "horizon",
+        "marvel",
+        "more",
+        "movies",
+        "multiverse",
+        "nearly",
+        "plenty",
+        "saga",
+        "shows",
+        "start",
+        "there",
+        "upcoming",
+        "wars"
+      ]
+    },
+    {
+      "title": "Marvel's Multiverse Endgame: Doomsday, Secret Wars & the Science Behind the Next Era",
+      "tokens": [
+        "avengers",
+        "behind",
+        "doomsday",
+        "endgame",
+        "marvel",
+        "more",
+        "movies",
+        "multiverse",
+        "next",
+        "science",
+        "shows",
+        "upcoming",
+        "wars"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "CYBER_INTELLIGENCE",
     "INDIA_TRENDING",
@@ -7639,11 +7669,11 @@
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GLOBAL_POWERS",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GEOPOLITICS",
+    "SCIENCE"
   ],
   "last_sources": [
-    "Country Documentary Wire [PHILIPPINES]",
-    "Country Documentary Wire [NIGERIA]",
     "Top Viral News [RUSSIA]",
     "Google News Global Tech 24h",
     "Top Viral News [ITALY]",
@@ -7681,11 +7711,11 @@
     "Country Documentary Wire [UNITED STATES]",
     "Top Viral News [GERMANY]",
     "Country Documentary Wire [PHILIPPINES]",
-    "Top Viral News [PAKISTAN]"
+    "Top Viral News [PAKISTAN]",
+    "Country Documentary Wire [POLAND]",
+    "Space.com Breaking"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
-    "GLOBAL",
     "GLOBAL",
     "INDIA",
     "PAKISTAN",
@@ -7733,6 +7763,8 @@
     "ISRAEL",
     "GERMANY",
     "UNITED STATES",
-    "PAKISTAN"
+    "PAKISTAN",
+    "RUSSIA",
+    "SPACE & SCIENCE"
   ]
 }
