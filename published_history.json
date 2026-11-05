@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T10:01:19.554276",
-  "round_robin_idx": 8,
-  "country_rot_idx": 53,
-  "bgm_track_counter": 1429318862,
+  "updated_at": "2026-11-05T10:49:38.513515",
+  "round_robin_idx": 9,
+  "country_rot_idx": 61,
+  "bgm_track_counter": 1452200139,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -451,22 +451,10 @@
     "qatar_airways_connects_doha_to_caracas",
     "how_qatar_airways_new_caracas_link",
     "artificial_intelligence_could_add_79_billion",
-    "india_s_79_billion_ai_bet"
+    "india_s_79_billion_ai_bet",
+    "zelenskyy_hopes_us_democrats_victory_will"
   ],
   "event_fingerprints": [
-    {
-      "title": "Seven shot dead by gunmen at church funeral in Jordan, officials say",
-      "tokens": [
-        "dead",
-        "officials",
-        "shot",
-        "church",
-        "jordan",
-        "funeral",
-        "gunmen",
-        "seven"
-      ]
-    },
     {
       "title": "The Impossible Galaxy Discovered by the James Webb Space Telescope",
       "tokens": [
@@ -7508,10 +7496,37 @@
         "shock",
         "trillion"
       ]
+    },
+    {
+      "title": "Zelenskyy hopes US Democrats' victory will lead to increased support for Ukraine",
+      "tokens": [
+        "assistance",
+        "bring",
+        "could",
+        "democrats",
+        "financial",
+        "help",
+        "hopes",
+        "increased",
+        "lead",
+        "military",
+        "peace",
+        "president",
+        "pressure",
+        "putin",
+        "support",
+        "ukraine",
+        "ukrainian",
+        "victory",
+        "vladimir",
+        "volodymyr",
+        "washington",
+        "will",
+        "zelenskyy"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -7550,10 +7565,10 @@
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "INDIA_TRENDING"
   ],
   "last_sources": [
-    "Top Viral News [IRAN]",
     "Global Wire Services",
     "Country Documentary Wire [EGYPT]",
     "BBC World Global",
@@ -7592,10 +7607,10 @@
     "Top Viral News [IRAN]",
     "France24 Strategic Reports",
     "Country Documentary Wire [COLOMBIA]",
-    "India AI & Semiconductor Trending"
+    "India AI & Semiconductor Trending",
+    "Country Documentary Wire [AUSTRIA]"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
     "RUSSIA",
     "GLOBAL TECH & AI",
     "ITALY",
@@ -7644,6 +7659,7 @@
     "IRAN",
     "GLOBAL BRIEFING",
     "QATAR",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "UKRAINE"
   ]
 }
