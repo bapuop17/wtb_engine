@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T13:28:08.438286",
-  "round_robin_idx": 12,
-  "country_rot_idx": 10,
-  "bgm_track_counter": 1514233404,
+  "updated_at": "2026-11-05T15:05:09.263448",
+  "round_robin_idx": 14,
+  "country_rot_idx": 26,
+  "bgm_track_counter": 1541475926,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -459,60 +459,13 @@
     "vance_privately_accused_netanyahu_of_being",
     "vance_vs_netanyahu_inside_the_secret",
     "rheinmetall_shares_plunge_17_after_outlook",
-    "rheinmetall_s_17_crash_why_germany"
+    "rheinmetall_s_17_crash_why_germany",
+    "hegseth_proposes_u_s_asean_defense",
+    "hegseth_s_bold_us_asean_defense",
+    "pakistan_tests_indigenously_developed_air_to",
+    "pakistan_s_new_missile_changes_everything"
   ],
   "event_fingerprints": [
-    {
-      "title": "Deadly shooting near Paris is a 'racist terrorist attack', Macron says",
-      "tokens": [
-        "shooting",
-        "racist",
-        "deadly",
-        "terrorist",
-        "near",
-        "macron",
-        "attack",
-        "paris"
-      ]
-    },
-    {
-      "title": "The 2,000-Year-Old Ancient Greek Computer That Baffled Modern Scientists",
-      "tokens": [
-        "ancient",
-        "baffled",
-        "computer",
-        "greek",
-        "modern",
-        "scientists",
-        "year"
-      ]
-    },
-    {
-      "title": "Halley's Comet dazzles from afar in spectacular astrophoto of Orionid meteor shower",
-      "tokens": [
-        "meteor",
-        "spectacular",
-        "afar",
-        "dazzles",
-        "astrophoto",
-        "comet",
-        "halley",
-        "orionid",
-        "shower"
-      ]
-    },
-    {
-      "title": "Xbox's first chief operating officer is out after just a few months",
-      "tokens": [
-        "xbox",
-        "officer",
-        "operating",
-        "months",
-        "first",
-        "chief",
-        "just"
-      ]
-    },
     {
       "title": "Carrick refuses to rule out dropping Fernandes in emotional address",
       "tokens": [
@@ -7584,11 +7537,69 @@
         "stall",
         "warship"
       ]
+    },
+    {
+      "title": "Hegseth Proposes U.S.-ASEAN Defense Framework",
+      "tokens": [
+        "ambitious",
+        "asean",
+        "china",
+        "defence",
+        "defense",
+        "diplomatic",
+        "facebook",
+        "framework",
+        "hegseth",
+        "military",
+        "philippine",
+        "proposes",
+        "summit",
+        "uses"
+      ]
+    },
+    {
+      "title": "Hegseth's Bold US\u2011ASEAN Defense Pact: Power Shift in the Pacific",
+      "tokens": [
+        "asean",
+        "bold",
+        "defense",
+        "framework",
+        "hegseth",
+        "pacific",
+        "pact",
+        "proposes"
+      ]
+    },
+    {
+      "title": "Pakistan tests indigenously developed air-to-air missile",
+      "tokens": [
+        "developed",
+        "first",
+        "indigenous",
+        "indigenously",
+        "missile",
+        "missilepublished",
+        "november",
+        "pakistan",
+        "successfully",
+        "tests"
+      ]
+    },
+    {
+      "title": "Pakistan's New Missile Changes Everything: The Fa'az Breakthrough",
+      "tokens": [
+        "breakthrough",
+        "changes",
+        "developed",
+        "everything",
+        "indigenously",
+        "missile",
+        "pakistan",
+        "tests"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
@@ -7626,11 +7637,11 @@
     "INDIA_TRENDING",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
-    "DEFENSE_MILITARY"
+    "DEFENSE_MILITARY",
+    "GLOBAL_POWERS",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Top Viral News [UKRAINE]",
-    "Top Viral News [CANADA]",
     "Country Documentary Wire [PHILIPPINES]",
     "Country Documentary Wire [NIGERIA]",
     "Top Viral News [RUSSIA]",
@@ -7668,11 +7679,11 @@
     "Country Documentary Wire [CZECHIA]",
     "DW Global In-Depth",
     "Country Documentary Wire [UNITED STATES]",
-    "Top Viral News [GERMANY]"
+    "Top Viral News [GERMANY]",
+    "Country Documentary Wire [PHILIPPINES]",
+    "Top Viral News [PAKISTAN]"
   ],
   "last_countries": [
-    "MIND-BLOWING FACT",
-    "ETHIOPIA",
     "GLOBAL TECH & AI",
     "GLOBAL",
     "GLOBAL",
@@ -7720,6 +7731,8 @@
     "UNITED KINGDOM",
     "HUNGARY",
     "ISRAEL",
-    "GERMANY"
+    "GERMANY",
+    "UNITED STATES",
+    "PAKISTAN"
   ]
 }
