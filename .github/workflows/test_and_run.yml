@@ -1,4 +1,4 @@
-name: WTB News Engine V44 (24x7 Every-15m Cron + Auto-Chaining • 2 Pairs/Run • 10 Trending + 5 Underrated + 5 Categories)
+name: WTB News Engine V46 (24x7 Every-15m Cron + Auto-Chaining • 2 Pairs/Run • 10 Trending + 5 Underrated + 5 Categories)
 
 on:
   workflow_dispatch:
@@ -70,7 +70,7 @@ jobs:
             fonts-freefont-ttf \
             fonts-noto-core
 
-      - name: Install Python V44 Documentary & Motion-Graphics Libraries
+      - name: Install Python V46 Documentary & Motion-Graphics Libraries
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade \
@@ -93,7 +93,7 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V44 Documentary News Engine (2 Long + 2 Short Videos Per Run)
+      - name: Run WTB V46 Documentary News Engine (2 Long + 2 Short Videos Per Run)
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
@@ -117,7 +117,7 @@ jobs:
           git checkout -- .github/workflows/ || true
           git rm -f --ignore-unmatch workflow_schedule_state.json .github/scripts/claim_schedule_slot.py || true
           test -f published_history.json && git add published_history.json || true
-          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V44]"
+          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V46]"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main || (sleep 3 && git pull --rebase -X theirs origin main && git push origin HEAD:main) || true
 
