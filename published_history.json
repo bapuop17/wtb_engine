@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T23:46:34.525289",
-  "round_robin_idx": 5,
-  "country_rot_idx": 29,
-  "bgm_track_counter": 1365557269,
+  "updated_at": "2026-11-05T01:26:42.421525",
+  "round_robin_idx": 6,
+  "country_rot_idx": 37,
+  "bgm_track_counter": 1365747504,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -445,38 +445,11 @@
     "cvs_to_split_off_drugstore_business",
     "cvs_s_117b_breakup_pharmacy_vs",
     "vance_says_the_iran_war_cost",
-    "how_the_iran_war_sank_the"
+    "how_the_iran_war_sank_the",
+    "south_africans_vote_in_key_municipal",
+    "anc_collapse_south_africa_votes_as"
   ],
   "event_fingerprints": [
-    {
-      "title": "'Bespoke' mRNA vaccine significantly reduces risk of melanoma recurrence or death, clinical trial shows",
-      "tokens": [
-        "death",
-        "melanoma",
-        "shows",
-        "reduces",
-        "bespoke",
-        "clinical",
-        "recurrence",
-        "vaccine",
-        "significantly",
-        "mrna",
-        "trial",
-        "risk"
-      ]
-    },
-    {
-      "title": "Ukraine says Starlink still restricted after Trump says limits lifted",
-      "tokens": [
-        "restricted",
-        "lifted",
-        "trump",
-        "ukraine",
-        "still",
-        "starlink",
-        "limits"
-      ]
-    },
     {
       "title": "Ukraine learns to fight without Starlink as Musk plays politics with satellites",
       "tokens": [
@@ -7465,10 +7438,50 @@
         "truth",
         "vance"
       ]
+    },
+    {
+      "title": "South Africans vote in key municipal elections",
+      "tokens": [
+        "accusati",
+        "africa",
+        "africans",
+        "also",
+        "crucial",
+        "diplomats",
+        "edition",
+        "elect",
+        "elections",
+        "ethiopia",
+        "expelled",
+        "governments",
+        "millions",
+        "municipal",
+        "ruling",
+        "south",
+        "sudanese",
+        "test",
+        "tonight",
+        "vote"
+      ]
+    },
+    {
+      "title": "ANC Collapse? South Africa Votes as Ethiopia Drone War Escalates",
+      "tokens": [
+        "africa",
+        "africans",
+        "collapse",
+        "drone",
+        "elections",
+        "escalates",
+        "ethiopia",
+        "municipal",
+        "south",
+        "vote",
+        "votes"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -7507,10 +7520,10 @@
     "INDIA_TRENDING",
     "GEOPOLITICS",
     "STOCK_MARKETS",
-    "GLOBAL_POWERS"
+    "GLOBAL_POWERS",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Country Documentary Wire [EGYPT]",
     "Country Documentary Wire [QATAR]",
     "Top Viral News [UNITED KINGDOM]",
     "Top Viral News [IRAN]",
@@ -7549,10 +7562,10 @@
     "Country Documentary Wire [GERMANY]",
     "Country Documentary Wire [CANADA]",
     "CNBC Markets & Finance",
-    "Top Viral News [IRAN]"
+    "Top Viral News [IRAN]",
+    "France24 Strategic Reports"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
     "SERBIA",
     "INTERNATIONAL",
     "GLOBAL TECH & AI",
@@ -7601,6 +7614,7 @@
     "GLOBAL BRIEFING",
     "CANADA",
     "GLOBAL MARKETS",
-    "IRAN"
+    "IRAN",
+    "GLOBAL BRIEFING"
   ]
 }
