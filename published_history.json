@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T16:33:45.146435",
-  "round_robin_idx": 16,
-  "country_rot_idx": 42,
-  "bgm_track_counter": 1565798180,
+  "updated_at": "2026-11-05T17:53:53.189251",
+  "round_robin_idx": 18,
+  "country_rot_idx": 58,
+  "bgm_track_counter": 1606818744,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -466,62 +466,12 @@
     "pakistan_s_new_missile_changes_everything",
     "prime_minister_donald_tusk_warned_of",
     "upcoming_marvel_movies_and_tv_shows",
-    "marvel_s_multiverse_endgame_doomsday_secret"
+    "marvel_s_multiverse_endgame_doomsday_secret",
+    "daily_brief_egypt_eritrea_sudan_somalia",
+    "finland_jails_russian_captain_and_azerbaijani",
+    "finland_locks_up_russian_captain_for"
   ],
   "event_fingerprints": [
-    {
-      "title": "Jack Dorsey's Block made an AI model that talks to you like an awkward new friend",
-      "tokens": [
-        "talks",
-        "model",
-        "awkward",
-        "block",
-        "friend",
-        "made",
-        "dorsey",
-        "jack",
-        "like"
-      ]
-    },
-    {
-      "title": "Mystery over source of Ebola infection in Nigeria fuels concern about spread of virus",
-      "tokens": [
-        "spread",
-        "concern",
-        "mystery",
-        "nigeria",
-        "source",
-        "virus",
-        "infection",
-        "about",
-        "ebola",
-        "fuels"
-      ]
-    },
-    {
-      "title": "SpaceX launches Starlink satellites from California as Falcon 9 cadence slows",
-      "tokens": [
-        "falcon",
-        "cadence",
-        "spacex",
-        "launches",
-        "satellites",
-        "california",
-        "starlink",
-        "slows"
-      ]
-    },
-    {
-      "title": "How does the UK state pension compare with other countries?",
-      "tokens": [
-        "state",
-        "pension",
-        "does",
-        "compare",
-        "other",
-        "countries"
-      ]
-    },
     {
       "title": "'A different kid': from karting to F1 champion-elect, Antonelli's ability has always stood out",
       "tokens": [
@@ -7629,11 +7579,93 @@
         "upcoming",
         "wars"
       ]
+    },
+    {
+      "title": "Daily_Brief: #Egypt, #Eritrea, #Sudan, #Somalia agree to coordinate security operations if #Ethiopia conflict spills across borders",
+      "tokens": [
+        "across",
+        "addis",
+        "agree",
+        "borders",
+        "conflict",
+        "coordinate",
+        "daily",
+        "egypt",
+        "eritr",
+        "eritrea",
+        "ethiopia",
+        "leaders",
+        "operations",
+        "security",
+        "somalia",
+        "spills",
+        "standard",
+        "sudan"
+      ]
+    },
+    {
+      "title": "Daily_Brief: #Egypt, #Eritrea, #Sudan, #Somalia agree to coordinate security",
+      "tokens": [
+        "across",
+        "agree",
+        "borders",
+        "conflict",
+        "coordinate",
+        "daily",
+        "egypt",
+        "eritrea",
+        "ethiopia",
+        "operations",
+        "security",
+        "somalia",
+        "spills",
+        "sudan"
+      ]
+    },
+    {
+      "title": "Finland Jails Russian Captain and Azerbaijani Crew Member Over Baltic Sea Cable Damage",
+      "tokens": [
+        "andrei",
+        "azerbaijani",
+        "baltic",
+        "cable",
+        "captain",
+        "court",
+        "crew",
+        "damage",
+        "finland",
+        "helsinki",
+        "jails",
+        "maksimenko",
+        "member",
+        "moscow",
+        "russian",
+        "sentenced",
+        "three",
+        "times"
+      ]
+    },
+    {
+      "title": "Finland Locks Up Russian Captain for Baltic Cable Sabotage \u2013 What It Means for NATO",
+      "tokens": [
+        "azerbaijani",
+        "baltic",
+        "cable",
+        "captain",
+        "crew",
+        "damage",
+        "finland",
+        "jails",
+        "locks",
+        "means",
+        "member",
+        "nato",
+        "russian",
+        "sabotage"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "CYBER_INTELLIGENCE",
     "INDIA_TRENDING",
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
@@ -7671,11 +7703,11 @@
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
-    "SCIENCE"
+    "SCIENCE",
+    "GEOPOLITICS",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Top Viral News [RUSSIA]",
-    "Google News Global Tech 24h",
     "Top Viral News [ITALY]",
     "SciTechDaily Discoveries",
     "Country Documentary Wire [ETHIOPIA]",
@@ -7713,11 +7745,11 @@
     "Country Documentary Wire [PHILIPPINES]",
     "Top Viral News [PAKISTAN]",
     "Country Documentary Wire [POLAND]",
-    "Space.com Breaking"
+    "Space.com Breaking",
+    "Country Documentary Wire [ETHIOPIA]",
+    "Top Viral News [FINLAND]"
   ],
   "last_countries": [
-    "GLOBAL",
-    "INDIA",
     "PAKISTAN",
     "UNITED STATES",
     "GLOBAL TECH & AI",
@@ -7765,6 +7797,8 @@
     "UNITED STATES",
     "PAKISTAN",
     "RUSSIA",
-    "SPACE & SCIENCE"
+    "SPACE & SCIENCE",
+    "EGYPT",
+    "FINLAND"
   ]
 }
