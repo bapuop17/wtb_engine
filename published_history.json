@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T01:26:42.421525",
-  "round_robin_idx": 6,
-  "country_rot_idx": 37,
-  "bgm_track_counter": 1365747504,
+  "updated_at": "2026-11-05T09:17:42.992083",
+  "round_robin_idx": 7,
+  "country_rot_idx": 45,
+  "bgm_track_counter": 1399279457,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -447,35 +447,11 @@
     "vance_says_the_iran_war_cost",
     "how_the_iran_war_sank_the",
     "south_africans_vote_in_key_municipal",
-    "anc_collapse_south_africa_votes_as"
+    "anc_collapse_south_africa_votes_as",
+    "qatar_airways_connects_doha_to_caracas",
+    "how_qatar_airways_new_caracas_link"
   ],
   "event_fingerprints": [
-    {
-      "title": "Ukraine learns to fight without Starlink as Musk plays politics with satellites",
-      "tokens": [
-        "satellites",
-        "plays",
-        "fight",
-        "ukraine",
-        "without",
-        "learns",
-        "starlink",
-        "musk",
-        "politics"
-      ]
-    },
-    {
-      "title": "How Astronauts Survive aboard the International Space Station at 28,000 Km Per Hour",
-      "tokens": [
-        "aboard",
-        "astronauts",
-        "hour",
-        "international",
-        "space",
-        "station",
-        "survive"
-      ]
-    },
     {
       "title": "First personalised cancer vaccine cuts risk of disease returning in major trial",
       "tokens": [
@@ -7479,10 +7455,51 @@
         "vote",
         "votes"
       ]
+    },
+    {
+      "title": "Qatar Airways connects Doha to Caracas, Venezuela, and Bogot, Colombia with first flight",
+      "tokens": [
+        "adds",
+        "airways",
+        "bogot",
+        "bogota",
+        "caracas",
+        "colombia",
+        "connects",
+        "doha",
+        "first",
+        "flight",
+        "flights",
+        "july",
+        "longest",
+        "miles",
+        "operate",
+        "qatar",
+        "triangle",
+        "venezuela"
+      ]
+    },
+    {
+      "title": "How Qatar Airways' New Caracas Link Redraws Gulf Power in the Americas",
+      "tokens": [
+        "airways",
+        "americas",
+        "bogot",
+        "caracas",
+        "colombia",
+        "connects",
+        "doha",
+        "first",
+        "flight",
+        "gulf",
+        "link",
+        "qatar",
+        "redraws",
+        "venezuela"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "DAILY_24H_MEGA_NEWS",
@@ -7521,10 +7538,10 @@
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "Country Documentary Wire [QATAR]",
     "Top Viral News [UNITED KINGDOM]",
     "Top Viral News [IRAN]",
     "Global Wire Services",
@@ -7563,10 +7580,10 @@
     "Country Documentary Wire [CANADA]",
     "CNBC Markets & Finance",
     "Top Viral News [IRAN]",
-    "France24 Strategic Reports"
+    "France24 Strategic Reports",
+    "Country Documentary Wire [COLOMBIA]"
   ],
   "last_countries": [
-    "SERBIA",
     "INTERNATIONAL",
     "GLOBAL TECH & AI",
     "RUSSIA",
@@ -7615,6 +7632,7 @@
     "CANADA",
     "GLOBAL MARKETS",
     "IRAN",
-    "GLOBAL BRIEFING"
+    "GLOBAL BRIEFING",
+    "QATAR"
   ]
 }
