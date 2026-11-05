@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T19:02:53.905323",
-  "round_robin_idx": 0,
-  "country_rot_idx": 74,
-  "bgm_track_counter": 1638681144,
+  "updated_at": "2026-11-05T20:36:32.207630",
+  "round_robin_idx": 2,
+  "country_rot_idx": 15,
+  "bgm_track_counter": 1693660406,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -472,59 +472,13 @@
     "finland_locks_up_russian_captain_for",
     "azerbaijan_s_parliament_speaker_makes_working",
     "why_azerbaijan_s_parliament_speaker_is",
-    "can_india_become_the_world_s"
+    "can_india_become_the_world_s",
+    "france_bracing_for_220_protests_nationwide",
+    "france_on_edge_220_protests_70",
+    "where_injured_motogp_riders_stand_ahead",
+    "racing_on_the_edge_injured_motogp"
   ],
   "event_fingerprints": [
-    {
-      "title": "Elon Musk's dangerous grip on outer space",
-      "tokens": [
-        "dangerous",
-        "space",
-        "musk",
-        "elon",
-        "grip",
-        "outer"
-      ]
-    },
-    {
-      "title": "Second storm to hit UK with more wind and rain as thousands remain without power",
-      "tokens": [
-        "storm",
-        "without",
-        "more",
-        "wind",
-        "remain",
-        "thousands",
-        "power",
-        "rain",
-        "second"
-      ]
-    },
-    {
-      "title": "How Wildlife Is Thriving Inside the Most Radioactive Forest on Earth",
-      "tokens": [
-        "earth",
-        "forest",
-        "inside",
-        "most",
-        "radioactive",
-        "thriving",
-        "wildlife"
-      ]
-    },
-    {
-      "title": "Bill Maher's Embarrassing Karoline Leavitt Interview on 'Real Time'",
-      "tokens": [
-        "leavitt",
-        "karoline",
-        "maher",
-        "embarrassing",
-        "bill",
-        "real",
-        "time",
-        "interview"
-      ]
-    },
     {
       "title": "Building collapse in Nairobi search for survivors under way",
       "tokens": [
@@ -7679,11 +7633,84 @@
         "steps",
         "taking"
       ]
+    },
+    {
+      "title": "France bracing for 220 protests nationwide on Thursday, interior minister says - ABC News",
+      "tokens": [
+        "authorities",
+        "bracing",
+        "breaking",
+        "france",
+        "french",
+        "interior",
+        "latest",
+        "minister",
+        "nationwide",
+        "preparing",
+        "protests",
+        "thursday",
+        "videos"
+      ]
+    },
+    {
+      "title": "France on Edge: 220 Protests, 70,000 Police, and a Halloween Flashpoint",
+      "tokens": [
+        "bracing",
+        "edge",
+        "flashpoint",
+        "france",
+        "halloween",
+        "interior",
+        "minister",
+        "nationwide",
+        "police",
+        "protests",
+        "thursday"
+      ]
+    },
+    {
+      "title": "Where injured MotoGP riders stand ahead of Qatar GP",
+      "tokens": [
+        "again",
+        "ahead",
+        "compromise",
+        "grand",
+        "guarantees",
+        "hoping",
+        "injured",
+        "leave",
+        "malaysia",
+        "motogp",
+        "prix",
+        "qatar",
+        "riders",
+        "seeks",
+        "sepang",
+        "series",
+        "stand",
+        "wednesday",
+        "would",
+        "written"
+      ]
+    },
+    {
+      "title": "Racing on the Edge: Injured MotoGP Stars Face Qatar Showdown",
+      "tokens": [
+        "ahead",
+        "edge",
+        "face",
+        "injured",
+        "motogp",
+        "qatar",
+        "racing",
+        "riders",
+        "showdown",
+        "stand",
+        "stars"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "TECHNOLOGY",
     "INDIA_TRENDING",
     "SCIENCE",
     "GLOBAL_POWERS",
@@ -7721,11 +7748,11 @@
     "GEOPOLITICS",
     "UNDERRATED_GEOPOLITICS",
     "GLOBAL_POWERS",
-    "TECHNOLOGY"
+    "TECHNOLOGY",
+    "GEOPOLITICS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "Country Documentary Wire [ETHIOPIA]",
-    "The Verge Tech",
     "Google Trends India Viral 24h",
     "Space.com Breaking",
     "Top Viral News [NEW ZEALAND]",
@@ -7763,11 +7790,11 @@
     "Country Documentary Wire [ETHIOPIA]",
     "Top Viral News [FINLAND]",
     "Country Documentary Wire [KAZAKHSTAN]",
-    "India AI & Semiconductor Trending"
+    "India AI & Semiconductor Trending",
+    "Top Viral News [FRANCE]",
+    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
-    "IRAN",
     "OMAN",
     "UNITED KINGDOM",
     "GLOBAL TECH & AI",
@@ -7815,6 +7842,8 @@
     "EGYPT",
     "FINLAND",
     "AZERBAIJAN",
-    "INDIA"
+    "INDIA",
+    "FRANCE",
+    "QATAR"
   ]
 }
