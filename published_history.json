@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T17:41:14.028896",
-  "round_robin_idx": 14,
-  "country_rot_idx": 46,
-  "bgm_track_counter": 2165710190,
+  "updated_at": "2026-11-06T19:05:12.667578",
+  "round_robin_idx": 16,
+  "country_rot_idx": 62,
+  "bgm_track_counter": 2199054530,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -539,93 +539,13 @@
     "diwali_2026_indians_celebrate_festival_with",
     "diwali_2026_the_100b_festival_economy",
     "a_23_year_old_colombian_student",
-    "ice_arrests_uc_berkeley_student_the"
+    "ice_arrests_uc_berkeley_student_the",
+    "belgian_parliament_approves_controversial_home_entries",
+    "belgium_s_home_entries_bill_all",
+    "portugal_brought_the_siuuu_to_nanjing",
+    "portugal_s_siuuu_echoes_in_nanjing"
   ],
   "event_fingerprints": [
-    {
-      "title": "ocalypse: How two critical web bugs almost broke the internet",
-      "tokens": [
-        "ocalypse",
-        "internet",
-        "critical",
-        "used",
-        "almost",
-        "upend",
-        "programming",
-        "broke",
-        "bugs",
-        "language",
-        "threatened",
-        "majority"
-      ]
-    },
-    {
-      "title": "Astronomers Detect the Oldest Known Fast Radio Burst, Spewed From an Ancient Galaxy Just Three Billion Years After the Big Bang",
-      "tokens": [
-        "ancient",
-        "years",
-        "spewed",
-        "traveled",
-        "detect",
-        "more",
-        "oldest",
-        "learn",
-        "just",
-        "bang",
-        "fast",
-        "galaxy",
-        "known",
-        "universe",
-        "scientists",
-        "help",
-        "burst",
-        "billion",
-        "radio",
-        "astronomers",
-        "three",
-        "formed",
-        "waves"
-      ]
-    },
-    {
-      "title": "Rocket Lab launches 3 'Hawk' satellites to orbit to gather signals intelligence",
-      "tokens": [
-        "launches",
-        "launched",
-        "private",
-        "trio",
-        "hawk",
-        "signals",
-        "today",
-        "satellites",
-        "orbit",
-        "intelligence",
-        "rocket",
-        "year",
-        "gather",
-        "mission"
-      ]
-    },
-    {
-      "title": "Marc Lore's Wonder bets on Texas, automation and user-built restaurants as it mulls IPO",
-      "tokens": [
-        "startup",
-        "marc",
-        "texas",
-        "built",
-        "lore",
-        "mulls",
-        "founder",
-        "wonder",
-        "bets",
-        "potential",
-        "automation",
-        "leaning",
-        "prepares",
-        "user",
-        "restaurants"
-      ]
-    },
     {
       "title": "The joy of veg-maxxing: how to eat many, many more plants - without really trying",
       "tokens": [
@@ -8224,12 +8144,107 @@
         "valentina",
         "year"
       ]
+    },
+    {
+      "title": "Belgian parliament approves controversial 'home entries' bill after fiery all-night debate",
+      "tokens": [
+        "approves",
+        "been",
+        "belgian",
+        "bill",
+        "brussels",
+        "controversial",
+        "debate",
+        "divisive",
+        "entries",
+        "fiery",
+        "highly",
+        "home",
+        "night",
+        "parliament",
+        "subject",
+        "times"
+      ]
+    },
+    {
+      "title": "Belgium's 'Home Entries' Bill: All-Night Vote Sparks Nationwide Uproar",
+      "tokens": [
+        "approves",
+        "belgian",
+        "belgium",
+        "bill",
+        "controversial",
+        "debate",
+        "entries",
+        "fiery",
+        "home",
+        "nationwide",
+        "night",
+        "parliament",
+        "sparks",
+        "uproar",
+        "vote"
+      ]
+    },
+    {
+      "title": "Portugal brought the SIUUU to Nanjing! The men's team had their own Ronaldo moment on Day 1 of the 2026 World Trampoline Championships. Catc",
+      "tokens": [
+        "action",
+        "against",
+        "brought",
+        "catch",
+        "celebrated",
+        "championships",
+        "cristiano",
+        "denmark",
+        "eurovision",
+        "forgotten",
+        "goal",
+        "hits",
+        "hjlund",
+        "hojlund",
+        "moment",
+        "nanjing",
+        "never",
+        "portugal",
+        "rasmus",
+        "ronaldo",
+        "second",
+        "siuuu",
+        "sport",
+        "streaming",
+        "team",
+        "their",
+        "trampoline",
+        "will"
+      ]
+    },
+    {
+      "title": "Portugal's SIUUU Echoes in Nanjing: The Science Behind the World Trampoline Shock",
+      "tokens": [
+        "action",
+        "behind",
+        "brought",
+        "catch",
+        "championships",
+        "echoes",
+        "eurovi",
+        "moment",
+        "nanjing",
+        "portugal",
+        "ronaldo",
+        "science",
+        "shock",
+        "siuuu",
+        "streaming",
+        "team",
+        "their",
+        "trampoline"
+      ]
     }
   ],
   "last_categories": [
     "GEOPOLITICS",
-    "SCIENCE",
-    "GEOPOLITICS",
     "UNDERRATED_GEOPOLITICS",
     "GLOBAL_POWERS",
     "TECHNOLOGY",
@@ -8266,11 +8281,11 @@
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GLOBAL_POWERS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "GEOPOLITICS",
+    "SCIENCE"
   ],
   "last_sources": [
-    "Country Documentary Wire [POLAND]",
-    "Space.com Breaking",
     "Country Documentary Wire [ETHIOPIA]",
     "Top Viral News [FINLAND]",
     "Country Documentary Wire [KAZAKHSTAN]",
@@ -8308,11 +8323,11 @@
     "Top Viral News [PAKISTAN]",
     "Top Viral News [TURKEY]",
     "Top Viral News [INDIA]",
-    "Top Viral News [COLOMBIA]"
+    "Top Viral News [COLOMBIA]",
+    "Top Viral News [BELGIUM]",
+    "Top Viral News [PORTUGAL]"
   ],
   "last_countries": [
-    "IRAN",
-    "GLOBAL BRIEFING",
     "QATAR",
     "GLOBAL TECH & AI",
     "UNITED KINGDOM",
@@ -8360,6 +8375,8 @@
     "PAKISTAN",
     "TURKEY",
     "INDIA",
-    "GLOBAL BRIEFING"
+    "GLOBAL BRIEFING",
+    "BELGIUM",
+    "PORTUGAL"
   ]
 }
