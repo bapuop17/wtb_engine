@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T19:05:12.667578",
-  "round_robin_idx": 16,
-  "country_rot_idx": 62,
-  "bgm_track_counter": 2199054530,
+  "updated_at": "2026-11-06T20:10:06.217426",
+  "round_robin_idx": 18,
+  "country_rot_idx": 3,
+  "bgm_track_counter": 2230784174,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -543,80 +543,13 @@
     "belgian_parliament_approves_controversial_home_entries",
     "belgium_s_home_entries_bill_all",
     "portugal_brought_the_siuuu_to_nanjing",
-    "portugal_s_siuuu_echoes_in_nanjing"
+    "portugal_s_siuuu_echoes_in_nanjing",
+    "hegseth_calls_us_iran_war_a",
+    "hegseth_defies_impeachment_the_iran_war",
+    "czech_arms_makers_set_sights_on",
+    "czech_arms_from_artillery_to_space"
   ],
   "event_fingerprints": [
-    {
-      "title": "The joy of veg-maxxing: how to eat many, many more plants - without really trying",
-      "tokens": [
-        "without",
-        "trying",
-        "really",
-        "more",
-        "maxxing",
-        "many",
-        "plants"
-      ]
-    },
-    {
-      "title": "Fernandes left on bench for Man Utd defeat",
-      "tokens": [
-        "defeat",
-        "skipper",
-        "loss",
-        "bournemouth",
-        "fernandes",
-        "following",
-        "left",
-        "bench",
-        "sunday",
-        "bruno",
-        "manchester",
-        "united",
-        "criti"
-      ]
-    },
-    {
-      "title": "Raye wins the Mercury Prize with This Music May Contain Hope",
-      "tokens": [
-        "hope",
-        "jade",
-        "prize",
-        "mercury",
-        "raye",
-        "lift",
-        "contain",
-        "artists",
-        "like",
-        "music",
-        "thirlwall",
-        "wins",
-        "beat",
-        "mccartney",
-        "paul",
-        "star",
-        "suede"
-      ]
-    },
-    {
-      "title": "How is the US-Israeli war on Iran causing havoc in Europe?",
-      "tokens": [
-        "energy",
-        "europe",
-        "iran",
-        "opposition",
-        "costs",
-        "attacks",
-        "sharpening",
-        "protests",
-        "causing",
-        "havoc",
-        "israeli",
-        "renewed",
-        "rising",
-        "european"
-      ]
-    },
     {
       "title": "TechCrunch Mobility: Blue-green is the color of autonomy",
       "tokens": [
@@ -8241,11 +8174,96 @@
         "their",
         "trampoline"
       ]
+    },
+    {
+      "title": "Hegseth calls US-Iran war a 'courageous and historic effort'",
+      "tokens": [
+        "arlington",
+        "calls",
+        "chief",
+        "courageous",
+        "defense",
+        "defying",
+        "effort",
+        "fight",
+        "hegseth",
+        "historic",
+        "impeachment",
+        "iran",
+        "looming",
+        "pentagon",
+        "pete",
+        "resign",
+        "secretary",
+        "speaks",
+        "statement",
+        "virgi",
+        "vowed"
+      ]
+    },
+    {
+      "title": "Hegseth Defies Impeachment: The Iran War Gamble",
+      "tokens": [
+        "calls",
+        "courageous",
+        "defies",
+        "effort",
+        "gamble",
+        "hegseth",
+        "historic",
+        "impeachment",
+        "iran"
+      ]
+    },
+    {
+      "title": "Czech arms makers set sights on space defense in bid to sustain Ukraine-driven arms boom",
+      "tokens": [
+        "ammunition",
+        "arms",
+        "beyond",
+        "boom",
+        "czech",
+        "defense",
+        "demand",
+        "driven",
+        "even",
+        "growth",
+        "have",
+        "linked",
+        "look",
+        "makers",
+        "need",
+        "sights",
+        "space",
+        "sustain",
+        "technologies",
+        "their",
+        "they",
+        "thrived",
+        "toward",
+        "ukraine"
+      ]
+    },
+    {
+      "title": "Czech Arms: From Artillery to Space\u2014Ukraine Boom Drives Space Race",
+      "tokens": [
+        "arms",
+        "artillery",
+        "boom",
+        "czech",
+        "defense",
+        "driven",
+        "drives",
+        "makers",
+        "race",
+        "sights",
+        "space",
+        "sustain",
+        "ukraine"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "UNDERRATED_GEOPOLITICS",
     "GLOBAL_POWERS",
     "TECHNOLOGY",
     "GEOPOLITICS",
@@ -8283,11 +8301,11 @@
     "GLOBAL_POWERS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
-    "SCIENCE"
+    "SCIENCE",
+    "GEOPOLITICS",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Country Documentary Wire [ETHIOPIA]",
-    "Top Viral News [FINLAND]",
     "Country Documentary Wire [KAZAKHSTAN]",
     "India AI & Semiconductor Trending",
     "Top Viral News [FRANCE]",
@@ -8325,11 +8343,11 @@
     "Top Viral News [INDIA]",
     "Top Viral News [COLOMBIA]",
     "Top Viral News [BELGIUM]",
-    "Top Viral News [PORTUGAL]"
+    "Top Viral News [PORTUGAL]",
+    "Google World Top Headlines (US/Global)",
+    "DW Global In-Depth"
   ],
   "last_countries": [
-    "QATAR",
-    "GLOBAL TECH & AI",
     "UNITED KINGDOM",
     "HUNGARY",
     "ISRAEL",
@@ -8377,6 +8395,8 @@
     "INDIA",
     "GLOBAL BRIEFING",
     "BELGIUM",
-    "PORTUGAL"
+    "PORTUGAL",
+    "IRAN",
+    "UKRAINE"
   ]
 }
