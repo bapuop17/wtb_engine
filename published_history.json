@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T16:28:22.421429",
-  "round_robin_idx": 12,
-  "country_rot_idx": 30,
-  "bgm_track_counter": 2118874840,
+  "updated_at": "2026-11-06T17:41:14.028896",
+  "round_robin_idx": 14,
+  "country_rot_idx": 46,
+  "bgm_track_counter": 2165710190,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -535,94 +535,13 @@
     "gold_price_in_pakistan_dropped_by",
     "gold_crash_in_pakistan_why_prices",
     "cop31_in_turkey_what_to_expect",
-    "turkey_s_climate_trap_defense_vs"
+    "turkey_s_climate_trap_defense_vs",
+    "diwali_2026_indians_celebrate_festival_with",
+    "diwali_2026_the_100b_festival_economy",
+    "a_23_year_old_colombian_student",
+    "ice_arrests_uc_berkeley_student_the"
   ],
   "event_fingerprints": [
-    {
-      "title": "My 93-year-old mother waited 10 hours on the floor for an ambulance",
-      "tokens": [
-        "waited",
-        "mother",
-        "help",
-        "pain",
-        "graham",
-        "ambulance",
-        "owen",
-        "anthony",
-        "floor",
-        "sometimes",
-        "asking",
-        "year",
-        "screaming",
-        "hours",
-        "margaret"
-      ]
-    },
-    {
-      "title": "When is Premier League 'sacking season'",
-      "tokens": [
-        "manager",
-        "builds",
-        "looks",
-        "michael",
-        "season",
-        "when",
-        "carrick",
-        "premier",
-        "sacking",
-        "united",
-        "league",
-        "pressure",
-        "sport",
-        "official",
-        "manchester",
-        "reports"
-      ]
-    },
-    {
-      "title": "The artist dropping her debut album after a billion streams",
-      "tokens": [
-        "heavyweights",
-        "like",
-        "artist",
-        "debut",
-        "irish",
-        "club",
-        "harris",
-        "industry",
-        "jazzy",
-        "streams",
-        "album",
-        "billion",
-        "worked",
-        "calvin",
-        "scene",
-        "came",
-        "dropping",
-        "dublin"
-      ]
-    },
-    {
-      "title": "Why Israel's latest assault on Hebron is so significant for the West Bank",
-      "tokens": [
-        "latest",
-        "mass",
-        "control",
-        "hebron",
-        "expanding",
-        "significant",
-        "west",
-        "assault",
-        "israel",
-        "threaten",
-        "devastate",
-        "blockades",
-        "expulsions",
-        "bank",
-        "economy",
-        "settler"
-      ]
-    },
     {
       "title": "ocalypse: How two critical web bugs almost broke the internet",
       "tokens": [
@@ -8208,11 +8127,106 @@
         "trap",
         "turkey"
       ]
+    },
+    {
+      "title": "Diwali 2026: Indians celebrate festival with lights and fireworks",
+      "tokens": [
+        "abroad",
+        "across",
+        "alive",
+        "begin",
+        "celebrate",
+        "celebrations",
+        "diwali",
+        "festival",
+        "fireworks",
+        "glow",
+        "gulf",
+        "homes",
+        "india",
+        "indian",
+        "indians",
+        "keeping",
+        "lights",
+        "miles",
+        "nris",
+        "temples",
+        "thousands",
+        "traditions"
+      ]
+    },
+    {
+      "title": "Diwali 2026: The $100B Festival Economy Explained",
+      "tokens": [
+        "celebrate",
+        "diwali",
+        "economy",
+        "festival",
+        "fireworks",
+        "indians",
+        "lights"
+      ]
+    },
+    {
+      "title": "A 23-year-old Colombian student at the University of California, Berkeley, Paula Valentina Albornoz Hernandez, was arrested by US Immigratio",
+      "tokens": [
+        "agents",
+        "airport",
+        "albornoz",
+        "arrest",
+        "arrested",
+        "asylum",
+        "attorney",
+        "being",
+        "berkeley",
+        "california",
+        "colombian",
+        "custody",
+        "customs",
+        "enforcement",
+        "federal",
+        "francisco",
+        "held",
+        "hernandez",
+        "immigration",
+        "international",
+        "paula",
+        "portland",
+        "preparing",
+        "seeker",
+        "student",
+        "travel",
+        "university",
+        "unlawful",
+        "valentina",
+        "while",
+        "year"
+      ]
+    },
+    {
+      "title": "ICE Arrests UC Berkeley Student: The Legal Crisis Explained",
+      "tokens": [
+        "agents",
+        "albornoz",
+        "arrested",
+        "arrests",
+        "berkeley",
+        "california",
+        "colombian",
+        "customs",
+        "enforcement",
+        "hernandez",
+        "immigration",
+        "legal",
+        "paula",
+        "student",
+        "university",
+        "valentina",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
     "SCIENCE",
     "GEOPOLITICS",
@@ -8250,11 +8264,11 @@
     "INDIA_TRENDING",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
-    "DEFENSE_MILITARY"
+    "DEFENSE_MILITARY",
+    "GLOBAL_POWERS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "Country Documentary Wire [PHILIPPINES]",
-    "Top Viral News [PAKISTAN]",
     "Country Documentary Wire [POLAND]",
     "Space.com Breaking",
     "Country Documentary Wire [ETHIOPIA]",
@@ -8292,11 +8306,11 @@
     "Top Viral News [UNITED STATES]",
     "Country Documentary Wire [FRANCE]",
     "Top Viral News [PAKISTAN]",
-    "Top Viral News [TURKEY]"
+    "Top Viral News [TURKEY]",
+    "Top Viral News [INDIA]",
+    "Top Viral News [COLOMBIA]"
   ],
   "last_countries": [
-    "CANADA",
-    "GLOBAL MARKETS",
     "IRAN",
     "GLOBAL BRIEFING",
     "QATAR",
@@ -8344,6 +8358,8 @@
     "INTERNATIONAL",
     "FRANCE",
     "PAKISTAN",
-    "TURKEY"
+    "TURKEY",
+    "INDIA",
+    "GLOBAL BRIEFING"
   ]
 }
