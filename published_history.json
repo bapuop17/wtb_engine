@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T08:54:02.018067",
-  "round_robin_idx": 0,
-  "country_rot_idx": 9,
-  "bgm_track_counter": 1918002578,
+  "updated_at": "2026-11-06T09:56:22.152201",
+  "round_robin_idx": 2,
+  "country_rot_idx": 25,
+  "bgm_track_counter": 1953106620,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -511,60 +511,13 @@
     "malaysia_ex_pm_najib_set_for",
     "malaysia_s_power_play_najib_razak",
     "blue_origin_says_it_is_building",
-    "blue_origin_s_1_4_cost"
+    "blue_origin_s_1_4_cost",
+    "reuters_unity_software_has_had_talks",
+    "saudi_arabia_s_25b_unity_bet",
+    "hamilton_wants_ferrari_talks_in_brazil",
+    "ferrari_s_fatal_flaw_why_hamilton"
   ],
   "event_fingerprints": [
-    {
-      "title": "Chronic UTIs affect millions in the UK",
-      "tokens": [
-        "utis",
-        "millions",
-        "affect",
-        "chronic"
-      ]
-    },
-    {
-      "title": "Antonelli takes US pole on weekend he can win title",
-      "tokens": [
-        "title",
-        "weekend",
-        "antonelli",
-        "pole",
-        "takes"
-      ]
-    },
-    {
-      "title": "Nathan Fielder Negotiated a 'Kill Switch' on 'You Can See Everything,' Says Lance Oppenheim: 'If We Didn't Find Something, We Could Just Throw It All Away'",
-      "tokens": [
-        "oppenheim",
-        "something",
-        "negotiated",
-        "kill",
-        "nathan",
-        "everything",
-        "could",
-        "fielder",
-        "find",
-        "switch",
-        "lance",
-        "away",
-        "throw",
-        "didn",
-        "just"
-      ]
-    },
-    {
-      "title": "Gunmen kill at least 10 people in eastern Nigeria, police say",
-      "tokens": [
-        "eastern",
-        "nigeria",
-        "kill",
-        "gunmen",
-        "people",
-        "least",
-        "police"
-      ]
-    },
     {
       "title": "Forced to pick, Grok's AI model chooses Republicans. OpenAI's picks Democrats.",
       "tokens": [
@@ -8066,11 +8019,88 @@
         "revolution",
         "rocket"
       ]
+    },
+    {
+      "title": "Reuters- Unity Software has had talks with private equity firm sliver lake and PIF on a buyout",
+      "tokens": [
+        "about",
+        "acquire",
+        "arabia",
+        "billion",
+        "buyout",
+        "discussions",
+        "engaged",
+        "equity",
+        "firm",
+        "have",
+        "hold",
+        "lake",
+        "partners",
+        "private",
+        "reflectin",
+        "reuters",
+        "saudi",
+        "silver",
+        "sliver",
+        "software",
+        "talks",
+        "unity"
+      ]
+    },
+    {
+      "title": "Saudi Arabia's $25B Unity Bet: The Game Changer",
+      "tokens": [
+        "arabia",
+        "buyout",
+        "changer",
+        "equity",
+        "firm",
+        "game",
+        "lake",
+        "private",
+        "reuters",
+        "saudi",
+        "sliver",
+        "software",
+        "talks",
+        "unity"
+      ]
+    },
+    {
+      "title": "Hamilton wants Ferrari talks in Brazil after Mexico battle",
+      "tokens": [
+        "ahead",
+        "battle",
+        "brazil",
+        "brazilian",
+        "clash",
+        "ferrari",
+        "frustrated",
+        "hamilton",
+        "lack",
+        "leclerc",
+        "mexico",
+        "talks",
+        "wants"
+      ]
+    },
+    {
+      "title": "Ferrari's Fatal Flaw: Why Hamilton Is Taking Over",
+      "tokens": [
+        "battle",
+        "brazil",
+        "fatal",
+        "ferrari",
+        "flaw",
+        "hamilton",
+        "mexico",
+        "taking",
+        "talks",
+        "wants"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "INDIA_TRENDING",
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
@@ -8108,11 +8138,11 @@
     "GEOPOLITICS",
     "UNDERRATED_GEOPOLITICS",
     "GLOBAL_POWERS",
-    "TECHNOLOGY"
+    "TECHNOLOGY",
+    "GEOPOLITICS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "Top Viral News [GEORGIA]",
-    "Country Documentary Wire [GERMANY]",
     "Country Documentary Wire [CANADA]",
     "CNBC Markets & Finance",
     "Top Viral News [IRAN]",
@@ -8150,11 +8180,11 @@
     "Country Documentary Wire [AUSTRIA]",
     "DW Global In-Depth",
     "Country Documentary Wire [MYANMAR]",
-    "Ars Technica"
+    "Ars Technica",
+    "Top Viral News [SAUDI ARABIA]",
+    "Top Viral News [BRAZIL]"
   ],
   "last_countries": [
-    "FINLAND",
-    "IRAN",
     "INDIA",
     "CHINA",
     "GLOBAL TECH & AI",
@@ -8202,6 +8232,8 @@
     "INDIA",
     "NORTH KOREA",
     "MALAYSIA",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "SAUDI ARABIA",
+    "BRAZIL"
   ]
 }
