@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T12:26:09.239636",
-  "round_robin_idx": 6,
-  "country_rot_idx": 57,
-  "bgm_track_counter": 2014747798,
+  "updated_at": "2026-11-06T13:38:48.561494",
+  "round_robin_idx": 8,
+  "country_rot_idx": 73,
+  "bgm_track_counter": 2045822932,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -523,95 +523,13 @@
     "kenyan_court_sentencing_doomsday_cult_leader",
     "why_kenyan_court_sentencing_doomsday_cult",
     "norway_finland_and_poland_are_expanding",
-    "norway_finland_poland_the_125_000"
+    "norway_finland_poland_the_125_000",
+    "gbi_investigates_shooting_deaths_in_dooly",
+    "why_gbi_investigates_shooting_deaths_in",
+    "kuwait_s_civil_aviation_authority_has",
+    "kuwait_airport_under_drone_attack_the"
   ],
   "event_fingerprints": [
-    {
-      "title": "Here are the top AI agents that can live in your text messages",
-      "tokens": [
-        "messages",
-        "assistants",
-        "list",
-        "live",
-        "text",
-        "most",
-        "your",
-        "notable",
-        "here",
-        "created",
-        "general",
-        "agents"
-      ]
-    },
-    {
-      "title": "For the First Time, Scientists Trapped an Elusive Antimatter Particle - and Contained It for Months. It Could Allow Them to Test an Enduring Physics Theory",
-      "tokens": [
-        "first",
-        "test",
-        "trapped",
-        "particle",
-        "model",
-        "months",
-        "exists",
-        "physics",
-        "works",
-        "well",
-        "theory",
-        "could",
-        "enduring",
-        "elusive",
-        "antimatter",
-        "them",
-        "standard",
-        "scientists",
-        "contained",
-        "really",
-        "something",
-        "universe",
-        "time",
-        "explain",
-        "allow"
-      ]
-    },
-    {
-      "title": "Medusa's eye, Halloween fireballs and more: 5 skywatching targets to look out for this spooky season",
-      "tokens": [
-        "skywatching",
-        "halloween",
-        "targets",
-        "fireballs",
-        "look",
-        "perfect",
-        "naked",
-        "medusa",
-        "more",
-        "season",
-        "stargazing",
-        "spooky",
-        "five"
-      ]
-    },
-    {
-      "title": "Procter & Gamble earnings beat as sales rise 4%, boosted by laundry and home products",
-      "tokens": [
-        "rise",
-        "beat",
-        "products",
-        "boosted",
-        "procter",
-        "laundry",
-        "sales",
-        "home",
-        "earnings",
-        "topped",
-        "quarterly",
-        "wall",
-        "gamble",
-        "street",
-        "revenue",
-        "estimates"
-      ]
-    },
     {
       "title": "Government failings allowed Covid 'to spread like wildfire' in care homes, inquiry finds",
       "tokens": [
@@ -8176,11 +8094,107 @@
         "three",
         "training"
       ]
+    },
+    {
+      "title": "GBI Investigates Shooting Deaths in Dooly County, GA",
+      "tokens": [
+        "arrests",
+        "become",
+        "charged",
+        "connection",
+        "county",
+        "deadly",
+        "deaths",
+        "dooly",
+        "expected",
+        "first",
+        "georgia",
+        "investigates",
+        "mass",
+        "more",
+        "person",
+        "shooting",
+        "south",
+        "teenager",
+        "year"
+      ]
+    },
+    {
+      "title": "Why GBI Investigates Shooting Deaths in Dooly County, GA",
+      "tokens": [
+        "county",
+        "deaths",
+        "dooly",
+        "investigates",
+        "shooting"
+      ]
+    },
+    {
+      "title": "Kuwait's Civil Aviation Authority has banned airport employees and operators from taking photos, recording videos or broadcasting live from ",
+      "tokens": [
+        "airport",
+        "also",
+        "attack",
+        "attacks",
+        "authority",
+        "aviation",
+        "banned",
+        "broadcasting",
+        "circular",
+        "civil",
+        "closed",
+        "documents",
+        "drone",
+        "employees",
+        "hits",
+        "icao",
+        "internal",
+        "international",
+        "iranian",
+        "kuwait",
+        "live",
+        "open",
+        "operators",
+        "photos",
+        "procedures",
+        "prohibits",
+        "protests",
+        "publishing",
+        "recording",
+        "remains",
+        "security",
+        "still",
+        "surveillanc",
+        "taking",
+        "videos"
+      ]
+    },
+    {
+      "title": "Kuwait Airport Under Drone Attack: The New Air War",
+      "tokens": [
+        "airport",
+        "attack",
+        "authority",
+        "aviation",
+        "banned",
+        "broadcasting",
+        "circul",
+        "civil",
+        "drone",
+        "employees",
+        "international",
+        "kuwait",
+        "live",
+        "operators",
+        "photos",
+        "recording",
+        "taking",
+        "under",
+        "videos"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "AI_ROBOTICS",
     "INDIA_TRENDING",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
@@ -8218,11 +8232,11 @@
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GEOPOLITICS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Country Documentary Wire [COLOMBIA]",
-    "India AI & Semiconductor Trending",
     "Country Documentary Wire [CZECHIA]",
     "DW Global In-Depth",
     "Country Documentary Wire [UNITED STATES]",
@@ -8260,11 +8274,11 @@
     "Top Viral News [SOUTH AFRICA]",
     "Country Documentary Wire [VIETNAM]",
     "Top Viral News [KENYA]",
-    "Country Documentary Wire [FINLAND]"
+    "Country Documentary Wire [FINLAND]",
+    "Top Viral News [GEORGIA]",
+    "Top Viral News [KUWAIT]"
   ],
   "last_countries": [
-    "UNITED STATES",
-    "VENEZUELA",
     "GLOBAL TECH & AI",
     "GEORGIA",
     "RUSSIA",
@@ -8312,6 +8326,8 @@
     "SOUTH AFRICA",
     "VIETNAM",
     "KENYA",
-    "NORWAY"
+    "NORWAY",
+    "GEORGIA",
+    "KUWAIT"
   ]
 }
