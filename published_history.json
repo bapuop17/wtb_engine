@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T15:06:44.607925",
-  "round_robin_idx": 10,
-  "country_rot_idx": 14,
-  "bgm_track_counter": 2085887864,
+  "updated_at": "2026-11-06T16:28:22.421429",
+  "round_robin_idx": 12,
+  "country_rot_idx": 30,
+  "bgm_track_counter": 2118874840,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -531,103 +531,13 @@
     "west_des_moines_woman_charged_after",
     "inside_the_des_moines_post_office",
     "be_a_macron_emmanuel_macron_the",
-    "macron_s_last_gamble_why_france"
+    "macron_s_last_gamble_why_france",
+    "gold_price_in_pakistan_dropped_by",
+    "gold_crash_in_pakistan_why_prices",
+    "cop31_in_turkey_what_to_expect",
+    "turkey_s_climate_trap_defense_vs"
   ],
   "event_fingerprints": [
-    {
-      "title": "These clever apps show off the iPhone Duo's potential",
-      "tokens": [
-        "players",
-        "digital",
-        "potential",
-        "finding",
-        "these",
-        "even",
-        "toaster",
-        "trackers",
-        "apps",
-        "show",
-        "iphone",
-        "cassette",
-        "virtual",
-        "retro",
-        "flight",
-        "notebooks",
-        "developers",
-        "clever"
-      ]
-    },
-    {
-      "title": "Immerse Yourself in the Cosmos at Frank Lloyd Wright's Only Planetarium, Recently Restored to Its Former Glory in Florida",
-      "tokens": [
-        "only",
-        "campus",
-        "restored",
-        "domed",
-        "florida",
-        "lloyd",
-        "cosmos",
-        "college",
-        "glory",
-        "southern",
-        "former",
-        "frank",
-        "designed",
-        "home",
-        "located",
-        "wright",
-        "completed",
-        "recently",
-        "building",
-        "immerse",
-        "planetarium",
-        "yourself"
-      ]
-    },
-    {
-      "title": "'Stupendously large black holes' aren't a major component of dark matter, study finds",
-      "tokens": [
-        "component",
-        "holes",
-        "mysterious",
-        "black",
-        "massive",
-        "finds",
-        "more",
-        "stuff",
-        "stupendously",
-        "large",
-        "aren",
-        "matter",
-        "dark",
-        "thou",
-        "galaxies",
-        "entire",
-        "than",
-        "major",
-        "study"
-      ]
-    },
-    {
-      "title": "David's Bridal plans to spin off AI platform Pearl into publicly traded company",
-      "tokens": [
-        "exclusively",
-        "stand",
-        "traded",
-        "cnbc",
-        "told",
-        "alone",
-        "company",
-        "bridal",
-        "david",
-        "spin",
-        "planning",
-        "publicly",
-        "pearl",
-        "platform",
-        "plans"
-      ]
-    },
     {
       "title": "My 93-year-old mother waited 10 hours on the floor for an ambulance",
       "tokens": [
@@ -8209,11 +8119,98 @@
         "well",
         "wishes"
       ]
+    },
+    {
+      "title": "Gold price in Pakistan dropped by Rs. 6,500 per tola on Friday, reversing much of Thursday's sharp rise as global rates also fell. The local",
+      "tokens": [
+        "also",
+        "association",
+        "decline",
+        "dropped",
+        "experienced",
+        "fall",
+        "fell",
+        "following",
+        "friday",
+        "gems",
+        "gold",
+        "international",
+        "jewellers",
+        "local",
+        "much",
+        "november",
+        "pakistan",
+        "price",
+        "prices",
+        "rate",
+        "rates",
+        "reversing",
+        "rise",
+        "sarafa",
+        "settled",
+        "sharp",
+        "significant",
+        "thursday",
+        "tola"
+      ]
+    },
+    {
+      "title": "Gold Crash in Pakistan: Why Prices Fell 6,500 Rupees in One Day",
+      "tokens": [
+        "also",
+        "crash",
+        "dropped",
+        "fell",
+        "friday",
+        "gold",
+        "local",
+        "much",
+        "pakistan",
+        "price",
+        "prices",
+        "rate",
+        "rates",
+        "reversing",
+        "rise",
+        "rupees",
+        "settled",
+        "sharp",
+        "thursday",
+        "tola"
+      ]
+    },
+    {
+      "title": "COP31 in Turkey: What to Expect at the 2026 UN Climate Summit",
+      "tokens": [
+        "climate",
+        "council",
+        "equal",
+        "erdogan",
+        "expect",
+        "financing",
+        "foreign",
+        "gaps",
+        "pace",
+        "relations",
+        "summit",
+        "turkey",
+        "unrealistic"
+      ]
+    },
+    {
+      "title": "Turkey's Climate Trap: Defense vs Survival",
+      "tokens": [
+        "climate",
+        "defense",
+        "expect",
+        "summit",
+        "survival",
+        "trap",
+        "turkey"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "DEFENSE_MILITARY",
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
@@ -8251,11 +8248,11 @@
     "GEOPOLITICS",
     "AI_ROBOTICS",
     "INDIA_TRENDING",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GEOPOLITICS",
+    "DEFENSE_MILITARY"
   ],
   "last_sources": [
-    "Country Documentary Wire [UNITED STATES]",
-    "Top Viral News [GERMANY]",
     "Country Documentary Wire [PHILIPPINES]",
     "Top Viral News [PAKISTAN]",
     "Country Documentary Wire [POLAND]",
@@ -8293,11 +8290,11 @@
     "Top Viral News [GEORGIA]",
     "Top Viral News [KUWAIT]",
     "Top Viral News [UNITED STATES]",
-    "Country Documentary Wire [FRANCE]"
+    "Country Documentary Wire [FRANCE]",
+    "Top Viral News [PAKISTAN]",
+    "Top Viral News [TURKEY]"
   ],
   "last_countries": [
-    "RUSSIA",
-    "GLOBAL BRIEFING",
     "CANADA",
     "GLOBAL MARKETS",
     "IRAN",
@@ -8345,6 +8342,8 @@
     "GEORGIA",
     "KUWAIT",
     "INTERNATIONAL",
-    "FRANCE"
+    "FRANCE",
+    "PAKISTAN",
+    "TURKEY"
   ]
 }
