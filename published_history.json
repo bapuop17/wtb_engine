@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T07:39:20.572512",
-  "round_robin_idx": 18,
-  "country_rot_idx": 68,
-  "bgm_track_counter": 1899048006,
+  "updated_at": "2026-11-06T08:54:02.018067",
+  "round_robin_idx": 0,
+  "country_rot_idx": 9,
+  "bgm_track_counter": 1918002578,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -507,74 +507,13 @@
     "30_aircraft_8_countries_multiple_flight",
     "europe_s_massive_bomb_threat_30",
     "north_korea_tells_eu_to_mind",
-    "north_korea_screams_at_eu_over"
+    "north_korea_screams_at_eu_over",
+    "malaysia_ex_pm_najib_set_for",
+    "malaysia_s_power_play_najib_razak",
+    "blue_origin_says_it_is_building",
+    "blue_origin_s_1_4_cost"
   ],
   "event_fingerprints": [
-    {
-      "title": "How have Democrats' policies shifted since the last major US election?",
-      "tokens": [
-        "policies",
-        "major",
-        "election",
-        "last",
-        "have",
-        "since",
-        "democrats",
-        "shifted"
-      ]
-    },
-    {
-      "title": "The AI graveyard: a running list of projects and startups that didn't make it",
-      "tokens": [
-        "startups",
-        "projects",
-        "list",
-        "make",
-        "graveyard",
-        "didn",
-        "running"
-      ]
-    },
-    {
-      "title": "Physicists Use Light To Unlock a Crystal's Hidden Electrical Powers",
-      "tokens": [
-        "physicists",
-        "hidden",
-        "crystal",
-        "powers",
-        "unlock",
-        "light",
-        "electrical"
-      ]
-    },
-    {
-      "title": "'Star Trek: Strange New Worlds' was afraid to say anything in season of gimmicks",
-      "tokens": [
-        "star",
-        "worlds",
-        "season",
-        "trek",
-        "afraid",
-        "anything",
-        "strange",
-        "gimmicks"
-      ]
-    },
-    {
-      "title": "Moderna shares plunge after cancer vaccine data leaks - despite positive results",
-      "tokens": [
-        "leaks",
-        "despite",
-        "positive",
-        "results",
-        "shares",
-        "data",
-        "vaccine",
-        "cancer",
-        "plunge",
-        "moderna"
-      ]
-    },
     {
       "title": "Chronic UTIs affect millions in the UK",
       "tokens": [
@@ -8032,11 +7971,104 @@
         "screams",
         "tells"
       ]
+    },
+    {
+      "title": "North Korea Screams at EU Over 'Non\u2011Existent' Human Rights Crisis \u2013 A Diplomatic Firesto #Short",
+      "tokens": [
+        "diplomatic",
+        "existent",
+        "firesto",
+        "human",
+        "korea",
+        "north",
+        "rights",
+        "screams",
+        "short"
+      ]
+    },
+    {
+      "title": "Malaysia ex-PM Najib set for house arrest after party pays $12 million fine",
+      "tokens": [
+        "arrest",
+        "asia",
+        "fine",
+        "house",
+        "jail",
+        "malaysia",
+        "million",
+        "najib",
+        "nikkei",
+        "party",
+        "pays",
+        "remaining",
+        "serve",
+        "term",
+        "under"
+      ]
+    },
+    {
+      "title": "Malaysia\u2019s Power Play: Najib Razak\u2019s $12M Fine & House Arrest Unveiled",
+      "tokens": [
+        "arrest",
+        "fine",
+        "house",
+        "malaysia",
+        "million",
+        "najib",
+        "party",
+        "pays",
+        "razak",
+        "unveiled"
+      ]
+    },
+    {
+      "title": "Blue Origin says it is building a higher-performing rocket engine at 1/4 the cost",
+      "tokens": [
+        "been",
+        "blue",
+        "building",
+        "chief",
+        "conference",
+        "cost",
+        "dave",
+        "demand",
+        "during",
+        "engine",
+        "ever",
+        "executive",
+        "facility",
+        "flor",
+        "higher",
+        "landing",
+        "launch",
+        "limp",
+        "never",
+        "officer",
+        "origin",
+        "performing",
+        "rocket",
+        "shuttle",
+        "summit",
+        "there"
+      ]
+    },
+    {
+      "title": "Blue Origin\u2019s 1/4\u2011Cost Engine: The Rocket Revolution You Can\u2019t Miss",
+      "tokens": [
+        "blue",
+        "building",
+        "cost",
+        "engine",
+        "higher",
+        "miss",
+        "origin",
+        "performing",
+        "revolution",
+        "rocket"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "INDIA_TRENDING",
     "GEOPOLITICS",
     "INDIA_TRENDING",
     "GEOPOLITICS",
@@ -8074,11 +8106,11 @@
     "GEOPOLITICS",
     "SCIENCE",
     "GEOPOLITICS",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GLOBAL_POWERS",
+    "TECHNOLOGY"
   ],
   "last_sources": [
-    "Top Viral News [ITALY]",
-    "Country Documentary Wire [VENEZUELA]",
     "Top Viral News [GEORGIA]",
     "Country Documentary Wire [GERMANY]",
     "Country Documentary Wire [CANADA]",
@@ -8116,11 +8148,11 @@
     "Top Viral News [QATAR]",
     "Space.com Breaking",
     "Country Documentary Wire [AUSTRIA]",
-    "DW Global In-Depth"
+    "DW Global In-Depth",
+    "Country Documentary Wire [MYANMAR]",
+    "Ars Technica"
   ],
   "last_countries": [
-    "GLOBAL MARKETS",
-    "UNITED KINGDOM",
     "FINLAND",
     "IRAN",
     "INDIA",
@@ -8168,6 +8200,8 @@
     "QATAR",
     "SPACE & SCIENCE",
     "INDIA",
-    "NORTH KOREA"
+    "NORTH KOREA",
+    "MALAYSIA",
+    "GLOBAL TECH & AI"
   ]
 }
