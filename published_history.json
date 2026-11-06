@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T20:10:06.217426",
-  "round_robin_idx": 18,
-  "country_rot_idx": 3,
-  "bgm_track_counter": 2230784174,
+  "updated_at": "2026-11-06T21:25:07.380690",
+  "round_robin_idx": 0,
+  "country_rot_idx": 19,
+  "bgm_track_counter": 2268322044,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -547,107 +547,13 @@
     "hegseth_calls_us_iran_war_a",
     "hegseth_defies_impeachment_the_iran_war",
     "czech_arms_makers_set_sights_on",
-    "czech_arms_from_artillery_to_space"
+    "czech_arms_from_artillery_to_space",
+    "rare_leprosy_strain_found_in_1",
+    "why_rare_leprosy_strain_found_in",
+    "lame_duck_congress_might_actually_do",
+    "lame_duck_congress_the_100b_energy"
   ],
   "event_fingerprints": [
-    {
-      "title": "TechCrunch Mobility: Blue-green is the color of autonomy",
-      "tokens": [
-        "techcrunch",
-        "more",
-        "blue",
-        "welcome",
-        "your",
-        "role",
-        "transportation",
-        "than",
-        "ever",
-        "green",
-        "back",
-        "color",
-        "autonomy",
-        "mobility",
-        "future"
-      ]
-    },
-    {
-      "title": "These Big, Fierce Birds Found Love in Australia - and Laid the First Southern Cassowary Eggs at the Adelaide Zoo in 34 Years",
-      "tokens": [
-        "bright",
-        "birds",
-        "first",
-        "love",
-        "fierce",
-        "chicks",
-        "laid",
-        "cassowary",
-        "years",
-        "eggs",
-        "staffers",
-        "green",
-        "found",
-        "will",
-        "these",
-        "australia",
-        "adelaide",
-        "viable",
-        "whether",
-        "however",
-        "southern",
-        "ultimately",
-        "hatch",
-        "know"
-      ]
-    },
-    {
-      "title": "Man killed by falling tree as Storm Boelo batters Scotland",
-      "tokens": [
-        "batters",
-        "killed",
-        "near",
-        "winds",
-        "boelo",
-        "falling",
-        "heavy",
-        "strong",
-        "castle",
-        "year",
-        "storm",
-        "brought",
-        "struck",
-        "tree",
-        "rain",
-        "scotland",
-        "douglas"
-      ]
-    },
-    {
-      "title": "Four ways Labour could raise money in the Budget without hiking income tax",
-      "tokens": [
-        "verify",
-        "need",
-        "could",
-        "labour",
-        "income",
-        "opti",
-        "chancellor",
-        "boost",
-        "four",
-        "hiking",
-        "headroom",
-        "money",
-        "ways",
-        "reports",
-        "healey",
-        "examines",
-        "budget",
-        "raise",
-        "official",
-        "fiscal",
-        "without",
-        "john"
-      ]
-    },
     {
       "title": "The debating club that helped shape NHS architect Aneurin Bevan's drive for power",
       "tokens": [
@@ -8261,11 +8167,88 @@
         "sustain",
         "ukraine"
       ]
+    },
+    {
+      "title": "Rare Leprosy Strain Found in 1,600-Year-Old Grave in Germany",
+      "tokens": [
+        "archaeologists",
+        "bones",
+        "burial",
+        "discovered",
+        "found",
+        "germany",
+        "grave",
+        "high",
+        "leprosy",
+        "rare",
+        "status",
+        "strain",
+        "surprised",
+        "they",
+        "very",
+        "year"
+      ]
+    },
+    {
+      "title": "Why Rare Leprosy Strain Found in 1,600-Year-Old Grave in Germany",
+      "tokens": [
+        "found",
+        "germany",
+        "grave",
+        "leprosy",
+        "rare",
+        "strain",
+        "year"
+      ]
+    },
+    {
+      "title": "Lame-duck Congress might actually do something: speed up energy projects",
+      "tokens": [
+        "actually",
+        "advancing",
+        "americans",
+        "bill",
+        "bills",
+        "bipartisan",
+        "come",
+        "congress",
+        "could",
+        "duck",
+        "energy",
+        "help",
+        "lame",
+        "lower",
+        "might",
+        "much",
+        "online",
+        "permitting",
+        "potentially",
+        "projects",
+        "quicker",
+        "something",
+        "speed",
+        "support",
+        "utility",
+        "while"
+      ]
+    },
+    {
+      "title": "Lame Duck Congress: The $100B Energy Gamble",
+      "tokens": [
+        "actually",
+        "congress",
+        "duck",
+        "energy",
+        "gamble",
+        "lame",
+        "might",
+        "projects",
+        "something",
+        "speed"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "TECHNOLOGY",
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
@@ -8303,11 +8286,11 @@
     "GEOPOLITICS",
     "SCIENCE",
     "GEOPOLITICS",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GLOBAL_POWERS",
+    "TECHNOLOGY"
   ],
   "last_sources": [
-    "Country Documentary Wire [KAZAKHSTAN]",
-    "India AI & Semiconductor Trending",
     "Top Viral News [FRANCE]",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "Top Viral News [BRAZIL]",
@@ -8345,11 +8328,11 @@
     "Top Viral News [BELGIUM]",
     "Top Viral News [PORTUGAL]",
     "Google World Top Headlines (US/Global)",
-    "DW Global In-Depth"
+    "DW Global In-Depth",
+    "Top Viral News [GERMANY]",
+    "The Verge Tech"
   ],
   "last_countries": [
-    "UNITED KINGDOM",
-    "HUNGARY",
     "ISRAEL",
     "GERMANY",
     "UNITED STATES",
@@ -8397,6 +8380,8 @@
     "BELGIUM",
     "PORTUGAL",
     "IRAN",
-    "UKRAINE"
+    "UKRAINE",
+    "GERMANY",
+    "UNITED STATES"
   ]
 }
