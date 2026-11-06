@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T03:29:29.961166",
-  "round_robin_idx": 12,
-  "country_rot_idx": 20,
-  "bgm_track_counter": 1816106154,
+  "updated_at": "2026-11-06T04:33:20.954877",
+  "round_robin_idx": 14,
+  "country_rot_idx": 36,
+  "bgm_track_counter": 1846813110,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -496,58 +496,13 @@
     "carney_asserts_canada_s_sovereignty_and",
     "canada_s_bold_budget_sovereignty_homelessness",
     "the_filipino_is_worth_fighting_for",
-    "why_miss_universe_philippines_became_a"
+    "why_miss_universe_philippines_became_a",
+    "archaeologists_found_a_3_300_year",
+    "3_300_year_old_sword_found",
+    "penn_state_football_enters_washington_matchup",
+    "why_penn_state_football_enters_washington"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why popular airplanes are getting scrapped years early",
-      "tokens": [
-        "years",
-        "airplanes",
-        "popular",
-        "scrapped",
-        "early",
-        "getting"
-      ]
-    },
-    {
-      "title": "Diabetes and ADHD drugs to be tested on Alzheimer's patients in new study",
-      "tokens": [
-        "study",
-        "patients",
-        "adhd",
-        "drugs",
-        "alzheimer",
-        "diabetes",
-        "tested"
-      ]
-    },
-    {
-      "title": "Donnarumma & Guehi highlight Man City issues as solid Arsenal move level",
-      "tokens": [
-        "highlight",
-        "donnarumma",
-        "guehi",
-        "move",
-        "solid",
-        "city",
-        "issues",
-        "arsenal",
-        "level"
-      ]
-    },
-    {
-      "title": "The Surprise Guest in 'You Can See Everything' Could Win an Oscar. Should They?",
-      "tokens": [
-        "oscar",
-        "surprise",
-        "they",
-        "could",
-        "guest",
-        "everything",
-        "should"
-      ]
-    },
     {
       "title": "Thousands of Israelis rally against Netanyahu gov't days before election",
       "tokens": [
@@ -7925,11 +7880,80 @@
         "worth",
         "yellow"
       ]
+    },
+    {
+      "title": "Archaeologists Found a 3,300-Year-Old Sword at the Bottom of a Volcanic Lake in Italy - and It's Still Sharp",
+      "tokens": [
+        "archaeologists",
+        "bottom",
+        "discovered",
+        "found",
+        "italian",
+        "italy",
+        "lake",
+        "magazine",
+        "sharp",
+        "smithsonian",
+        "still",
+        "sword",
+        "volcanic",
+        "year"
+      ]
+    },
+    {
+      "title": "3,300\u2011Year\u2011Old Sword Found Sharp in Italy's Volcanic Lake \u2013 Mystery Unveiled",
+      "tokens": [
+        "archaeologists",
+        "bottom",
+        "found",
+        "italy",
+        "lake",
+        "mystery",
+        "sharp",
+        "still",
+        "sword",
+        "unveiled",
+        "volcanic",
+        "year"
+      ]
+    },
+    {
+      "title": "Penn State Football Enters Washington Matchup As Narrow Underdog",
+      "tokens": [
+        "bowl",
+        "destinations",
+        "enters",
+        "football",
+        "lions",
+        "matchup",
+        "narrow",
+        "nittany",
+        "penn",
+        "potential",
+        "prediction",
+        "preview",
+        "projections",
+        "score",
+        "state",
+        "underdog",
+        "washington"
+      ]
+    },
+    {
+      "title": "Why Penn State Football Enters Washington Matchup As Narrow Underdog",
+      "tokens": [
+        "enters",
+        "football",
+        "matchup",
+        "narrow",
+        "penn",
+        "state",
+        "underdog",
+        "washington"
+      ]
     }
   ],
   "last_categories": [
-    "STOCK_MARKETS",
-    "GEOPOLITICS",
     "SCIENCE",
     "INDIA_TRENDING",
     "INDIA_TRENDING",
@@ -7967,11 +7991,11 @@
     "INDIA_TRENDING",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
-    "DEFENSE_MILITARY"
+    "DEFENSE_MILITARY",
+    "GLOBAL_POWERS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "DW Business & Trade",
-    "Country Documentary Wire [VIETNAM]",
     "Space.com Breaking",
     "Top Viral News [NETHERLANDS]",
     "Top Viral News [ROMANIA]",
@@ -8009,11 +8033,11 @@
     "Country Documentary Wire [IRAQ]",
     "DW Global In-Depth",
     "Country Documentary Wire [CANADA]",
-    "Top Viral News [PHILIPPINES]"
+    "Top Viral News [PHILIPPINES]",
+    "Top Viral News [ITALY]",
+    "Teenage Prodigies & Underdog Upsets Across Global Sports"
   ],
   "last_countries": [
-    "MYANMAR",
-    "UNITED STATES",
     "RUSSIA",
     "TURKEY",
     "INTERNATIONAL",
@@ -8061,6 +8085,8 @@
     "IRAQ",
     "GLOBAL BRIEFING",
     "CANADA",
-    "PHILIPPINES"
+    "PHILIPPINES",
+    "ITALY",
+    "UNITED STATES"
   ]
 }
