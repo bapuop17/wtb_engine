@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T11:04:09.936916",
-  "round_robin_idx": 4,
-  "country_rot_idx": 41,
-  "bgm_track_counter": 1971480868,
+  "updated_at": "2026-11-06T12:26:09.239636",
+  "round_robin_idx": 6,
+  "country_rot_idx": 57,
+  "bgm_track_counter": 2014747798,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -519,68 +519,13 @@
     "south_africa_have_strengthened_their_position",
     "south_africa_s_dual_crisis_golf",
     "vietnam_a_strategic_pillar_of_india",
-    "vietnam_s_2026_pivot_why_india"
+    "vietnam_s_2026_pivot_why_india",
+    "kenyan_court_sentencing_doomsday_cult_leader",
+    "why_kenyan_court_sentencing_doomsday_cult",
+    "norway_finland_and_poland_are_expanding",
+    "norway_finland_poland_the_125_000"
   ],
   "event_fingerprints": [
-    {
-      "title": "Tighter rules planned to protect people from cosmetic surgery that goes badly wrong",
-      "tokens": [
-        "badly",
-        "people",
-        "tighter",
-        "goes",
-        "surgery",
-        "cosmetic",
-        "rules",
-        "protect",
-        "wrong",
-        "planned"
-      ]
-    },
-    {
-      "title": "Antonelli stands on brink of history in Austin",
-      "tokens": [
-        "austin",
-        "stands",
-        "antonelli",
-        "brink",
-        "history"
-      ]
-    },
-    {
-      "title": "Why the charts are full of old songs",
-      "tokens": [
-        "charts",
-        "full",
-        "songs"
-      ]
-    },
-    {
-      "title": "Father who killed Oregon school gunman describes anguish over children he couldn't save",
-      "tokens": [
-        "three",
-        "save",
-        "teenager",
-        "teacher",
-        "fatally",
-        "gunman",
-        "anguish",
-        "killed",
-        "shot",
-        "kaylub",
-        "hailed",
-        "oregon",
-        "children",
-        "father",
-        "describes",
-        "couldn",
-        "been",
-        "killing",
-        "hero",
-        "school",
-        "giamanco"
-      ]
-    },
     {
       "title": "Here are the top AI agents that can live in your text messages",
       "tokens": [
@@ -8141,11 +8086,99 @@
         "vietnam",
         "winning"
       ]
+    },
+    {
+      "title": "Kenyan court sentencing doomsday cult leader Paul Mackenzie",
+      "tokens": [
+        "children",
+        "convicted",
+        "court",
+        "cult",
+        "doomsday",
+        "found",
+        "guilty",
+        "kenyan",
+        "last",
+        "leader",
+        "mackenzie",
+        "month",
+        "murdering",
+        "murders",
+        "pastor",
+        "paul",
+        "people",
+        "sentencing",
+        "them"
+      ]
+    },
+    {
+      "title": "Why Kenyan court sentencing doomsday cult leader Paul Mackenzie",
+      "tokens": [
+        "court",
+        "cult",
+        "doomsday",
+        "kenyan",
+        "leader",
+        "mackenzie",
+        "paul",
+        "sentencing"
+      ]
+    },
+    {
+      "title": "Norway, Finland and Poland are expanding military training for reservists and civilians amid the threat from Russia. BILD analyzed defense t",
+      "tokens": [
+        "analyzed",
+        "annual",
+        "bild",
+        "civilians",
+        "countries",
+        "defense",
+        "expanding",
+        "finland",
+        "finnish",
+        "have",
+        "include",
+        "launched",
+        "military",
+        "norway",
+        "poland",
+        "possible",
+        "programs",
+        "reservists",
+        "russia",
+        "threat",
+        "three",
+        "train",
+        "training",
+        "which"
+      ]
+    },
+    {
+      "title": "Norway, Finland, Poland: The 125,000 Strong Civilian Army",
+      "tokens": [
+        "analyzed",
+        "army",
+        "bild",
+        "civilian",
+        "civilians",
+        "countries",
+        "defense",
+        "expanding",
+        "finland",
+        "military",
+        "norway",
+        "poland",
+        "programs",
+        "reservists",
+        "russia",
+        "strong",
+        "threat",
+        "three",
+        "training"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
     "AI_ROBOTICS",
     "INDIA_TRENDING",
@@ -8183,11 +8216,11 @@
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
-    "STOCK_MARKETS"
+    "STOCK_MARKETS",
+    "GLOBAL_POWERS",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Top Viral News [IRAN]",
-    "France24 Strategic Reports",
     "Country Documentary Wire [COLOMBIA]",
     "India AI & Semiconductor Trending",
     "Country Documentary Wire [CZECHIA]",
@@ -8225,11 +8258,11 @@
     "Top Viral News [SAUDI ARABIA]",
     "Top Viral News [BRAZIL]",
     "Top Viral News [SOUTH AFRICA]",
-    "Country Documentary Wire [VIETNAM]"
+    "Country Documentary Wire [VIETNAM]",
+    "Top Viral News [KENYA]",
+    "Country Documentary Wire [FINLAND]"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
-    "BULGARIA",
     "UNITED STATES",
     "VENEZUELA",
     "GLOBAL TECH & AI",
@@ -8277,6 +8310,8 @@
     "SAUDI ARABIA",
     "BRAZIL",
     "SOUTH AFRICA",
-    "VIETNAM"
+    "VIETNAM",
+    "KENYA",
+    "NORWAY"
   ]
 }
