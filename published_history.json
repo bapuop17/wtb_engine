@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-05T23:03:26.145893",
-  "round_robin_idx": 6,
-  "country_rot_idx": 47,
-  "bgm_track_counter": 1757044850,
+  "updated_at": "2026-11-06T00:40:25.187522",
+  "round_robin_idx": 8,
+  "country_rot_idx": 63,
+  "bgm_track_counter": 1784108228,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -484,63 +484,13 @@
     "nccn_and_viet_nam_national_cancer",
     "vietnam_s_cancer_crisis_the_us",
     "arrests_and_investigations_as_serbia_begins",
-    "serbia_s_justice_avalanche_how_the"
+    "serbia_s_justice_avalanche_how_the",
+    "the_last_10_days_indonesia_south",
+    "indonesia_s_secret_north_korea_gamble",
+    "greece_man_accused_of_stealing_490k",
+    "greece_man_stole_493k_the_corporate"
   ],
   "event_fingerprints": [
-    {
-      "title": "NASA updates lander plans for Moon landings, finally solves long-festering Orion issue",
-      "tokens": [
-        "finally",
-        "plans",
-        "issue",
-        "festering",
-        "orion",
-        "landings",
-        "nasa",
-        "long",
-        "updates",
-        "lander",
-        "moon",
-        "solves"
-      ]
-    },
-    {
-      "title": "German police detain suspect after fire engulfs Hitler's Eagle's Nest",
-      "tokens": [
-        "engulfs",
-        "suspect",
-        "fire",
-        "nest",
-        "eagle",
-        "detain",
-        "german",
-        "police",
-        "hitler"
-      ]
-    },
-    {
-      "title": "British woman dies after trying to rescue sons swept away at sea in the Bahamas",
-      "tokens": [
-        "swept",
-        "sons",
-        "bahamas",
-        "rescue",
-        "woman",
-        "british",
-        "dies",
-        "trying",
-        "away"
-      ]
-    },
-    {
-      "title": "Infantino says he is backed by 'vast majority'",
-      "tokens": [
-        "majority",
-        "backed",
-        "vast",
-        "infantino"
-      ]
-    },
     {
       "title": "Scientists Find That Cats and Their Owners Share a Surprising Biological Connection",
       "tokens": [
@@ -7788,11 +7738,91 @@
         "students",
         "unleashed"
       ]
+    },
+    {
+      "title": "The last 10 days: Indonesia, South Korea, China, the Netherlands, Denmark, France, Portugal, California",
+      "tokens": [
+        "california",
+        "china",
+        "days",
+        "denmark",
+        "dialogue",
+        "foreign",
+        "france",
+        "indonesia",
+        "korea",
+        "last",
+        "meet",
+        "ministers",
+        "month",
+        "netherlands",
+        "north",
+        "open",
+        "portugal",
+        "president",
+        "request",
+        "south",
+        "willing"
+      ]
+    },
+    {
+      "title": "Indonesia's Secret North Korea Gamble: Why Seoul Is Panicking",
+      "tokens": [
+        "california",
+        "china",
+        "days",
+        "denmark",
+        "france",
+        "gamble",
+        "indonesia",
+        "korea",
+        "last",
+        "netherlands",
+        "north",
+        "panicking",
+        "portugal",
+        "seoul",
+        "south"
+      ]
+    },
+    {
+      "title": "Greece man accused of stealing $490K+ from employer",
+      "tokens": [
+        "accused",
+        "allegedly",
+        "card",
+        "charges",
+        "credit",
+        "dollars",
+        "employer",
+        "facing",
+        "federal",
+        "greece",
+        "half",
+        "million",
+        "nearly",
+        "purchases",
+        "stealing",
+        "through",
+        "unauthorized",
+        "year"
+      ]
+    },
+    {
+      "title": "Greece Man Stole $493K: The Corporate Fraud Exposed",
+      "tokens": [
+        "accused",
+        "corporate",
+        "employer",
+        "exposed",
+        "fraud",
+        "greece",
+        "stealing",
+        "stole"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "GEOPOLITICS",
     "GLOBAL_POWERS",
     "INDIA_TRENDING",
     "AI_ROBOTICS",
@@ -7830,11 +7860,11 @@
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GEOPOLITICS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Top Viral News [VENEZUELA]",
-    "Top Viral News [KAZAKHSTAN]",
     "Top Viral News [OMAN]",
     "Country Documentary Wire [UNITED KINGDOM]",
     "BBC Technology",
@@ -7872,11 +7902,11 @@
     "Top Viral News [BRAZIL]",
     "Top Viral News [TURKEY]",
     "Top Viral News [VIETNAM]",
-    "DW Global In-Depth"
+    "DW Global In-Depth",
+    "Top Viral News [DENMARK]",
+    "Top Viral News [GREECE]"
   ],
   "last_countries": [
-    "GERMANY",
-    "VIETNAM",
     "SPACE & SCIENCE",
     "NETHERLANDS",
     "ROMANIA",
@@ -7924,6 +7954,8 @@
     "BRAZIL",
     "TURKEY",
     "VIETNAM",
-    "SERBIA"
+    "SERBIA",
+    "INDONESIA",
+    "GREECE"
   ]
 }
