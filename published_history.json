@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T09:56:22.152201",
-  "round_robin_idx": 2,
-  "country_rot_idx": 25,
-  "bgm_track_counter": 1953106620,
+  "updated_at": "2026-11-06T11:04:09.936916",
+  "round_robin_idx": 4,
+  "country_rot_idx": 41,
+  "bgm_track_counter": 1971480868,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -515,62 +515,13 @@
     "reuters_unity_software_has_had_talks",
     "saudi_arabia_s_25b_unity_bet",
     "hamilton_wants_ferrari_talks_in_brazil",
-    "ferrari_s_fatal_flaw_why_hamilton"
+    "ferrari_s_fatal_flaw_why_hamilton",
+    "south_africa_have_strengthened_their_position",
+    "south_africa_s_dual_crisis_golf",
+    "vietnam_a_strategic_pillar_of_india",
+    "vietnam_s_2026_pivot_why_india"
   ],
   "event_fingerprints": [
-    {
-      "title": "Forced to pick, Grok's AI model chooses Republicans. OpenAI's picks Democrats.",
-      "tokens": [
-        "openai",
-        "pick",
-        "republicans",
-        "forced",
-        "chooses",
-        "picks",
-        "model",
-        "democrats",
-        "grok"
-      ]
-    },
-    {
-      "title": "Scientists Discover That Ovaries May Be Doing Something Unexpected Decades After Menopause",
-      "tokens": [
-        "menopause",
-        "discover",
-        "something",
-        "ovaries",
-        "doing",
-        "scientists",
-        "unexpected",
-        "decades"
-      ]
-    },
-    {
-      "title": "NASA, Virginia Launch Power Partnership for Energy Security",
-      "tokens": [
-        "virginia",
-        "launch",
-        "partnership",
-        "nasa",
-        "energy",
-        "security",
-        "power"
-      ]
-    },
-    {
-      "title": "Comcast beats earnings expectations as media revenue offsets weakness in connectivity",
-      "tokens": [
-        "beats",
-        "earnings",
-        "expectations",
-        "revenue",
-        "connectivity",
-        "weakness",
-        "media",
-        "offsets",
-        "comcast"
-      ]
-    },
     {
       "title": "Tighter rules planned to protect people from cosmetic surgery that goes badly wrong",
       "tokens": [
@@ -8098,11 +8049,101 @@
         "talks",
         "wants"
       ]
+    },
+    {
+      "title": "South Africa have strengthened their position at the top of the team standings after the second round of the 2026 All Africa Challenge Troph",
+      "tokens": [
+        "aact",
+        "abuja",
+        "africa",
+        "challenge",
+        "climb",
+        "club",
+        "comment",
+        "country",
+        "detail",
+        "extend",
+        "golf",
+        "grip",
+        "have",
+        "individual",
+        "international",
+        "kenya",
+        "lead",
+        "muthomi",
+        "nigeria",
+        "position",
+        "round",
+        "second",
+        "south",
+        "standings",
+        "strengthened",
+        "team",
+        "their",
+        "tighten",
+        "tops",
+        "trophy"
+      ]
+    },
+    {
+      "title": "South Africa's Dual Crisis: Golf Glory vs Cricket Collapse",
+      "tokens": [
+        "africa",
+        "challenge",
+        "collapse",
+        "coun",
+        "cricket",
+        "dual",
+        "glory",
+        "golf",
+        "have",
+        "international",
+        "position",
+        "round",
+        "second",
+        "south",
+        "standings",
+        "strengthened",
+        "team",
+        "their",
+        "trophy"
+      ]
+    },
+    {
+      "title": "Vietnam, A Strategic Pillar Of India's Act East",
+      "tokens": [
+        "agree",
+        "commissi",
+        "comprehensive",
+        "east",
+        "enhanced",
+        "expand",
+        "friendship",
+        "india",
+        "joint",
+        "observe",
+        "partnership",
+        "pillar",
+        "strategic",
+        "ties",
+        "vietnam",
+        "year"
+      ]
+    },
+    {
+      "title": "Vietnam's 2026 Pivot: Why India Is Winning The East",
+      "tokens": [
+        "east",
+        "india",
+        "pillar",
+        "pivot",
+        "strategic",
+        "vietnam",
+        "winning"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "STOCK_MARKETS",
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
@@ -8140,11 +8181,11 @@
     "GLOBAL_POWERS",
     "TECHNOLOGY",
     "GEOPOLITICS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "GEOPOLITICS",
+    "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Country Documentary Wire [CANADA]",
-    "CNBC Markets & Finance",
     "Top Viral News [IRAN]",
     "France24 Strategic Reports",
     "Country Documentary Wire [COLOMBIA]",
@@ -8182,11 +8223,11 @@
     "Country Documentary Wire [MYANMAR]",
     "Ars Technica",
     "Top Viral News [SAUDI ARABIA]",
-    "Top Viral News [BRAZIL]"
+    "Top Viral News [BRAZIL]",
+    "Top Viral News [SOUTH AFRICA]",
+    "Country Documentary Wire [VIETNAM]"
   ],
   "last_countries": [
-    "INDIA",
-    "CHINA",
     "GLOBAL TECH & AI",
     "BULGARIA",
     "UNITED STATES",
@@ -8234,6 +8275,8 @@
     "MALAYSIA",
     "GLOBAL TECH & AI",
     "SAUDI ARABIA",
-    "BRAZIL"
+    "BRAZIL",
+    "SOUTH AFRICA",
+    "VIETNAM"
   ]
 }
