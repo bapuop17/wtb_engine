@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T06:06:55.441294",
-  "round_robin_idx": 16,
-  "country_rot_idx": 52,
-  "bgm_track_counter": 1885647838,
+  "updated_at": "2026-11-06T07:39:20.572512",
+  "round_robin_idx": 18,
+  "country_rot_idx": 68,
+  "bgm_track_counter": 1899048006,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -503,52 +503,13 @@
     "why_penn_state_football_enters_washington",
     "jorge_martin_s_qatar_motogp_medical",
     "qatar_motogp_crisis_jorge_martin_s",
-    "andy_weir_says_his_new_sci"
+    "andy_weir_says_his_new_sci",
+    "30_aircraft_8_countries_multiple_flight",
+    "europe_s_massive_bomb_threat_30",
+    "north_korea_tells_eu_to_mind",
+    "north_korea_screams_at_eu_over"
   ],
   "event_fingerprints": [
-    {
-      "title": "Cruise lines chase luxury travelers with suites for up to $25,000 a night",
-      "tokens": [
-        "luxury",
-        "cruise",
-        "chase",
-        "lines",
-        "suites",
-        "travelers",
-        "night"
-      ]
-    },
-    {
-      "title": "Give more people weight-loss jabs on the NHS, say MPs",
-      "tokens": [
-        "weight",
-        "jabs",
-        "more",
-        "people",
-        "give",
-        "loss"
-      ]
-    },
-    {
-      "title": "The candid meeting that 'changed' Spurs",
-      "tokens": [
-        "candid",
-        "spurs",
-        "changed",
-        "meeting"
-      ]
-    },
-    {
-      "title": "What Is 'Fjord' Really About? A Political Stance That May Be Too Hot to Handle",
-      "tokens": [
-        "stance",
-        "political",
-        "handle",
-        "really",
-        "about",
-        "fjord"
-      ]
-    },
     {
       "title": "How have Democrats' policies shifted since the last major US election?",
       "tokens": [
@@ -7992,11 +7953,88 @@
         "revive",
         "weir"
       ]
+    },
+    {
+      "title": "30 aircraft, 8 countries, multiple flight diversions: What happened in Europe's latest bomb scare",
+      "tokens": [
+        "aircraft",
+        "bomb",
+        "countries",
+        "diversions",
+        "europe",
+        "everyone",
+        "flight",
+        "happened",
+        "india",
+        "latest",
+        "multiple",
+        "scare",
+        "start",
+        "times",
+        "tracking"
+      ]
+    },
+    {
+      "title": "Europe's Massive Bomb Threat: 30 Planes, 8 Nations, Chaos Unfolds",
+      "tokens": [
+        "aircraft",
+        "bomb",
+        "chaos",
+        "countries",
+        "diversions",
+        "europe",
+        "flight",
+        "happened",
+        "latest",
+        "multiple",
+        "nations",
+        "planes",
+        "scare",
+        "threat",
+        "unfolds"
+      ]
+    },
+    {
+      "title": "North Korea tells EU to 'mind its own business' on human rights",
+      "tokens": [
+        "business",
+        "does",
+        "draft",
+        "european",
+        "have",
+        "human",
+        "korea",
+        "lashed",
+        "mind",
+        "mission",
+        "monopoly",
+        "north",
+        "pyongyang",
+        "resolution",
+        "rights",
+        "tells",
+        "union",
+        "west"
+      ]
+    },
+    {
+      "title": "North Korea Screams at EU Over 'Non\u2011Existent' Human Rights Crisis \u2013 A Diplomatic Firestorm",
+      "tokens": [
+        "business",
+        "diplomatic",
+        "existent",
+        "firestorm",
+        "human",
+        "korea",
+        "mind",
+        "north",
+        "rights",
+        "screams",
+        "tells"
+      ]
     }
   ],
   "last_categories": [
-    "INDIA_TRENDING",
-    "GLOBAL_POWERS",
     "GEOPOLITICS",
     "INDIA_TRENDING",
     "GEOPOLITICS",
@@ -8034,11 +8072,11 @@
     "GLOBAL_POWERS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
-    "SCIENCE"
+    "SCIENCE",
+    "GEOPOLITICS",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Top Viral News [ROMANIA]",
-    "Country Documentary Wire [PHILIPPINES]",
     "Top Viral News [ITALY]",
     "Country Documentary Wire [VENEZUELA]",
     "Top Viral News [GEORGIA]",
@@ -8076,11 +8114,11 @@
     "Top Viral News [ITALY]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "Top Viral News [QATAR]",
-    "Space.com Breaking"
+    "Space.com Breaking",
+    "Country Documentary Wire [AUSTRIA]",
+    "DW Global In-Depth"
   ],
   "last_countries": [
-    "INTERNATIONAL",
-    "SPAIN",
     "GLOBAL MARKETS",
     "UNITED KINGDOM",
     "FINLAND",
@@ -8128,6 +8166,8 @@
     "ITALY",
     "UNITED STATES",
     "QATAR",
-    "SPACE & SCIENCE"
+    "SPACE & SCIENCE",
+    "INDIA",
+    "NORTH KOREA"
   ]
 }
