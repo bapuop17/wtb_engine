@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T02:07:40.173553",
-  "round_robin_idx": 10,
-  "country_rot_idx": 4,
-  "bgm_track_counter": 1802916590,
+  "updated_at": "2026-11-06T03:29:29.961166",
+  "round_robin_idx": 12,
+  "country_rot_idx": 20,
+  "bgm_track_counter": 1816106154,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -492,60 +492,13 @@
     "iraqi_prime_minister_al_zaidi_met",
     "iraq_s_oil_gamble_zaidi_s",
     "kosovo_outrage_as_authorities_accused_of",
-    "kosovo_s_femicide_crisis_why_thousands"
+    "kosovo_s_femicide_crisis_why_thousands",
+    "carney_asserts_canada_s_sovereignty_and",
+    "canada_s_bold_budget_sovereignty_homelessness",
+    "the_filipino_is_worth_fighting_for",
+    "why_miss_universe_philippines_became_a"
   ],
   "event_fingerprints": [
-    {
-      "title": "Barcelona vs Real Madrid: La Liga - El Clasico preview, predictions, teams",
-      "tokens": [
-        "preview",
-        "clasico",
-        "madrid",
-        "liga",
-        "real",
-        "barcelona",
-        "predictions",
-        "teams"
-      ]
-    },
-    {
-      "title": "Block's new voice model sounds eerily human",
-      "tokens": [
-        "human",
-        "eerily",
-        "block",
-        "voice",
-        "model",
-        "sounds"
-      ]
-    },
-    {
-      "title": "Popular Sleep Supplement Could Come With an Unexpected Catch, Scientists Warn",
-      "tokens": [
-        "come",
-        "scientists",
-        "sleep",
-        "catch",
-        "could",
-        "warn",
-        "supplement",
-        "unexpected",
-        "popular"
-      ]
-    },
-    {
-      "title": "NASA's Swift Mission Ends, Leaves Behind Scientific Bonanza",
-      "tokens": [
-        "behind",
-        "ends",
-        "nasa",
-        "bonanza",
-        "leaves",
-        "scientific",
-        "mission",
-        "swift"
-      ]
-    },
     {
       "title": "Why popular airplanes are getting scrapped years early",
       "tokens": [
@@ -7876,11 +7829,105 @@
         "took",
         "victim"
       ]
+    },
+    {
+      "title": "Carney Asserts Canada's Sovereignty and Vows to End Homelessness in Budget",
+      "tokens": [
+        "asserts",
+        "budget",
+        "canada",
+        "carney",
+        "diversifying",
+        "economy",
+        "homelessness",
+        "minister",
+        "prime",
+        "repeatedly",
+        "second",
+        "sovereignty",
+        "stresses",
+        "times",
+        "vows",
+        "york"
+      ]
+    },
+    {
+      "title": "Canada's Bold Budget: Sovereignty, Homelessness & Economic Independence",
+      "tokens": [
+        "asserts",
+        "bold",
+        "budget",
+        "canada",
+        "carney",
+        "economic",
+        "homelessness",
+        "independence",
+        "sovereignty",
+        "vows"
+      ]
+    },
+    {
+      "title": "THE FILIPINO IS WORTH FIGHTING FOR Miss Universe Philippines 2026 Bea Millan-Windorski was clad in yellow as she departed for Puerto Rico fo",
+      "tokens": [
+        "authentic",
+        "bangar",
+        "calls",
+        "clad",
+        "customized",
+        "debate",
+        "departed",
+        "dress",
+        "fabric",
+        "fighting",
+        "filipino",
+        "final",
+        "identity",
+        "inabel",
+        "made",
+        "millan",
+        "miss",
+        "organization",
+        "pageant",
+        "philippines",
+        "preliminary",
+        "puerto",
+        "reignites",
+        "rico",
+        "rounds",
+        "universe",
+        "votes",
+        "windorski",
+        "worth",
+        "yellow"
+      ]
+    },
+    {
+      "title": "Why Miss Universe Philippines Became a Symbol of National Defense",
+      "tokens": [
+        "became",
+        "clad",
+        "defense",
+        "departed",
+        "fighting",
+        "filipino",
+        "final",
+        "millan",
+        "miss",
+        "national",
+        "philippines",
+        "preliminary",
+        "puerto",
+        "rico",
+        "rounds",
+        "symbol",
+        "universe",
+        "windorski",
+        "worth",
+        "yellow"
+      ]
     }
   ],
   "last_categories": [
-    "AI_ROBOTICS",
-    "GLOBAL_POWERS",
     "STOCK_MARKETS",
     "GEOPOLITICS",
     "SCIENCE",
@@ -7918,11 +7965,11 @@
     "GEOPOLITICS",
     "AI_ROBOTICS",
     "INDIA_TRENDING",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "GEOPOLITICS",
+    "DEFENSE_MILITARY"
   ],
   "last_sources": [
-    "BBC Technology",
-    "Top Viral News [BANGLADESH]",
     "DW Business & Trade",
     "Country Documentary Wire [VIETNAM]",
     "Space.com Breaking",
@@ -7960,11 +8007,11 @@
     "Top Viral News [DENMARK]",
     "Top Viral News [GREECE]",
     "Country Documentary Wire [IRAQ]",
-    "DW Global In-Depth"
+    "DW Global In-Depth",
+    "Country Documentary Wire [CANADA]",
+    "Top Viral News [PHILIPPINES]"
   ],
   "last_countries": [
-    "ROMANIA",
-    "SAUDI ARABIA",
     "MYANMAR",
     "UNITED STATES",
     "RUSSIA",
@@ -8012,6 +8059,8 @@
     "INDONESIA",
     "GREECE",
     "IRAQ",
-    "GLOBAL BRIEFING"
+    "GLOBAL BRIEFING",
+    "CANADA",
+    "PHILIPPINES"
   ]
 }
