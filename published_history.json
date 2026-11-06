@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T00:40:25.187522",
-  "round_robin_idx": 8,
-  "country_rot_idx": 63,
-  "bgm_track_counter": 1784108228,
+  "updated_at": "2026-11-06T02:07:40.173553",
+  "round_robin_idx": 10,
+  "country_rot_idx": 4,
+  "bgm_track_counter": 1802916590,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -488,59 +488,13 @@
     "the_last_10_days_indonesia_south",
     "indonesia_s_secret_north_korea_gamble",
     "greece_man_accused_of_stealing_490k",
-    "greece_man_stole_493k_the_corporate"
+    "greece_man_stole_493k_the_corporate",
+    "iraqi_prime_minister_al_zaidi_met",
+    "iraq_s_oil_gamble_zaidi_s",
+    "kosovo_outrage_as_authorities_accused_of",
+    "kosovo_s_femicide_crisis_why_thousands"
   ],
   "event_fingerprints": [
-    {
-      "title": "Scientists Find That Cats and Their Owners Share a Surprising Biological Connection",
-      "tokens": [
-        "scientists",
-        "surprising",
-        "their",
-        "biological",
-        "share",
-        "connection",
-        "cats",
-        "owners",
-        "find"
-      ]
-    },
-    {
-      "title": "Fielded is obsessed with scammers and unhinged Japanese cyberpunk",
-      "tokens": [
-        "japanese",
-        "cyberpunk",
-        "scammers",
-        "unhinged",
-        "fielded",
-        "obsessed"
-      ]
-    },
-    {
-      "title": "Have scientists finally found a way to save the banana from disaster?",
-      "tokens": [
-        "save",
-        "disaster",
-        "scientists",
-        "found",
-        "finally",
-        "banana",
-        "have"
-      ]
-    },
-    {
-      "title": "Rapid changes to care market risk to National Care Service, regulator says",
-      "tokens": [
-        "regulator",
-        "rapid",
-        "national",
-        "risk",
-        "market",
-        "care",
-        "service",
-        "changes"
-      ]
-    },
     {
       "title": "Barcelona vs Real Madrid: La Liga - El Clasico preview, predictions, teams",
       "tokens": [
@@ -7820,11 +7774,111 @@
         "stealing",
         "stole"
       ]
+    },
+    {
+      "title": "Iraqi Prime Minister al-Zaidi met with ExxonMobil's Middle East representative, affirming Iraq's strategy to expand its oil exports, product",
+      "tokens": [
+        "accomplished",
+        "advanced",
+        "affirming",
+        "attracting",
+        "boosting",
+        "days",
+        "disarmament",
+        "doubles",
+        "down",
+        "east",
+        "expand",
+        "exports",
+        "exxonmobil",
+        "first",
+        "investments",
+        "iraq",
+        "iraqi",
+        "leveraging",
+        "marks",
+        "middle",
+        "militia",
+        "minister",
+        "office",
+        "prime",
+        "production",
+        "refining",
+        "representative",
+        "strategy",
+        "technologies",
+        "zaidi"
+      ]
+    },
+    {
+      "title": "Iraq's Oil Gamble: Zaidi's High-Stakes Deal with ExxonMobil",
+      "tokens": [
+        "advanced",
+        "affirming",
+        "deal",
+        "east",
+        "expand",
+        "exports",
+        "exxonmobil",
+        "gamble",
+        "high",
+        "iraq",
+        "iraqi",
+        "leveraging",
+        "middle",
+        "minister",
+        "prime",
+        "production",
+        "refining",
+        "representative",
+        "stakes",
+        "strategy",
+        "zaidi"
+      ]
+    },
+    {
+      "title": "Kosovo: Outrage as authorities accused of not helping femicide victim",
+      "tokens": [
+        "accused",
+        "arlinda",
+        "authorities",
+        "brutally",
+        "despite",
+        "dramatic",
+        "femicide",
+        "helping",
+        "husband",
+        "kosovo",
+        "murdered",
+        "outrage",
+        "pleading",
+        "police",
+        "protection",
+        "protesting",
+        "reporting",
+        "they",
+        "thousands",
+        "victim",
+        "zekaj"
+      ]
+    },
+    {
+      "title": "Kosovo's Femicide Crisis: Why Thousands Took to the Streets",
+      "tokens": [
+        "accused",
+        "authorities",
+        "femicide",
+        "helping",
+        "kosovo",
+        "outrage",
+        "streets",
+        "thousands",
+        "took",
+        "victim"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "INDIA_TRENDING",
     "AI_ROBOTICS",
     "GLOBAL_POWERS",
     "STOCK_MARKETS",
@@ -7862,11 +7916,11 @@
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "INDIA_TRENDING",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Top Viral News [OMAN]",
-    "Country Documentary Wire [UNITED KINGDOM]",
     "BBC Technology",
     "Top Viral News [BANGLADESH]",
     "DW Business & Trade",
@@ -7904,11 +7958,11 @@
     "Top Viral News [VIETNAM]",
     "DW Global In-Depth",
     "Top Viral News [DENMARK]",
-    "Top Viral News [GREECE]"
+    "Top Viral News [GREECE]",
+    "Country Documentary Wire [IRAQ]",
+    "DW Global In-Depth"
   ],
   "last_countries": [
-    "SPACE & SCIENCE",
-    "NETHERLANDS",
     "ROMANIA",
     "SAUDI ARABIA",
     "MYANMAR",
@@ -7956,6 +8010,8 @@
     "VIETNAM",
     "SERBIA",
     "INDONESIA",
-    "GREECE"
+    "GREECE",
+    "IRAQ",
+    "GLOBAL BRIEFING"
   ]
 }
