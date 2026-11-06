@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T04:33:20.954877",
-  "round_robin_idx": 14,
-  "country_rot_idx": 36,
-  "bgm_track_counter": 1846813110,
+  "updated_at": "2026-11-06T06:06:55.441294",
+  "round_robin_idx": 16,
+  "country_rot_idx": 52,
+  "bgm_track_counter": 1885647838,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -500,56 +500,12 @@
     "archaeologists_found_a_3_300_year",
     "3_300_year_old_sword_found",
     "penn_state_football_enters_washington_matchup",
-    "why_penn_state_football_enters_washington"
+    "why_penn_state_football_enters_washington",
+    "jorge_martin_s_qatar_motogp_medical",
+    "qatar_motogp_crisis_jorge_martin_s",
+    "andy_weir_says_his_new_sci"
   ],
   "event_fingerprints": [
-    {
-      "title": "Thousands of Israelis rally against Netanyahu gov't days before election",
-      "tokens": [
-        "israelis",
-        "netanyahu",
-        "days",
-        "thousands",
-        "election",
-        "before",
-        "rally",
-        "against"
-      ]
-    },
-    {
-      "title": "Will AI expose the rickety infrastructure of the internet?",
-      "tokens": [
-        "will",
-        "internet",
-        "rickety",
-        "expose",
-        "infrastructure"
-      ]
-    },
-    {
-      "title": "Archaeologists May Have Just Discovered the World's Oldest Shipwreck",
-      "tokens": [
-        "world",
-        "shipwreck",
-        "discovered",
-        "oldest",
-        "just",
-        "archaeologists",
-        "have"
-      ]
-    },
-    {
-      "title": "NASA, Partners Accelerate Lander Development for 2028 Moon Missions",
-      "tokens": [
-        "accelerate",
-        "nasa",
-        "missions",
-        "development",
-        "lander",
-        "partners",
-        "moon"
-      ]
-    },
     {
       "title": "Cruise lines chase luxury travelers with suites for up to $25,000 a night",
       "tokens": [
@@ -7951,11 +7907,94 @@
         "underdog",
         "washington"
       ]
+    },
+    {
+      "title": "Jorge Martin's Qatar MotoGP medical pushed back to Friday",
+      "tokens": [
+        "adelaide",
+        "back",
+        "fears",
+        "friday",
+        "illness",
+        "joan",
+        "jorge",
+        "leads",
+        "marc",
+        "marquez",
+        "martin",
+        "medical",
+        "motogp",
+        "mystery",
+        "pushed",
+        "qatar",
+        "return",
+        "round",
+        "sepang",
+        "standings",
+        "tuesday",
+        "wrist"
+      ]
+    },
+    {
+      "title": "Qatar MotoGP Crisis: Jorge Martin\u2019s Injury Threatens Global Racing Power",
+      "tokens": [
+        "back",
+        "friday",
+        "injury",
+        "jorge",
+        "martin",
+        "medical",
+        "motogp",
+        "pushed",
+        "qatar",
+        "racing",
+        "threatens"
+      ]
+    },
+    {
+      "title": "Andy Weir says his new sci-fi audio drama 'Exoplanet' is a way to 'revive the old art of radio plays'",
+      "tokens": [
+        "acclaimed",
+        "ambitious",
+        "andy",
+        "audio",
+        "audiobook",
+        "author",
+        "benjamin",
+        "cast",
+        "comic",
+        "curated",
+        "drama",
+        "executive",
+        "exoplanet",
+        "first",
+        "full",
+        "percy",
+        "plays",
+        "producing",
+        "projects",
+        "radio",
+        "revive",
+        "series",
+        "weir",
+        "writer"
+      ]
+    },
+    {
+      "title": "Andy Weir says his new sci-fi audio drama 'Exoplanet' is a way to 'revive the old art",
+      "tokens": [
+        "andy",
+        "audio",
+        "drama",
+        "exoplanet",
+        "plays",
+        "radio",
+        "revive",
+        "weir"
+      ]
     }
   ],
   "last_categories": [
-    "SCIENCE",
-    "INDIA_TRENDING",
     "INDIA_TRENDING",
     "GLOBAL_POWERS",
     "GEOPOLITICS",
@@ -7993,11 +8032,11 @@
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GLOBAL_POWERS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "GEOPOLITICS",
+    "SCIENCE"
   ],
   "last_sources": [
-    "Space.com Breaking",
-    "Top Viral News [NETHERLANDS]",
     "Top Viral News [ROMANIA]",
     "Country Documentary Wire [PHILIPPINES]",
     "Top Viral News [ITALY]",
@@ -8035,11 +8074,11 @@
     "Country Documentary Wire [CANADA]",
     "Top Viral News [PHILIPPINES]",
     "Top Viral News [ITALY]",
-    "Teenage Prodigies & Underdog Upsets Across Global Sports"
+    "Teenage Prodigies & Underdog Upsets Across Global Sports",
+    "Top Viral News [QATAR]",
+    "Space.com Breaking"
   ],
   "last_countries": [
-    "RUSSIA",
-    "TURKEY",
     "INTERNATIONAL",
     "SPAIN",
     "GLOBAL MARKETS",
@@ -8087,6 +8126,8 @@
     "CANADA",
     "PHILIPPINES",
     "ITALY",
-    "UNITED STATES"
+    "UNITED STATES",
+    "QATAR",
+    "SPACE & SCIENCE"
   ]
 }
