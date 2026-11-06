@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T21:25:07.380690",
-  "round_robin_idx": 0,
-  "country_rot_idx": 19,
-  "bgm_track_counter": 2268322044,
+  "updated_at": "2026-11-06T22:48:38.802814",
+  "round_robin_idx": 2,
+  "country_rot_idx": 35,
+  "bgm_track_counter": 2301552650,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -551,86 +551,13 @@
     "rare_leprosy_strain_found_in_1",
     "why_rare_leprosy_strain_found_in",
     "lame_duck_congress_might_actually_do",
-    "lame_duck_congress_the_100b_energy"
+    "lame_duck_congress_the_100b_energy",
+    "turkish_parliament_approves_mecca_defense_pact",
+    "turkey_ratifies_mecca_pact_the_new",
+    "3_mexico_logistics_stocks_riding_rising",
+    "mexico_logistics_stocks_soar_as_us"
   ],
   "event_fingerprints": [
-    {
-      "title": "The debating club that helped shape NHS architect Aneurin Bevan's drive for power",
-      "tokens": [
-        "architect",
-        "young",
-        "shape",
-        "group",
-        "founding",
-        "bevan",
-        "helped",
-        "power",
-        "drive",
-        "radicals",
-        "debating",
-        "path",
-        "club",
-        "aneurin"
-      ]
-    },
-    {
-      "title": "United States Grand Prix: Formula One - live",
-      "tokens": [
-        "united",
-        "prix",
-        "live",
-        "grand",
-        "states",
-        "formula"
-      ]
-    },
-    {
-      "title": "Celebrity Traitors left on knife edge after trip to field of screams",
-      "tokens": [
-        "contestant",
-        "celebrity",
-        "field",
-        "trip",
-        "traitors",
-        "special",
-        "deadly",
-        "friday",
-        "episode",
-        "power",
-        "newly",
-        "earned",
-        "edge",
-        "decision",
-        "left",
-        "screams",
-        "make",
-        "knife"
-      ]
-    },
-    {
-      "title": "Marine Le Pen vows French 'renaissance' as far right eyes seat of power",
-      "tokens": [
-        "discontent",
-        "right",
-        "protests",
-        "campaign",
-        "vows",
-        "presidential",
-        "marine",
-        "rally",
-        "against",
-        "french",
-        "power",
-        "seat",
-        "backdrop",
-        "economic",
-        "eyes",
-        "national",
-        "renaissance",
-        "launches",
-        "social"
-      ]
-    },
     {
       "title": "Grok releases the first seven minutes of its AI-generated 'Odyssey'",
       "tokens": [
@@ -8246,11 +8173,75 @@
         "something",
         "speed"
       ]
+    },
+    {
+      "title": "Turkish parliament approves Mecca defense pact amid Middle East war",
+      "tokens": [
+        "approves",
+        "arabia",
+        "defense",
+        "east",
+        "joint",
+        "mecca",
+        "middle",
+        "pact",
+        "pakistan",
+        "parliament",
+        "saudi",
+        "site",
+        "socialist",
+        "turkish"
+      ]
+    },
+    {
+      "title": "Turkey Ratifies Mecca Pact: The New Middle East Order",
+      "tokens": [
+        "approves",
+        "defense",
+        "east",
+        "mecca",
+        "middle",
+        "order",
+        "pact",
+        "parliament",
+        "ratifies",
+        "turkey",
+        "turkish"
+      ]
+    },
+    {
+      "title": "3 Mexico Logistics Stocks Riding Rising US Trade Routes",
+      "tokens": [
+        "boom",
+        "logistics",
+        "mexico",
+        "riding",
+        "rising",
+        "routes",
+        "simply",
+        "stocks",
+        "trade",
+        "transport",
+        "wall",
+        "warehouses"
+      ]
+    },
+    {
+      "title": "Mexico Logistics Stocks Soar as US Trade Routes Boom",
+      "tokens": [
+        "boom",
+        "logistics",
+        "mexico",
+        "riding",
+        "rising",
+        "routes",
+        "soar",
+        "stocks",
+        "trade"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
@@ -8288,11 +8279,11 @@
     "GEOPOLITICS",
     "UNDERRATED_GEOPOLITICS",
     "GLOBAL_POWERS",
-    "TECHNOLOGY"
+    "TECHNOLOGY",
+    "GEOPOLITICS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "Top Viral News [FRANCE]",
-    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "Top Viral News [BRAZIL]",
     "Top Viral News [TURKEY]",
     "Top Viral News [VIETNAM]",
@@ -8330,11 +8321,11 @@
     "Google World Top Headlines (US/Global)",
     "DW Global In-Depth",
     "Top Viral News [GERMANY]",
-    "The Verge Tech"
+    "The Verge Tech",
+    "Country Documentary Wire [TURKEY]",
+    "Country Documentary Wire [MEXICO]"
   ],
   "last_countries": [
-    "ISRAEL",
-    "GERMANY",
     "UNITED STATES",
     "PAKISTAN",
     "RUSSIA",
@@ -8382,6 +8373,8 @@
     "IRAN",
     "UKRAINE",
     "GERMANY",
-    "UNITED STATES"
+    "UNITED STATES",
+    "MIDDLE EAST",
+    "MEXICO"
   ]
 }
