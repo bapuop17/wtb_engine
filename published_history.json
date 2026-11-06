@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T13:38:48.561494",
-  "round_robin_idx": 8,
-  "country_rot_idx": 73,
-  "bgm_track_counter": 2045822932,
+  "updated_at": "2026-11-06T15:06:44.607925",
+  "round_robin_idx": 10,
+  "country_rot_idx": 14,
+  "bgm_track_counter": 2085887864,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -527,96 +527,13 @@
     "gbi_investigates_shooting_deaths_in_dooly",
     "why_gbi_investigates_shooting_deaths_in",
     "kuwait_s_civil_aviation_authority_has",
-    "kuwait_airport_under_drone_attack_the"
+    "kuwait_airport_under_drone_attack_the",
+    "west_des_moines_woman_charged_after",
+    "inside_the_des_moines_post_office",
+    "be_a_macron_emmanuel_macron_the",
+    "macron_s_last_gamble_why_france"
   ],
   "event_fingerprints": [
-    {
-      "title": "Government failings allowed Covid 'to spread like wildfire' in care homes, inquiry finds",
-      "tokens": [
-        "allowed",
-        "care",
-        "report",
-        "discharged",
-        "patients",
-        "spread",
-        "covid",
-        "lack",
-        "sixth",
-        "homes",
-        "government",
-        "wildfire",
-        "criticises",
-        "hospital",
-        "failings",
-        "inquiry",
-        "like",
-        "finds"
-      ]
-    },
-    {
-      "title": "Arsenal relieve pressure with Spurs win",
-      "tokens": [
-        "tottenham",
-        "spurs",
-        "arsenal",
-        "relieve",
-        "they",
-        "super",
-        "kick",
-        "match",
-        "women",
-        "victory",
-        "winless",
-        "their",
-        "league",
-        "pressure",
-        "five"
-      ]
-    },
-    {
-      "title": "Final James Bond screen tests to take place this weekend, reports say",
-      "tokens": [
-        "tests",
-        "screen",
-        "take",
-        "turner",
-        "appear",
-        "bond",
-        "callum",
-        "james",
-        "doing",
-        "role",
-        "actors",
-        "reports",
-        "final",
-        "jack",
-        "lowden",
-        "place"
-      ]
-    },
-    {
-      "title": "Nigeria's missing: Families in the northeast still wait for answers",
-      "tokens": [
-        "nigeria",
-        "loved",
-        "wait",
-        "ones",
-        "missing",
-        "years",
-        "during",
-        "searching",
-        "violence",
-        "answers",
-        "northeastern",
-        "went",
-        "northeast",
-        "families",
-        "across",
-        "people",
-        "continue",
-        "still"
-      ]
-    },
     {
       "title": "These clever apps show off the iPhone Duo's potential",
       "tokens": [
@@ -8192,11 +8109,109 @@
         "under",
         "videos"
       ]
+    },
+    {
+      "title": "West Des Moines woman charged after Des Moines post office shooting",
+      "tokens": [
+        "authori",
+        "been",
+        "charged",
+        "coworkers",
+        "fire",
+        "injuring",
+        "iowa",
+        "main",
+        "moines",
+        "morning",
+        "office",
+        "opened",
+        "people",
+        "police",
+        "post",
+        "shooting",
+        "thursday",
+        "west",
+        "woman",
+        "year"
+      ]
+    },
+    {
+      "title": "Inside the Des Moines Post Office Shooting: Who Pulled the Trigger?",
+      "tokens": [
+        "charged",
+        "inside",
+        "moines",
+        "office",
+        "post",
+        "pulled",
+        "shooting",
+        "west",
+        "woman"
+      ]
+    },
+    {
+      "title": "BE A MACRON Emmanuel Macron, the president of France, is everything OUR leader WISHES he could be: He's a smart, wealthy, well-liked man WHO",
+      "tokens": [
+        "actually",
+        "ahead",
+        "certain",
+        "could",
+        "does",
+        "done",
+        "emmanuel",
+        "everything",
+        "france",
+        "french",
+        "fresh",
+        "gets",
+        "leader",
+        "liked",
+        "macron",
+        "marine",
+        "mean",
+        "next",
+        "president",
+        "protests",
+        "security",
+        "since",
+        "smart",
+        "stuff",
+        "tighter",
+        "vote",
+        "vows",
+        "wealthy",
+        "well",
+        "wishes"
+      ]
+    },
+    {
+      "title": "Macron's Last Gamble: Why France Is Bleeding Cash",
+      "tokens": [
+        "actually",
+        "bleeding",
+        "cash",
+        "could",
+        "done",
+        "emmanuel",
+        "everything",
+        "france",
+        "gamble",
+        "gets",
+        "last",
+        "leader",
+        "liked",
+        "macron",
+        "president",
+        "sinc",
+        "smart",
+        "stuff",
+        "wealthy",
+        "well",
+        "wishes"
+      ]
     }
   ],
   "last_categories": [
-    "INDIA_TRENDING",
-    "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GLOBAL_POWERS",
@@ -8234,11 +8249,11 @@
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "INDIA_TRENDING",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Country Documentary Wire [CZECHIA]",
-    "DW Global In-Depth",
     "Country Documentary Wire [UNITED STATES]",
     "Top Viral News [GERMANY]",
     "Country Documentary Wire [PHILIPPINES]",
@@ -8276,11 +8291,11 @@
     "Top Viral News [KENYA]",
     "Country Documentary Wire [FINLAND]",
     "Top Viral News [GEORGIA]",
-    "Top Viral News [KUWAIT]"
+    "Top Viral News [KUWAIT]",
+    "Top Viral News [UNITED STATES]",
+    "Country Documentary Wire [FRANCE]"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
-    "GEORGIA",
     "RUSSIA",
     "GLOBAL BRIEFING",
     "CANADA",
@@ -8328,6 +8343,8 @@
     "KENYA",
     "NORWAY",
     "GEORGIA",
-    "KUWAIT"
+    "KUWAIT",
+    "INTERNATIONAL",
+    "FRANCE"
   ]
 }
