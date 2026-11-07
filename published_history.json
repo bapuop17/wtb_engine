@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T14:35:52.310817",
-  "round_robin_idx": 14,
-  "country_rot_idx": 29,
-  "bgm_track_counter": 2651125846,
+  "updated_at": "2026-11-07T15:43:03.912353",
+  "round_robin_idx": 15,
+  "country_rot_idx": 41,
+  "bgm_track_counter": 2699790710,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -596,78 +596,13 @@
     "the_philippines_why_slow_food_beats",
     "college_football_underdog_picks_week_10",
     "underdog_uprising_how_keelon_russell_is",
-    "nitda_director_general_kashifu_inuwa_abdullahi"
+    "nitda_director_general_kashifu_inuwa_abdullahi",
+    "alcaraz_saves_match_points_to_reach",
+    "why_alcaraz_saves_match_points_to",
+    "the_bantu_expansion_changed_africa_scientists",
+    "bantu_empire_uncovered_dna_iron_the"
   ],
   "event_fingerprints": [
-    {
-      "title": "Anthropic reveals rapid revenue gains and larger losses in stock market filing",
-      "tokens": [
-        "market",
-        "revenue",
-        "stock",
-        "larger",
-        "gains",
-        "reveals",
-        "rapid",
-        "filing",
-        "anthropic",
-        "losses"
-      ]
-    },
-    {
-      "title": "Your Saliva Could Hold the Key to Detecting a Deadly Cancer",
-      "tokens": [
-        "detecting",
-        "cancer",
-        "deadly",
-        "your",
-        "hold",
-        "saliva",
-        "could"
-      ]
-    },
-    {
-      "title": "Will anyone end Spain's domination of women's Ballon d'Or?",
-      "tokens": [
-        "domination",
-        "they",
-        "will",
-        "have",
-        "again",
-        "spanish",
-        "players",
-        "ballon",
-        "past",
-        "five",
-        "spain",
-        "women",
-        "years",
-        "anyone",
-        "celebrating",
-        "dominated"
-      ]
-    },
-    {
-      "title": "Macklemore begins Free Palestine tour after Ed Sheeran fallout",
-      "tokens": [
-        "next",
-        "will",
-        "which",
-        "dublin",
-        "begins",
-        "supporting",
-        "free",
-        "palestinians",
-        "proceeds",
-        "sheeran",
-        "tour",
-        "palestine",
-        "macklemore",
-        "month",
-        "organisations",
-        "fallout"
-      ]
-    },
     {
       "title": "US court rules against Trump administration in California voting case",
       "tokens": [
@@ -8320,11 +8255,90 @@
         "speak",
         "tinubu"
       ]
+    },
+    {
+      "title": "Alcaraz saves match points to reach Paris Masters semis",
+      "tokens": [
+        "against",
+        "alacaraz",
+        "alcaraz",
+        "champion",
+        "fritz",
+        "grand",
+        "masters",
+        "match",
+        "paris",
+        "points",
+        "reach",
+        "saves",
+        "semifinals",
+        "semis",
+        "seven",
+        "shelton",
+        "slam",
+        "through",
+        "time"
+      ]
+    },
+    {
+      "title": "Why Alcaraz saves match points to reach Paris Masters semis",
+      "tokens": [
+        "alcaraz",
+        "masters",
+        "match",
+        "paris",
+        "points",
+        "reach",
+        "saves",
+        "semis"
+      ]
+    },
+    {
+      "title": "The Bantu expansion changed Africa. Scientists are still tracing how.",
+      "tokens": [
+        "across",
+        "africa",
+        "ancient",
+        "archaeology",
+        "bantu",
+        "capital",
+        "changed",
+        "city",
+        "expansion",
+        "genes",
+        "great",
+        "kingdom",
+        "much",
+        "peoples",
+        "revealing",
+        "scientists",
+        "speakers",
+        "spread",
+        "still",
+        "thriving",
+        "tracing",
+        "zimbabwe"
+      ]
+    },
+    {
+      "title": "Bantu Empire Uncovered: DNA, Iron & the Secrets of Great Zimbabwe",
+      "tokens": [
+        "africa",
+        "bantu",
+        "changed",
+        "expansion",
+        "great",
+        "iron",
+        "scientists",
+        "secrets",
+        "still",
+        "tracing",
+        "uncovered",
+        "zimbabwe"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
     "AI_ROBOTICS",
     "INDIA_TRENDING",
@@ -8362,11 +8376,11 @@
     "GLOBAL_POWERS",
     "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
+    "AI_ROBOTICS",
+    "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Top Viral News [KENYA]",
-    "Country Documentary Wire [FINLAND]",
     "Top Viral News [GEORGIA]",
     "Top Viral News [KUWAIT]",
     "Top Viral News [UNITED STATES]",
@@ -8404,11 +8418,11 @@
     "Google Trends Viral [FRANCE]",
     "Global Country Wire [PHILIPPINES \u2022 STOCK_MARKETS]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
-    "Global Country Wire [NIGERIA \u2022 AI_ROBOTICS]"
+    "Global Country Wire [NIGERIA \u2022 AI_ROBOTICS]",
+    "Google Trends Viral [ARGENTINA]",
+    "Ars Technica"
   ],
   "last_countries": [
-    "INDIA",
-    "NORTH KOREA",
     "MALAYSIA",
     "GLOBAL TECH & AI",
     "SAUDI ARABIA",
@@ -8456,6 +8470,8 @@
     "MEXICO",
     "PHILIPPINES",
     "GLOBAL BRIEFING",
-    "NIGERIA"
+    "NIGERIA",
+    "FRANCE",
+    "GLOBAL TECH & AI"
   ]
 }
