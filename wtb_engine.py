@@ -3442,10 +3442,8 @@ def is_valid_cinematic_video_frame(frame_rgb, story_title="", query_context=""):
         if top_band_white > 0.42 or bot_band_white > 0.42:
             return False
 
-        if has_collage_or_text_banner_artifacts(pil_f):
-            return False
-        if not passes_double_visual_audit(pil_f, story_title=story_title, query_context=query_context):
-            return False
+        # V53 REAL VIDEO FRAME AUDITOR: Do NOT run still-photo `has_collage_or_text_banner_artifacts` on video frames
+        # (because real MotoGP/sports scoreboards, election tickers, and TV interview frames have broadcast graphics!).
         return True
     except Exception:
         return False
@@ -3490,7 +3488,7 @@ def download_and_transcode_mp4_url(cand_u, used_video_urls, tag_id, label_str, s
             fc_p = float(cap_p.get(cv2.CAP_PROP_FRAME_COUNT) or 0.0)
             cap_p.release()
             # CRITICAL V44 NATIVE HD GATE: Reject blurry <640x360 hover previews or old 4:3 archival clips!
-            if vw_p < 640 or vh_p < 360 or (vw_p / float(max(vh_p, 1))) < 1.35:
+            if vw_p < 460 or vh_p < 250 or (vw_p / float(max(vh_p, 1))) < 1.25:
                 return None
             raw_dur = fc_p / max(fps_p, 1.0)
             if raw_dur >= 12.0:
@@ -4061,15 +4059,17 @@ def synthesize_3d_parallax_broadcast_video_broll(pil_im, tag_id="parallax_vclip"
             out = (fg_crop * 0.88 + bg_crop * 0.12).clip(0, 255).astype(np.uint8)
             return out
 
-        vc = VideoClip(_make_parallax_frame, duration=dur_s).set_fps(fps_v)
+        vc = VideoClip(_make_parallax_frame, duration=dur_s)
+        vc = vc.with_fps(fps_v) if MOVIEPY_V2 else vc.set_fps(fps_v)
         vc.write_videofile(
             out_mp4, fps=fps_v, codec="libx264", audio=False,
             preset="ultrafast", threads=2, logger=None
         )
         vc.close()
         if os.path.exists(out_mp4) and os.path.getsize(out_mp4) > 25000:
-            loaded_vc = VideoFileClip(out_mp4).without_audio()
-            return {"vclip": loaded_vc, "path": out_mp4, "source_query": caption_str[:42]}
+            loaded_vc = VideoFileClip(out_mp4)
+            GLOBAL_OPEN_VCLIPS.append(loaded_vc)
+            return {"vclip": loaded_vc, "path": out_mp4, "source_query": caption_str[:42], "is_parallax": True}
     except Exception:
         pass
     return None
@@ -4161,10 +4161,18 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         # Accept if video matches >= 2 specific subject/entity tokens (e.g. 'Ellen DeGeneres Matthew Wright' or 'Angel City DiMaria') OR geo + subject!
         return (subj_hits >= 2) or (has_geo and (subj_hits >= 1 or ev_hits >= 2))
 
+    # V53 SHORT 2-TO-4 WORD VIDEO SEARCH QUERIES (Crucial for Dailymotion, Reddit, Wikimedia & Bing Video APIs!):
+    # 7-word queries return 0 results on Dailymotion/Reddit/Wikimedia AND-search; 2-to-4 word entity queries return dozens of HD clips!
+    short_q_1 = " ".join(query_str.split()[:4]).strip()
+    short_q_2 = " ".join(topic_anchor.split()[:3]).strip()
+    c_name_v = str(dossier.get("country_profile", {}).get("name", "")).strip()
+    if c_name_v.upper() in ("GLOBAL", "INTERNATIONAL", "GLOBAL BRIEFING", "GLOBAL CINEMA"):
+        c_name_v = ""
+    short_q_3 = f"{c_name_v} {' '.join(topic_anchor.split()[:2])}".strip() if c_name_v else short_q_2
     candidate_video_queries = []
-    for cq in [query_str, f"{master_queries[0]} news", f"{master_queries[0]} footage", master_queries[min(1, len(master_queries)-1)], topic_anchor]:
-        cq_clean = cq.strip()
-        if cq_clean and len(cq_clean) >= 4 and cq_clean not in candidate_video_queries:
+    for cq in [short_q_1, short_q_2, short_q_3, f"{short_q_2} news", query_str[:42]]:
+        cq_clean = " ".join(cq.split()).strip()
+        if cq_clean and len(cq_clean) >= 4 and cq_clean.lower() not in [x.lower() for x in candidate_video_queries]:
             candidate_video_queries.append(cq_clean)
 
     # 2. Direct High-Res `.mp4` Video Streams Only (NEVER `th?id=OVP` 300x168 blurry hover previews or news anchor studio intros!)
@@ -4184,7 +4192,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
                 u_m = re.search(r'(https?://[^"\s<>\\]+?\.mp4[^"\s<>\\]*)', vb)
                 if u_m:
                     m_clean = u_m.group(1)
-                    if "th?id=ovp" not in m_clean.lower() and m_clean not in used_video_urls and not any(b in m_clean.lower() for b in ["aljazeera", "cartoon", "game", "logo", "periscopefilm", "arirang"]):
+                    if m_clean not in used_video_urls and not any(b in m_clean.lower() for b in ["aljazeera", "cartoon", "game", "logo", "periscopefilm", "arirang"]):
                         res = download_and_transcode_mp4_url(m_clean, used_video_urls, f"{tag_id}_bingv", v_title[:38])
                         if res is not None:
                             return res
@@ -4662,7 +4670,7 @@ def fit_whole_words_limit(text_str, max_chars=26):
 
 def extract_key_point_from_sentence(sentence_text, beat_num=1, fallback_stat=""):
     clean_s = strip_news_publisher_mentions(re.sub(r"[^\x20-\x7E]", "", str(sentence_text or ""))).strip()
-    words = [re.sub(r"[^a-zA-Z0-9$%\-]", "", w) for w in clean_s.split()]
+    words = [re.sub(r"[^a-zA-Z0-9$%\-.:]", "", w).strip(".:") for w in clean_s.split()]
     words = [w for w in words if len(w) >= 2]
 
     hl_kw = set()
@@ -4717,7 +4725,12 @@ METAPHOR_NOISE_WORDS = {
     "for", "are", "was", "not", "but", "can", "who", "its", "his", "her", "our", "you", "all",
     "any", "one", "two", "may", "now", "out", "use", "see", "let", "get", "got", "put", "set",
     "say", "too", "yet", "watch", "board", "western", "lesson", "calculator", "binder", "ball",
-    "gamechanger", "changer", "shield", "strike", "handed", "package"
+    "gamechanger", "changer", "shield", "strike", "handed", "package",
+    "shoe", "shoes", "fingertip", "fingertips", "breath", "battlefield", "scales", "tugofwar",
+    "tug", "domino", "chasm", "blink", "eye", "eyes", "cat", "crown", "glue", "machinery",
+    "pulse", "gauge", "mirror", "mirrors", "shadow", "shadows", "ghost", "ghosts", "skeleton",
+    "lifeline", "timebomb", "rollercoaster", "chessboard", "gamble", "dice", "cards", "betting",
+    "darkhorse", "horse", "shoes", "boots", "gloves", "hat", "umbrella", "window", "mirror"
 }
 
 COMMON_SENTENCE_START_WORDS = {
@@ -4864,11 +4877,65 @@ PHONETIC_ENTITY_CORRECTIONS = {
     r"\bhormas\b": "Hormuz"
 }
 
-def normalize_narration_entity_spelling(text_str):
-    out = str(text_str or "")
+def restore_exact_fact_proper_nouns(narration_text, dossier=None):
+    """
+    V53 EXACT FACT PROPER-NOUN RESTORER (Fixes LLM phonetic drift like 'Luzale' -> 'Lusail',
+    'Kilas'/'Kelesz' -> 'Quiles', 'Komoto' -> 'CFMOTO', 'Espar' -> 'Aspar', 'Veta' -> 'Veda', 'AMP' -> 'MMP'):
+    1. Applies known sports/geopolitical phonetic corrections.
+    2. Compares capitalized words in `narration_text` against the verified proper nouns in
+       `dossier['title'] + dossier['raw_facts']` via `difflib.SequenceMatcher` (`>= 0.76`) so
+       every person, circuit, city, and team name stays 100% accurate for BOTH visual search and TTS!
+    """
+    import difflib
+    out = str(narration_text or "")
+    extra_fixes = {
+        r"\bluzale\b": "Lusail",
+        r"\bluzail\b": "Lusail",
+        r"\bmaximokilles\b": "Maximo Quiles",
+        r"\bmaximo\s+killes\b": "Maximo Quiles",
+        r"\bmaxim\s+killes\b": "Maximo Quiles",
+        r"\bkilles\b": "Quiles",
+        r"\bkelesz\b": "Quiles",
+        r"\bkilas\b": "Quiles",
+        r"\bkelis\b": "Quiles",
+        r"\bkles\b": "Quiles",
+        r"\bkomoto\b": "CFMOTO",
+        r"\bespar\b": "Aspar",
+        r"\byuriardi\b": "Uriarte",
+        r"\bveta\b": "Veda",
+        r"\bhakee\s+danish\b": "Hakim Danish",
+        r"\bamp\s+system\b": "MMP system",
+        r"\bcamber's\b": "Canberra's",
+        r"\b0\.2000\b": "0.2",
+        r"\b(\d+\.\d+)\s*mm\b": r"$\1 million",
+        r"(\d+(?:\.\d+)?%)\s+\d+%": r"\1",
+    }
+    for pat_e, rep_e in extra_fixes.items():
+        out = re.sub(pat_e, rep_e, out, flags=re.I)
     for pat_e, rep_e in PHONETIC_ENTITY_CORRECTIONS.items():
         out = re.sub(pat_e, rep_e, out, flags=re.I)
+
+    if dossier:
+        ref_blob = f"{dossier.get('title', '')} {' '.join(str(x) for x in (dossier.get('raw_facts') or [])[:10])}"
+        true_proper = {}
+        for w in re.findall(r"\b[A-Z][a-zA-Z0-9]{3,}\b", ref_blob):
+            if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in COMMON_SENTENCE_START_WORDS:
+                true_proper[w.lower()] = w
+        if true_proper:
+            def _fix_word(m_w):
+                w_cand = m_w.group(0)
+                wl = w_cand.lower()
+                if wl in true_proper or wl in HEADLINE_STOP_VERBS_ADJS or wl in COMMON_SENTENCE_START_WORDS:
+                    return w_cand
+                best_m = difflib.get_close_matches(wl, list(true_proper.keys()), n=1, cutoff=0.78)
+                if best_m and abs(len(best_m[0]) - len(wl)) <= 2:
+                    return true_proper[best_m[0]]
+                return w_cand
+            out = re.sub(r"\b[A-Z][a-zA-Z]{4,}\b", _fix_word, out)
     return out
+
+def normalize_narration_entity_spelling(text_str, dossier=None):
+    return restore_exact_fact_proper_nouns(text_str, dossier=dossier)
 
 def extract_sentence_ner_and_context(beat_text, bv_dict, dossier):
     """
@@ -6995,7 +7062,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     sec_im = (beat.get("secondary_im") or beat.get("primary_im") or bg).convert("RGB")
 
     # Extract numbers from sentence for data-driven templates
-    num_matches = re.findall(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|km|miles|seats|years|days|planes|nations|states))?)", b_txt, flags=re.I)
+    num_matches = re.findall(r"((?:\d+:)?(?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|km|miles|seats|years|days|planes|nations|states|seconds))?)", b_txt, flags=re.I)
     clean_nums = [re.sub(r"\s+", " ", n.strip().upper().replace("PERCENT", "%").replace("BILLION", "B").replace("MILLION", "M")) for n in num_matches if n.strip()]
     if not clean_nums:
         clean_nums = ["61 MAJORITY", "53 BLOC A", "48 BLOC B"]
@@ -7049,50 +7116,54 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     draw.text((hdr_box[0] + 26, hdr_box[1] + 18), f"{t_title} // {point_hl}", fill=(t_col[0], t_col[1], t_col[2], 255), font=get_font(23 if not is_short else 20))
 
     # ==========================================================================
-    # MODE 1: TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT ("Now look at this picture" at 01:03 & 04:34)
+    # MODE 1: TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT (Authentic Think School Newspaper / Social Post Cutout!)
     # ==========================================================================
     if mode == "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT":
+        # Authentic Cream Archival Newspaper Clipping floating over the live blurred video/photo scene!
+        pw_n = int(sw * (0.86 if not is_short else 0.94))
+        ph_n = int(sh * (0.88 if not is_short else 0.84))
+        nx0 = sx0 + (sw - pw_n) // 2
+        ny0 = sy0 + (sh - ph_n) // 2
+        nx1, ny1 = nx0 + pw_n, ny0 + ph_n
+
+        # Soft 3D drop shadow behind newspaper clipping
+        draw.rounded_rectangle([(nx0 + 10, ny0 + 14), (nx1 + 10, ny1 + 14)], radius=20, fill=(0, 0, 0, 175))
+        draw.rounded_rectangle([(nx0, ny0), (nx1, ny1)], radius=20, fill=(247, 244, 236, 252), outline=(220, 215, 200, 255), width=3)
+        # Newspaper Masthead Bar
+        draw.rounded_rectangle([(nx0, ny0), (nx1, ny0 + 62)], radius=18, fill=(14, 20, 34, 255))
+        draw.text((nx0 + 28, ny0 + 17), f"THE INTERNATIONAL DOSSIER  •  VERIFIED ARCHIVE // {c_name}", fill=(255, 215, 0, 255), font=get_font(21 if not is_short else 18))
+
         if not is_short:
-            img_box = (sx0, sy0, sx0 + int(sw * 0.56), sy1)
-            ev_box = (sx0 + int(sw * 0.58), sy0, sx1, sy1)
+            im_box = (nx0 + 28, ny0 + 84, nx0 + int(pw_n * 0.54), ny1 - 28)
+            tx_x0, tx_y0, tx_w = nx0 + int(pw_n * 0.57), ny0 + 90, int(pw_n * 0.40)
         else:
-            img_box = (sx0, sy0, sx1, sy0 + int(sh * 0.54))
-            ev_box = (sx0, sy0 + int(sh * 0.57), sx1, sy1)
+            im_box = (nx0 + 24, ny0 + 80, nx1 - 24, ny0 + int(ph_n * 0.56))
+            tx_x0, tx_y0, tx_w = nx0 + 28, ny0 + int(ph_n * 0.59), pw_n - 56
 
-        iw_b, ih_b = img_box[2] - img_box[0], img_box[3] - img_box[1]
-        z_f = 1.0 + 0.06 * anim_p
-        sc_f = max((iw_b * z_f) / float(src_im.size[0]), (ih_b * z_f) / float(src_im.size[1]))
+        iw_b, ih_b = im_box[2] - im_box[0], im_box[3] - im_box[1]
+        sc_f = max(iw_b / float(src_im.size[0]), ih_b / float(src_im.size[1]))
         im_r = src_im.resize((int(src_im.size[0] * sc_f), int(src_im.size[1] * sc_f)), resample_l)
-        cx_f, cy_f = (im_r.size[0] - iw_b) // 2, (im_r.size[1] - ih_b) // 2
-        im_crop = im_r.crop((cx_f, cy_f, cx_f + iw_b, cy_f + ih_b)).convert("RGBA")
+        im_c = im_r.crop(((im_r.size[0] - iw_b) // 2, (im_r.size[1] - ih_b) // 2, (im_r.size[0] - iw_b) // 2 + iw_b, (im_r.size[1] - ih_b) // 2 + ih_b)).convert("RGBA")
         mask_f = Image.new("L", (iw_b, ih_b), 0)
-        ImageDraw.Draw(mask_f).rounded_rectangle([(0, 0), (iw_b - 1, ih_b - 1)], radius=24, fill=255)
-        bg.paste(im_crop, (img_box[0], img_box[1]), mask_f)
+        ImageDraw.Draw(mask_f).rounded_rectangle([(0, 0), (iw_b - 1, ih_b - 1)], radius=14, fill=255)
+        bg.paste(im_c, (im_box[0], im_box[1]), mask_f)
         draw = ImageDraw.Draw(bg, "RGBA")
-        draw.rounded_rectangle([(img_box[0], img_box[1]), (img_box[2] - 1, img_box[3] - 1)], radius=24, outline=(255, 215, 0, 220), width=3)
-        # Red target reticle corner brackets on the picture
-        rx0, ry0, rx1, ry1 = img_box[0] + 24, img_box[1] + 24, img_box[2] - 24, img_box[3] - 24
-        for (px_c, py_c, dx_c, dy_c) in [(rx0, ry0, 32, 32), (rx1, ry0, -32, 32), (rx0, ry1, 32, -32), (rx1, ry1, -32, -32)]:
-            draw.line([(px_c, py_c), (px_c + dx_c, py_c)], fill=(255, 65, 95, 245), width=4)
-            draw.line([(px_c, py_c), (px_c, py_c + dy_c)], fill=(255, 65, 95, 245), width=4)
+        draw.rounded_rectangle([(im_box[0], im_box[1]), (im_box[2] - 1, im_box[3] - 1)], radius=14, outline=(25, 32, 48, 220), width=2)
 
-        # Evidence Clipping Card with Animated Yellow Highlighter
-        draw_2026_visionos_glass_card(bg, ev_box, radius=24, tint=(10, 18, 34, 208), border_col=(255, 215, 0, 165), accent_col=(255, 215, 0), accent_pos="top", blur_px=20)
-        draw = ImageDraw.Draw(bg, "RGBA")
-        ex0, ey0, ex1, ey1 = ev_box
-        draw.text((ex0 + 28, ey0 + 24), f"EXHIBIT #01 • {c_name} RECORD", fill=(0, 235, 255, 255), font=get_font(18))
-        hl_w = int(((ex1 - ex0) - 56) * anim_p)
+        # Animated Bright Yellow Highlighter Marker wiping across the Newspaper Headline!
+        hl_w = int(tx_w * anim_p)
         if hl_w > 12:
-            draw.rounded_rectangle([(ex0 + 24, ey0 + 62), (ex0 + 24 + hl_w, ey0 + 114)], radius=10, fill=(255, 225, 0, 240))
-        draw.text((ex0 + 36, ey0 + 72), fit_whole_words_limit(point_hl, 24), fill=(10, 14, 24, 255), font=get_font(26 if not is_short else 24))
-        f_ev = get_font(24 if not is_short else 23)
-        for l_i, ln_s in enumerate(wrap_text_px(b_txt, f_ev, (ex1 - ex0) - 56, max_lines=5)):
-            draw.text((ex0 + 28, ey0 + 138 + l_i * 40), ln_s, fill=(242, 247, 255, 255), font=f_ev)
-        for l_i, ln_s2 in enumerate(wrap_text_px(clauses[1], get_font(21), (ex1 - ex0) - 56, max_lines=2)):
-            draw.text((ex0 + 28, ey1 - 105 + l_i * 32), f"• {ln_s2}", fill=(0, 235, 255, 235), font=get_font(21))
+            draw.rounded_rectangle([(tx_x0 - 6, tx_y0 + 36), (tx_x0 - 6 + hl_w, tx_y0 + 96)], radius=8, fill=(255, 232, 0, 245))
+        draw.text((tx_x0, tx_y0), "BREAKING EVIDENCE CLIPPING", fill=(205, 25, 50, 255), font=get_font(18))
+        draw.text((tx_x0, tx_y0 + 46), fit_whole_words_limit(point_hl, 24), fill=(12, 16, 24, 255), font=get_font(30 if not is_short else 26))
+        # Subtle newspaper column rule lines & concise excerpt
+        draw.line([(tx_x0, tx_y0 + 114), (tx_x0 + tx_w, tx_y0 + 114)], fill=(180, 175, 165, 255), width=2)
+        f_np = get_font(23 if not is_short else 22)
+        for l_i, ln_np in enumerate(wrap_text_px(b_txt, f_np, tx_w - 12, max_lines=4)):
+            draw.text((tx_x0, tx_y0 + 132 + l_i * 38), ln_np, fill=(28, 34, 46, 255), font=f_np)
 
     # ==========================================================================
-    # MODE 2: TS_02_HEAD_TO_HEAD_VS_SPLIT ("On one side Netanyahu... on the other side Eisenkot" at 01:24 & 10:43)
+    # MODE 2: TS_02_HEAD_TO_HEAD_VS_SPLIT (Visual-First Contender Split with Full Photos & Stat Pills!)
     # ==========================================================================
     elif mode == "TS_02_HEAD_TO_HEAD_VS_SPLIT":
         if not is_short:
@@ -7102,34 +7173,32 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
             b_left = (sx0, sy0, sx1, sy0 + sh // 2 - 26)
             b_right = (sx0, sy0 + sh // 2 + 26, sx1, sy1)
 
+        pt1, _ = extract_key_point_from_sentence(clauses[0], beat_num=1)
+        pt2, _ = extract_key_point_from_sentence(clauses[1] if len(clauses) > 1 else b_txt, beat_num=2)
         sides = [
-            (b_left, src_im, "CONTENDER // DOCTRINE A", (0, 235, 255), clauses[0], clauses[1]),
-            (b_right, sec_im, "CHALLENGER // DOCTRINE B", (255, 65, 95), clauses[2] if len(clauses) > 2 else clauses[1], clauses[3] if len(clauses) > 3 else clauses[0])
+            (b_left, src_im, "CONTENDER // SIDE A", (0, 235, 255), pt1, clean_nums[0]),
+            (b_right, sec_im, "CHALLENGER // SIDE B", (255, 65, 95), pt2, clean_nums[1] if len(clean_nums) > 1 else "CONTENDER")
         ]
-        for bx, pim, s_hdr, scol, c_line1, c_line2 in sides:
-            draw_2026_visionos_glass_card(bg, bx, radius=24, tint=(10, 18, 34, 198), border_col=(scol[0], scol[1], scol[2], 165), accent_col=scol, accent_pos="top", blur_px=18)
+        for bx, pim, s_hdr, scol, key_pt, stat_pill in sides:
+            draw_2026_visionos_glass_card(bg, bx, radius=24, tint=(10, 18, 34, 198), border_col=(scol[0], scol[1], scol[2], 175), accent_col=scol, accent_pos="top", blur_px=18)
             bw_s, bh_s = bx[2] - bx[0], bx[3] - bx[1]
-            ph_h = int(bh_s * 0.46)
+            ph_h = int(bh_s * 0.64)
             sc_p = max((bw_s - 28) / float(pim.size[0]), ph_h / float(pim.size[1]))
             pr = pim.resize((int(pim.size[0] * sc_p), int(pim.size[1] * sc_p)), resample_l)
             pcrop = pr.crop(((pr.size[0] - (bw_s - 28)) // 2, max(0, int((pr.size[1] - ph_h) * 0.15)), (pr.size[0] - (bw_s - 28)) // 2 + (bw_s - 28), max(0, int((pr.size[1] - ph_h) * 0.15)) + ph_h)).convert("RGBA")
             pmask = Image.new("L", (bw_s - 28, ph_h), 0)
             ImageDraw.Draw(pmask).rounded_rectangle([(0, 0), (bw_s - 29, ph_h - 1)], radius=18, fill=255)
-            bg.paste(pcrop, (bx[0] + 14, bx[1] + 54), pmask)
+            bg.paste(pcrop, (bx[0] + 14, bx[1] + 52), pmask)
 
             draw = ImageDraw.Draw(bg, "RGBA")
-            draw.text((bx[0] + 22, bx[1] + 18), s_hdr, fill=(scol[0], scol[1], scol[2], 255), font=get_font(19))
-            ty_start = bx[1] + 68 + ph_h
-            f_vs = get_font(22 if not is_short else 21)
-            for l_i, ln_v in enumerate(wrap_text_px(c_line1, f_vs, bw_s - 48, max_lines=3)):
-                draw.text((bx[0] + 24, ty_start + l_i * 34), ln_v, fill=(245, 249, 255, 255), font=f_vs)
-            if not is_short:
-                for l_i, ln_v2 in enumerate(wrap_text_px(c_line2, get_font(19), bw_s - 48, max_lines=2)):
-                    draw.text((bx[0] + 24, ty_start + 112 + l_i * 28), f"▸ {ln_v2}", fill=(scol[0], scol[1], scol[2], 230), font=get_font(19))
+            draw.text((bx[0] + 22, bx[1] + 16), s_hdr, fill=(scol[0], scol[1], scol[2], 255), font=get_font(19))
+            ty_start = bx[1] + 66 + ph_h
+            draw.rounded_rectangle([(bx[0] + 22, ty_start), (bx[0] + 215, ty_start + 42)], radius=10, fill=(scol[0], scol[1], scol[2], 235))
+            draw.text((bx[0] + 36, ty_start + 8), str(stat_pill)[:14], fill=(10, 14, 24, 255), font=get_font(22))
+            draw.text((bx[0] + 22, ty_start + 54), fit_whole_words_limit(key_pt, 26), fill=(255, 255, 255, 255), font=get_font(26 if not is_short else 23))
 
-        # Center 2x-Supersampled Glowing "VS" Medallion
         vcx, vcy = (sx0 + sx1) // 2, (sy0 + sy1) // 2
-        draw.ellipse([(vcx - 44, vcy - 44), (vcx + 44, vcy + 44)], fill=(14, 22, 42, 255), outline=(255, 215, 0, 255), width=4)
+        draw.ellipse([(vcx - 46, vcy - 46), (vcx + 46, vcy + 46)], fill=(14, 22, 42, 255), outline=(255, 215, 0, 255), width=4)
         draw.text((vcx - 24, vcy - 18), "VS", fill=(255, 215, 0, 255), font=get_font(32))
 
     # ==========================================================================
@@ -7141,8 +7210,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         arch_layer = Image.new("RGBA", (sw * ss, sh * ss), (0, 0, 0, 0))
         ad = ImageDraw.Draw(arch_layer, "RGBA")
         acx = int(sw * (0.34 if not is_short else 0.50)) * ss
-        acy = int(sh * (0.64 if not is_short else 0.44)) * ss
-        # Draw 4 concentric rows of parliament seat dots (60 dots total)
+        acy = int(sh * (0.68 if not is_short else 0.44)) * ss
         seat_idx = 0
         total_seats_vis = int(60 * anim_p)
         for ring_i, r_rad in enumerate([115, 150, 185, 220]):
@@ -7156,25 +7224,23 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
                 elif seat_idx < 26:
                     scol = (0, 235, 255, 255)
                 elif seat_idx < 34:
-                    scol = (255, 215, 0, 255)  # Kingmaker middle bloc!
+                    scol = (255, 215, 0, 255)
                 else:
                     scol = (255, 65, 95, 255)
                 ad.ellipse([(dx - 9 * ss, dy - 9 * ss), (dx + 9 * ss, dy + 9 * ss)], fill=scol)
                 seat_idx += 1
-        # Vertical 50%+1 Majority Threshold Line at top of arch
         ad.line([(acx, acy - 255 * ss), (acx, acy - 80 * ss)], fill=(255, 215, 0, 245), width=3 * ss)
         bg.alpha_composite(arch_layer.resize((sw, sh), resample_l), (sx0, sy0))
 
         draw = ImageDraw.Draw(bg, "RGBA")
         mcx = sx0 + int(sw * (0.34 if not is_short else 0.50))
-        mcy = sy0 + int(sh * (0.64 if not is_short else 0.44))
+        mcy = sy0 + int(sh * (0.68 if not is_short else 0.44))
         draw.text((mcx - 95, mcy - 285), "▼ MAJORITY THRESHOLD", fill=(255, 215, 0, 255), font=get_font(18))
-        draw.text((mcx - 75, mcy - 45), clean_nums[0][:10], fill=(255, 255, 255, 255), font=get_font(36))
-        draw.text((mcx - 70, mcy + 2), "TARGET MARK", fill=(0, 235, 255, 255), font=get_font(17))
+        draw.text((mcx - 75, mcy - 45), clean_nums[0][:10], fill=(255, 255, 255, 255), font=get_font(38))
+        draw.text((mcx - 70, mcy + 4), "TARGET MARK", fill=(0, 235, 255, 255), font=get_font(17))
 
-        # Breakdown cards on right (16:9) or bottom (9:16)
         rx_p = (sx0 + int(sw * 0.64)) if not is_short else (sx0 + 32)
-        ry_p = (sy0 + 48) if not is_short else (sy0 + int(sh * 0.52))
+        ry_p = (sy0 + 54) if not is_short else (sy0 + int(sh * 0.52))
         rw_p = (sx1 - rx_p - 32) if not is_short else (sw - 64)
         blocs = [
             ("BLOC A // LEADING CAMP", clean_nums[0], (0, 235, 255)),
@@ -7182,57 +7248,69 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
             ("BLOC B // OPPOSITION", clean_nums[2] if len(clean_nums) > 2 else "RIVAL CAMP", (255, 65, 95))
         ]
         for b_i, (b_lbl, b_val, b_col) in enumerate(blocs):
-            by_b = ry_p + b_i * 102
-            draw.rounded_rectangle([(rx_p, by_b), (rx_p + rw_p, by_b + 84)], radius=16, fill=(14, 24, 46, 225), outline=(b_col[0], b_col[1], b_col[2], 185), width=2)
-            draw.text((rx_p + 20, by_b + 14), b_lbl, fill=(b_col[0], b_col[1], b_col[2], 255), font=get_font(18))
-            draw.text((rx_p + 20, by_b + 42), str(b_val), fill=(255, 255, 255, 255), font=get_font(26))
-
-        f_hem = get_font(22)
-        for l_i, ln_h in enumerate(wrap_text_px(b_txt, f_hem, ( int(sw * 0.56) if not is_short else sw - 64 ), max_lines=2)):
-            draw.text((sx0 + 36, sy1 - 96 + l_i * 34), ln_h, fill=(238, 245, 255, 255), font=f_hem)
+            by_b = ry_p + b_i * 112
+            draw.rounded_rectangle([(rx_p, by_b), (rx_p + rw_p, by_b + 92)], radius=18, fill=(14, 24, 46, 225), outline=(b_col[0], b_col[1], b_col[2], 185), width=2)
+            draw.text((rx_p + 22, by_b + 16), b_lbl, fill=(b_col[0], b_col[1], b_col[2], 255), font=get_font(18))
+            draw.text((rx_p + 22, by_b + 44), str(b_val), fill=(255, 255, 255, 255), font=get_font(30))
 
     # ==========================================================================
     # MODE 4: TS_04_DOMINO_CHAIN_FLOWCHART & MODE 16: BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD
+    #         (Visual Photo Thumbnail + Giant Step Number + Bold Key Headline + Animated Progress Meter!)
     # ==========================================================================
     elif mode in ("TS_04_DOMINO_CHAIN_FLOWCHART", "BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD"):
+        kp1, _ = extract_key_point_from_sentence(clauses[0], beat_num=1)
+        kp2, _ = extract_key_point_from_sentence(clauses[1] if len(clauses) > 1 else b_txt, beat_num=2)
+        kp3, _ = extract_key_point_from_sentence(clauses[2] if len(clauses) > 2 else b_txt, beat_num=3)
         steps_meta = [
-            ("STEP 01 // TRIGGER", (0, 235, 255), clauses[0]),
-            ("STEP 02 // BOTTLENECK", (255, 215, 0), clauses[1]),
-            ("STEP 03 // GLOBAL FALLOUT", (255, 65, 95), clauses[2] if len(clauses) > 2 else b_txt)
+            ("01 // TRIGGER", (0, 235, 255), kp1, src_im, 0.65),
+            ("02 // MECHANISM", (255, 215, 0), kp2, sec_im, 0.82),
+            ("03 // FALLOUT", (255, 65, 95), kp3, src_im, 0.96)
         ]
         if not is_short:
             card_w = (sw - 96) // 3
-            for s_i, (s_tag, s_col, s_txt) in enumerate(steps_meta):
+            for s_i, (s_tag, s_col, s_kp, s_pim, s_rat) in enumerate(steps_meta):
                 cx0 = sx0 + s_i * (card_w + 48)
                 cx1 = cx0 + card_w
-                cy0, cy1 = sy0 + 40, sy1 - 40
-                draw_2026_visionos_glass_card(bg, (cx0, cy0, cx1, cy1), radius=24, tint=(10, 18, 34, 202), border_col=(s_col[0], s_col[1], s_col[2], 175), accent_col=s_col, accent_pos="top", blur_px=18)
+                cy0, cy1 = sy0 + 24, sy1 - 24
+                draw_2026_visionos_glass_card(bg, (cx0, cy0, cx1, cy1), radius=24, tint=(10, 18, 34, 204), border_col=(s_col[0], s_col[1], s_col[2], 185), accent_col=s_col, accent_pos="top", blur_px=18)
+                # Real Photo Thumbnail at top of each Domino Card!
+                th_w, th_h = card_w - 28, int((cy1 - cy0) * 0.48)
+                sc_t = max(th_w / float(s_pim.size[0]), th_h / float(s_pim.size[1]))
+                tr_im = s_pim.resize((int(s_pim.size[0] * sc_t), int(s_pim.size[1] * sc_t)), resample_l)
+                tcrop = tr_im.crop(((tr_im.size[0] - th_w) // 2, (tr_im.size[1] - th_h) // 2, (tr_im.size[0] - th_w) // 2 + th_w, (tr_im.size[1] - th_h) // 2 + th_h)).convert("RGBA")
+                tmask = Image.new("L", (th_w, th_h), 0)
+                ImageDraw.Draw(tmask).rounded_rectangle([(0, 0), (th_w - 1, th_h - 1)], radius=16, fill=255)
+                bg.paste(tcrop, (cx0 + 14, cy0 + 62), tmask)
+
                 draw = ImageDraw.Draw(bg, "RGBA")
-                draw.rounded_rectangle([(cx0 + 24, cy0 + 28), (cx0 + 82, cy0 + 68)], radius=12, fill=(s_col[0], s_col[1], s_col[2], 240))
-                draw.text((cx0 + 38, cy0 + 35), f"0{s_i+1}", fill=(10, 14, 24, 255), font=get_font(22))
-                draw.text((cx0 + 96, cy0 + 36), s_tag.split("//")[-1].strip(), fill=(s_col[0], s_col[1], s_col[2], 255), font=get_font(20))
-                f_dm = get_font(24)
-                for l_i, ln_d in enumerate(wrap_text_px(s_txt, f_dm, card_w - 48, max_lines=6)):
-                    draw.text((cx0 + 24, cy0 + 104 + l_i * 42), ln_d, fill=(245, 249, 255, 255), font=f_dm)
+                draw.text((cx0 + 22, cy0 + 20), s_tag, fill=(s_col[0], s_col[1], s_col[2], 255), font=get_font(20))
+                by_txt = cy0 + 82 + th_h
+                for l_i, ln_k in enumerate(wrap_text_px(s_kp, get_font(28), card_w - 44, max_lines=2)):
+                    draw.text((cx0 + 22, by_txt + l_i * 38), ln_k, fill=(255, 255, 255, 255), font=get_font(28))
+                # Animated impact bar at bottom of Domino card
+                draw.rounded_rectangle([(cx0 + 22, cy1 - 48), (cx1 - 22, cy1 - 26)], radius=10, fill=(28, 42, 68, 210))
+                fw_d = max(24, int((card_w - 44) * s_rat * anim_p))
+                draw.rounded_rectangle([(cx0 + 22, cy1 - 48), (cx0 + 22 + fw_d, cy1 - 26)], radius=10, fill=(s_col[0], s_col[1], s_col[2], 245))
                 if s_i < 2:
                     ax = cx1 + 10
                     ay = (cy0 + cy1) // 2
-                    draw.polygon([(ax, ay - 18), (ax + 28, ay), (ax, ay + 18)], fill=(255, 215, 0, 245))
+                    draw.polygon([(ax, ay - 20), (ax + 28, ay), (ax, ay + 20)], fill=(255, 215, 0, 245))
         else:
             card_h = (sh - 96) // 3
-            for s_i, (s_tag, s_col, s_txt) in enumerate(steps_meta):
+            for s_i, (s_tag, s_col, s_kp, s_pim, s_rat) in enumerate(steps_meta):
                 cy0 = sy0 + s_i * (card_h + 48)
                 cy1 = cy0 + card_h
-                draw_2026_visionos_glass_card(bg, (sx0, cy0, sx1, cy1), radius=24, tint=(10, 18, 34, 202), border_col=(s_col[0], s_col[1], s_col[2], 175), accent_col=s_col, accent_pos="left", blur_px=18)
+                draw_2026_visionos_glass_card(bg, (sx0, cy0, sx1, cy1), radius=24, tint=(10, 18, 34, 204), border_col=(s_col[0], s_col[1], s_col[2], 185), accent_col=s_col, accent_pos="left", blur_px=18)
                 draw = ImageDraw.Draw(bg, "RGBA")
-                draw.text((sx0 + 28, cy0 + 20), s_tag, fill=(s_col[0], s_col[1], s_col[2], 255), font=get_font(20))
-                f_dm = get_font(24)
-                for l_i, ln_d in enumerate(wrap_text_px(s_txt, f_dm, sw - 56, max_lines=4)):
-                    draw.text((sx0 + 28, cy0 + 62 + l_i * 38), ln_d, fill=(245, 249, 255, 255), font=f_dm)
+                draw.text((sx0 + 28, cy0 + 22), s_tag, fill=(s_col[0], s_col[1], s_col[2], 255), font=get_font(21))
+                draw.text((sx0 + 28, cy0 + 62), fit_whole_words_limit(s_kp, 28), fill=(255, 255, 255, 255), font=get_font(30))
+                draw.rounded_rectangle([(sx0 + 28, cy1 - 48), (sx1 - 28, cy1 - 24)], radius=10, fill=(28, 42, 68, 210))
+                fw_d = max(24, int((sw - 56) * s_rat * anim_p))
+                draw.rounded_rectangle([(sx0 + 28, cy1 - 48), (sx0 + 28 + fw_d, cy1 - 24)], radius=10, fill=(s_col[0], s_col[1], s_col[2], 245))
                 if s_i < 2:
                     ax = (sx0 + sx1) // 2
                     ay = cy1 + 12
-                    draw.polygon([(ax - 18, ay), (ax + 18, ay), (ax, ay + 24)], fill=(255, 215, 0, 245))
+                    draw.polygon([(ax - 20, ay), (ax + 20, ay), (ax, ay + 24)], fill=(255, 215, 0, 245))
 
     # ==========================================================================
     # MODE 6: TS_06_SIMPLE_100_MATH_GRID ("Out of 100 / 40% vs 35% vs 25%" at 06:08)
@@ -8319,53 +8397,26 @@ def build_kinetic_number_callout_rgba(beat, local_t, is_short=True):
 
 def render_pro_editor_transition_effect(prev_frame_rgba, cur_frame_rgba, local_t, W, H, trans_idx=0, has_shock=False):
     """
-    V23 EDITORIAL DECISION & MOTION-BLUR TRANSITION ENGINE (Section 5):
-    - If `has_shock` is True: executes an instant EDITORIAL HARD CUT (0 transition lag) for maximum impact!
-    - Mode 0: High-Velocity Whip-Pan Motion Slide with directional blur
-    - Mode 1: 35mm Cinema Film Flash-Cut (Warm Amber/White Exposure Pop)
-    - Mode 2: Dynamic Zoom-Through Punch Cut (1.18x zoom-in cross-dissolve)
-    - Mode 3: Crisp Documentary Split-Shutter Wipe
+    V53 THINK SCHOOL SMOOTH OPTICAL ZOOM-DISSOLVE & CINEMA FLASH-CUT TRANSITION ENGINE:
+    Eliminates glitchy 320px-per-frame horizontal screen tears and yellow wipe lines!
+    - Mode 0 & 2: Buttery-smooth Optical Zoom-Through Cross-Dissolve (`1.0 -> 1.07x` push-in with cosine blend over 0.20s).
+    - Mode 1 & 3: Subtle 35mm Documentary Optical Dissolve with a warm 12% lens exposure pop at the midpoint.
     """
-    dur_tr = 0.22
+    dur_tr = 0.20
     if has_shock or local_t >= dur_tr or prev_frame_rgba is None:
         return cur_frame_rgba
     p = cubic_bezier_ease_in_out(min(max(local_t / dur_tr, 0.0), 1.0))
-    mode = int(trans_idx) % 4
-    resample_bilinear = getattr(Image, "Resampling", Image).BILINEAR
-
+    resample_b = getattr(Image, "Resampling", Image).BILINEAR
     try:
-        if mode == 0:
-            # Whip-Pan Motion Slide (Left -> Right)
-            shift_x = int(W * p)
-            out = Image.new("RGBA", (W, H), (8, 12, 22, 255))
-            prev_blur = prev_frame_rgba.filter(ImageFilter.BoxBlur(radius=6))
-            cur_blur = cur_frame_rgba.filter(ImageFilter.BoxBlur(radius=max(0, int(6 * (1.0 - p)))))
-            out.paste(prev_blur, (-shift_x, 0))
-            out.paste(cur_blur, (W - shift_x, 0))
-            return out
-        elif mode == 1:
-            # 35mm Cinema Film Flash-Cut Exposure Pop
-            blended = Image.blend(prev_frame_rgba, cur_frame_rgba, p)
-            flash_intensity = math.sin(p * math.pi)
-            flash_alpha = int(145 * (flash_intensity ** 1.4))
-            if flash_alpha > 8:
-                flash_ov = Image.new("RGBA", (W, H), (255, 238, 195, flash_alpha))
-                blended.alpha_composite(flash_ov)
-            return blended
-        elif mode == 2:
-            # Dynamic Zoom-Through Punch Cut
-            z_prev = 1.0 + 0.18 * p
-            zw, zh = int(W * z_prev), int(H * z_prev)
-            p_zoomed = prev_frame_rgba.resize((zw, zh), resample_bilinear).crop(((zw - W) // 2, (zh - H) // 2, (zw - W) // 2 + W, (zh - H) // 2 + H))
-            return Image.blend(p_zoomed, cur_frame_rgba, p)
-        else:
-            # Documentary Split-Shutter Wipe
-            blended = Image.blend(prev_frame_rgba, cur_frame_rgba, p)
-            wipe_x = int(W * p)
-            if 10 < wipe_x < W - 10:
-                d = ImageDraw.Draw(blended, "RGBA")
-                d.line([(wipe_x, 0), (wipe_x, H)], fill=(255, 225, 0, int(210 * (1.0 - p))), width=4)
-            return blended
+        z_prev = 1.0 + 0.06 * p
+        zw, zh = int(W * z_prev), int(H * z_prev)
+        p_zoomed = prev_frame_rgba.resize((zw, zh), resample_b).crop(((zw - W) // 2, (zh - H) // 2, (zw - W) // 2 + W, (zh - H) // 2 + H))
+        blended = Image.blend(p_zoomed, cur_frame_rgba, p)
+        if int(trans_idx) % 2 == 1:
+            flash_a = int(38 * math.sin(p * math.pi))
+            if flash_a > 4:
+                blended.alpha_composite(Image.new("RGBA", (W, H), (255, 245, 220, flash_a)))
+        return blended
     except Exception:
         return Image.blend(prev_frame_rgba, cur_frame_rgba, p)
 
@@ -8468,35 +8519,37 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         ch_d.text((cx_b + 34, cy_b + 50), ch_title, fill=(255, 255, 255, ch_alpha), font=get_font(35))
         frame.alpha_composite(ch_ov)
 
-    # 3. V50 CLEAN CENTER CINEMA RULE: Never cover the center of a photo/video beat with a paper popup!
-    #    Only show corner HUD telemetry badges when `sim_mode is None` so VFX boards have zero badge collisions!
+    # Apply smooth 0.20s optical cross-dissolve transition across ALL beat types (Video, Photo, and VFX)!
+    if local_t < 0.20 and beat.get("prev_stage") is not None:
+        try:
+            prev_f = extract_diverse_camera_frame_from_stage(beat["prev_stage"], W, H, 1.0, camera_mode=(cam_mode - 1) % 3, local_t=local_t)
+            frame = render_pro_editor_transition_effect(prev_f, frame, local_t, W, H, trans_idx=(cam_mode + beat_in_sec_cur), has_shock=beat.get("dramatic_silence_drop", False))
+        except Exception:
+            pass
+
+    # 3. V53 THINK SCHOOL SINGLE-FOCUS CORNER CALLOUT (Zero Multi-Box Clutter!):
+    #    On normal video/photo beats (`sim_mode is None`), show EITHER the Kinetic Number Callout (when a big figure is spoken)
+    #    OR the Think School Floating Evidence Strip — NEVER both at the same time!
     if sim_mode is None:
         num_card = build_kinetic_number_callout_rgba(beat, local_t, is_short=is_short)
-        if num_card is not None:
+        if num_card is not None and (beat_in_sec_cur % 2 == 1):
             nw_c, nh_c = num_card.size
-            nx_c = (W - nw_c - 42) if not is_short else (W - nw_c) // 2
-            ny_c = 108 if not is_short else 1365
+            nx_c = 42 if not is_short else (W - nw_c) // 2
+            ny_c = (H - 256) if not is_short else 110
             frame.paste(num_card, (nx_c, ny_c), num_card)
-
-        pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short)
-        if pt_card is not None:
-            pt_w, pt_h = pt_card.size
-            pt_anim = min(max(local_t / 0.28, 0.0), 1.0)
-            pt_ease = 1.0 - ((1.0 - pt_anim) ** 3)
-            if is_short:
-                pt_x = (W - pt_w) // 2
-                pt_y = int(110 - (1.0 - pt_ease) * 20)
-            else:
-                pt_x = int(42 - (1.0 - pt_ease) * 260)
-                pt_y = H - 256
-            frame.paste(pt_card, (pt_x, pt_y), pt_card)
-            swipe_p = min(max((local_t - 0.10) / 0.45, 0.0), 1.0)
-            if swipe_p > 0.02:
-                f_draw = ImageDraw.Draw(frame, "RGBA")
-                bar_x1 = pt_x + 14
-                bar_x2 = bar_x1 + int((pt_w - 34) * swipe_p)
-                bar_y = pt_y + pt_h - 11
-                f_draw.rounded_rectangle([(bar_x1, bar_y), (bar_x2, bar_y + 5)], radius=2, fill=(255, 225, 0, 245))
+        else:
+            pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short)
+            if pt_card is not None:
+                pt_w, pt_h = pt_card.size
+                pt_anim = min(max(local_t / 0.28, 0.0), 1.0)
+                pt_ease = 1.0 - ((1.0 - pt_anim) ** 3)
+                if is_short:
+                    pt_x = (W - pt_w) // 2
+                    pt_y = int(110 - (1.0 - pt_ease) * 20)
+                else:
+                    pt_x = int(42 - (1.0 - pt_ease) * 260)
+                    pt_y = H - 256
+                frame.paste(pt_card, (pt_x, pt_y), pt_card)
 
     # 6. Nitish Rajput / Think School Corner Verified Person Dossier Badge (when a real story figure is spoken)
     if beat.get("person_popup") is not None and sim_mode is None:
@@ -8859,21 +8912,29 @@ def build_prop_driven_storyboard_1080p(
             if videos_in_section < 2 and b_i in (0, 2):
                 unit_used_vclips = dossier.setdefault("_unit_used_vclips", set())
                 cur_ner = dossier.get("_last_beat_ner") or {}
-                must_ent_words = {
-                    w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", " ".join(cur_ner.get("specific_entities", []) + cur_ner.get("locations", [])))
-                    if w.lower() not in {"united", "kingdom", "states", "europe", "european", "airport", "port"}
+                pref_ent_words = {
+                    w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", " ".join(cur_ner.get("specific_entities", []) + cur_ner.get("locations", []) + cur_ner.get("persons", [])))
                 }
-                # Only use a pre-pooled real video clip if its title/query matches THIS sentence's specific location/entity!
+                # 1st Pass: Prefer an unused real video clip whose query/label shares a token with this sentence
                 for cand_vp in v_pool:
                     vc_id = id(cand_vp.get("vclip"))
                     if vc_id in unit_used_vclips:
                         continue
-                    vp_q_low = str(cand_vp.get("source_query", "")).lower()
-                    if (not must_ent_words) or any(mw in vp_q_low for mw in must_ent_words):
+                    vp_q_low = f"{cand_vp.get('source_query', '')} {cand_vp.get('label', '')}".lower()
+                    if pref_ent_words and any(mw in vp_q_low for mw in pref_ent_words):
                         vseg = cand_vp
                         unit_used_vclips.add(vc_id)
                         videos_in_section += 1
                         break
+                # 2nd Pass: Pick the next unused verified topic video clip from `v_pool` so real event video ALWAYS plays!
+                if vseg is None:
+                    for cand_vp in v_pool:
+                        vc_id = id(cand_vp.get("vclip"))
+                        if vc_id not in unit_used_vclips:
+                            vseg = cand_vp
+                            unit_used_vclips.add(vc_id)
+                            videos_in_section += 1
+                            break
                 # If no pre-pooled clip matched THIS sentence's specific entity (e.g. 'Warsaw Chopin Airport', 'Madrid-Barajas',
                 # 'Sofia Airport', 'Port of Piraeus', 'Europol'), convert THIS sentence's exact `beat_im` into a 30fps 3D Parallax Moving Video Clip!
                 if vseg is None and beat_im is not None:
@@ -9016,18 +9077,31 @@ class VoiceAndSubtitleEngine:
         # - Underrated / Mind-Blowing Mysteries: `en-GB-RyanNeural` (Crisp BBC World / Vox investigative documentary tone)
         # - Stock Markets / Business / AI / Science: `en-US-BrianMultilingualNeural` (Sharp Bloomberg / Think School / Cleo Abram analyst tone)
         # - Sports / Underdog Prodigies: `en-US-GuyNeural` (Energetic ESPN / Red Bull documentary storyteller tone)
+        # Clean decimals, shorthand ($4.2M), and acronyms for natural human pronunciation:
+        tts_spoken_text = re.sub(r"\$(\d+(?:\.\d+)?)\s*[Mm]\b", r"\1 million dollars", tts_spoken_text)
+        tts_spoken_text = re.sub(r"\$(\d+(?:\.\d+)?)\s*[Bb]\b", r"\1 billion dollars", tts_spoken_text)
+        tts_spoken_text = re.sub(r"\b(\d+\.\d+)\s*[Mm]\b", r"\1 million", tts_spoken_text)
+        tts_spoken_text = re.sub(r"\b0\.(\d*[1-9])0+\b", r"0.\1", tts_spoken_text)
+        tts_spoken_text = re.sub(r"\bMMP\b", "M-M-P", tts_spoken_text)
+        tts_spoken_text = re.sub(r"\bNWSL\b", "N-W-S-L", tts_spoken_text)
+        tts_spoken_text = re.sub(r"\bKTM\b", "K-T-M", tts_spoken_text)
+        tts_spoken_text = re.sub(r"\bCFMOTO\b", "C-F-Moto", tts_spoken_text, flags=re.I)
+        tts_spoken_text = re.sub(r"\bLusail\b", "Loo-sail", tts_spoken_text, flags=re.I)
+        tts_spoken_text = re.sub(r"\bQuiles\b", "Kee-les", tts_spoken_text, flags=re.I)
+
+        # V53 100% GEN-3 EXPRESSIVE MULTILINGUAL HUMAN VOICE ENGINE (Zero Gen-1 Robotic Voices, Zero Artificial Pitch Warping!):
+        # Uses ONLY `en-US-AndrewMultilingualNeural` and `en-US-BrianMultilingualNeural` at natural `+0Hz` pitch and `+1%`/`+3%` conversational rate
+        # so Microsoft's DragonHD emotional sentence intonation stays 100% warm, expressive, and human!
         voice_by_pillar = {
-            "UNDERRATED_GEOPOLITICS": ("en-GB-RyanNeural", "+5%", "+8%", "-1Hz"),
-            "MIND_BLOWING_FACTS": ("en-GB-RyanNeural", "+5%", "+8%", "-1Hz"),
-            "STOCK_MARKETS": ("en-US-BrianMultilingualNeural", "+6%", "+8%", "+0Hz"),
-            "BUSINESS": ("en-US-BrianMultilingualNeural", "+6%", "+8%", "+0Hz"),
-            "AI_ROBOTICS": ("en-US-BrianMultilingualNeural", "+6%", "+8%", "+0Hz"),
-            "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "+6%", "+8%", "+0Hz"),
-            "SCIENCE": ("en-US-BrianMultilingualNeural", "+5%", "+8%", "+0Hz"),
-            "VIRAL_UNDERDOG_SPORTS": ("en-US-GuyNeural", "+6%", "+9%", "+0Hz"),
-            "SPORTS": ("en-US-GuyNeural", "+6%", "+9%", "+0Hz")
+            "STOCK_MARKETS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
+            "BUSINESS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
+            "AI_ROBOTICS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
+            "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
+            "SCIENCE": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
+            "VIRAL_UNDERDOG_SPORTS": ("en-US-AndrewMultilingualNeural", "+2%", "+4%", "+0Hz"),
+            "SPORTS": ("en-US-AndrewMultilingualNeural", "+2%", "+4%", "+0Hz")
         }
-        v_cfg = voice_by_pillar.get(pillar) or voice_by_pillar.get(core_hub) or ("en-US-AndrewMultilingualNeural", "+5%", "+8%", "-1Hz")
+        v_cfg = voice_by_pillar.get(pillar) or voice_by_pillar.get(core_hub) or ("en-US-AndrewMultilingualNeural", "+1%", "+3%", "+0Hz")
         edge_voice = v_cfg[0]
         rate = v_cfg[2] if is_short else v_cfg[1]
         pitch = v_cfg[3]
@@ -9095,7 +9169,7 @@ class VoiceAndSubtitleEngine:
             # Adds subtle 135Hz chest warmth + 3.4kHz studio presence + gentle leveling for rich human tone!
             cmd = [
                 "ffmpeg", "-nostdin", "-y", "-i", raw_mp3,
-                "-af", "highpass=f=80,equalizer=f=135:width_type=o:width=1.1:g=2.6,equalizer=f=285:width_type=o:width=1.4:g=-1.6,equalizer=f=3600:width_type=o:width=1.3:g=2.4,equalizer=f=8200:width_type=o:width=1.5:g=1.4,acompressor=threshold=-18dB:ratio=2.8:attack=10:release=140:makeup=2.2,afade=t=in:st=0:d=0.03,apad=pad_dur=0.14",
+                "-af", "highpass=f=75,equalizer=f=145:width_type=o:width=1.2:g=1.8,equalizer=f=3800:width_type=o:width=1.2:g=-1.4,equalizer=f=9500:width_type=o:width=1.5:g=0.8,loudnorm=I=-16:TP=-1.5:LRA=11,afade=t=in:st=0:d=0.03,apad=pad_dur=0.14",
                 "-ar", "44100", "-ac", "2", "-c:a", "pcm_s16le", wav_out
             ]
             run_isolated_subprocess(cmd, timeout_sec=12)
@@ -9644,7 +9718,7 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
     for idx, sec in enumerate(sections):
         # Script Audit #1, #2 & #3: Factual grounding, deduplication, and grammar polish
         raw_nar = str(sec.get("narration", "")).strip()
-        clean_nar = proofread_and_deduplicate_narration(raw_nar, seen_audit_sentences, dossier, scene_idx=idx)
+        clean_nar = restore_exact_fact_proper_nouns(proofread_and_deduplicate_narration(raw_nar, seen_audit_sentences, dossier, scene_idx=idx), dossier=dossier)
         if len(clean_nar) < 20:
             clean_nar = proofread_and_deduplicate_narration(claims[idx % len(claims)]["text"], seen_audit_sentences, dossier, scene_idx=idx)
         if clean_nar and clean_nar[-1] not in ".!?":
@@ -9729,8 +9803,12 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
         if len(ct) >= 65 and len(words_ct) >= 12 and has_article_or_verb and ct[:30].lower() not in used_text_low:
             unused_claims.append(cl)
 
-    # Select Domain-Specific Analytical Matrix matching the exact story subject!
-    if pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS") or any(k in story_low for k in ["stock", "market", "nifty", "sensex", "wall street", "tariff", "rbi", "fed", "Crude", "oil", "refinery", "reliance", "trade", "billion", "economy", "gdp", "inflation", "bank"]):
+    # V53 HEADLINE-FIRST DOMAIN MATRIX SELECTOR:
+    # Checks `pillar` and `headline_only_low` (NEVER paragraph 6 of `raw_facts`) so an election story mentioning
+    # 'health budget' or 'stock market' never gets hijacked into a hospital or Wall Street template!
+    headline_only_low = f"{dossier.get('title', '')} {t_anc}".lower()
+    is_explicit_geo = pillar in ("WORLD", "GEOPOLITICS", "GLOBAL_POWERS", "UNDERRATED_GEOPOLITICS", "DEFENSE_MILITARY", "INDIA_TRENDING") or any(gk in headline_only_low for gk in ["election", "vote", "parliament", "coalition", "minister", "president", "treaty", "pact", "summit", "war", "military", "nato", "sanctions"])
+    if (not is_explicit_geo) and (pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS") or any(k in headline_only_low for k in ["stock", "market", "nifty", "sensex", "wall street", "tariff", "rbi", "fed", "crude", "oil", "refinery", "trade", "economy", "gdp", "inflation", "bank"])):
         domain_matrix = [
             f"From a Follow-the-Money perspective, the capital flows surrounding {t_anc} reveal how institutional investors and sovereign funds are repricing risk across {c_name}.",
             f"Market analysts tracking {t_anc} point out that supply-chain bottlenecks, energy input costs, and central bank liquidity directly determine which corporations capture the highest margins.",
@@ -9840,7 +9918,7 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
             ("GIANT-KILLING IMPACT", "HOW THE SPORT IS CHANGING"),
             ("FINAL ARENA VERDICT", "WHAT THIS MEANS NEXT")
         ]
-    elif pillar == "HEALTH" or any(k in story_low for k in ["health", "medical", "hospital", "vaccine", "clinical", "patient", "doctor", "disease", "biotech"]):
+    elif (not is_explicit_geo) and (pillar == "HEALTH" or any(k in headline_only_low for k in ["health", "medical", "hospital", "vaccine", "clinical", "patient", "doctor", "disease", "biotech"])):
         domain_matrix = [
             f"Clinical researchers and public-health specialists analyzing {t_anc} emphasize that early diagnostic precision and scalable treatment protocols are critical to improving patient outcomes.",
             f"From a healthcare-economics standpoint, the findings around {t_anc} highlight the urgent need to modernize hospital supply chains, preventive screening, and regulatory review.",
