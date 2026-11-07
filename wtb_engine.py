@@ -6328,7 +6328,7 @@ def build_point_highlight_banner_rgba(beat, W, H, is_short=True):
     f_sub = get_font(15)
     f_main = get_font(22 if not is_short else 21)
     f_cl = get_font(18 if not is_short else 17)
-    sub_lbl = f"CHAPTER {sec_num:02d} // VERIFIED EVIDENCE RECORD"
+    sub_lbl = f"PART {sec_num:02d}  •  KEY TAKEAWAY"
     tw = max(int(f_main.getlength(pt_txt)), int(f_sub.getlength(sub_lbl)), int(f_cl.getlength(f'"{short_clause}..."')))
     bw = min(W - 84, max(380, tw + 56))
     bh = 104
@@ -6345,6 +6345,125 @@ def build_point_highlight_banner_rgba(beat, W, H, is_short=True):
     if short_clause:
         d.text((20, 70), f'"{short_clause}..."', fill=(232, 240, 255, 245), font=f_cl)
     return card
+
+def format_animated_countup_number(raw_num_str, prog):
+    """
+    V54 AFTER-EFFECTS LIVE NUMBER COUNT-UP ENGINE:
+    Smoothly counts up any numeric figure (e.g. `$200M` -> `$0M..$200M`, `68%` -> `0%..68%`,
+    `53 SEATS` -> `0..53 SEATS`) frame-by-frame as `prog` advances from `0.0 -> 1.0`!
+    """
+    s = str(raw_num_str or "").strip()
+    if prog >= 0.96:
+        return s
+    m = re.search(r"(\d+(?:\.\d+)?)", s)
+    if not m:
+        return s
+    val = float(m.group(1))
+    cur_v = val * min(max(prog, 0.08), 1.0)
+    if "." in m.group(1):
+        dec_places = min(2, len(m.group(1).split(".")[1]))
+        rep_s = f"{cur_v:.{dec_places}f}"
+    else:
+        rep_s = str(int(round(cur_v)))
+    return s[:m.start(1)] + rep_s + s[m.end(1):]
+
+def render_thinkschool_multi_photo_popup_cards_frame(beat, local_t, W, H, is_short=True):
+    """
+    V54 THINK SCHOOL MULTI-COUNTRY / MULTI-ENTITY SMOOTH PHOTO POP-UP STAGE:
+    When a sentence mentions multiple countries, cities, leaders, or stages (e.g., 'London, New York, and Tokyo'
+    or 'Brazil, Spain, Italy, and Qatar'), pops up 3 framed HD photo cards one after another with smooth
+    spring transitions (`spring_physics_ease`), real country flags, and clean bold titles!
+    """
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.45, blur_radius=12).convert("RGBA")
+    story_obj = beat.get("story") or {}
+    c_prof = story_obj.get("country_profile") or {}
+    c_name = fit_whole_words_limit(str(c_prof.get("name") or "GLOBAL").upper(), 16)
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or "GLOBAL IMPACT").upper(), 28)
+    b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
+    clauses = extract_clean_story_clauses(beat, count=3)
+
+    # Gather 3 distinct HD photos from beat & story pool
+    pool_ims = [it["im"] for it in (story_obj.get("_cached_200_audited_pool") or []) if it.get("im") is not None]
+    p1 = (beat.get("primary_im") or bg).convert("RGB")
+    p2 = (beat.get("secondary_im") or (pool_ims[1] if len(pool_ims) > 1 else p1)).convert("RGB")
+    p3 = (pool_ims[2] if len(pool_ims) > 2 else (pool_ims[0] if pool_ims else p1)).convert("RGB")
+
+    # Detect up to 3 country/entity names from the sentence + story
+    comb_low = f"{b_txt} {story_obj.get('title', '')}".lower()
+    found_cnts = []
+    for ck, cinfo in COUNTRY_GEO_DB.items():
+        if ck.upper() not in ("GLOBAL", "INTERNATIONAL", "ASEAN", "NATO", "MIDDLE EAST", "EUROPEAN UNION") and re.search(rf"\b{re.escape(ck.lower())}\b", comb_low):
+            found_cnts.append((ck.upper(), {"iso2": cinfo[0]}))
+        if len(found_cnts) >= 3:
+            break
+    while len(found_cnts) < 3:
+        found_cnts.append((c_name, {"iso2": c_prof.get("iso2") or c_prof.get("code") or "US"}))
+
+    kp1, _ = extract_key_point_from_sentence(clauses[0], beat_num=1)
+    kp2, _ = extract_key_point_from_sentence(clauses[1] if len(clauses) > 1 else b_txt, beat_num=2)
+    kp3, _ = extract_key_point_from_sentence(clauses[2] if len(clauses) > 2 else b_txt, beat_num=3)
+    cards_data = [
+        (p1, found_cnts[0][0], found_cnts[0][1], kp1, (0, 235, 255), 0.0),
+        (p2, found_cnts[1][0], found_cnts[1][1], kp2, (255, 215, 0), 0.22),
+        (p3, found_cnts[2][0], found_cnts[2][1], kp3, (45, 245, 165), 0.44),
+    ]
+
+    resample_l = getattr(Image, "Resampling", Image).LANCZOS
+    if not is_short:
+        hdr_box = (96, 118, 1824, 182)
+        card_w = 536
+        card_h = 560
+        y_base = 215
+    else:
+        hdr_box = (44, 168, 1036, 232)
+        card_w = 992
+        card_h = 345
+        y_base = 258
+
+    draw_2026_visionos_glass_card(bg, hdr_box, radius=18, tint=(12, 20, 38, 215), border_col=(255, 215, 0, 175), accent_col=(255, 215, 0), accent_pos="left", blur_px=16)
+    draw = ImageDraw.Draw(bg, "RGBA")
+    draw.text((hdr_box[0] + 26, hdr_box[1] + 17), f"KEY PLAYERS & GLOBAL STAKES  •  {point_hl}", fill=(255, 215, 0, 255), font=get_font(23 if not is_short else 20))
+
+    for idx_c, (cim, c_lbl, c_dict, c_kp, c_col, delay_s) in enumerate(cards_data):
+        raw_p = min(max((local_t - delay_s) / 0.42, 0.0), 1.0)
+        if raw_p <= 0.01:
+            continue
+        sp = spring_physics_ease(raw_p)
+        slide_y = int((1.0 - cubic_bezier_ease_in_out(raw_p)) * 55)
+        if not is_short:
+            cx0 = 96 + idx_c * (card_w + 60)
+            cy0 = y_base + slide_y
+        else:
+            cx0 = 44
+            cy0 = y_base + idx_c * (card_h + 24) + slide_y
+        cx1, cy1 = cx0 + card_w, cy0 + card_h
+
+        draw_2026_visionos_glass_card(bg, (cx0, cy0, cx1, cy1), radius=24, tint=(10, 18, 34, 210), border_col=(255, 255, 255, 115), accent_col=c_col, accent_pos="top", blur_px=18)
+        ph_h = int(card_h * (0.64 if not is_short else 0.58))
+        pw_i = card_w - 24
+        sc_i = max(pw_i / float(cim.size[0]), ph_h / float(cim.size[1]))
+        im_r = cim.resize((int(cim.size[0] * sc_i), int(cim.size[1] * sc_i)), resample_l)
+        im_c = im_r.crop(((im_r.size[0] - pw_i) // 2, max(0, int((im_r.size[1] - ph_h) * 0.15)), (im_r.size[0] - pw_i) // 2 + pw_i, max(0, int((im_r.size[1] - ph_h) * 0.15)) + ph_h)).convert("RGBA")
+        im_mask = Image.new("L", (pw_i, ph_h), 0)
+        ImageDraw.Draw(im_mask).rounded_rectangle([(0, 0), (pw_i - 1, ph_h - 1)], radius=18, fill=255)
+        bg.paste(im_c, (cx0 + 12, cy0 + 14), im_mask)
+
+        # Country Flag + Name Pill overlapping bottom-left of photo
+        try:
+            fl_im = get_or_build_flag_icon(c_dict.get('iso2', 'US'), 36, 24)
+            bg.paste(fl_im, (cx0 + 28, cy0 + ph_h - 24))
+        except Exception:
+            pass
+        draw = ImageDraw.Draw(bg, "RGBA")
+        draw.rounded_rectangle([(cx0 + 72, cy0 + ph_h - 28), (cx0 + 72 + int(get_font(18).getlength(c_lbl)) + 28, cy0 + ph_h + 4)], radius=8, fill=(10, 16, 30, 235), outline=c_col, width=2)
+        draw.text((cx0 + 86, cy0 + ph_h - 23), c_lbl, fill=(255, 255, 255, 255), font=get_font(18))
+
+        ty0 = cy0 + ph_h + 24
+        for l_i, ln_k in enumerate(wrap_text_px(c_kp, get_font(26 if not is_short else 24), card_w - 44, max_lines=2)):
+            draw.text((cx0 + 22, ty0 + l_i * 34), ln_k, fill=(255, 255, 255, 255), font=get_font(26 if not is_short else 24))
+
+    bg.alpha_composite(get_prebuilt_vignette_overlay(W, H))
+    return bg
 
 def wrap_text_px(text_str, font_obj, max_px_w, max_lines=3):
     """
@@ -6659,7 +6778,7 @@ def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_
         tint=(14, 22, 42, 210), border_col=(255, 215, 0, 175), accent_col=(255, 215, 0), accent_pos="left", blur_px=16
     )
     draw = ImageDraw.Draw(bg, "RGBA")
-    draw.text((rx0 + 28, ry0 + 18), f"KEY INTELLIGENCE BRIEF // {point_hl}", fill=(255, 225, 0, 255), font=get_font(24 if not is_short else 22))
+    draw.text((rx0 + 28, ry0 + 18), f"CASE BREAKDOWN  •  {point_hl}", fill=(255, 225, 0, 255), font=get_font(24 if not is_short else 22))
 
     card_tags = [
         ("01", "PRIMARY CATALYST", (0, 235, 255)),
@@ -6748,7 +6867,7 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
         border_col=(255, 215, 0, 175), accent_col=(255, 215, 0), accent_pos="left", blur_px=16
     )
     draw = ImageDraw.Draw(bg, "RGBA")
-    draw.text((hdr_box[0] + 28, hdr_box[1] + 19), f"TELEMETRY & DATA DOSSIER // {point_hl}", fill=(255, 225, 0, 255), font=get_font(24 if not is_short else 21))
+    draw.text((hdr_box[0] + 28, hdr_box[1] + 19), f"BY THE NUMBERS  •  {point_hl}", fill=(255, 225, 0, 255), font=get_font(24 if not is_short else 21))
 
     # 2. Left/Top KPI & 2x-Supersampled Radial Gauge Card
     draw_2026_visionos_glass_card(
@@ -6777,7 +6896,7 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     ky = left_box[1] + int(lh * 0.22)
     draw.text((kx, ky), "PRIMARY IMPACT METRIC", fill=(0, 235, 255, 255), font=get_font(18))
     f_kpi = get_font(54 if len(primary_num) <= 9 else 42)
-    draw.text((kx, ky + 34), primary_num, fill=(255, 225, 0, 255), font=f_kpi)
+    draw.text((kx, ky + 34), format_animated_countup_number(primary_num, anim_p), fill=(255, 225, 0, 255), font=f_kpi)
     draw.rounded_rectangle([(kx, ky + 112), (kx + 235, ky + 150)], radius=12, fill=(22, 165, 115, 220))
     draw.text((kx + 16, ky + 119), f"▲ {c_name} VERIFIED", fill=(255, 255, 255, 255), font=get_font(17))
 
@@ -7038,6 +7157,8 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         return render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=is_short)
     if mode == "BIZ_14_FOLLOW_THE_MONEY_WATERFALL":
         return render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_short=is_short)
+    if mode in ("GEO_11_CHRONOLOGY_TIMELINE_RIBBON", "MYST_27_DECLASSIFIED_FORENSIC_BOARD"):
+        return render_thinkschool_multi_photo_popup_cards_frame(beat, local_t, W, H, is_short=is_short)
 
     bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.46, blur_radius=12).convert("RGBA")
     story_obj = beat.get("story") or {}
@@ -7113,7 +7234,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         border_col=(t_col[0], t_col[1], t_col[2], 175), accent_col=t_col, accent_pos="left", blur_px=16
     )
     draw = ImageDraw.Draw(bg, "RGBA")
-    draw.text((hdr_box[0] + 26, hdr_box[1] + 18), f"{t_title} // {point_hl}", fill=(t_col[0], t_col[1], t_col[2], 255), font=get_font(23 if not is_short else 20))
+    draw.text((hdr_box[0] + 26, hdr_box[1] + 18), f"{t_title}  •  {point_hl}", fill=(t_col[0], t_col[1], t_col[2], 255), font=get_font(23 if not is_short else 20))
 
     # ==========================================================================
     # MODE 1: TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT (Authentic Think School Newspaper / Social Post Cutout!)
@@ -8102,175 +8223,383 @@ def render_procedural_science_simulation_frame(sim_mode, beat, local_t, W, H, is
     canvas.alpha_composite(get_prebuilt_vignette_overlay(W, H))
     return canvas
 
+
+FLAG_COLOR_PALETTE = {
+    "US": [(185, 20, 40), (255, 255, 255), (15, 45, 115)],
+    "IN": [(255, 153, 51), (255, 255, 255), (19, 136, 8)],
+    "IL": [(255, 255, 255), (0, 56, 184), (255, 255, 255)],
+    "SA": [(0, 108, 53), (255, 255, 255), (0, 108, 53)],
+    "AE": [(0, 115, 47), (255, 255, 255), (20, 20, 20)],
+    "TR": [(227, 10, 23), (255, 255, 255), (227, 10, 23)],
+    "PK": [(1, 65, 28), (255, 255, 255), (1, 65, 28)],
+    "CN": [(222, 41, 16), (255, 222, 0), (222, 41, 16)],
+    "RU": [(255, 255, 255), (0, 57, 166), (213, 43, 30)],
+    "GB": [(1, 33, 105), (255, 255, 255), (200, 16, 46)],
+    "DE": [(20, 20, 20), (221, 0, 0), (255, 206, 0)],
+    "FR": [(0, 35, 149), (255, 255, 255), (237, 41, 57)],
+    "JP": [(255, 255, 255), (188, 0, 45), (255, 255, 255)],
+    "AU": [(1, 33, 105), (255, 255, 255), (228, 0, 43)],
+    "NZ": [(1, 33, 105), (204, 20, 43), (255, 255, 255)],
+    "QA": [(138, 21, 56), (255, 255, 255), (138, 21, 56)],
+    "ES": [(170, 21, 27), (241, 191, 0), (170, 21, 27)],
+    "IT": [(0, 146, 70), (255, 255, 255), (206, 43, 55)],
+    "BR": [(0, 156, 59), (255, 223, 0), (0, 39, 118)],
+    "ID": [(255, 0, 0), (255, 255, 255), (255, 0, 0)],
+    "IR": [(35, 159, 64), (255, 255, 255), (218, 0, 0)],
+}
+_FLAG_MEM_CACHE = {}
+
+def get_or_build_flag_icon(iso2_str, w=36, h=24):
+    iso2 = str(iso2_str or "US").upper()[:2]
+    ck = (iso2, w, h)
+    if ck in _FLAG_MEM_CACHE:
+        return _FLAG_MEM_CACHE[ck]
+    fp = f"temp/flag_{iso2}.png"
+    if os.path.exists(fp):
+        try:
+            im = Image.open(fp).convert("RGBA").resize((w, h))
+            _FLAG_MEM_CACHE[ck] = im
+            return im
+        except Exception:
+            pass
+    try:
+        fr = requests.get(f"https://flagcdn.com/w160/{iso2.lower()}.png", headers=HEADERS_WEB, timeout=1.5)
+        if fr.status_code == 200 and len(fr.content) > 400:
+            with open(fp, "wb") as f:
+                f.write(fr.content)
+            im = Image.open(fp).convert("RGBA").resize((w, h))
+            _FLAG_MEM_CACHE[ck] = im
+            return im
+    except Exception:
+        pass
+    # Clean 3-stripe procedural flag icon fallback
+    cols = FLAG_COLOR_PALETTE.get(iso2, [(0, 120, 215), (255, 255, 255), (220, 35, 55)])
+    im = Image.new("RGBA", (w, h), (255, 255, 255, 255))
+    d = ImageDraw.Draw(im, "RGBA")
+    sh = max(1, h // 3)
+    d.rectangle([(0, 0), (w, sh)], fill=cols[0])
+    d.rectangle([(0, sh), (w, sh * 2)], fill=cols[1])
+    d.rectangle([(0, sh * 2), (w, h)], fill=cols[2])
+    d.rectangle([(0, 0), (w - 1, h - 1)], outline=(255, 255, 255, 180), width=1)
+    _FLAG_MEM_CACHE[ck] = im
+    return im
+
+def _smooth_closed_polygon(pts, subdiv=5):
+    if len(pts) < 3:
+        return pts
+    out = []
+    n = len(pts)
+    for i in range(n):
+        p0 = pts[(i - 1) % n]
+        p1 = pts[i]
+        p2 = pts[(i + 1) % n]
+        p3 = pts[(i + 2) % n]
+        for s in range(subdiv):
+            t = s / float(subdiv)
+            t2 = t * t
+            t3 = t2 * t
+            x = 0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3)
+            y = 0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)
+            out.append((int(x), int(y)))
+    return out
+
+REAL_MAP_TILE_CACHE = {}
+
+def _latlon_to_mercator_xy(lat, lon, map_w, map_h, center_lat, center_lon, zoom_scale):
+    """
+    Projects real geographic `(lat, lon)` onto `(px, py)` of a 2D zoomed Mercator regional map
+    centered at `(center_lat, center_lon)` with `zoom_scale`.
+    """
+    lon_diff = (float(lon) - float(center_lon))
+    if lon_diff > 180.0:
+        lon_diff -= 360.0
+    elif lon_diff < -180.0:
+        lon_diff += 360.0
+    lat_c = max(-78.0, min(78.0, float(lat)))
+    clat_c = max(-78.0, min(78.0, float(center_lat)))
+    y_merc = math.degrees(math.asinh(math.tan(math.radians(lat_c))))
+    cy_merc = math.degrees(math.asinh(math.tan(math.radians(clat_c))))
+    px = (map_w * 0.5) + (lon_diff / 360.0) * map_w * zoom_scale
+    py = (map_h * 0.5) - ((y_merc - cy_merc) / 180.0) * map_h * zoom_scale
+    return int(px), int(py)
+
+def _fetch_real_cartodb_map_canvas(center_lat, center_lon, map_w, map_h, zoom_lvl=4):
+    """
+    Stitches a crisp 4x3 grid of real CartoDB DarkMatter / Voyager `@2x` cartographic map tiles
+    centered on `(center_lat, center_lon)` when running online on GitHub Actions!
+    Returns `(pil_im, tile_transform_fn)` or `(None, None)` if offline.
+    """
+    cache_k = (round(center_lat, 1), round(center_lon, 1), map_w, map_h, zoom_lvl)
+    if cache_k in REAL_MAP_TILE_CACHE:
+        return REAL_MAP_TILE_CACHE[cache_k]
+    try:
+        n = 2.0 ** zoom_lvl
+        lat_rad = math.radians(max(-80.0, min(80.0, center_lat)))
+        cx_tile_f = (center_lon + 180.0) / 360.0 * n
+        cy_tile_f = (1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n
+        cx_t = int(cx_tile_f)
+        cy_t = int(cy_tile_f)
+        tile_px = 512
+        grid_cols, grid_rows = 4, 3
+        stitched = Image.new("RGB", (grid_cols * tile_px, grid_rows * tile_px), (11, 20, 34))
+        ok_tiles = 0
+        for dy in range(-1, 2):
+            for dx in range(-1, 3):
+                tx = (cx_t + dx) % int(n)
+                ty = max(0, min(int(n) - 1, cy_t + dy))
+                t_url = f"https://a.basemaps.cartocdn.com/dark_all/{zoom_lvl}/{tx}/{ty}@2x.png"
+                r_t = requests.get(t_url, headers=HEADERS_WEB, timeout=1.8)
+                if r_t.status_code == 200 and len(r_t.content) > 800:
+                    from io import BytesIO
+                    t_im = Image.open(BytesIO(r_t.content)).convert("RGB").resize((tile_px, tile_px))
+                    stitched.paste(t_im, ((dx + 1) * tile_px, (dy + 1) * tile_px))
+                    ok_tiles += 1
+        if ok_tiles >= 6:
+            # Crop around exact `(cx_tile_f, cy_tile_f)` center
+            center_px_x = int((1.0 + (cx_tile_f - cx_t)) * tile_px)
+            center_px_y = int((1.0 + (cy_tile_f - cy_t)) * tile_px)
+            crop_w = min(stitched.size[0], int(map_w * 0.85))
+            crop_h = min(stitched.size[1], int(map_h * 0.85))
+            x0_c = max(0, min(stitched.size[0] - crop_w, center_px_x - crop_w // 2))
+            y0_c = max(0, min(stitched.size[1] - crop_h, center_px_y - crop_h // 2))
+            cropped = stitched.crop((x0_c, y0_c, x0_c + crop_w, y0_c + crop_h))
+            resample_l = getattr(Image, "Resampling", Image).LANCZOS
+            final_map = ImageEnhance.Contrast(cropped.resize((map_w, map_h), resample_l)).enhance(1.18)
+            final_map = ImageEnhance.Color(final_map).enhance(1.25)
+
+            def _proj_tile(lat_p, lon_p):
+                lr = math.radians(max(-80.0, min(80.0, float(lat_p))))
+                tx_f = (float(lon_p) + 180.0) / 360.0 * n
+                ty_f = (1.0 - math.asinh(math.tan(lr)) / math.pi) / 2.0 * n
+                raw_x = (1.0 + (tx_f - cx_t)) * tile_px - x0_c
+                raw_y = (1.0 + (ty_f - cy_t)) * tile_px - y0_c
+                return int(raw_x * (map_w / float(crop_w))), int(raw_y * (map_h / float(crop_h)))
+
+            REAL_MAP_TILE_CACHE[cache_k] = (final_map, _proj_tile)
+            return final_map, _proj_tile
+    except Exception:
+        pass
+    REAL_MAP_TILE_CACHE[cache_k] = (None, None)
+    return None, None
+
+# High-Detail Multi-Continent & Island Polygons for Instant Studio Cartographic Map Rendering
+HIGH_DETAIL_WORLD_LAND_POLYGONS = [
+    # North America
+    [(70, -165), (71, -156), (69, -136), (60, -125), (58, -110), (62, -95), (60, -78), (62, -65), (52, -56), (47, -61), (44, -66), (41, -70), (39, -74), (35, -75), (30, -81), (25, -80), (29, -85), (29, -90), (26, -97), (22, -97), (19, -96), (18, -92), (21, -87), (16, -88), (10, -83), (8, -78), (9, -84), (14, -92), (16, -99), (20, -105), (23, -106), (31, -114), (23, -110), (32, -117), (38, -122), (48, -124), (55, -132), (60, -141), (61, -150), (55, -162), (64, -165)],
+    # South America
+    [(11, -75), (12, -71), (10, -62), (6, -52), (1, -50), (-3, -38), (-8, -35), (-13, -38), (-23, -42), (-33, -52), (-38, -57), (-46, -65), (-54, -68), (-53, -73), (-42, -74), (-33, -71), (-18, -70), (-12, -77), (-5, -81), (1, -79), (7, -77)],
+    # Europe & Scandinavia
+    [(36, -9), (38, -9), (43, -9), (43, -2), (48, -4), (50, 2), (53, 5), (54, 8), (57, 8), (55, 12), (54, 14), (55, 21), (58, 10), (62, 6), (68, 16), (70, 26), (68, 36), (62, 42), (56, 42), (47, 40), (45, 37), (46, 30), (41, 29), (40, 26), (38, 24), (37, 22), (40, 20), (45, 14), (42, 14), (40, 18), (38, 15), (41, 13), (44, 9), (43, 5), (42, 3), (38, 0), (36, -5)],
+    # UK & Ireland
+    [(50, -5), (51, 1), (53, 1), (56, -2), (58, -3), (58, -6), (55, -5), (53, -4), (51, -5)],
+    [(52, -10), (52, -6), (55, -6), (55, -10)],
+    # Africa
+    [(36, -6), (37, 10), (33, 11), (32, 24), (31, 32), (28, 34), (22, 37), (15, 40), (12, 43), (12, 51), (5, 48), (-2, 41), (-10, 40), (-16, 40), (-24, 35), (-34, 26), (-35, 19), (-29, 17), (-18, 12), (-12, 13), (-5, 12), (4, 9), (6, 3), (5, -4), (4, -8), (8, -13), (15, -17), (21, -17), (28, -13), (32, -9)],
+    # Middle East, Arabian Peninsula & Turkey
+    [(42, 27), (42, 35), (41, 41), (39, 44), (38, 48), (30, 49), (26, 56), (22, 60), (17, 54), (13, 45), (17, 42), (22, 39), (28, 35), (31, 32), (33, 35), (36, 36), (36, 28), (40, 26)],
+    # Asia (Iran, India, China, Russia, SE Asia)
+    [(30, 49), (26, 56), (25, 60), (25, 67), (22, 69), (19, 73), (15, 74), (8, 77), (13, 80), (16, 82), (21, 87), (22, 91), (16, 97), (6, 100), (2, 103), (8, 98), (13, 101), (9, 105), (11, 109), (16, 108), (21, 108), (22, 114), (25, 119), (31, 122), (35, 120), (40, 120), (39, 124), (35, 126), (35, 129), (39, 128), (43, 132), (52, 140), (60, 155), (66, 170), (70, 150), (71, 115), (70, 80), (65, 55), (50, 45), (42, 48)],
+    # Japan
+    [(31, 130), (34, 135), (35, 140), (41, 141), (44, 144), (43, 140), (37, 137), (34, 131)],
+    # Taiwan & Philippines
+    [(22, 120), (25, 122), (25, 121), (22, 121)],
+    [(18, 120), (18, 122), (13, 124), (7, 126), (6, 122), (10, 119), (14, 120)],
+    # Indonesia & Malaysia (Sumatra, Java, Borneo)
+    [(5, 95), (0, 100), (-5, 105), (-3, 104), (3, 98)],
+    [(-6, 106), (-7, 112), (-8, 115), (-7, 106)],
+    [(1, 109), (6, 117), (1, 118), (-3, 116), (-3, 111)],
+    # Australia
+    [(-12, 131), (-14, 136), (-12, 142), (-18, 146), (-25, 153), (-33, 151), (-38, 147), (-38, 141), (-35, 136), (-32, 132), (-34, 122), (-34, 115), (-26, 113), (-21, 114), (-17, 122), (-14, 126)],
+    # New Zealand (North Island & South Island)
+    [(-34, 173), (-37, 175), (-38, 178), (-41, 175), (-39, 174)],
+    [(-41, 173), (-42, 174), (-44, 171), (-46, 168), (-45, 167), (-42, 171)],
+    # Sri Lanka & Madagascar
+    [(9, 80), (7, 82), (6, 80), (8, 79)],
+    [(-12, 49), (-20, 49), (-25, 47), (-25, 44), (-16, 45)]
+]
+
 def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     """
-    V21 TRUE 3D ORTHOGRAPHIC ROTATING WORLD GLOBE & BALLISTIC BEZIER TRAJECTORY ENGINE:
-    1. Renders a real 3D spherical globe (`project_3d_globe_point`) rotating smoothly toward
-       the story's country coordinates `(lat, lon)` with 3D latitude/longitude graticules,
-       continental land-grid nodes, and an atmospheric cyan rim-light shader!
-    2. Fires glowing Manim-style 3D quadratic Bezier flight/corridor/missile arcs across the
-       curved planetary horizon with live frosted-glass telemetry cards!
+    V54 REAL THINK SCHOOL CARTOGRAPHIC MAP & FLAG-PIN ROUTE ENGINE:
+    1. Replaces the old blue circle globe with a REAL 2D Zoomed Cartographic Map (CartoDB DarkMatter `@2x`
+       tiles when online + High-Detail Multi-Continent & Island Vector Map)!
+    2. Detects the ACTUAL countries/cities mentioned in the story (`New Zealand`, `Australia`, `China`,
+       `Qatar`, `Spain`, `Italy`, `Turkey`, `Saudi Arabia`, `Israel`, `India`, etc.).
+    3. Places Real Country Flag + Name Pin Cards on their exact map coordinates and animates a Think School
+       dotted trajectory curve ONLY between the real story countries (zero fake random arrows!).
     """
     story = beat["story"]
     c_prof = story.get("country_profile", {})
-    target_lat = float(c_prof.get("lat", 30.0))
-    target_lon = float(c_prof.get("lon", 31.0))
-    c_name = str(c_prof.get("name", "GLOBAL CORRIDOR")).upper()
-    cap_name = str(c_prof.get("capital", "STRATEGIC HUB")).upper()
-    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or f"{c_name} STRATEGIC CORRIDOR").upper(), 28)
+    target_lat = float(c_prof.get("lat", 25.0))
+    target_lon = float(c_prof.get("lon", 45.0))
+    c_name = str(c_prof.get("name", "GLOBAL")).upper()
+    cap_name = str(c_prof.get("capital", "CAPITAL")).upper()
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or f"{c_name} STRATEGIC MAP").upper(), 28)
+    b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
 
-    # 1. Deep space + darkened moving supporting video background
-    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.20, blur_radius=18).convert("RGBA")
-    draw = ImageDraw.Draw(bg, "RGBA")
+    # 1. Identify all real countries mentioned in THIS sentence + story facts (unpacking COUNTRY_GEO_DB tuples!)
+    comb_story = f"{b_txt} {story.get('title', '')} {' '.join(str(x) for x in (story.get('raw_facts') or [])[:4])}".lower()
+    matched_countries = []
+    def _unpack_cnt(k_up):
+        tup = COUNTRY_GEO_DB.get(k_up.upper())
+        if not tup:
+            return None
+        return {"name": k_up.title(), "iso2": tup[0], "iso3": tup[1], "capital": tup[2], "lat": float(tup[5]), "lon": float(tup[6])}
 
-    cx = W // 2 if is_short else int(W * 0.31)
-    cy = int(H * (0.33 if is_short else 0.47))
-    zoom_globe = 1.0 + 0.18 * manim_smooth_rate(min(local_t / 2.6, 1.0))
-    globe_r = int((285 if is_short else 290) * zoom_globe)
+    if c_name.upper() in COUNTRY_GEO_DB and c_name.upper() not in ("GLOBAL", "INTERNATIONAL"):
+        d0 = _unpack_cnt(c_name.upper())
+        if d0:
+            matched_countries.append((c_name.title(), d0))
 
-    # Camera smoothly orbits longitude toward `target_lon` as `local_t` advances
-    cam_lat = target_lat * 0.75
-    cam_lon = (target_lon - 22.0) + 22.0 * manim_smooth_rate(min(local_t / 2.2, 1.0))
+    for cnt_k in COUNTRY_GEO_DB.keys():
+        if cnt_k.upper() in ("GLOBAL", "INTERNATIONAL", "ASEAN", "NATO", "MIDDLE EAST", "EUROPEAN UNION"):
+            continue
+        if re.search(rf"\b{re.escape(cnt_k.lower())}\b", comb_story):
+            if cnt_k.title() not in [x[0] for x in matched_countries]:
+                d_c = _unpack_cnt(cnt_k)
+                if d_c:
+                    matched_countries.append((cnt_k.title(), d_c))
+        if len(matched_countries) >= 4:
+            break
 
-    # 2. Atmospheric Outer Rim Glow & 3D Ocean Sphere (composited via RGBA layer so alpha stays 255!)
-    ov_atm = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ov_adraw = ImageDraw.Draw(ov_atm, "RGBA")
-    for gr in range(globe_r + 46, globe_r, -4):
-        alpha_g = int(95 * ((1.0 - (gr - globe_r) / 46.0) ** 1.6))
-        ov_adraw.ellipse([(cx - gr, cy - gr), (cx + gr, cy + gr)], outline=(0, 205, 255, alpha_g), width=5)
-    bg.alpha_composite(ov_atm)
-    # Render 3D PBR/Phong Raycasted Sphere + Optional Headless Blender 3D Sphere Layer
-    pbr_sphere = render_3d_pbr_shaded_globe_patch(globe_r, cam_lat, cam_lon)
-    bg.alpha_composite(pbr_sphere, (cx - globe_r, cy - globe_r))
-    blender_still = render_headless_blender_3d_globe_frame(target_lat, target_lon)
-    if blender_still is not None:
-        b_resized = blender_still.resize((globe_r * 2, globe_r * 2), getattr(Image, "Resampling", Image).LANCZOS)
-        bg.alpha_composite(b_resized, (cx - globe_r, cy - globe_r))
-    draw = ImageDraw.Draw(bg, "RGBA")
-    draw.ellipse([(cx - globe_r, cy - globe_r), (cx + globe_r, cy + globe_r)], outline=(0, 235, 255, 255), width=3)
+    if matched_countries:
+        target_lat = float(matched_countries[0][1]["lat"])
+        target_lon = float(matched_countries[0][1]["lon"])
+        c_name = matched_countries[0][0].upper()
+        cap_name = str(matched_countries[0][1]["capital"]).upper()
 
-    # 2B. Render Real 3D Projected Continental Landmass Polygons on the Sphere (Africa, Eurasia, Americas, Australia)!
-    continent_polys = [
-        # Africa
-        [(37, -6), (37, 10), (32, 32), (12, 51), (-2, 41), (-15, 40), (-26, 33), (-35, 20), (-34, 18), (-18, 12), (-5, 9), (4, 7), (5, -8), (15, -17), (28, -13)],
-        # Europe
-        [(36, -9), (43, -9), (48, -4), (54, 8), (60, 5), (70, 20), (70, 40), (60, 60), (45, 40), (41, 29), (38, 24), (40, 18), (44, 12), (43, 3)],
-        # Asia & Middle East
-        [(32, 35), (13, 45), (24, 58), (28, 50), (25, 67), (8, 77), (22, 88), (14, 100), (1, 104), (22, 114), (31, 121), (40, 124), (55, 138), (66, 170), (70, 100), (60, 60), (45, 40)],
-        # North America
-        [(70, -160), (70, -75), (50, -55), (42, -70), (25, -80), (30, -88), (20, -105), (32, -117), (48, -124), (60, -140)],
-        # South America
-        [(11, -75), (7, -60), (-5, -35), (-23, -43), (-35, -54), (-54, -68), (-42, -74), (-18, -71), (-5, -81)],
-        # Australia
-        [(-12, 131), (-12, 142), (-28, 153), (-38, 145), (-34, 115), (-22, 114)],
-        # Madagascar
-        [(-12, 49), (-25, 47), (-25, 44), (-15, 46)]
-    ]
-    for c_poly in continent_polys:
-        proj_pts = []
-        vis_cnt = 0
-        for plat, plon in c_poly:
-            px_c, py_c, pz_c = project_3d_globe_point(plat, plon, cam_lat, cam_lon, cx, cy, globe_r - 2)
-            if pz_c > -0.05:
-                if pz_c > 0.02:
-                    vis_cnt += 1
-                # Clamp slightly beyond horizon to sphere rim
-                dx_r, dy_r = px_c - cx, py_c - cy
-                dist_r = math.hypot(dx_r, dy_r)
-                if dist_r > globe_r - 3 and dist_r > 0:
-                    px_c = cx + dx_r * ((globe_r - 3) / dist_r)
-                    py_c = cy + dy_r * ((globe_r - 3) / dist_r)
-                proj_pts.append((px_c, py_c))
-        if vis_cnt >= 3 and len(proj_pts) >= 3:
-            draw.polygon(proj_pts, fill=(14, 72, 88, 210), outline=(0, 240, 255, 225))
-
-    # 3. Render 3D Spherical Latitude & Longitude Graticule Curves across the Front Hemisphere
-    for lat_g in range(-60, 75, 20):
-        pts_lat = []
-        for lon_g in range(-180, 185, 8):
-            sx, sy, z_d = project_3d_globe_point(lat_g, lon_g, cam_lat, cam_lon, cx, cy, globe_r)
-            if z_d > 0.02:
-                pts_lat.append((sx, sy))
-            else:
-                if len(pts_lat) >= 2:
-                    draw.line(pts_lat, fill=(0, 210, 255, 48), width=1)
-                pts_lat = []
-        if len(pts_lat) >= 2:
-            draw.line(pts_lat, fill=(0, 210, 255, 48), width=1)
-
-    for lon_g in range(-180, 180, 20):
-        pts_lon = []
-        for lat_g in range(-80, 85, 8):
-            sx, sy, z_d = project_3d_globe_point(lat_g, lon_g, cam_lat, cam_lon, cx, cy, globe_r)
-            if z_d > 0.02:
-                pts_lon.append((sx, sy))
-            else:
-                if len(pts_lon) >= 2:
-                    draw.line(pts_lon, fill=(0, 210, 255, 48), width=1)
-                pts_lon = []
-        if len(pts_lon) >= 2:
-            draw.line(pts_lon, fill=(0, 210, 255, 48), width=1)
-
-    # 4. Plot Global Power Hubs & Glowing 3D Ballistic / Supply-Chain Bezier Arcs onto Target Country
-    tx, ty, tz = project_3d_globe_point(target_lat, target_lon, cam_lat, cam_lon, cx, cy, globe_r)
-    origin_nodes = [
-        (target_lat + 14.0, target_lon - 24.0, cap_name[:16], (0, 240, 255, 255)),
-        (target_lat - 12.0, target_lon + 22.0, c_name[:16], (255, 220, 0, 255)),
-        (target_lat + 18.0, target_lon + 16.0, "REGIONAL HUB", (255, 65, 85, 255))
-    ]
-    for idx_o, (olat, olon, o_lbl, o_col) in enumerate(origin_nodes):
-        ox, oy, oz = project_3d_globe_point(olat, olon, cam_lat, cam_lon, cx, cy, globe_r)
-        if oz > 0.05 and tz > 0.05:
-            mid_x = (ox + tx) * 0.5
-            mid_y = (oy + ty) * 0.5 - (95 + idx_o * 22)
-            arc_p = min(max((local_t - idx_o * 0.18) / 1.25, 0.0), 1.0)
-            draw_manim_glowing_bezier_arc(
-                draw, (ox, oy), (mid_x, mid_y), (tx, ty), arc_p,
-                main_col=o_col, glow_col=(o_col[0], o_col[1], o_col[2], 85), width=5
-            )
-            draw.ellipse([(ox - 6, oy - 6), (ox + 6, oy + 6)], fill=o_col, outline=(255, 255, 255, 255), width=2)
-
-    # Pulsing Crimson Target Rings on Epicenter `(tx, ty)`
-    for r_i in range(3):
-        pr = int(16 + ((local_t * 48.0 + r_i * 26.0) % 78.0))
-        pa = int(225 * (1.0 - pr / 96.0))
-        draw.ellipse([(tx - pr, ty - pr), (tx + pr, ty + pr)], outline=(255, 45, 65, pa), width=3)
-    draw.ellipse([(tx - 9, ty - 9), (tx + 9, ty + 9)], fill=(255, 35, 55, 255), outline=(255, 255, 255, 255), width=3)
-
-    # 5. V50 2026 VisionOS Frosted-Glass Satellite Telemetry Panel on Right (16:9) or Bottom (9:16)
-    if is_short:
-        px0, py0, px1, py1 = 56, 1020, W - 56, 1390
-        anchor_pt = ((px0 + px1) // 2, py0)
+    # Determine optimal zoom based on geographic spread of matched countries
+    if len(matched_countries) >= 2:
+        lats = [float(x[1]["lat"]) for x in matched_countries]
+        lons = [float(x[1]["lon"]) for x in matched_countries]
+        center_lat = (min(lats) + max(lats)) * 0.5
+        center_lon = (min(lons) + max(lons)) * 0.5
+        span_deg = max(max(lats) - min(lats), (max(lons) - min(lons)) * 0.75)
+        zoom_scale = 1.15 if span_deg > 75 else (1.55 if span_deg > 30 else 2.15)
+        tile_z = 3 if span_deg > 55 else 4
     else:
-        px0, py0, px1, py1 = int(W * 0.58), 165, W - 72, 785
-        anchor_pt = (px0, py0 + 72)
+        center_lat, center_lon = target_lat, target_lon
+        zoom_scale = 3.4
+        tile_z = 5
 
-    draw.line([(tx, ty), anchor_pt], fill=(255, 215, 0, 220), width=3)
+    anim_p = cubic_bezier_ease_in_out(min(max(local_t / 0.65, 0.0), 1.0))
+    cur_zoom = zoom_scale * (0.92 + 0.08 * anim_p)
+
+    # 2. Build Real Cartographic Map Canvas (Try live CartoDB DarkMatter `@2x` tiles first, else High-Detail Vector Map)
+    map_im, tile_proj = _fetch_real_cartodb_map_canvas(center_lat, center_lon, W, H, zoom_lvl=tile_z)
+    if map_im is not None and tile_proj is not None:
+        bg = map_im.convert("RGBA")
+        proj_fn = tile_proj
+    else:
+        ss = 2
+        mw_s, mh_s = W * ss, H * ss
+        map_layer = Image.new("RGBA", (mw_s, mh_s), (9, 17, 30, 255))
+        md = ImageDraw.Draw(map_layer, "RGBA")
+
+        # Subtle cartographic lat/lon grid lines
+        for glon in range(-180, 185, 15):
+            gx, _ = _latlon_to_mercator_xy(0, glon, mw_s, mh_s, center_lon=center_lon, center_lat=center_lat, zoom_scale=cur_zoom)
+            if 0 <= gx <= mw_s:
+                md.line([(gx, 0), (gx, mh_s)], fill=(26, 46, 74, 120), width=2)
+        for glat in range(-60, 75, 15):
+            _, gy = _latlon_to_mercator_xy(glat, 0, mw_s, mh_s, center_lon=center_lon, center_lat=center_lat, zoom_scale=cur_zoom)
+            if 0 <= gy <= mh_s:
+                md.line([(0, gy), (mw_s, gy)], fill=(26, 46, 74, 120), width=2)
+
+        # Render Smooth Catmull-Rom Continental & Island Landmasses with Coastal Glow
+        for poly in HIGH_DETAIL_WORLD_LAND_POLYGONS:
+            raw_pts = [
+                _latlon_to_mercator_xy(plat, plon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
+                for (plat, plon) in poly
+            ]
+            pts = _smooth_closed_polygon(raw_pts, subdiv=5)
+            if len(pts) >= 3:
+                md.line(pts + [pts[0]], fill=(0, 185, 255, 55), width=14)
+                md.polygon(pts, fill=(24, 48, 74, 255))
+                md.line(pts + [pts[0]], fill=(75, 215, 255, 225), width=3)
+
+        bg = map_layer.resize((W, H), getattr(Image, "Resampling", Image).LANCZOS)
+        def proj_fn(lat_p, lon_p):
+            return _latlon_to_mercator_xy(lat_p, lon_p, W, H, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
+
+    draw = ImageDraw.Draw(bg, "RGBA")
+
+    # 3. Plot Real Story Countries, Meaningful Dotted Route Curves & Flag Pin Cards!
+    pin_coords = []
+    for idx_c, (cnt_title, cnt_d) in enumerate(matched_countries[:4]):
+        px_c, py_c = proj_fn(cnt_d.get("lat", target_lat), cnt_d.get("lon", target_lon))
+        px_c = max(90, min(W - 140, px_c))
+        py_c = max(160, min(H - (460 if is_short else 260), py_c))
+        pin_coords.append((px_c, py_c, cnt_title.upper(), cnt_d))
+
+    # Draw animated Think School dotted route arcs ONLY between real story countries (`len(pin_coords) >= 2`)
+    if len(pin_coords) >= 2:
+        p0_x, p0_y, _, _ = pin_coords[0]
+        for idx_dest in range(1, len(pin_coords)):
+            p1_x, p1_y, _, _ = pin_coords[idx_dest]
+            mid_x = (p0_x + p1_x) * 0.5
+            mid_y = min(p0_y, p1_y) - max(45, int(math.hypot(p1_x - p0_x, p1_y - p0_y) * 0.22))
+            arc_p = min(max((local_t - (idx_dest - 1) * 0.20) / 0.85, 0.0), 1.0)
+            r_col = (255, 215, 0, 255) if idx_dest == 1 else (0, 235, 255, 255)
+            # Animated dotted trajectory curve
+            n_dots = int(28 * arc_p)
+            for d_i in range(n_dots + 1):
+                u = d_i / 28.0
+                dx = ((1 - u) ** 2) * p0_x + 2 * (1 - u) * u * mid_x + (u ** 2) * p1_x
+                dy = ((1 - u) ** 2) * p0_y + 2 * (1 - u) * u * mid_y + (u ** 2) * p1_y
+                if d_i % 2 == 0:
+                    draw.ellipse([(dx - 4, dy - 4), (dx + 4, dy + 4)], fill=r_col)
+                if d_i == n_dots:
+                    draw.ellipse([(dx - 9, dy - 9), (dx + 9, dy + 9)], fill=(255, 255, 255, 255), outline=r_col, width=3)
+
+    # Draw Pulsing Radar Rings & Real Country Flag Pin Cards at Each Country Coordinate
+    for idx_p, (px_c, py_c, cnt_up, cnt_d) in enumerate(pin_coords):
+        is_primary = (idx_p == 0)
+        p_col = (255, 55, 75, 255) if is_primary else (0, 235, 255, 255)
+        if is_primary:
+            for r_i in range(2):
+                pr = int(18 + ((local_t * 42.0 + r_i * 28.0) % 64.0))
+                pa = int(210 * (1.0 - pr / 84.0))
+                draw.ellipse([(px_c - pr, py_c - pr), (px_c + pr, py_c + pr)], outline=(255, 65, 85, pa), width=3)
+        draw.ellipse([(px_c - 8, py_c - 8), (px_c + 8, py_c + 8)], fill=p_col, outline=(255, 255, 255, 255), width=3)
+
+        # Country Flag + Name Pin Pill right next to the coordinate
+        f_pin = get_font(18 if not is_short else 17)
+        tw_p = int(f_pin.getlength(cnt_up))
+        pw_pin, ph_pin = tw_p + 66, 38
+        bx_p = max(24, min(W - pw_pin - 24, px_c - pw_pin // 2))
+        by_p = max(120, py_c - 54 if idx_p % 2 == 0 else py_c + 16)
+        draw.rounded_rectangle([(bx_p + 2, by_p + 3), (bx_p + pw_pin + 2, by_p + ph_pin + 3)], radius=12, fill=(0, 0, 0, 160))
+        draw.rounded_rectangle([(bx_p, by_p), (bx_p + pw_pin, by_p + ph_pin)], radius=12, fill=(12, 20, 38, 235), outline=p_col, width=2)
+        try:
+            fl_im = get_or_build_flag_icon(cnt_d.get('iso2', 'US'), 32, 22)
+            bg.paste(fl_im, (bx_p + 10, by_p + 8))
+        except Exception:
+            pass
+        draw = ImageDraw.Draw(bg, "RGBA")
+        draw.text((bx_p + 50, by_p + 8), cnt_up, fill=(255, 255, 255, 255), font=f_pin)
+
+    # 4. Clean Editorial Bottom/Side Map Summary Card (Zero `>> // :: COORDS` AI Jargon!)
+    kp_map, _ = extract_key_point_from_sentence(b_txt, beat_num=1)
+    if not is_short:
+        c_box = (W - 640, 140, W - 64, 430)
+    else:
+        c_box = (48, 1060, W - 48, 1380)
+
     draw_2026_visionos_glass_card(
-        bg, (px0, py0, px1, py1), radius=26,
-        tint=(10, 18, 34, 198), border_col=(0, 235, 255, 165),
-        accent_col=(0, 235, 255), accent_pos="left", blur_px=20
+        bg, c_box, radius=24, tint=(10, 18, 34, 212),
+        border_col=(255, 215, 0, 185), accent_col=(255, 215, 0), accent_pos="left", blur_px=18
     )
     draw = ImageDraw.Draw(bg, "RGBA")
-    draw.text((px0 + 32, py0 + 24), "ORBITAL GEOSPATIAL TELEMETRY", fill=(0, 235, 255, 255), font=get_font(19))
-    draw.text((px0 + 32, py0 + 56), c_name[:22], fill=(255, 255, 255, 255), font=get_font(38 if not is_short else 34))
-    draw.text((px0 + 32, py0 + 104), f"EPICENTER: {cap_name[:20]}  •  {abs(target_lat):.1f}°{'N' if target_lat>=0 else 'S'}, {abs(target_lon):.1f}°{'E' if target_lon>=0 else 'W'}", fill=(255, 215, 0, 255), font=get_font(19))
-
-    b_clean = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
-    f_mv = get_font(23 if not is_short else 22)
-    if not is_short:
-        draw.line([(px0 + 32, py0 + 148), (px1 - 32, py0 + 148)], fill=(255, 255, 255, 45), width=2)
-        draw.rounded_rectangle([(px0 + 32, py0 + 168), (px1 - 32, py0 + 216)], radius=12, fill=(255, 65, 95, 220))
-        draw.text((px0 + 48, py0 + 179), f"ACTIVE VECTOR // {fit_whole_words_limit(point_hl, 26)}", fill=(255, 255, 255, 255), font=get_font(21))
-        m_lines = wrap_text_px(b_clean, f_mv, (px1 - px0) - 64, max_lines=5)
-        for l_i, ln_m in enumerate(m_lines):
-            draw.text((px0 + 32, py0 + 242 + l_i * 40), ln_m, fill=(238, 245, 255, 255), font=f_mv)
-    else:
-        draw.rounded_rectangle([(px0 + 32, py0 + 144), (px1 - 32, py0 + 188)], radius=12, fill=(255, 65, 95, 220))
-        draw.text((px0 + 46, py0 + 154), f"ACTIVE VECTOR // {fit_whole_words_limit(point_hl, 26)}", fill=(255, 255, 255, 255), font=get_font(20))
-        m_lines = wrap_text_px(b_clean, f_mv, (px1 - px0) - 64, max_lines=3)
-        for l_i, ln_m in enumerate(m_lines):
-            draw.text((px0 + 32, py0 + 204 + l_i * 36), ln_m, fill=(238, 245, 255, 255), font=f_mv)
+    cx0, cy0, cx1, cy1 = c_box
+    route_str = " ➔ ".join(x[2] for x in pin_coords[:3]) if len(pin_coords) >= 2 else f"{c_name} • {cap_name}"
+    draw.text((cx0 + 28, cy0 + 22), "GEOPOLITICAL ROUTE & IMPACT", fill=(255, 215, 0, 255), font=get_font(18))
+    draw.text((cx0 + 28, cy0 + 52), fit_whole_words_limit(route_str, 32), fill=(0, 235, 255, 255), font=get_font(22))
+    draw.rounded_rectangle([(cx0 + 28, cy0 + 92), (cx1 - 28, cy0 + 142)], radius=10, fill=(255, 215, 0, 238))
+    draw.text((cx0 + 42, cy0 + 103), fit_whole_words_limit(point_hl, 26), fill=(10, 14, 24, 255), font=get_font(24 if not is_short else 22))
+    f_mc = get_font(22)
+    for l_i, ln_m in enumerate(wrap_text_px(b_txt, f_mc, (cx1 - cx0) - 56, max_lines=3)):
+        draw.text((cx0 + 28, cy0 + 160 + l_i * 36), ln_m, fill=(242, 247, 255, 255), font=f_mc)
 
     bg.alpha_composite(get_prebuilt_vignette_overlay(W, H))
     return bg
@@ -8385,8 +8714,8 @@ def build_kinetic_number_callout_rgba(beat, local_t, is_short=True):
 
     d.rounded_rectangle([(6, 8), (bw - 2, bh - 2)], radius=16, fill=(0, 0, 0, 195))
     d.rounded_rectangle([(0, 0), (bw - 8, bh - 8)], radius=16, fill=(12, 18, 34, 248), outline=(255, 220, 0, 255), width=3)
-    d.text((20, 12), f">> {sub_lbl}", fill=(0, 235, 255, 255), font=get_font(15))
-    d.text((20, 38), stat_str, fill=(255, 230, 0, 255), font=get_font(40))
+    d.text((20, 12), f"{sub_lbl}", fill=(0, 235, 255, 255), font=get_font(15))
+    d.text((20, 38), format_animated_countup_number(stat_str, min(max(local_t / 0.65, 0.1), 1.0)), fill=(255, 230, 0, 255), font=get_font(40))
 
     if abs(bez_s - 1.0) > 0.005:
         resample_mode = getattr(Image, "Resampling", Image).BILINEAR
