@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T07:20:59.892870",
-  "round_robin_idx": 9,
-  "country_rot_idx": 44,
-  "bgm_track_counter": 2537754723,
+  "updated_at": "2026-11-07T08:53:16.769482",
+  "round_robin_idx": 10,
+  "country_rot_idx": 56,
+  "bgm_track_counter": 2563749679,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -579,74 +579,13 @@
     "new_documentary_highlights_vietnam_war_s",
     "soul_patrol_exposed_vietnam_s_first",
     "ellen_degeneres_show_producer_matthew_wright",
-    "the_5_000_donation_inside_ellen"
+    "the_5_000_donation_inside_ellen",
+    "angel_city_sign_world_cup_record",
+    "teen_soccer_prodigy_signs_10_year",
+    "govt_will_go_after_those_behind",
+    "ireland_s_media_under_siege_who"
   ],
   "event_fingerprints": [
-    {
-      "title": "Tiny Atomic Defects Reveal a Quantum Secret Hidden Inside an Unusual Metal",
-      "tokens": [
-        "inside",
-        "metal",
-        "atomic",
-        "tiny",
-        "secret",
-        "unusual",
-        "reveal",
-        "quantum",
-        "hidden",
-        "defects"
-      ]
-    },
-    {
-      "title": "India slashes cost of cancer drugs after court rules mark-ups are 'extortion'",
-      "tokens": [
-        "court",
-        "cost",
-        "rules",
-        "mark",
-        "india",
-        "extortion",
-        "cancer",
-        "slashes",
-        "drugs"
-      ]
-    },
-    {
-      "title": "American Airlines forecasts bigger loss in 2026 on fuel spike, plans to slow growth next year",
-      "tokens": [
-        "fuel",
-        "american",
-        "major",
-        "fourth",
-        "plans",
-        "next",
-        "loss",
-        "because",
-        "growth",
-        "slow",
-        "airlines",
-        "forecast",
-        "month",
-        "carrier",
-        "costs",
-        "bigger",
-        "year",
-        "forecasts",
-        "spike"
-      ]
-    },
-    {
-      "title": "Mysterious Brain Signal Linked to Several Schizophrenia Symptoms",
-      "tokens": [
-        "mysterious",
-        "symptoms",
-        "linked",
-        "brain",
-        "schizophrenia",
-        "signal",
-        "several"
-      ]
-    },
     {
       "title": "Vikings are last unbeaten team as Chiefs lose",
       "tokens": [
@@ -8259,11 +8198,91 @@
         "show",
         "wright"
       ]
+    },
+    {
+      "title": "Angel City sign World Cup record-holder Maddie DiMaria, 17, through 2030 - The Athletic",
+      "tokens": [
+        "angel",
+        "athletic",
+        "city",
+        "continuing",
+        "dimaria",
+        "establish",
+        "holder",
+        "maddie",
+        "record",
+        "roster",
+        "sign",
+        "themselves",
+        "through",
+        "times",
+        "york",
+        "youngest"
+      ]
+    },
+    {
+      "title": "Teen Soccer Prodigy Signs 10\u2011Year Deal: Angel City\u2019s Bold Youth Gamble",
+      "tokens": [
+        "angel",
+        "athletic",
+        "bold",
+        "city",
+        "deal",
+        "dimaria",
+        "gamble",
+        "holder",
+        "maddie",
+        "prodigy",
+        "record",
+        "sign",
+        "signs",
+        "soccer",
+        "teen",
+        "through",
+        "year",
+        "youth"
+      ]
+    },
+    {
+      "title": "Govt 'will go after' those behind media outlet threats, says Taoiseach",
+      "tokens": [
+        "behind",
+        "government",
+        "govt",
+        "live",
+        "martin",
+        "media",
+        "michel",
+        "organisations",
+        "other",
+        "outlet",
+        "security",
+        "seriously",
+        "taking",
+        "taoiseach",
+        "threat",
+        "threats",
+        "will",
+        "worrying"
+      ]
+    },
+    {
+      "title": "Ireland's Media Under Siege: Who Is Behind The Threats?",
+      "tokens": [
+        "behind",
+        "govt",
+        "ireland",
+        "media",
+        "outlet",
+        "siege",
+        "taoiseach",
+        "threats",
+        "under",
+        "will"
+      ]
     }
   ],
   "last_categories": [
-    "SCIENCE",
-    "GEOPOLITICS",
     "UNDERRATED_GEOPOLITICS",
     "GLOBAL_POWERS",
     "TECHNOLOGY",
@@ -8301,11 +8320,11 @@
     "SCIENCE",
     "ENTERTAINMENT",
     "DEFENSE_MILITARY",
-    "ENTERTAINMENT"
+    "ENTERTAINMENT",
+    "MIND_BLOWING_FACTS",
+    "TECHNOLOGY"
   ],
   "last_sources": [
-    "Space.com Breaking",
-    "Country Documentary Wire [AUSTRIA]",
     "DW Global In-Depth",
     "Country Documentary Wire [MYANMAR]",
     "Ars Technica",
@@ -8343,11 +8362,11 @@
     "Space.com Breaking",
     "Global Country Wire [EGYPT \u2022 ENTERTAINMENT]",
     "Global Country Wire [VIETNAM \u2022 DEFENSE_MILITARY]",
-    "Hollywood Reporter"
+    "Hollywood Reporter",
+    "Global Country Wire [MOROCCO \u2022 MIND_BLOWING_FACTS]",
+    "Global Country Wire [IRELAND \u2022 TECHNOLOGY]"
   ],
   "last_countries": [
-    "INDONESIA",
-    "GREECE",
     "IRAQ",
     "GLOBAL BRIEFING",
     "CANADA",
@@ -8395,6 +8414,8 @@
     "SPACE & SCIENCE",
     "IRAN",
     "VIETNAM",
-    "GLOBAL CINEMA"
+    "GLOBAL CINEMA",
+    "UNITED STATES",
+    "EUROPE"
   ]
 }
