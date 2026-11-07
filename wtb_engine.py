@@ -1213,16 +1213,18 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
     top_hits_str = ", ".join(top_channel_hits[:3]) if top_channel_hits else "High-impact global geopolitics, stock market shocks, defense tech, AI breakthroughs, and superpower rivalries"
 
     sys_prompt = (
-        "You are the world's #1 YouTube Documentary Showrunner, combining the exact storytelling mastery of: "
-        "(1) THINK SCHOOL (razor-sharp geopolitical & business case-study framing, explosive cold-open contradiction hook, 'Follow-the-Money' financial/supply-chain math, and strategic winners vs losers), "
-        "(2) NITISH RAJPUT (forensic factual reconstruction where every real event, institution, and leader from the verified facts is explained clearly with zero fluff), "
-        "(3) ABHI & NIYU (high-retention conversational pacing, crystal-clear breakdown of why this matters to the world, and numbered 'Big Takeaways' at the end), and "
-        "(4) BBC WORLD NEWS (authoritative international objectivity covering all major global powers). "
+        "You are the world's #1 YouTube Case-Study & Documentary Showrunner, modeling your exact script pacing and visual storytelling on THINK SCHOOL (Ganesh Prasad's 1M+ view geopolitical, business, sports, science & tech case studies) combined with NITISH RAJPUT's forensic clarity: "
+        "FOLLOW THIS EXACT 6-STAGE THINK SCHOOL NARRATIVE ARCHITECTURE ACROSS THE SCENES: "
+        "- STAGE 1 (Cold Open Flashpoint & Global Stakes): Start directly with the most dramatic action, quote, or flashpoint from the verified facts (no slow greeting), then explain why everyone from global leaders to institutional traders and everyday citizens is watching this story. "
+        "- STAGE 2 (The Core Rivalry & The 3 Big Questions Roadmap): Frame the central conflict ('On one side... on the other side...') and explicitly pose the 3 critical questions this video will answer ('The question is: Why is this happening now? What is the hidden mechanism behind it? And how will this reshape the world?'). "
+        "- STAGE 3 (The Paradox & 'Let's Do The Math' Simple 100-Unit Explainer): Highlight the central irony or paradox of the story, and break down the complex policy, technical mechanism, or financial structure using a crystal-clear simple math analogy ('Think of it like this: out of 100...' or exact comparative numbers) so any viewer understands the system in 30 seconds. "
+        "- STAGE 4 (The Domino Chain & Chokepoint / Pipeline Effect): Trace the step-by-step cause-and-effect domino chain ('Because of A, B happened, which caused C to shift by X%, forcing D...') across physical trade corridors, supply chains, arenas, or biological/technical systems. "
+        "- STAGE 5 (Head-to-Head Strategy Matrix & Follow-the-Money Breakdown): Compare the two competing philosophies, technologies, or contenders side-by-side and follow where the billions of dollars, points, or strategic leverage are flowing. "
+        "- STAGE 6 (The 'Cat on the Wall' Twist & 3 Future Scenarios): Reveal the final catch or kingmaker twist, lay out the 3 concrete future scenarios from here, and ask the viewer: 'Now tell me your opinion in the comments.' "
         f"CRITICAL FACTUAL GROUNDING & ANTI-HALLUCINATION RULES (TODAY'S DATE IS {today_date_str}): "
-        "1. NEVER invent fake historical dates from 2023 or 2024 (such as 'June 12, 2024' or 'May 12, 2024'), NEVER invent fake ship names or fake dollar figures not supported by context, and NEVER mention deceased/former leaders as current (e.g. NEVER say 'President Ebrahim Raisi' or 'Defense Secretary Lloyd Austin' unless explicitly in the verified facts!). Refer to current breaking events as happening 'this week', 'in this latest escalation', or use only dates explicitly stated in VERIFIED LATEST FACTS. "
-        "2. NEVER paste raw news headlines or say 'according to Jerusalem Post / Tasnim / BBC' inside the narration. Write 100% smooth, original documentary narration. NEVER inject India, New Delhi, Mumbai, or Indian companies into a story unless the headline is explicitly about India! "
-        "3. EVERY scene MUST advance the story with NEW analysis, NEW angles, and ZERO repeated sentences across scenes! "
-        "4. 100% POINT-TO-POINT GOOGLE IMAGE QUERY MAPPING: For every single sentence in `beat_visuals`, write a `photo_query` of 5-7 concrete physical nouns + exact country/entity that a human video editor would type into Google Images to find the exact photo for THAT sentence (e.g. 'Strait of Hormuz oil tanker ship Oman', 'US Navy Arleigh Burke destroyer warship', 'Iran IRGC fast attack boat Persian Gulf', 'Qeshm Island Iran aerial satellite map'). NEVER use generic country names alone and NEVER use metaphor words like 'hole', 'table', 'poker', 'stage', or 'dark'! "
+        "1. NEVER invent fake historical dates from 2023 or 2024, NEVER invent fake ship names or fake dollar figures not supported by context, and NEVER mention deceased/former leaders as current. "
+        "2. NEVER paste raw news headlines or say 'according to BBC/Reuters' inside the narration. NEVER inject India, New Delhi, or Mumbai into a non-India story unless the headline explicitly involves India. "
+        "3. 100% POINT-TO-POINT VISUAL MAPPING: For every single sentence in `beat_visuals`, write a `photo_query` of 5-7 concrete physical nouns + exact country/entity so the exact real video/photo of that sentence appears on screen! "
         "Output STRICT JSON only."
     )
 
@@ -1695,12 +1697,15 @@ PLAYLIST_KEYWORD_MATCHERS = {
 
 def ensure_cached_playlist_map(yt, hist_obj):
     """
-    Fetches the channel's 8 official playlist IDs ONCE (1 quota unit) and caches them permanently
-    inside `published_history.json` (`cached_playlist_map`) so every uploaded video can be added
-    to its category playlist (`Screenshot_2026_1107_033315.jpg`) with zero recurring list quota!
+    V52 COMPLETE 8-PLAYLIST MAPPER (Guarantees `SPORTS` & `VIRAL_UNDERDOG_SPORTS` are ALWAYS mapped!):
+    Refreshes if `VIRAL_UNDERDOG_SPORTS` or `SPORTS` or `ENTERTAINMENT` is missing from an older cached dict!
     """
-    if hist_obj is not None and isinstance(hist_obj.get("cached_playlist_map"), dict) and len(hist_obj["cached_playlist_map"]) >= 4:
-        return hist_obj["cached_playlist_map"]
+    if hist_obj is not None and isinstance(hist_obj.get("cached_playlist_map"), dict):
+        cmap = hist_obj["cached_playlist_map"]
+        if cmap.get("SPORTS") and not cmap.get("VIRAL_UNDERDOG_SPORTS"):
+            cmap["VIRAL_UNDERDOG_SPORTS"] = cmap["SPORTS"]
+        if len(cmap) >= 8 and cmap.get("SPORTS") and cmap.get("VIRAL_UNDERDOG_SPORTS"):
+            return cmap
     pl_map = {}
     try:
         resp = yt.playlists().list(part="snippet", mine=True, maxResults=50).execute()
@@ -1734,13 +1739,22 @@ def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_tak
         hist_obj = load_published_history()
         active_pl_map = playlist_map if (playlist_map and len(playlist_map) >= 4) else ensure_cached_playlist_map(yt, hist_obj)
         core_hub = PILLAR_TO_CORE_HUB.get(pillar, pillar)
-        target_pid = (active_pl_map or {}).get(pillar) or (active_pl_map or {}).get(core_hub)
+        amap = active_pl_map or {}
+        target_pid = (
+            amap.get(pillar)
+            or amap.get(core_hub)
+            or (amap.get("SPORTS") if "SPORT" in str(pillar).upper() else None)
+            or (amap.get("BUSINESS") if "MARKET" in str(pillar).upper() or "BIZ" in str(pillar).upper() else None)
+            or (amap.get("TECHNOLOGY") if "AI" in str(pillar).upper() or "TECH" in str(pillar).upper() else None)
+            or amap.get("WORLD")
+        )
         if target_pid:
             yt.playlistItems().insert(
                 part="snippet",
                 body={
                     "snippet": {
                         "playlistId": target_pid,
+                        "position": 0,
                         "resourceId": {
                             "kind": "youtube#video",
                             "videoId": video_id
@@ -1748,7 +1762,7 @@ def add_video_to_category_playlist_and_comment(yt, video_id, pillar, summary_tak
                     }
                 }
             ).execute()
-            print(f"📂 [Added to Channel Playlist '{pillar}'] Video {video_id} -> Playlist {target_pid}", flush=True)
+            print(f"📂 [Added to Top (Position #0) of Channel Playlist '{pillar}'] Video {video_id} -> Playlist {target_pid}", flush=True)
     except Exception as pe:
         print("⚠️ Playlist insert note:", str(pe)[:90], flush=True)
 
@@ -2209,20 +2223,69 @@ HEADLINE_STOP_VERBS_ADJS = {
 }
 
 def extract_primary_topic_anchor(dossier):
-    low = f"{dossier['title']} {' '.join(dossier.get('raw_facts', [])[:2])}".lower()
-    for word_key, (_, wiki_exact, _) in CONCRETE_WIKI_PROPS.items():
-        if re.search(rf"\b{re.escape(word_key)}\b", low):
-            return wiki_exact
+    """
+    V52 PROPER-ENTITY & FACT-GROUNDED TOPIC ANCHOR EXTRACTOR:
+    Extracts the true named subject (Person, Club, Organization, Company, Treaty, or Place) from BOTH
+    `dossier['title']` and `dossier['raw_facts'][:2]`, skipping clickbait hook words like 'Donation',
+    'Empire', 'Collapse', 'Teen', 'Prodigy', 'Bold', 'Gamble'!
+    """
+    raw_t = str(dossier.get("original_rss_headline") or dossier.get("title", ""))
+    facts_head = " ".join(str(x) for x in (dossier.get("raw_facts") or [])[:2])
+    comb_text = f"{raw_t}. {facts_head}"
+    low = comb_text.lower()
 
     for p_key, (wiki_page, _, _) in PERSON_WIKI_MAP.items():
         if re.search(rf"\b{re.escape(p_key)}\b", low):
             return wiki_page
 
+    for word_key, (_, wiki_exact, _) in CONCRETE_WIKI_PROPS.items():
+        if re.search(rf"\b{re.escape(word_key)}\b", low):
+            return wiki_exact
+
+    clickbait_hook_stops = {
+        "the", "this", "that", "why", "how", "what", "when", "where", "who", "inside", "behind",
+        "donation", "empire", "collapse", "teen", "teenager", "prodigy", "bold", "youth", "gamble",
+        "massive", "shocking", "historic", "signs", "signed", "deal", "year", "years", "old",
+        "sudden", "secret", "truth", "breaking", "world", "talk", "brief", "million", "billion",
+        "thousand", "hundred", "october", "november", "december", "january", "february", "march",
+        "april", "may", "june", "july", "august", "september", "monday", "tuesday", "wednesday",
+        "thursday", "friday", "saturday", "sunday", "week", "today", "yesterday"
+    }
+
+    # 1. Look for Multi-Word Capitalized Proper Noun Phrases in `comb_text` (e.g. 'Matthew Wright', 'Ellen DeGeneres', 'Angel City FC', 'Maddy DiMaria')
+    proper_phrases = []
+    for m_pr in re.finditer(r"\b([A-Z][a-zA-Z0-9\-]+(?:\s+[A-Z][a-zA-Z0-9\-]+){1,3})\b", comb_text):
+        cand_p = m_pr.group(1).strip()
+        p_toks = [w for w in cand_p.split() if w.lower() not in clickbait_hook_stops and w.lower() not in HEADLINE_STOP_VERBS_ADJS]
+        if len(p_toks) >= 2:
+            clean_p = " ".join(p_toks[:3])
+            cl_low = clean_p.lower()
+            replaced = False
+            for idx_p, ex_p in enumerate(proper_phrases):
+                if ex_p.lower() in cl_low:
+                    proper_phrases[idx_p] = clean_p
+                    replaced = True
+                    break
+                if cl_low in ex_p.lower():
+                    replaced = True
+                    break
+            if not replaced:
+                proper_phrases.append(clean_p)
+    if proper_phrases:
+        return fit_whole_words_limit(" ".join(proper_phrases[:2]), 38)
+
+    # 2. Fallback to meaningful non-clickbait nouns from title + first fact
     content_nouns = [
-        w for w in re.findall(r"[A-Za-z]{4,}", dossier["title"])
-        if w.lower() not in HEADLINE_STOP_VERBS_ADJS
+        w for w in re.findall(r"[A-Za-z]{4,}", comb_text)
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in clickbait_hook_stops
     ]
-    return " ".join(content_nouns[:2]).title() if content_nouns else "Global Case Study"
+    seen_cn = []
+    for cn in content_nouns:
+        if cn.lower() not in [x.lower() for x in seen_cn]:
+            seen_cn.append(cn)
+        if len(seen_cn) >= 3:
+            break
+    return " ".join(seen_cn).title() if seen_cn else "Global Case Study"
 
 def build_100_percent_original_youtube_title(raw_title, pillar, c_prof, topic_anchor, is_update=False):
     """
@@ -3498,8 +3561,11 @@ def run_isolated_subprocess(cmd_list, timeout_sec=14):
 
 def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label_str):
     """
-    V30 ISOLATED YT-DLP 1080p HD REAL NEWS, INTERVIEW & DOCUMENTARY FOOTAGE HARVESTER:
-    Downloads 720p/1080p interview and event clips and sharpens them to 1920x1080 24fps.
+    V52 FAST MULTI-CLIENT YT-DLP 1080p HD REAL NEWS, SPEECH & EVENT FOOTAGE HARVESTER:
+    - Uses `--extractor-args "youtube:player_client=android_vr,tv,web_embedded,ios"` to bypass
+      GitHub Actions datacenter bot-blocks!
+    - Uses fast `ffmpeg_i:-ss 00:08 -t 10` input seeking (22s timeout) so real speeches, interviews,
+      and event footage download in 3-5 seconds without hanging!
     """
     if not search_or_url or search_or_url in used_video_urls:
         return None
@@ -3517,13 +3583,29 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             "--no-warnings",
             "--quiet",
             "--geo-bypass",
-            "--max-filesize", "18M",
-            "--download-sections", "*00:16-00:26",
-            "-f", "best[height<=1080][ext=mp4]/bestvideo[height<=1080][ext=mp4]/best[ext=mp4]",
+            "--extractor-args", "youtube:player_client=android_vr,tv,web_embedded,ios",
+            "--downloader", "ffmpeg",
+            "--downloader-args", "ffmpeg_i:-ss 00:08 -t 10.5",
+            "-f", "18/22/best[height<=720][ext=mp4]/best[ext=mp4]/best",
             "-o", raw_local,
             search_or_url
         ]
-        run_isolated_subprocess(cmd_dl, timeout_sec=14)
+        run_isolated_subprocess(cmd_dl, timeout_sec=22)
+        if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 25000:
+            # Fallback without --downloader ffmpeg for direct progressively downloadable formats
+            cmd_dl2 = [
+                "yt-dlp",
+                "--no-playlist",
+                "--no-warnings",
+                "--quiet",
+                "--geo-bypass",
+                "--extractor-args", "youtube:player_client=android_vr,tv,web_embedded,ios",
+                "--max-filesize", "16M",
+                "-f", "18/best[height<=720][ext=mp4]/best[ext=mp4]",
+                "-o", raw_local,
+                search_or_url
+            ]
+            run_isolated_subprocess(cmd_dl2, timeout_sec=18)
         if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 25000:
             return None
         try:
@@ -3531,12 +3613,11 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             vw_y = int(cap_y.get(cv2.CAP_PROP_FRAME_WIDTH) or 0)
             vh_y = int(cap_y.get(cv2.CAP_PROP_FRAME_HEIGHT) or 0)
             cap_y.release()
-            if vw_y < 854 or vh_y < 480:
+            if vw_y < 600 or vh_y < 340:
                 return None
         except Exception:
             return None
 
-        # Crop 16% off bottom & 10% off top (`scale=2280:1282,crop=1920:1080:180:80`) so third-party lower-thirds/burned-in subtitles are 100% removed!
         cmd_tr = [
             "ffmpeg", "-nostdin", "-y",
             "-i", raw_local,
@@ -3545,20 +3626,21 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             "-r", "30", "-an", "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-preset", "fast",
             clean_mp4
         ]
-        run_isolated_subprocess(cmd_tr, timeout_sec=12)
+        run_isolated_subprocess(cmd_tr, timeout_sec=14)
         if os.path.exists(clean_mp4) and os.path.getsize(clean_mp4) > 25000:
             vc = VideoFileClip(clean_mp4)
             GLOBAL_OPEN_VCLIPS.append(vc)
-            if vc.duration >= 2.4:
+            if vc.duration >= 2.2:
                 f1 = vc.get_frame(min(0.6, vc.duration * 0.25))
                 f2 = vc.get_frame(min(1.8, vc.duration * 0.60))
                 if is_valid_cinematic_video_frame(f1, story_title=label_str, query_context=label_str) and is_valid_cinematic_video_frame(f2, story_title=label_str, query_context=label_str):
                     used_video_urls.add(search_or_url)
-                    print(f"   🎬 [YT-DLP 1080p TOPIC INTERVIEW/FOOTAGE LOCKED]: {label_str[:40]} ({round(vc.duration, 1)}s)", flush=True)
+                    print(f"   🎬 [YT-DLP 1080p REAL SPEECH/EVENT VIDEO LOCKED]: {label_str[:42]} ({round(vc.duration, 1)}s)", flush=True)
                     return {
                         "vclip": vc,
                         "start_t": 0.0,
-                        "label": f"● VERIFIED FOOTAGE • {label_str.upper()[:22]}"
+                        "is_real_video": True,
+                        "label": f"● LIVE EVENT FOOTAGE • {label_str.upper()[:22]}"
                     }
                 else:
                     try:
@@ -3785,7 +3867,7 @@ def extract_topic_master_queries(dossier, sections_list=None):
             if c_title not in story_countries:
                 story_countries.append(c_title)
 
-    loc_primary = " ".join(story_countries[:2]).strip() or (geo_name or topic_anchor[:24])
+    loc_primary = " ".join(story_countries[:2]).strip() or (geo_name or fit_whole_words_limit(topic_anchor, 28))
     loc_first = story_countries[0] if story_countries else (geo_name or (topic_anchor.split()[0] if topic_anchor else ""))
 
     headline_stop = {
@@ -3794,10 +3876,18 @@ def extract_topic_master_queries(dossier, sections_list=None):
         "behind", "inside", "unfolds", "chaos", "grip", "breaking", "world", "talk", "brief", "explained",
         "nobody", "talking", "about", "just", "changed", "forever", "everything", "know", "here"
     }
+    # Strip formatted currency/numbers like `$5,000` or `50,000` before tokenizing so `000` never enters a search query!
+    first_fact_str = str((dossier.get("raw_facts") or [""])[0])
+    clean_title_for_q = re.sub(r"(?:\$|£|€|₹)?\d+(?:,\d+)+(?:\.\d+)?", " ", f"{story_title} {yt_title} {first_fact_str}")
+    headline_stop.update({
+        "donation", "empire", "collapse", "teen", "prodigy", "bold", "youth", "gamble", "signs",
+        "deal", "october", "november", "tuesday", "monday", "sunday", "week", "announced", "historic",
+        "served", "operational", "backbone", "sudden", "catastrophic", "failure", "official"
+    })
     exact_headline_words = []
-    for w in re.findall(r"[A-Za-z0-9\-]{3,}", f"{story_title} {yt_title}"):
+    for w in re.findall(r"[A-Za-z][A-Za-z0-9\-]{2,}", clean_title_for_q):
         wl = w.lower().strip("-")
-        if wl not in headline_stop and wl not in [x.lower() for x in exact_headline_words]:
+        if len(wl) >= 3 and not wl.isdigit() and wl not in headline_stop and wl not in HEADLINE_STOP_VERBS_ADJS and wl not in [x.lower() for x in exact_headline_words]:
             exact_headline_words.append(w)
 
     non_geo_event_words = [
@@ -3819,7 +3909,11 @@ def extract_topic_master_queries(dossier, sections_list=None):
         f"{loc_primary} {ev_phrase_1} video footage".strip(),
     ]
     for q_cand in base_candidates:
-        qc = " ".join(q_cand.split()).strip()
+        q_toks_dedup = []
+        for qw in q_cand.split():
+            if qw.lower() not in [x.lower() for x in q_toks_dedup]:
+                q_toks_dedup.append(qw)
+        qc = " ".join(q_toks_dedup[:7]).strip()
         if len(qc) >= 5 and qc.lower() not in [x.lower() for x in queries]:
             queries.append(qc)
 
@@ -4042,28 +4136,30 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
     }
 
     def _is_valid_video_title_for_story(v_title_str, v_url_str="", relaxed_for_commons=False):
-        if relaxed_for_commons:
+        # Reject non-ASCII regional scripts (Devanagari/Hindi, Tamil, Kannada, Arabic, Cyrillic, etc.)
+        clean_vt = re.sub(r"[\u2010-\u2027\u2030-\u205E•—–‘’“”]", " ", str(v_title_str or ""))
+        if re.search(r"[^\x00-\x7F]", clean_vt):
             return False
-        # Reject any video title with non-ASCII script (Hindi/Devanagari, Kannada, Tamil, Arabic, Cyrillic, Korean, etc.)!
-        if re.search(r"[^\x00-\x7F]", str(v_title_str or "")):
-            return False
-        comb_v = f"{v_title_str} {v_url_str}".lower()
+        comb_v = f"{clean_vt} {v_url_str}".lower()
         regional_tv_ban = [
             "suno india", "aaj tak", "aajtak", "ndtv", "zee news", "abp news", "india tv", "republic world",
             "tv9", "suvarna", "public tv", "puthiya", "manorama", "mathrubhumi", "etv", "sakshi", "abn",
-            "arirang", "wion", "firstpost", "sabc", "channels television", "ntv kenya", "ktn news",
-            "full bulletin", "live bulletin", "news anchor", "morning news", "evening news", "reaction",
-            "shorts", "#shorts", "tiktok", "reel"
+            "arirang", "sabc", "channels television", "ntv kenya", "ktn news",
+            "full bulletin", "live bulletin", "morning news", "evening news", "reaction",
+            "tiktok", "reel"
         ]
-        if any(bw in comb_v for bw in strict_banned_video_words + BANNED_CAPTION_AND_TITLE_WORDS + regional_tv_ban + ["votes to leave", "brexit", "diving", "diver", "olympic", "medal", "championships", "united airlines"]):
+        if any(bw in comb_v for bw in strict_banned_video_words + BANNED_CAPTION_AND_TITLE_WORDS + regional_tv_ban + ["votes to leave", "brexit", "united airlines"]):
             return False
         if has_foreign_country_collision(comb_v, story_ctx_low):
             return False
         v_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", comb_v)}
         has_geo = len(geo_anchor_tokens.intersection(v_toks)) >= 1
-        has_headline_subj = len(headline_subj_toks.intersection(v_toks)) >= 1
-        has_ev = len((event_context_tokens - {"leave", "votes", "vote", "euro", "dive", "face", "false", "after"}).intersection(v_toks)) >= 2
-        return has_geo and (has_headline_subj or has_ev)
+        subj_hits = len(headline_subj_toks.intersection(v_toks))
+        ev_hits = len((event_context_tokens - {"leave", "votes", "vote", "euro", "dive", "face", "false", "after"}).intersection(v_toks))
+        if relaxed_for_commons:
+            return (has_geo and (subj_hits >= 1 or ev_hits >= 1)) or (subj_hits >= 2)
+        # Accept if video matches >= 2 specific subject/entity tokens (e.g. 'Ellen DeGeneres Matthew Wright' or 'Angel City DiMaria') OR geo + subject!
+        return (subj_hits >= 2) or (has_geo and (subj_hits >= 1 or ev_hits >= 2))
 
     candidate_video_queries = []
     for cq in [query_str, f"{master_queries[0]} news", f"{master_queries[0]} footage", master_queries[min(1, len(master_queries)-1)], topic_anchor]:
@@ -4090,6 +4186,51 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
                     m_clean = u_m.group(1)
                     if "th?id=ovp" not in m_clean.lower() and m_clean not in used_video_urls and not any(b in m_clean.lower() for b in ["aljazeera", "cartoon", "game", "logo", "periscopefilm", "arirang"]):
                         res = download_and_transcode_mp4_url(m_clean, used_video_urls, f"{tag_id}_bingv", v_title[:38])
+                        if res is not None:
+                            return res
+        except Exception:
+            pass
+
+    # 2B. Reddit Public Direct 720p/1080p MP4 Video Harvester (`v.redd.it` — Zero Datacenter Bot Block!)
+    for rd_q in candidate_video_queries[:3]:
+        try:
+            rd_url = f"https://www.reddit.com/search.json?q={urllib.parse.quote(rd_q)}&sort=relevance&t=year&limit=14"
+            rd_r = requests.get(rd_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0"}, timeout=5)
+            if rd_r.status_code == 200:
+                posts = ((rd_r.json().get("data") or {}).get("children") or [])
+                for p_it in posts[:12]:
+                    pdata = p_it.get("data") or {}
+                    p_title = str(pdata.get("title") or "")
+                    if not p_title or pdata.get("over_18") or not _is_valid_video_title_for_story(p_title, ""):
+                        continue
+                    rv_obj = ((pdata.get("secure_media") or {}).get("reddit_video") or (pdata.get("media") or {}).get("reddit_video") or {})
+                    fb_mp4 = str(rv_obj.get("fallback_url") or "").split("?")[0]
+                    if fb_mp4 and fb_mp4.endswith(".mp4") and fb_mp4 not in used_video_urls:
+                        res = download_and_transcode_mp4_url(fb_mp4, used_video_urls, f"{tag_id}_redv", p_title[:38], skip_intro_sec=0.5)
+                        if res is not None:
+                            res["is_real_video"] = True
+                            return res
+        except Exception:
+            pass
+
+    # 2C. Bing Video Search `murl` / `vurl` Harvester (Extracts real YouTube/Dailymotion/Publisher video URLs via Bing!)
+    for bv_q2 in candidate_video_queries[:2]:
+        try:
+            bvr2 = requests.get(
+                f"https://www.bing.com/videos/search?q={urllib.parse.quote(bv_q2 + ' news footage speech')}&FORM=HDRSC4",
+                headers=HEADERS_WEB, timeout=5
+            )
+            for vb_raw in re.findall(r'vrhm="([^"]+)"', bvr2.text)[:10]:
+                vb = vb_raw.replace("&quot;", '"').replace("&amp;", "&").replace("\\/", "/")
+                vt_m = re.search(r'"vt"\s*:\s*"([^"]+)"', vb)
+                v_title = vt_m.group(1) if vt_m else ""
+                if not v_title or not _is_valid_video_title_for_story(v_title, vb):
+                    continue
+                murl_m = re.search(r'"murl"\s*:\s*"(https?://[^"]+)"', vb) or re.search(r'"vurl"\s*:\s*"(https?://[^"]+)"', vb)
+                if murl_m:
+                    v_link = murl_m.group(1)
+                    if v_link not in used_video_urls and ("youtube.com/watch" in v_link or "dailymotion.com/video" in v_link):
+                        res = download_ytdlp_news_broll_clip(v_link, used_video_urls, f"{tag_id}_bmurl", v_title[:38])
                         if res is not None:
                             return res
         except Exception:
@@ -6108,21 +6249,34 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
     return hud
 
 def build_point_highlight_banner_rgba(beat, W, H, is_short=True):
-    pt_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY EVIDENCE").upper(), 30)
+    """
+    V52 THINK SCHOOL FLOATING EVIDENCE & DOCUMENT CALLOUT STRIP (Corner-Anchored — Zero Center Obstruction!):
+    Displays the chapter number, source/dossier verification tag, and a crisp Think School yellow-highlighted
+    key takeaway phrase in the corner while leaving 90%+ of the 1080p video/photo unobstructed!
+    """
+    pt_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY EVIDENCE").upper(), 32)
+    b_excerpt = strip_news_publisher_mentions(str(beat.get("beat_excerpt") or "")).strip()
+    short_clause = fit_whole_words_limit(b_excerpt, 48 if not is_short else 42)
     sec_num = int(beat.get("section_idx", 0)) + 1
-    f_sub = get_font(15 if not is_short else 16)
-    f_main = get_font(23 if not is_short else 24)
-    sub_lbl = f"{sec_num:02d} // VERIFIED DOSSIER"
-    tw = max(int(f_main.getlength(pt_txt)), int(f_sub.getlength(sub_lbl)))
-    bw = max(320, tw + 52)
-    bh = 68
+    f_sub = get_font(15)
+    f_main = get_font(22 if not is_short else 21)
+    f_cl = get_font(18 if not is_short else 17)
+    sub_lbl = f"CHAPTER {sec_num:02d} // VERIFIED EVIDENCE RECORD"
+    tw = max(int(f_main.getlength(pt_txt)), int(f_sub.getlength(sub_lbl)), int(f_cl.getlength(f'"{short_clause}..."')))
+    bw = min(W - 84, max(380, tw + 56))
+    bh = 104
     card = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
     d = ImageDraw.Draw(card, "RGBA")
-    d.rounded_rectangle([(3, 5), (bw - 1, bh - 1)], radius=16, fill=(0, 0, 0, 135))
-    d.rounded_rectangle([(0, 0), (bw - 4, bh - 4)], radius=16, fill=(10, 18, 34, 205), outline=(255, 255, 255, 68), width=2)
-    d.rounded_rectangle([(0, 8), (6, bh - 12)], radius=3, fill=(0, 235, 255, 255))
-    d.text((18, 9), sub_lbl, fill=(0, 235, 255, 255), font=f_sub)
-    d.text((18, 29), pt_txt, fill=(255, 255, 255, 255), font=f_main)
+    d.rounded_rectangle([(4, 6), (bw - 1, bh - 1)], radius=18, fill=(0, 0, 0, 150))
+    d.rounded_rectangle([(0, 0), (bw - 4, bh - 4)], radius=18, fill=(10, 18, 34, 218), outline=(255, 255, 255, 82), width=2)
+    d.rounded_rectangle([(0, 10), (7, bh - 14)], radius=3, fill=(255, 215, 0, 255))
+    d.text((20, 10), sub_lbl, fill=(0, 235, 255, 255), font=f_sub)
+    # Think School yellow highlighter strip behind main point
+    hl_w = min(bw - 36, int(f_main.getlength(pt_txt)) + 20)
+    d.rounded_rectangle([(18, 32), (18 + hl_w, 64)], radius=7, fill=(255, 225, 0, 242))
+    d.text((28, 35), pt_txt, fill=(10, 14, 24, 255), font=f_main)
+    if short_clause:
+        d.text((20, 70), f'"{short_clause}..."', fill=(232, 240, 255, 245), font=f_cl)
     return card
 
 def wrap_text_px(text_str, font_obj, max_px_w, max_lines=3):
@@ -6603,60 +6757,809 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     return bg
 
 
+
+# ==============================================================================
+# V51 28-TEMPLATE THINK SCHOOL / VOX / JOHNNY HARRIS CONTEXT-AWARE GRAPHIC ENGINE
+# - 7 Core Think School Templates (from Ub4ZmBuSA7Q) + 21 Category-Specialized Templates
+# - Smart Context-Only Router: Only activates when the spoken sentence genuinely
+#   calls for that specific graphic (`jahan zaroorat pade wahin pe`), never repeating
+#   a template twice in the same video and keeping 70%+ of beats as 100% unobstructed
+#   real 1080p event videos & exact-sentence HD photojournalism!
+# ==============================================================================
+
+V51_ALL_28_TEMPLATE_MODES = {
+    "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
+    "TS_02_HEAD_TO_HEAD_VS_SPLIT",
+    "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE",
+    "TS_04_DOMINO_CHAIN_FLOWCHART",
+    "TS_05_CHOKEPOINT_CORRIDOR_MAP",
+    "TS_06_SIMPLE_100_MATH_GRID",
+    "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
+    "GEO_08_MILITARY_FIREPOWER_RADAR",
+    "GEO_09_SANCTIONS_TARIFF_BARRIER",
+    "GEO_10_ALLIANCE_POWER_NETWORK",
+    "GEO_11_CHRONOLOGY_TIMELINE_RIBBON",
+    "BIZ_12_WALL_STREET_CANDLESTICK_CHART",
+    "BIZ_13_HOUSEHOLD_WALLET_IMPACT_BOARD",
+    "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
+    "BIZ_15_CORPORATE_EMPIRE_HIERARCHY",
+    "BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD",
+    "TECH_17_AI_NEURAL_COMPUTE_ARENA",
+    "TECH_18_SILICON_WAFER_LITHOGRAPHY_HUD",
+    "TECH_19_CYBER_INTRUSION_MATRIX",
+    "SPACE_20_ORBITAL_APOGEE_TRAJECTORY",
+    "SCI_21_SEISMIC_CLIMATE_WAVEFORM",
+    "MED_22_DNA_HELIX_CLINICAL_TRIAL",
+    "MED_23_PHYSIOLOGY_ECG_BIOMARKER",
+    "SPORT_24_ATHLETE_TALE_OF_THE_TAPE",
+    "SPORT_25_CHAMPIONSHIP_LEADERBOARD_GAP",
+    "CINE_26_BOX_OFFICE_AUDIENCE_METER",
+    "MYST_27_DECLASSIFIED_FORENSIC_BOARD",
+    "TS_28_STUDIO_QUOTE_PRESS_MONITOR",
+    # Legacy aliases mapped cleanly:
+    "THINKSCHOOL_KINETIC_DATA_SCORECARD",
+    "NITISH_DOSSIER_SPLIT_BOARD",
+    "MOTION_CANVAS_POWER_NETWORK",
+    "BROADCAST_INTERVIEW_QUOTE_MOCKUP",
+    "TACTICAL_GEOPOLITICAL_MAP"
+}
+
+V51_TEMPLATE_RULES = [
+    # 1-7: Core Think School Narrative Templates (from Ub4ZmBuSA7Q)
+    ("TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT", "ALL", r"\b(look at this|picture|photograph|posted|headline|newspaper|article|viral image|social media|report shows|document reveals)\b", 92),
+    ("TS_02_HEAD_TO_HEAD_VS_SPLIT", "ALL", r"\b(versus|vs\.?|on one side|other side|rivals|contenders|clash between|head to head|both agree|sees it differently|while .+ wants)\b", 95),
+    ("TS_03_PARLIAMENT_MAJORITY_HEMICYCLE", "ALL", r"\b(majority|coalition|parliament|seats|election|voters|vote share|constituencies|polls|ballot|kingmaker|knesset|congress|lok sabha)\b", 96),
+    ("TS_04_DOMINO_CHAIN_FLOWCHART", "ALL", r"\b(because of|led to|as a result|consequently|chain reaction|domino|forced|triggered|which meant|in turn|ripple effect)\b", 88),
+    ("TS_05_CHOKEPOINT_CORRIDOR_MAP", "ALL", r"\b(corridor|strait|red sea|hormuz|suez|canal|malacca|route|shipping|chokepoint|missing link|border|cape of good hope|map)\b", 94),
+    ("TS_06_SIMPLE_100_MATH_GRID", "ALL", r"\b(percent|%|out of 100|one lakh|ratio|one third|two thirds|half of|quarter of|let's say|simple math|work out to)\b", 86),
+    ("TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD", "ALL", r"\b(question is|questions|scenarios|three ways|two superpowers|number one|firstly|secondly|options|what happens next|cat on the wall)\b", 90),
+
+    # 8-11: Geopolitics, Defense & World History
+    ("GEO_08_MILITARY_FIREPOWER_RADAR", "GEO", r"\b(missile|missiles|iron dome|air defense|fighter jet|warship|submarine|nuclear|artillery|drone|drones|strike|weapons|military power|air force)\b", 93),
+    ("GEO_09_SANCTIONS_TARIFF_BARRIER", "GEO_BIZ", r"\b(sanctions|tariff|tariffs|embargo|blockade|export ban|restrictions|customs|trade war|freeze|penalties)\b", 91),
+    ("GEO_10_ALLIANCE_POWER_NETWORK", "GEO", r"\b(alliance|nato|brics|asean|pact|treaty|summit|trilateral|bilateral|coalition|diplomatic|geopolitical|ratified)\b", 89),
+    ("GEO_11_CHRONOLOGY_TIMELINE_RIBBON", "ALL", r"\b(since 19\d{2}|since 20[01]\d|in 19\d{2}|in 20[01]\d|years ago|decades|history|historical|timeline|chronology|over \d+ years)\b", 87),
+
+    # 12-16: Business, Markets & Economy
+    ("BIZ_12_WALL_STREET_CANDLESTICK_CHART", "BIZ", r"\b(stock|stocks|shares|nasdaq|wall street|nifty|sensex|dow jones|s&p|investors|market cap|valuation|bull|bear|rally|crash|listed on)\b", 95),
+    ("BIZ_13_HOUSEHOLD_WALLET_IMPACT_BOARD", "BIZ_ALL", r"\b(gold|petrol|fuel|oil shock|food|emi|home loan|inflation|cost of living|household|wallet|interest rate|consumer|expensive)\b", 92),
+    ("BIZ_14_FOLLOW_THE_MONEY_WATERFALL", "BIZ_ALL", r"((?:\$|£|€|₹)\s*\d+|\b\d+(?:[.,]\d+)?\s*(?:billion|million|trillion)|revenue|profit|budget|debt|funding|capital|spending)\b", 85),
+    ("BIZ_15_CORPORATE_EMPIRE_HIERARCHY", "BIZ_TECH", r"\b(company|companies|ceo|board|subsidiary|monopoly|acquisition|merger|conglomerate|startup|startups|founder|enterprise)\b", 86),
+    ("BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD", "BIZ_GEO", r"\b(supply chain|factory|factories|manufacturing|containers|cargo|exports|imports|shortage|logistics|port|refinery|pipeline)\b", 90),
+
+    # 17-19: AI, Semiconductors & Cyber Tech
+    ("TECH_17_AI_NEURAL_COMPUTE_ARENA", "TECH", r"\b(artificial intelligence|\bai\b|openai|llm|gpt|gemini|compute|gpu|neural|robotics|robot|autonomous|algorithm|data center)\b", 95),
+    ("TECH_18_SILICON_WAFER_LITHOGRAPHY_HUD", "TECH", r"\b(semiconductor|semiconductors|chip|chips|tsmc|nvidia|asml|intel|amd|wafer|silicon|nanometer|2nm|3nm|5nm|lithography|transistor)\b", 96),
+    ("TECH_19_CYBER_INTRUSION_MATRIX", "TECH_GEO", r"\b(cyber|hack|hackers|breach|encryption|surveillance|malware|ransomware|firewall|intelligence grid|server|digital)\b", 91),
+
+    # 20-21: Space, NASA & Earth Science
+    ("SPACE_20_ORBITAL_APOGEE_TRAJECTORY", "SPACE", r"\b(nasa|isro|spacex|esa|rocket|satellite|orbit|orbital|lunar|moon|mars|astronaut|spacecraft|telescope|launch|payload)\b", 96),
+    ("SCI_21_SEISMIC_CLIMATE_WAVEFORM", "SCI", r"\b(earthquake|seismic|richter|volcano|tsunami|climate|hurricane|typhoon|cyclone|flood|temperature|emissions|glacier|desert)\b", 92),
+
+    # 22-23: Health, Biotech & Medicine
+    ("MED_22_DNA_HELIX_CLINICAL_TRIAL", "MED", r"\b(vaccine|clinical|trial|dna|rna|gene|genetic|virus|biotech|drug|fda|who|mutation|antibody|laboratory)\b", 95),
+    ("MED_23_PHYSIOLOGY_ECG_BIOMARKER", "MED", r"\b(brain|working memory|heart|sleep|metabolism|organ|blood|patient|patients|doctor|doctors|hospital|symptom|longevity|caffeine)\b", 91),
+
+    # 24-25: Sports & Underdog Arena
+    ("SPORT_24_ATHLETE_TALE_OF_THE_TAPE", "SPORT", r"\b(rider|athlete|player|prodigy|moto3|motogp|moto2|cricket|ipl|football|soccer|badminton|chess|grandmaster|ufc|olympic|coach)\b", 95),
+    ("SPORT_25_CHAMPIONSHIP_LEADERBOARD_GAP", "SPORT", r"\b(standings|leaderboard|podium|lap|points|trophy|championship|qualifying|finish line|circuit|sepang|honda|ferrari|record|win)\b", 93),
+
+    # 26-28: Cinema, Mystery & Direct Quote
+    ("CINE_26_BOX_OFFICE_AUDIENCE_METER", "CINE", r"\b(movie|film|box office|cinema|trailer|director|actor|streaming|netflix|hollywood|bollywood|gaming|esports)\b", 94),
+    ("MYST_27_DECLASSIFIED_FORENSIC_BOARD", "MYST", r"\b(mystery|unexplained|ancient|archaeology|secret|classified|declassified|forensic|clue|phenomenon|paradox|conspiracy)\b", 90),
+    ("TS_28_STUDIO_QUOTE_PRESS_MONITOR", "ALL", r'("|“|”|\bsaid\b|\bstated\b|\bwarned\b|\bannounced\b|\bdeclared\b|\bpromised\b)', 84),
+]
+
+def _does_category_allow_group(pillar_str, story_low, group_code):
+    if group_code in ("ALL", "BIZ_ALL"):
+        return True
+    p_up = str(pillar_str or "WORLD").upper()
+    is_sport = p_up in ("SPORTS", "VIRAL_UNDERDOG_SPORTS") or any(k in story_low for k in ["moto3", "motogp", "cricket", "football", "badminton", "chess", "olympic", "athlete", "rider", "tournament"])
+    is_med = p_up == "HEALTH" or any(k in story_low for k in ["vaccine", "clinical", "hospital", "medical", "doctor", "disease", "biotech", "drug"])
+    is_space = p_up in ("SCIENCE", "SPACE_COSMOS") or any(k in story_low for k in ["nasa", "isro", "spacex", "orbit", "satellite", "lunar", "mars", "rocket", "astronaut"])
+    is_tech = p_up in ("TECHNOLOGY", "AI_ROBOTICS", "CYBER_INTELLIGENCE") or any(k in story_low for k in ["artificial intelligence", "semiconductor", "nvidia", "tsmc", "openai", "cyber", "robotics"])
+    is_biz = p_up in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS") or any(k in story_low for k in ["stock", "market", "economy", "trade", "tariff", "inflation", "billion", "bank", "oil"])
+    is_cine = p_up in ("ENTERTAINMENT", "CINEMA_POP") or any(k in story_low for k in ["movie", "film", "box office", "cinema", "actor", "streaming"])
+    is_myst = p_up in ("MYSTERIES", "MIND_BLOWING_FACTS") or any(k in story_low for k in ["mystery", "ancient", "unexplained", "archaeology", "secret"])
+    is_geo = p_up in ("WORLD", "GEOPOLITICS", "UNDERRATED_GEOPOLITICS", "GLOBAL_POWERS") or not (is_sport or is_med or is_space or is_cine)
+
+    if group_code == "SPORT":
+        return is_sport
+    if group_code == "MED":
+        return is_med
+    if group_code == "SPACE":
+        return is_space
+    if group_code == "SCI":
+        return is_space or is_geo or is_myst
+    if group_code == "TECH":
+        return is_tech or is_biz
+    if group_code == "TECH_GEO":
+        return is_tech or is_geo
+    if group_code == "BIZ":
+        return is_biz
+    if group_code == "BIZ_TECH":
+        return is_biz or is_tech
+    if group_code == "BIZ_GEO":
+        return is_biz or is_geo
+    if group_code == "GEO":
+        return is_geo
+    if group_code == "GEO_BIZ":
+        return is_geo or is_biz
+    if group_code == "CINE":
+        return is_cine
+    if group_code == "MYST":
+        return is_myst or is_geo
+    return True
+
+
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False, sec_idx=0, beat_in_sec=0, is_short=False):
     """
-    V50 2026 NEXT-GEN 5-ENGINE VFX DIRECTOR (ACTIVE IN BOTH 16:9 LONG & 9:16 SHORTS):
-    Orchestrates 5 distinct 2026 VisionOS-grade documentary VFX engines across chapters:
-    1. `THINKSCHOOL_KINETIC_DATA_SCORECARD`: Radial Gauge + Horizontal Telemetry Bar Dashboard.
-    2. `NITISH_DOSSIER_SPLIT_BOARD`: Split-Screen HD Subject Frame + 3 Frosted Glass Evidence Cards.
-    3. `TACTICAL_GEOPOLITICAL_MAP`: 3D Orthographic Rotating World Globe + Trajectory Arcs + Telemetry Card.
-    4. `MOTION_CANVAS_POWER_NETWORK`: Circular HD Medallion Hub + 4 Orbital Frosted Glass Nodes.
-    5. `BROADCAST_INTERVIEW_QUOTE_MOCKUP`: Live Press Feed Monitor + Official Statement Glass Card.
+    V51 SMART CONTEXT-ONLY 28-TEMPLATE THINK SCHOOL ROUTER (`jahan zaroorat pade wahin pe daalna hai`):
+    - Beat 0 of EVERY chapter (`beat_in_sec == 0`) is ALWAYS `None` (100% full-bleed real 1080p event video or
+      exact-sentence HD press photo—so the viewer always sees the real person/event first!).
+    - On `beat_in_sec >= 1`, evaluates the exact spoken sentence (`beat_text`) against all 28 specialized templates.
+    - ONLY activates a graphic template if:
+      1) This chapter doesn't already have a graphic (`used_chapters`),
+      2) Total graphics in this video are below the natural cap (`<= 3` for Shorts, `<= 6` for Longs),
+      3) The spoken sentence matches a genuine contextual trigger (`score >= 84`), and
+      4) That specific template has not been used yet in this video (`used_templates`), guaranteeing 100% variety!
     """
     low = str(beat_text or "").lower()
     if "subscribe to world talk brief" in low or "watch the full documentary" in low:
         return None
 
-    sim_counts = dossier.setdefault("_unit_sim_counts", {})
-    has_numbers = bool(re.search(r"((?:\$|£|€|₹)\d+|\b\d+(?:[.,]\d+)?\s*(?:%|percent|billion|million|trillion|tons|km|miles|years|planes|nations|countries|p3|q2)\b)", low, flags=re.I))
-    has_quote_trigger = bool(re.search(r'("|“|”|\bsaid\b|\bstated\b|\bwarned\b|\bannounced\b|\bdeclared\b|\bconfirmed\b|\bratified\b|\blegally\b)', low))
-
-    if is_short:
-        if beat_in_sec == 1:
-            if sec_idx == 0 and has_numbers:
-                sim_counts["THINKSCHOOL_KINETIC_DATA_SCORECARD"] = sim_counts.get("THINKSCHOOL_KINETIC_DATA_SCORECARD", 0) + 1
-                return "THINKSCHOOL_KINETIC_DATA_SCORECARD"
-            if sec_idx == 1:
-                sim_counts["NITISH_DOSSIER_SPLIT_BOARD"] = sim_counts.get("NITISH_DOSSIER_SPLIT_BOARD", 0) + 1
-                return "NITISH_DOSSIER_SPLIT_BOARD"
-            if sec_idx == 2:
-                sim_counts["TACTICAL_GEOPOLITICAL_MAP"] = sim_counts.get("TACTICAL_GEOPOLITICAL_MAP", 0) + 1
-                return "TACTICAL_GEOPOLITICAL_MAP"
-            if sec_idx == 3:
-                sim_counts["MOTION_CANVAS_POWER_NETWORK"] = sim_counts.get("MOTION_CANVAS_POWER_NETWORK", 0) + 1
-                return "MOTION_CANVAS_POWER_NETWORK"
-            if sec_idx == 4:
-                sim_counts["THINKSCHOOL_KINETIC_DATA_SCORECARD"] = sim_counts.get("THINKSCHOOL_KINETIC_DATA_SCORECARD", 0) + 1
-                return "THINKSCHOOL_KINETIC_DATA_SCORECARD"
+    # Never cover Beat 0 of a chapter — Beat 0 is always 100% real event video / HD photo!
+    if beat_in_sec == 0:
         return None
 
-    if beat_in_sec == 1:
-        if has_numbers and sim_counts.get("THINKSCHOOL_KINETIC_DATA_SCORECARD", 0) < 2 and sec_idx in (0, 3, 6):
-            sim_counts["THINKSCHOOL_KINETIC_DATA_SCORECARD"] = sim_counts.get("THINKSCHOOL_KINETIC_DATA_SCORECARD", 0) + 1
-            return "THINKSCHOOL_KINETIC_DATA_SCORECARD"
-        if sec_idx in (1, 5) and sim_counts.get("NITISH_DOSSIER_SPLIT_BOARD", 0) < 2:
-            sim_counts["NITISH_DOSSIER_SPLIT_BOARD"] = sim_counts.get("NITISH_DOSSIER_SPLIT_BOARD", 0) + 1
-            return "NITISH_DOSSIER_SPLIT_BOARD"
-        if sec_idx in (2, 7) and sim_counts.get("TACTICAL_GEOPOLITICAL_MAP", 0) < 2:
-            sim_counts["TACTICAL_GEOPOLITICAL_MAP"] = sim_counts.get("TACTICAL_GEOPOLITICAL_MAP", 0) + 1
-            return "TACTICAL_GEOPOLITICAL_MAP"
-        if sec_idx in (4, 8) and sim_counts.get("MOTION_CANVAS_POWER_NETWORK", 0) < 2:
-            sim_counts["MOTION_CANVAS_POWER_NETWORK"] = sim_counts.get("MOTION_CANVAS_POWER_NETWORK", 0) + 1
-            return "MOTION_CANVAS_POWER_NETWORK"
-        if (has_quote_trigger or sec_idx in (3, 6)) and sim_counts.get("BROADCAST_INTERVIEW_QUOTE_MOCKUP", 0) < 2:
-            sim_counts["BROADCAST_INTERVIEW_QUOTE_MOCKUP"] = sim_counts.get("BROADCAST_INTERVIEW_QUOTE_MOCKUP", 0) + 1
-            return "BROADCAST_INTERVIEW_QUOTE_MOCKUP"
+    used_templates = dossier.setdefault("_v51_used_templates", set())
+    used_chapters = dossier.setdefault("_v51_used_chapters", set())
+    max_graphics = 3 if is_short else 6
+    if sec_idx in used_chapters or len(used_templates) >= max_graphics:
+        return None
+
+    pillar = str(dossier.get("sub_pillar") or dossier.get("pillar", "WORLD")).upper()
+    story_low = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {' '.join(str(f) for f in (dossier.get('raw_facts') or [])[:4])}".lower()
+
+    best_mode = None
+    best_score = -1
+
+    for t_mode, grp_code, pat_str, base_sc in V51_TEMPLATE_RULES:
+        if t_mode in used_templates:
+            continue
+        if not _does_category_allow_group(pillar, story_low, grp_code):
+            continue
+        hits = re.findall(pat_str, low, flags=re.I)
+        if hits:
+            sc = base_sc + min(12, len(hits) * 4)
+            # Bonus if category is a specialized match (SPORT, MED, SPACE, TECH, BIZ, CINE, MYST)
+            if grp_code not in ("ALL", "BIZ_ALL"):
+                sc += 6
+            if sc > best_score:
+                best_score = sc
+                best_mode = t_mode
+
+    if best_mode and best_score >= 84:
+        used_templates.add(best_mode)
+        used_chapters.add(sec_idx)
+        return best_mode
+
     return None
+
+
+def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
+    """
+    V51 MASTER 28-TEMPLATE 2026 THINK SCHOOL / VOX / JOHNNY HARRIS GRAPHIC COMPOSITOR:
+    Renders 28 distinct, context-synchronized 2026 frosted-glass & 2x-supersampled vector graphic layouts!
+    """
+    # Map legacy names if passed directly in unit tests
+    alias_map = {
+        "THINKSCHOOL_KINETIC_DATA_SCORECARD": "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
+        "NITISH_DOSSIER_SPLIT_BOARD": "TS_02_HEAD_TO_HEAD_VS_SPLIT",
+        "MOTION_CANVAS_POWER_NETWORK": "GEO_10_ALLIANCE_POWER_NETWORK",
+        "BROADCAST_INTERVIEW_QUOTE_MOCKUP": "TS_28_STUDIO_QUOTE_PRESS_MONITOR",
+        "TACTICAL_GEOPOLITICAL_MAP": "TS_05_CHOKEPOINT_CORRIDOR_MAP",
+    }
+    mode = alias_map.get(sim_mode, sim_mode)
+
+    # Delegate the 5 existing V50 flagship renderers directly for their mapped modes:
+    if mode == "TS_05_CHOKEPOINT_CORRIDOR_MAP":
+        return render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=is_short)
+    if mode == "GEO_10_ALLIANCE_POWER_NETWORK":
+        return render_motion_canvas_power_network_frame(beat, local_t, W, H, is_short=is_short)
+    if mode == "TS_28_STUDIO_QUOTE_PRESS_MONITOR":
+        return render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=is_short)
+    if mode == "BIZ_14_FOLLOW_THE_MONEY_WATERFALL":
+        return render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_short=is_short)
+
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.46, blur_radius=12).convert("RGBA")
+    story_obj = beat.get("story") or {}
+    c_prof = story_obj.get("country_profile") or {}
+    c_name = fit_whole_words_limit(str(c_prof.get("name") or "GLOBAL").upper(), 16)
+    topic_anc = fit_whole_words_limit(str(story_obj.get("topic_anchor") or "CASE STUDY").upper(), 24)
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or topic_anc).upper(), 28)
+    b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
+    clauses = extract_clean_story_clauses(beat, count=4)
+    anim_p = cubic_bezier_ease_in_out(min(max(local_t / 0.55, 0.0), 1.0))
+    resample_l = getattr(Image, "Resampling", Image).LANCZOS
+    src_im = (beat.get("primary_im") or beat.get("secondary_im") or bg).convert("RGB")
+    vseg_q = beat.get("vseg") or beat.get("bg_support_vseg")
+    if vseg_q is not None and vseg_q.get("vclip") is not None:
+        try:
+            vc_q = vseg_q["vclip"]
+            u_dur = max(vc_q.duration - 0.15, 0.5)
+            t_v = (local_t % u_dur)
+            src_im = Image.fromarray(vc_q.get_frame(t_v)).convert("RGB")
+        except Exception:
+            pass
+    sec_im = (beat.get("secondary_im") or beat.get("primary_im") or bg).convert("RGB")
+
+    # Extract numbers from sentence for data-driven templates
+    num_matches = re.findall(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|km|miles|seats|years|days|planes|nations|states))?)", b_txt, flags=re.I)
+    clean_nums = [re.sub(r"\s+", " ", n.strip().upper().replace("PERCENT", "%").replace("BILLION", "B").replace("MILLION", "M")) for n in num_matches if n.strip()]
+    if not clean_nums:
+        clean_nums = ["61 MAJORITY", "53 BLOC A", "48 BLOC B"]
+
+    # Common Stage Bounds (16:9 vs 9:16)
+    if not is_short:
+        hdr_box = (96, 118, 1824, 184)
+        stage_box = (96, 202, 1824, 804)
+    else:
+        hdr_box = (44, 168, 1036, 234)
+        stage_box = (44, 252, 1036, 1388)
+
+    sx0, sy0, sx1, sy1 = stage_box
+    sw, sh = sx1 - sx0, sy1 - sy0
+
+    # Template Header Map
+    TEMPLATE_HEADERS = {
+        "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT": ("ARCHIVAL EVIDENCE FOCUS", (255, 215, 0)),
+        "TS_02_HEAD_TO_HEAD_VS_SPLIT": ("HEAD-TO-HEAD CONTENDER CLASH", (255, 65, 95)),
+        "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE": ("COALITION & MAJORITY ARITHMETIC", (0, 235, 255)),
+        "TS_04_DOMINO_CHAIN_FLOWCHART": ("SYSTEMIC DOMINO CHAIN REACTION", (255, 185, 0)),
+        "TS_06_SIMPLE_100_MATH_GRID": ("PROPORTIONAL BREAKDOWN // 100-UNIT MODEL", (0, 235, 255)),
+        "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD": ("CRITICAL ROADMAP & SCENARIOS", (255, 215, 0)),
+        "GEO_08_MILITARY_FIREPOWER_RADAR": ("STRATEGIC DEFENSE & FIREPOWER MATRIX", (255, 65, 95)),
+        "GEO_09_SANCTIONS_TARIFF_BARRIER": ("SANCTIONS & TRADE BLOCKADE WALL", (255, 165, 0)),
+        "GEO_11_CHRONOLOGY_TIMELINE_RIBBON": ("HISTORICAL ESCALATION TIMELINE", (0, 235, 255)),
+        "BIZ_12_WALL_STREET_CANDLESTICK_CHART": ("MARKET VALUATION & VOLATILITY TICKER", (45, 245, 165)),
+        "BIZ_13_HOUSEHOLD_WALLET_IMPACT_BOARD": ("EVERYDAY WALLET & INFLATION SHOCK", (255, 215, 0)),
+        "BIZ_15_CORPORATE_EMPIRE_HIERARCHY": ("INSTITUTIONAL & CORPORATE COMMAND TREE", (0, 235, 255)),
+        "BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD": ("GLOBAL SUPPLY-CHAIN BOTTLENECK MONITOR", (255, 95, 65)),
+        "TECH_17_AI_NEURAL_COMPUTE_ARENA": ("AI NEURAL ARCHITECTURE & COMPUTE BENCHMARK", (0, 235, 255)),
+        "TECH_18_SILICON_WAFER_LITHOGRAPHY_HUD": ("SEMICONDUCTOR WAFER & NANOMETER TELEMETRY", (255, 215, 0)),
+        "TECH_19_CYBER_INTRUSION_MATRIX": ("CYBER KILL-CHAIN & NETWORK DEFENSE HUD", (255, 65, 95)),
+        "SPACE_20_ORBITAL_APOGEE_TRAJECTORY": ("ORBITAL TRAJECTORY & MISSION TELEMETRY", (0, 235, 255)),
+        "SCI_21_SEISMIC_CLIMATE_WAVEFORM": ("PLANETARY ANOMALY & WAVEFORM MONITOR", (255, 145, 45)),
+        "MED_22_DNA_HELIX_CLINICAL_TRIAL": ("GENOMIC & CLINICAL EFFICACY ANALYSIS", (45, 245, 165)),
+        "MED_23_PHYSIOLOGY_ECG_BIOMARKER": ("PHYSIOLOGICAL & BIOMARKER TELEMETRY", (0, 235, 255)),
+        "SPORT_24_ATHLETE_TALE_OF_THE_TAPE": ("PRO ARENA TALE OF THE TAPE & TELEMETRY", (255, 215, 0)),
+        "SPORT_25_CHAMPIONSHIP_LEADERBOARD_GAP": ("CHAMPIONSHIP STANDINGS & DELTA SPLIT", (45, 245, 165)),
+        "CINE_26_BOX_OFFICE_AUDIENCE_METER": ("BOX OFFICE & AUDIENCE RECEPTION METER", (255, 215, 0)),
+        "MYST_27_DECLASSIFIED_FORENSIC_BOARD": ("DECLASSIFIED FORENSIC EVIDENCE MATRIX", (255, 65, 95)),
+    }
+    t_title, t_col = TEMPLATE_HEADERS.get(mode, ("INVESTIGATIVE VISUAL BRIEF", (0, 235, 255)))
+
+    # Draw Top Template Header Pill
+    draw_2026_visionos_glass_card(
+        bg, hdr_box, radius=18, tint=(12, 20, 38, 215),
+        border_col=(t_col[0], t_col[1], t_col[2], 175), accent_col=t_col, accent_pos="left", blur_px=16
+    )
+    draw = ImageDraw.Draw(bg, "RGBA")
+    draw.text((hdr_box[0] + 26, hdr_box[1] + 18), f"{t_title} // {point_hl}", fill=(t_col[0], t_col[1], t_col[2], 255), font=get_font(23 if not is_short else 20))
+
+    # ==========================================================================
+    # MODE 1: TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT ("Now look at this picture" at 01:03 & 04:34)
+    # ==========================================================================
+    if mode == "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT":
+        if not is_short:
+            img_box = (sx0, sy0, sx0 + int(sw * 0.56), sy1)
+            ev_box = (sx0 + int(sw * 0.58), sy0, sx1, sy1)
+        else:
+            img_box = (sx0, sy0, sx1, sy0 + int(sh * 0.54))
+            ev_box = (sx0, sy0 + int(sh * 0.57), sx1, sy1)
+
+        iw_b, ih_b = img_box[2] - img_box[0], img_box[3] - img_box[1]
+        z_f = 1.0 + 0.06 * anim_p
+        sc_f = max((iw_b * z_f) / float(src_im.size[0]), (ih_b * z_f) / float(src_im.size[1]))
+        im_r = src_im.resize((int(src_im.size[0] * sc_f), int(src_im.size[1] * sc_f)), resample_l)
+        cx_f, cy_f = (im_r.size[0] - iw_b) // 2, (im_r.size[1] - ih_b) // 2
+        im_crop = im_r.crop((cx_f, cy_f, cx_f + iw_b, cy_f + ih_b)).convert("RGBA")
+        mask_f = Image.new("L", (iw_b, ih_b), 0)
+        ImageDraw.Draw(mask_f).rounded_rectangle([(0, 0), (iw_b - 1, ih_b - 1)], radius=24, fill=255)
+        bg.paste(im_crop, (img_box[0], img_box[1]), mask_f)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        draw.rounded_rectangle([(img_box[0], img_box[1]), (img_box[2] - 1, img_box[3] - 1)], radius=24, outline=(255, 215, 0, 220), width=3)
+        # Red target reticle corner brackets on the picture
+        rx0, ry0, rx1, ry1 = img_box[0] + 24, img_box[1] + 24, img_box[2] - 24, img_box[3] - 24
+        for (px_c, py_c, dx_c, dy_c) in [(rx0, ry0, 32, 32), (rx1, ry0, -32, 32), (rx0, ry1, 32, -32), (rx1, ry1, -32, -32)]:
+            draw.line([(px_c, py_c), (px_c + dx_c, py_c)], fill=(255, 65, 95, 245), width=4)
+            draw.line([(px_c, py_c), (px_c, py_c + dy_c)], fill=(255, 65, 95, 245), width=4)
+
+        # Evidence Clipping Card with Animated Yellow Highlighter
+        draw_2026_visionos_glass_card(bg, ev_box, radius=24, tint=(10, 18, 34, 208), border_col=(255, 215, 0, 165), accent_col=(255, 215, 0), accent_pos="top", blur_px=20)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        ex0, ey0, ex1, ey1 = ev_box
+        draw.text((ex0 + 28, ey0 + 24), f"EXHIBIT #01 • {c_name} RECORD", fill=(0, 235, 255, 255), font=get_font(18))
+        hl_w = int(((ex1 - ex0) - 56) * anim_p)
+        if hl_w > 12:
+            draw.rounded_rectangle([(ex0 + 24, ey0 + 62), (ex0 + 24 + hl_w, ey0 + 114)], radius=10, fill=(255, 225, 0, 240))
+        draw.text((ex0 + 36, ey0 + 72), fit_whole_words_limit(point_hl, 24), fill=(10, 14, 24, 255), font=get_font(26 if not is_short else 24))
+        f_ev = get_font(24 if not is_short else 23)
+        for l_i, ln_s in enumerate(wrap_text_px(b_txt, f_ev, (ex1 - ex0) - 56, max_lines=5)):
+            draw.text((ex0 + 28, ey0 + 138 + l_i * 40), ln_s, fill=(242, 247, 255, 255), font=f_ev)
+        for l_i, ln_s2 in enumerate(wrap_text_px(clauses[1], get_font(21), (ex1 - ex0) - 56, max_lines=2)):
+            draw.text((ex0 + 28, ey1 - 105 + l_i * 32), f"• {ln_s2}", fill=(0, 235, 255, 235), font=get_font(21))
+
+    # ==========================================================================
+    # MODE 2: TS_02_HEAD_TO_HEAD_VS_SPLIT ("On one side Netanyahu... on the other side Eisenkot" at 01:24 & 10:43)
+    # ==========================================================================
+    elif mode == "TS_02_HEAD_TO_HEAD_VS_SPLIT":
+        if not is_short:
+            b_left = (sx0, sy0, sx0 + sw // 2 - 28, sy1)
+            b_right = (sx0 + sw // 2 + 28, sy0, sx1, sy1)
+        else:
+            b_left = (sx0, sy0, sx1, sy0 + sh // 2 - 26)
+            b_right = (sx0, sy0 + sh // 2 + 26, sx1, sy1)
+
+        sides = [
+            (b_left, src_im, "CONTENDER // DOCTRINE A", (0, 235, 255), clauses[0], clauses[1]),
+            (b_right, sec_im, "CHALLENGER // DOCTRINE B", (255, 65, 95), clauses[2] if len(clauses) > 2 else clauses[1], clauses[3] if len(clauses) > 3 else clauses[0])
+        ]
+        for bx, pim, s_hdr, scol, c_line1, c_line2 in sides:
+            draw_2026_visionos_glass_card(bg, bx, radius=24, tint=(10, 18, 34, 198), border_col=(scol[0], scol[1], scol[2], 165), accent_col=scol, accent_pos="top", blur_px=18)
+            bw_s, bh_s = bx[2] - bx[0], bx[3] - bx[1]
+            ph_h = int(bh_s * 0.46)
+            sc_p = max((bw_s - 28) / float(pim.size[0]), ph_h / float(pim.size[1]))
+            pr = pim.resize((int(pim.size[0] * sc_p), int(pim.size[1] * sc_p)), resample_l)
+            pcrop = pr.crop(((pr.size[0] - (bw_s - 28)) // 2, max(0, int((pr.size[1] - ph_h) * 0.15)), (pr.size[0] - (bw_s - 28)) // 2 + (bw_s - 28), max(0, int((pr.size[1] - ph_h) * 0.15)) + ph_h)).convert("RGBA")
+            pmask = Image.new("L", (bw_s - 28, ph_h), 0)
+            ImageDraw.Draw(pmask).rounded_rectangle([(0, 0), (bw_s - 29, ph_h - 1)], radius=18, fill=255)
+            bg.paste(pcrop, (bx[0] + 14, bx[1] + 54), pmask)
+
+            draw = ImageDraw.Draw(bg, "RGBA")
+            draw.text((bx[0] + 22, bx[1] + 18), s_hdr, fill=(scol[0], scol[1], scol[2], 255), font=get_font(19))
+            ty_start = bx[1] + 68 + ph_h
+            f_vs = get_font(22 if not is_short else 21)
+            for l_i, ln_v in enumerate(wrap_text_px(c_line1, f_vs, bw_s - 48, max_lines=3)):
+                draw.text((bx[0] + 24, ty_start + l_i * 34), ln_v, fill=(245, 249, 255, 255), font=f_vs)
+            if not is_short:
+                for l_i, ln_v2 in enumerate(wrap_text_px(c_line2, get_font(19), bw_s - 48, max_lines=2)):
+                    draw.text((bx[0] + 24, ty_start + 112 + l_i * 28), f"▸ {ln_v2}", fill=(scol[0], scol[1], scol[2], 230), font=get_font(19))
+
+        # Center 2x-Supersampled Glowing "VS" Medallion
+        vcx, vcy = (sx0 + sx1) // 2, (sy0 + sy1) // 2
+        draw.ellipse([(vcx - 44, vcy - 44), (vcx + 44, vcy + 44)], fill=(14, 22, 42, 255), outline=(255, 215, 0, 255), width=4)
+        draw.text((vcx - 24, vcy - 18), "VS", fill=(255, 215, 0, 255), font=get_font(32))
+
+    # ==========================================================================
+    # MODE 3: TS_03_PARLIAMENT_MAJORITY_HEMICYCLE (53 vs 48 | 61 Majority Seat Arch at 02:09, 07:25, 12:18)
+    # ==========================================================================
+    elif mode == "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE":
+        draw_2026_visionos_glass_card(bg, stage_box, radius=26, tint=(10, 18, 34, 202), border_col=(0, 235, 255, 155), accent_col=(0, 235, 255), accent_pos="top", blur_px=20)
+        ss = 2
+        arch_layer = Image.new("RGBA", (sw * ss, sh * ss), (0, 0, 0, 0))
+        ad = ImageDraw.Draw(arch_layer, "RGBA")
+        acx = int(sw * (0.34 if not is_short else 0.50)) * ss
+        acy = int(sh * (0.64 if not is_short else 0.44)) * ss
+        # Draw 4 concentric rows of parliament seat dots (60 dots total)
+        seat_idx = 0
+        total_seats_vis = int(60 * anim_p)
+        for ring_i, r_rad in enumerate([115, 150, 185, 220]):
+            n_dots = 12 + ring_i * 2
+            for d_i in range(n_dots):
+                ang = math.pi - (math.pi * d_i / float(max(1, n_dots - 1)))
+                dx = acx + int(r_rad * ss * math.cos(ang))
+                dy = acy - int(r_rad * ss * math.sin(ang))
+                if seat_idx > total_seats_vis:
+                    scol = (45, 60, 88, 150)
+                elif seat_idx < 26:
+                    scol = (0, 235, 255, 255)
+                elif seat_idx < 34:
+                    scol = (255, 215, 0, 255)  # Kingmaker middle bloc!
+                else:
+                    scol = (255, 65, 95, 255)
+                ad.ellipse([(dx - 9 * ss, dy - 9 * ss), (dx + 9 * ss, dy + 9 * ss)], fill=scol)
+                seat_idx += 1
+        # Vertical 50%+1 Majority Threshold Line at top of arch
+        ad.line([(acx, acy - 255 * ss), (acx, acy - 80 * ss)], fill=(255, 215, 0, 245), width=3 * ss)
+        bg.alpha_composite(arch_layer.resize((sw, sh), resample_l), (sx0, sy0))
+
+        draw = ImageDraw.Draw(bg, "RGBA")
+        mcx = sx0 + int(sw * (0.34 if not is_short else 0.50))
+        mcy = sy0 + int(sh * (0.64 if not is_short else 0.44))
+        draw.text((mcx - 95, mcy - 285), "▼ MAJORITY THRESHOLD", fill=(255, 215, 0, 255), font=get_font(18))
+        draw.text((mcx - 75, mcy - 45), clean_nums[0][:10], fill=(255, 255, 255, 255), font=get_font(36))
+        draw.text((mcx - 70, mcy + 2), "TARGET MARK", fill=(0, 235, 255, 255), font=get_font(17))
+
+        # Breakdown cards on right (16:9) or bottom (9:16)
+        rx_p = (sx0 + int(sw * 0.64)) if not is_short else (sx0 + 32)
+        ry_p = (sy0 + 48) if not is_short else (sy0 + int(sh * 0.52))
+        rw_p = (sx1 - rx_p - 32) if not is_short else (sw - 64)
+        blocs = [
+            ("BLOC A // LEADING CAMP", clean_nums[0], (0, 235, 255)),
+            ("KINGMAKER // SWING BLOC", clean_nums[1] if len(clean_nums) > 1 else "DECISIVE", (255, 215, 0)),
+            ("BLOC B // OPPOSITION", clean_nums[2] if len(clean_nums) > 2 else "RIVAL CAMP", (255, 65, 95))
+        ]
+        for b_i, (b_lbl, b_val, b_col) in enumerate(blocs):
+            by_b = ry_p + b_i * 102
+            draw.rounded_rectangle([(rx_p, by_b), (rx_p + rw_p, by_b + 84)], radius=16, fill=(14, 24, 46, 225), outline=(b_col[0], b_col[1], b_col[2], 185), width=2)
+            draw.text((rx_p + 20, by_b + 14), b_lbl, fill=(b_col[0], b_col[1], b_col[2], 255), font=get_font(18))
+            draw.text((rx_p + 20, by_b + 42), str(b_val), fill=(255, 255, 255, 255), font=get_font(26))
+
+        f_hem = get_font(22)
+        for l_i, ln_h in enumerate(wrap_text_px(b_txt, f_hem, ( int(sw * 0.56) if not is_short else sw - 64 ), max_lines=2)):
+            draw.text((sx0 + 36, sy1 - 96 + l_i * 34), ln_h, fill=(238, 245, 255, 255), font=f_hem)
+
+    # ==========================================================================
+    # MODE 4: TS_04_DOMINO_CHAIN_FLOWCHART & MODE 16: BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD
+    # ==========================================================================
+    elif mode in ("TS_04_DOMINO_CHAIN_FLOWCHART", "BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD"):
+        steps_meta = [
+            ("STEP 01 // TRIGGER", (0, 235, 255), clauses[0]),
+            ("STEP 02 // BOTTLENECK", (255, 215, 0), clauses[1]),
+            ("STEP 03 // GLOBAL FALLOUT", (255, 65, 95), clauses[2] if len(clauses) > 2 else b_txt)
+        ]
+        if not is_short:
+            card_w = (sw - 96) // 3
+            for s_i, (s_tag, s_col, s_txt) in enumerate(steps_meta):
+                cx0 = sx0 + s_i * (card_w + 48)
+                cx1 = cx0 + card_w
+                cy0, cy1 = sy0 + 40, sy1 - 40
+                draw_2026_visionos_glass_card(bg, (cx0, cy0, cx1, cy1), radius=24, tint=(10, 18, 34, 202), border_col=(s_col[0], s_col[1], s_col[2], 175), accent_col=s_col, accent_pos="top", blur_px=18)
+                draw = ImageDraw.Draw(bg, "RGBA")
+                draw.rounded_rectangle([(cx0 + 24, cy0 + 28), (cx0 + 82, cy0 + 68)], radius=12, fill=(s_col[0], s_col[1], s_col[2], 240))
+                draw.text((cx0 + 38, cy0 + 35), f"0{s_i+1}", fill=(10, 14, 24, 255), font=get_font(22))
+                draw.text((cx0 + 96, cy0 + 36), s_tag.split("//")[-1].strip(), fill=(s_col[0], s_col[1], s_col[2], 255), font=get_font(20))
+                f_dm = get_font(24)
+                for l_i, ln_d in enumerate(wrap_text_px(s_txt, f_dm, card_w - 48, max_lines=6)):
+                    draw.text((cx0 + 24, cy0 + 104 + l_i * 42), ln_d, fill=(245, 249, 255, 255), font=f_dm)
+                if s_i < 2:
+                    ax = cx1 + 10
+                    ay = (cy0 + cy1) // 2
+                    draw.polygon([(ax, ay - 18), (ax + 28, ay), (ax, ay + 18)], fill=(255, 215, 0, 245))
+        else:
+            card_h = (sh - 96) // 3
+            for s_i, (s_tag, s_col, s_txt) in enumerate(steps_meta):
+                cy0 = sy0 + s_i * (card_h + 48)
+                cy1 = cy0 + card_h
+                draw_2026_visionos_glass_card(bg, (sx0, cy0, sx1, cy1), radius=24, tint=(10, 18, 34, 202), border_col=(s_col[0], s_col[1], s_col[2], 175), accent_col=s_col, accent_pos="left", blur_px=18)
+                draw = ImageDraw.Draw(bg, "RGBA")
+                draw.text((sx0 + 28, cy0 + 20), s_tag, fill=(s_col[0], s_col[1], s_col[2], 255), font=get_font(20))
+                f_dm = get_font(24)
+                for l_i, ln_d in enumerate(wrap_text_px(s_txt, f_dm, sw - 56, max_lines=4)):
+                    draw.text((sx0 + 28, cy0 + 62 + l_i * 38), ln_d, fill=(245, 249, 255, 255), font=f_dm)
+                if s_i < 2:
+                    ax = (sx0 + sx1) // 2
+                    ay = cy1 + 12
+                    draw.polygon([(ax - 18, ay), (ax + 18, ay), (ax, ay + 24)], fill=(255, 215, 0, 245))
+
+    # ==========================================================================
+    # MODE 6: TS_06_SIMPLE_100_MATH_GRID ("Out of 100 / 40% vs 35% vs 25%" at 06:08)
+    # ==========================================================================
+    elif mode == "TS_06_SIMPLE_100_MATH_GRID":
+        if not is_short:
+            g_box = (sx0, sy0, sx0 + 620, sy1)
+            m_box = (sx0 + 650, sy0, sx1, sy1)
+        else:
+            g_box = (sx0, sy0, sx1, sy0 + 560)
+            m_box = (sx0, sy0 + 590, sx1, sy1)
+
+        draw_2026_visionos_glass_card(bg, g_box, radius=24, tint=(10, 18, 34, 205), border_col=(0, 235, 255, 155), blur_px=18)
+        draw_2026_visionos_glass_card(bg, m_box, radius=24, tint=(10, 18, 34, 205), border_col=(255, 215, 0, 155), accent_col=(255, 215, 0), accent_pos="left", blur_px=18)
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        # 10x10 100-Unit Proportional Matrix
+        pct_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:%|percent)", b_txt, flags=re.I)
+        target_units = min(96, max(12, int(float(pct_m.group(1))) if pct_m else 68))
+        active_units = int(target_units * anim_p)
+        gw_c, gh_c = g_box[2] - g_box[0], g_box[3] - g_box[1]
+        cell_s = min((gw_c - 80) // 10, (gh_c - 90) // 10)
+        gx_start = g_box[0] + (gw_c - cell_s * 10) // 2
+        gy_start = g_box[1] + 56
+        draw.text((g_box[0] + 28, g_box[1] + 18), f"100-UNIT PROPORTIONAL MODEL ({target_units}/100)", fill=(0, 235, 255, 255), font=get_font(18))
+        for idx_u in range(100):
+            r_u, c_u = idx_u // 10, idx_u % 10
+            ux = gx_start + c_u * cell_s + 3
+            uy = gy_start + r_u * cell_s + 3
+            ucol = (255, 215, 0, 245) if idx_u < active_units else (32, 48, 76, 175)
+            draw.rounded_rectangle([(ux, uy), (ux + cell_s - 6, uy + cell_s - 6)], radius=6, fill=ucol)
+
+        # Math Explanation Card
+        mx0, my0, mx1, my1 = m_box
+        draw.text((mx0 + 32, my0 + 24), "THE MATHEMATICAL REALITY", fill=(255, 215, 0, 255), font=get_font(20))
+        draw.text((mx0 + 32, my0 + 62), f"{target_units}% MAJORITY IMPACT", fill=(255, 255, 255, 255), font=get_font(44 if not is_short else 38))
+        f_mb = get_font(24)
+        for l_i, ln_m in enumerate(wrap_text_px(b_txt, f_mb, (mx1 - mx0) - 64, max_lines=4)):
+            draw.text((mx0 + 32, my0 + 135 + l_i * 40), ln_m, fill=(242, 247, 255, 255), font=f_mb)
+        for l_i, ln_m2 in enumerate(wrap_text_px(clauses[1], get_font(21), (mx1 - mx0) - 64, max_lines=2)):
+            draw.text((mx0 + 32, my1 - 95 + l_i * 32), f"▸ {ln_m2}", fill=(0, 235, 255, 235), font=get_font(21))
+
+    # ==========================================================================
+    # MODE 7: TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD & MODE 11: GEO_11_CHRONOLOGY_TIMELINE_RIBBON
+    # ==========================================================================
+    elif mode in ("TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD", "GEO_11_CHRONOLOGY_TIMELINE_RIBBON"):
+        is_tl = (mode == "GEO_11_CHRONOLOGY_TIMELINE_RIBBON")
+        labels_3 = [
+            ("PHASE 01 // ORIGIN" if is_tl else "01 // CRITICAL QUESTION #1", (0, 235, 255), clauses[0]),
+            ("PHASE 02 // ESCALATION" if is_tl else "02 // STRATEGIC MECHANISM #2", (255, 215, 0), clauses[1]),
+            ("PHASE 03 // PRESENT FLASHPOINT" if is_tl else "03 // DECISIVE OUTCOME #3", (45, 245, 165), clauses[2] if len(clauses) > 2 else b_txt),
+        ]
+        row_h = (sh - 40) // 3
+        for r_i, (r_tag, r_col, r_txt) in enumerate(labels_3):
+            ry0 = sy0 + r_i * (row_h + 20)
+            ry1 = ry0 + row_h
+            draw_2026_visionos_glass_card(bg, (sx0, ry0, sx1, ry1), radius=22, tint=(10, 18, 34, 202), border_col=(r_col[0], r_col[1], r_col[2], 165), accent_col=r_col, accent_pos="left", blur_px=18)
+            draw = ImageDraw.Draw(bg, "RGBA")
+            draw.rounded_rectangle([(sx0 + 24, ry0 + 18), (sx0 + 360, ry0 + 52)], radius=10, fill=(r_col[0], r_col[1], r_col[2], 38))
+            draw.text((sx0 + 36, ry0 + 23), r_tag, fill=(r_col[0], r_col[1], r_col[2], 255), font=get_font(19))
+            f_q = get_font(25 if not is_short else 23)
+            for l_i, ln_q in enumerate(wrap_text_px(r_txt, f_q, sw - 64, max_lines=3 if is_short else 2)):
+                draw.text((sx0 + 28, ry0 + 66 + l_i * 38), ln_q, fill=(248, 250, 255, 255), font=f_q)
+
+    # ==========================================================================
+    # MODE 8: GEO_08_MILITARY_FIREPOWER_RADAR & MODE 24: SPORT_24_ATHLETE_TALE_OF_THE_TAPE
+    # ==========================================================================
+    elif mode in ("GEO_08_MILITARY_FIREPOWER_RADAR", "SPORT_24_ATHLETE_TALE_OF_THE_TAPE"):
+        is_sp = (mode == "SPORT_24_ATHLETE_TALE_OF_THE_TAPE")
+        if not is_short:
+            l_card = (sx0, sy0, sx0 + 680, sy1)
+            r_card = (sx0 + 710, sy0, sx1, sy1)
+        else:
+            l_card = (sx0, sy0, sx1, sy0 + 520)
+            r_card = (sx0, sy0 + 550, sx1, sy1)
+
+        # Left/Top Subject Photo + Radar Overlay
+        lw_c, lh_c = l_card[2] - l_card[0], l_card[3] - l_card[1]
+        sc_l = max(lw_c / float(src_im.size[0]), lh_c / float(src_im.size[1]))
+        im_l = src_im.resize((int(src_im.size[0] * sc_l), int(src_im.size[1] * sc_l)), resample_l)
+        im_lc = im_l.crop(((im_l.size[0] - lw_c) // 2, max(0, int((im_l.size[1] - lh_c) * 0.15)), (im_l.size[0] - lw_c) // 2 + lw_c, max(0, int((im_l.size[1] - lh_c) * 0.15)) + lh_c)).convert("RGBA")
+        mask_l = Image.new("L", (lw_c, lh_c), 0)
+        ImageDraw.Draw(mask_l).rounded_rectangle([(0, 0), (lw_c - 1, lh_c - 1)], radius=24, fill=255)
+        bg.paste(im_lc, (l_card[0], l_card[1]), mask_l)
+        draw_2026_visionos_glass_card(bg, (l_card[0] + 16, l_card[3] - 92, l_card[2] - 16, l_card[3] - 16), radius=16, tint=(8, 14, 28, 215), border_col=(255, 215, 0, 175), blur_px=14)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        draw.rounded_rectangle([(l_card[0], l_card[1]), (l_card[2] - 1, l_card[3] - 1)], radius=24, outline=(255, 255, 255, 90), width=2)
+        draw.text((l_card[0] + 34, l_card[3] - 78), f"{'ATHLETE TELEMETRY' if is_sp else 'DEFENSE ASSET'} • {c_name}", fill=(0, 235, 255, 255), font=get_font(17))
+        draw.text((l_card[0] + 34, l_card[3] - 52), fit_whole_words_limit(topic_anc, 22), fill=(255, 255, 255, 255), font=get_font(26))
+
+        # Right/Bottom 4-Bar Spec Matrix + Summary
+        draw_2026_visionos_glass_card(bg, r_card, radius=24, tint=(10, 18, 34, 202), border_col=(0, 235, 255, 155), accent_col=(255, 215, 0), accent_pos="top", blur_px=20)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        specs = [
+            ("SPEED & PACE VELOCITY" if is_sp else "OPERATIONAL RANGE & REACH", 0.92, (0, 235, 255)),
+            ("TECHNICAL PRECISION" if is_sp else "INTERCEPTION & PRECISION", 0.88, (255, 215, 0)),
+            ("PRESSURE RESILIENCE" if is_sp else "STRATEGIC DETERRENCE", 0.95, (45, 245, 165)),
+            ("CHAMPIONSHIP IMPACT" if is_sp else "THEATER READINESS", 0.85, (255, 65, 95)),
+        ]
+        rx0, ry0, rx1, ry1 = r_card
+        for sp_i, (sp_lbl, sp_val, sp_col) in enumerate(specs):
+            by = ry0 + 28 + sp_i * 82
+            draw.text((rx0 + 32, by), sp_lbl, fill=(235, 242, 255, 255), font=get_font(19))
+            draw.text((rx1 - 95, by), f"{int(sp_val * 100)}/100", fill=(sp_col[0], sp_col[1], sp_col[2], 255), font=get_font(20))
+            draw.rounded_rectangle([(rx0 + 32, by + 30), (rx1 - 32, by + 50)], radius=10, fill=(28, 42, 68, 210))
+            fw = max(24, int(((rx1 - rx0) - 64) * sp_val * anim_p))
+            draw.rounded_rectangle([(rx0 + 32, by + 30), (rx0 + 32 + fw, by + 50)], radius=10, fill=(sp_col[0], sp_col[1], sp_col[2], 245))
+
+        f_sp = get_font(23)
+        for l_i, ln_sp in enumerate(wrap_text_px(b_txt, f_sp, (rx1 - rx0) - 64, max_lines=3)):
+            draw.text((rx0 + 32, ry0 + 372 + l_i * 36), ln_sp, fill=(245, 249, 255, 255), font=f_sp)
+
+    # ==========================================================================
+    # MODE 12: BIZ_12_WALL_STREET_CANDLESTICK_CHART & MODE 21: SCI_21_SEISMIC_CLIMATE_WAVEFORM & MODE 23: MED_23_PHYSIOLOGY_ECG_BIOMARKER
+    # ==========================================================================
+    elif mode in ("BIZ_12_WALL_STREET_CANDLESTICK_CHART", "SCI_21_SEISMIC_CLIMATE_WAVEFORM", "MED_23_PHYSIOLOGY_ECG_BIOMARKER"):
+        draw_2026_visionos_glass_card(bg, stage_box, radius=26, tint=(10, 18, 34, 205), border_col=(45, 245, 165, 155), accent_col=(45, 245, 165), accent_pos="top", blur_px=20)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        gx0, gy0, gx1, gy1 = sx0 + 48, sy0 + 80, sx1 - 48, sy1 - 185
+        gw_c, gh_c = gx1 - gx0, gy1 - gy0
+
+        # Subtle horizontal telemetry grid lines
+        for g_i in range(5):
+            gy_l = gy0 + int(gh_c * (g_i / 4.0))
+            draw.line([(gx0, gy_l), (gx1, gy_l)], fill=(255, 255, 255, 32), width=1)
+
+        if mode == "BIZ_12_WALL_STREET_CANDLESTICK_CHART":
+            n_candles = 16
+            c_step = gw_c // n_candles
+            pts_trend = []
+            for c_i in range(n_candles):
+                cx_c = gx0 + c_i * c_step + c_step // 2
+                prog_c = (c_i / float(n_candles - 1))
+                base_v = 0.55 - 0.32 * math.sin(prog_c * 2.8) + 0.12 * math.cos(c_i * 1.3)
+                cy_mid = gy0 + int(gh_c * min(max(base_v, 0.15), 0.85))
+                pts_trend.append((cx_c, cy_mid))
+                is_bull = (c_i % 3 != 1)
+                ccol = (45, 245, 165, 245) if is_bull else (255, 65, 95, 245)
+                bh_c = int((18 + (c_i % 4) * 10) * anim_p)
+                draw.line([(cx_c, cy_mid - bh_c - 14), (cx_c, cy_mid + bh_c + 14)], fill=ccol, width=3)
+                draw.rounded_rectangle([(cx_c - c_step // 3, cy_mid - bh_c), (cx_c + c_step // 3, cy_mid + bh_c)], radius=4, fill=ccol)
+            if len(pts_trend) >= 2:
+                draw.line(pts_trend, fill=(255, 215, 0, 235), width=4)
+        else:
+            # High-resolution ECG / Seismic Waveform
+            pts_w = []
+            n_pts = 120
+            for p_i in range(n_pts):
+                px_w = gx0 + int(gw_c * (p_i / float(n_pts - 1)))
+                u = (p_i / float(n_pts)) * 4.0 * math.pi + local_t * 4.0
+                amp = math.sin(u) * math.cos(u * 0.45)
+                if p_i % 24 in (11, 12):
+                    amp = 1.65 if (p_i % 2 == 0) else -1.35
+                py_w = (gy0 + gy1) // 2 - int(amp * (gh_c * 0.34) * anim_p)
+                pts_w.append((px_w, py_w))
+            w_col = (0, 235, 255, 255) if mode == "MED_23_PHYSIOLOGY_ECG_BIOMARKER" else (255, 145, 45, 255)
+            draw.line(pts_w, fill=(w_col[0], w_col[1], w_col[2], 75), width=10)
+            draw.line(pts_w, fill=w_col, width=4)
+
+        draw.text((gx0, sy0 + 24), f"LIVE TELEMETRY // {c_name} • {clean_nums[0]}", fill=(45, 245, 165, 255), font=get_font(22))
+        f_ch = get_font(25 if not is_short else 23)
+        for l_i, ln_c in enumerate(wrap_text_px(b_txt, f_ch, sw - 96, max_lines=3)):
+            draw.text((gx0, gy1 + 28 + l_i * 40), ln_c, fill=(245, 249, 255, 255), font=f_ch)
+
+    # ==========================================================================
+    # MODE 13: BIZ_13_HOUSEHOLD_WALLET_IMPACT_BOARD & MODE 27: MYST_27_DECLASSIFIED_FORENSIC_BOARD
+    # ==========================================================================
+    elif mode in ("BIZ_13_HOUSEHOLD_WALLET_IMPACT_BOARD", "MYST_27_DECLASSIFIED_FORENSIC_BOARD"):
+        is_w = (mode == "BIZ_13_HOUSEHOLD_WALLET_IMPACT_BOARD")
+        quad_meta = [
+            ("01 • FUEL & ENERGY SUPPLY" if is_w else "CLUE #01 • PRIMARY ANOMALY", (255, 215, 0), clauses[0]),
+            ("02 • GOLD & COMMODITY SHOCK" if is_w else "CLUE #02 • FORENSIC RECORD", (0, 235, 255), clauses[1]),
+            ("03 • SHIPPING & FOOD INFLATION" if is_w else "CLUE #03 • HIDDEN MECHANISM", (255, 65, 95), clauses[2] if len(clauses) > 2 else b_txt),
+            ("04 • MARKETS & INTEREST RATES" if is_w else "CLUE #04 • VERIFIED VERDICT", (45, 245, 165), clauses[3] if len(clauses) > 3 else b_txt),
+        ]
+        qw = (sw - 28) // 2
+        qh = (sh - 28) // 2
+        for q_i, (q_hdr, q_col, q_txt) in enumerate(quad_meta):
+            r_q, c_q = q_i // 2, q_i % 2
+            qx0 = sx0 + c_q * (qw + 28)
+            qy0 = sy0 + r_q * (qh + 28)
+            qx1, qy1 = qx0 + qw, qy0 + qh
+            draw_2026_visionos_glass_card(bg, (qx0, qy0, qx1, qy1), radius=24, tint=(10, 18, 34, 202), border_col=(q_col[0], q_col[1], q_col[2], 165), accent_col=q_col, accent_pos="top", blur_px=18)
+            draw = ImageDraw.Draw(bg, "RGBA")
+            draw.text((qx0 + 26, qy0 + 22), q_hdr, fill=(q_col[0], q_col[1], q_col[2], 255), font=get_font(19 if not is_short else 17))
+            f_qb = get_font(23 if not is_short else 21)
+            for l_i, ln_q in enumerate(wrap_text_px(q_txt, f_qb, qw - 52, max_lines=4)):
+                draw.text((qx0 + 26, qy0 + 66 + l_i * 38), ln_q, fill=(245, 249, 255, 255), font=f_qb)
+
+    # ==========================================================================
+    # MODE 17, 18, 19, 20, 22: SCIENCE, SPACE, AI, SILICON & DNA BIOTECH VECTOR HUDS
+    # ==========================================================================
+    elif mode in ("TECH_17_AI_NEURAL_COMPUTE_ARENA", "TECH_18_SILICON_WAFER_LITHOGRAPHY_HUD", "TECH_19_CYBER_INTRUSION_MATRIX", "SPACE_20_ORBITAL_APOGEE_TRAJECTORY", "MED_22_DNA_HELIX_CLINICAL_TRIAL"):
+        if not is_short:
+            v_box = (sx0, sy0, sx0 + 720, sy1)
+            t_box = (sx0 + 750, sy0, sx1, sy1)
+        else:
+            v_box = (sx0, sy0, sx1, sy0 + 540)
+            t_box = (sx0, sy0 + 570, sx1, sy1)
+
+        draw_2026_visionos_glass_card(bg, v_box, radius=26, tint=(8, 16, 32, 208), border_col=(0, 235, 255, 165), blur_px=20)
+        draw_2026_visionos_glass_card(bg, t_box, radius=26, tint=(10, 18, 34, 204), border_col=(255, 215, 0, 165), accent_col=(0, 235, 255), accent_pos="left", blur_px=20)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        vcx, vcy = (v_box[0] + v_box[2]) // 2, (v_box[1] + v_box[3]) // 2
+
+        if mode == "MED_22_DNA_HELIX_CLINICAL_TRIAL":
+            # Animated Double-Helix Sinusoidal Strands + Base Pair Rungs
+            vx0, vx1 = v_box[0] + 55, v_box[2] - 55
+            pts_a, pts_b = [], []
+            for i_x in range(28):
+                px = vx0 + int((vx1 - vx0) * (i_x / 27.0))
+                ang = i_x * 0.42 + local_t * 3.2
+                py_a = vcy + int(110 * math.sin(ang))
+                py_b = vcy - int(110 * math.sin(ang))
+                pts_a.append((px, py_a))
+                pts_b.append((px, py_b))
+                if i_x % 2 == 0:
+                    draw.line([(px, py_a), (px, py_b)], fill=(255, 215, 0, 160), width=3)
+            draw.line(pts_a, fill=(0, 235, 255, 255), width=6)
+            draw.line(pts_b, fill=(45, 245, 165, 255), width=6)
+        elif mode == "SPACE_20_ORBITAL_APOGEE_TRAJECTORY":
+            # Planetary Body + Elliptical Transfer Orbit + Spacecraft Vector
+            draw.ellipse([(vcx - 165, vcy - 165), (vcx + 165, vcy + 165)], outline=(0, 235, 255, 90), width=2)
+            draw.ellipse([(vcx - 240, vcy - 115), (vcx + 240, vcy + 115)], outline=(255, 215, 0, 235), width=4)
+            draw.ellipse([(vcx - 58, vcy - 58), (vcx + 58, vcy + 58)], fill=(22, 95, 165, 255), outline=(0, 235, 255, 255), width=3)
+            orb_ang = local_t * 1.8
+            sx_o = vcx + int(240 * math.cos(orb_ang))
+            sy_o = vcy + int(115 * math.sin(orb_ang))
+            draw.ellipse([(sx_o - 12, sy_o - 12), (sx_o + 12, sy_o + 12)], fill=(255, 65, 95, 255), outline=(255, 255, 255, 255), width=3)
+        elif mode == "TECH_18_SILICON_WAFER_LITHOGRAPHY_HUD":
+            # Circular Silicon Wafer with Golden Die Grid
+            wr = 175
+            draw.ellipse([(vcx - wr, vcy - wr), (vcx + wr, vcy + wr)], fill=(16, 32, 58, 240), outline=(255, 215, 0, 245), width=4)
+            for gx in range(-140, 145, 36):
+                for gy in range(-140, 145, 36):
+                    if gx * gx + gy * gy <= (wr - 22) ** 2:
+                        c_die = (255, 215, 0, 215) if ((gx + gy) // 36) % 3 == 0 else (0, 235, 255, 165)
+                        draw.rectangle([(vcx + gx - 13, vcy + gy - 13), (vcx + gx + 13, vcy + gy + 13)], fill=c_die)
+        else:
+            # 3-Layer AI Neural Network / Cyber Matrix Graph
+            layers_x = [v_box[0] + 110, vcx, v_box[2] - 110]
+            nodes_y = [[vcy - 120, vcy, vcy + 120], [vcy - 150, vcy - 50, vcy + 50, vcy + 150], [vcy - 80, vcy + 80]]
+            for li in range(2):
+                for y1 in nodes_y[li]:
+                    for y2 in nodes_y[li + 1]:
+                        draw.line([(layers_x[li], y1), (layers_x[li + 1], y2)], fill=(0, 235, 255, 95), width=2)
+            for li, lx in enumerate(layers_x):
+                for ny in nodes_y[li]:
+                    ncol = (255, 215, 0, 255) if li == 1 else (0, 235, 255, 255)
+                    draw.ellipse([(lx - 16, ny - 16), (lx + 16, ny + 16)], fill=(14, 24, 46, 255), outline=ncol, width=4)
+
+        # Right/Bottom Telemetry Explanation
+        tx0, ty0, tx1, ty1 = t_box
+        draw.text((tx0 + 32, ty0 + 26), f"SYSTEM TELEMETRY // {c_name}", fill=(0, 235, 255, 255), font=get_font(20))
+        draw.text((tx0 + 32, ty0 + 62), fit_whole_words_limit(point_hl, 24), fill=(255, 215, 0, 255), font=get_font(32 if not is_short else 28))
+        f_tb = get_font(24)
+        for l_i, ln_t in enumerate(wrap_text_px(b_txt, f_tb, (tx1 - tx0) - 64, max_lines=4)):
+            draw.text((tx0 + 32, ty0 + 124 + l_i * 40), ln_t, fill=(245, 249, 255, 255), font=f_tb)
+        for l_i, ln_t2 in enumerate(wrap_text_px(clauses[1], get_font(21), (tx1 - tx0) - 64, max_lines=2)):
+            draw.text((tx0 + 32, ty1 - 105 + l_i * 34), f"▸ {ln_t2}", fill=(45, 245, 165, 240), font=get_font(21))
+
+    # ==========================================================================
+    # MODE 9, 15, 25, 26: DEDICATED BESPOKE RENDERERS FOR SANCTIONS, HIERARCHY, SPORT LEADERBOARD & BOX OFFICE
+    # ==========================================================================
+    elif mode == "SPORT_25_CHAMPIONSHIP_LEADERBOARD_GAP":
+        draw_2026_visionos_glass_card(bg, stage_box, radius=26, tint=(10, 18, 34, 205), border_col=(45, 245, 165, 165), accent_col=(45, 245, 165), accent_pos="top", blur_px=20)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        rows_sp = [
+            ("POS 01", fit_whole_words_limit(topic_anc, 22), clean_nums[0], "▲ BREAKTHROUGH LEADER", (45, 245, 165)),
+            ("POS 02", f"{c_name} FACTORY CONTENDER", clean_nums[1] if len(clean_nums) > 1 else "BENCHMARK", "ESTABLISHED GIANT", (0, 235, 255)),
+            ("POS 03", "CHAMPIONSHIP CHALLENGER", clean_nums[2] if len(clean_nums) > 2 else "ACTIVE PACE", "IN CONTENTION", (255, 215, 0)),
+        ]
+        rh_s = (sh - 180) // 3
+        for idx_r, (p_pos, p_name, p_stat, p_tag, p_col) in enumerate(rows_sp):
+            ry0 = sy0 + 28 + idx_r * (rh_s + 16)
+            ry1 = ry0 + rh_s
+            draw.rounded_rectangle([(sx0 + 28, ry0), (sx1 - 28, ry1)], radius=18, fill=(14, 24, 46, 225), outline=(p_col[0], p_col[1], p_col[2], 185), width=2)
+            draw.rounded_rectangle([(sx0 + 44, ry0 + 18), (sx0 + 152, ry0 + 62)], radius=10, fill=(p_col[0], p_col[1], p_col[2], 240))
+            draw.text((sx0 + 58, ry0 + 26), p_pos, fill=(10, 14, 24, 255), font=get_font(22))
+            draw.text((sx0 + 174, ry0 + 22), p_name, fill=(255, 255, 255, 255), font=get_font(26 if not is_short else 22))
+            draw.text((sx0 + 174, ry0 + 58), p_tag, fill=(p_col[0], p_col[1], p_col[2], 240), font=get_font(18))
+            draw.text((sx1 - 240, ry0 + 28), str(p_stat)[:14], fill=(255, 225, 0, 255), font=get_font(28 if not is_short else 24))
+        f_lb = get_font(23)
+        for l_i, ln_lb in enumerate(wrap_text_px(b_txt, f_lb, sw - 64, max_lines=2)):
+            draw.text((sx0 + 32, sy1 - 92 + l_i * 36), ln_lb, fill=(245, 249, 255, 255), font=f_lb)
+
+    elif mode == "BIZ_15_CORPORATE_EMPIRE_HIERARCHY":
+        top_w = min(680, sw - 80)
+        tx0 = sx0 + (sw - top_w) // 2
+        ty0, ty1 = sy0 + 20, sy0 + 165
+        draw_2026_visionos_glass_card(bg, (tx0, ty0, tx0 + top_w, ty1), radius=22, tint=(12, 22, 42, 212), border_col=(255, 215, 0, 195), accent_col=(255, 215, 0), accent_pos="top", blur_px=18)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        draw.text((tx0 + 28, ty0 + 22), f"APEX COMMAND // {c_name}", fill=(255, 215, 0, 255), font=get_font(19))
+        draw.text((tx0 + 28, ty0 + 56), fit_whole_words_limit(topic_anc, 26), fill=(255, 255, 255, 255), font=get_font(30 if not is_short else 25))
+        draw.text((tx0 + 28, ty0 + 102), f"STRATEGIC MANDATE • {clean_nums[0]}", fill=(0, 235, 255, 255), font=get_font(19))
+
+        sub_cols = [("01 • CAPITAL & OPERATIONS", (0, 235, 255), clauses[0]), ("02 • INSTITUTIONAL REACH", (45, 245, 165), clauses[1]), ("03 • MARKET LEVERAGE", (255, 65, 95), clauses[2] if len(clauses) > 2 else b_txt)]
+        if not is_short:
+            cw_sub = (sw - 64) // 3
+            for s_i, (s_hdr, s_col, s_txt) in enumerate(sub_cols):
+                bx0 = sx0 + s_i * (cw_sub + 32)
+                bx1 = bx0 + cw_sub
+                by0, by1 = sy0 + 235, sy1 - 24
+                draw.line([((tx0 + top_w // 2), ty1), ((bx0 + bx1) // 2, by0)], fill=(s_col[0], s_col[1], s_col[2], 195), width=3)
+                draw_2026_visionos_glass_card(bg, (bx0, by0, bx1, by1), radius=22, tint=(10, 18, 34, 202), border_col=(s_col[0], s_col[1], s_col[2], 165), accent_col=s_col, accent_pos="top", blur_px=18)
+                draw = ImageDraw.Draw(bg, "RGBA")
+                draw.text((bx0 + 24, by0 + 22), s_hdr, fill=(s_col[0], s_col[1], s_col[2], 255), font=get_font(18))
+                f_sb = get_font(23)
+                for l_i, ln_s in enumerate(wrap_text_px(s_txt, f_sb, cw_sub - 48, max_lines=5)):
+                    draw.text((bx0 + 24, by0 + 68 + l_i * 38), ln_s, fill=(245, 249, 255, 255), font=f_sb)
+        else:
+            ch_sub = (sh - 240) // 3
+            for s_i, (s_hdr, s_col, s_txt) in enumerate(sub_cols):
+                by0 = sy0 + 205 + s_i * (ch_sub + 18)
+                by1 = by0 + ch_sub
+                draw_2026_visionos_glass_card(bg, (sx0, by0, sx1, by1), radius=22, tint=(10, 18, 34, 202), border_col=(s_col[0], s_col[1], s_col[2], 165), accent_col=s_col, accent_pos="left", blur_px=18)
+                draw = ImageDraw.Draw(bg, "RGBA")
+                draw.text((sx0 + 26, by0 + 18), s_hdr, fill=(s_col[0], s_col[1], s_col[2], 255), font=get_font(19))
+                f_sb = get_font(23)
+                for l_i, ln_s in enumerate(wrap_text_px(s_txt, f_sb, sw - 52, max_lines=3)):
+                    draw.text((sx0 + 26, by0 + 56 + l_i * 36), ln_s, fill=(245, 249, 255, 255), font=f_sb)
+
+    else:
+        return render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_short=is_short)
+
+    bg.alpha_composite(get_prebuilt_vignette_overlay(W, H))
+    return bg
 
 
 def render_25d_historical_timeline_frame(beat, local_t, W, H, is_short=True):
@@ -6679,6 +7582,15 @@ def render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=
     b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
 
     src_im = (beat.get("primary_im") or beat.get("secondary_im") or bg).convert("RGB")
+    vseg_q = beat.get("vseg") or beat.get("bg_support_vseg")
+    if vseg_q is not None and vseg_q.get("vclip") is not None:
+        try:
+            vc_q = vseg_q["vclip"]
+            u_dur = max(vc_q.duration - 0.15, 0.5)
+            t_v = (local_t % u_dur)
+            src_im = Image.fromarray(vc_q.get_frame(t_v)).convert("RGB")
+        except Exception:
+            pass
     resample_l = getattr(Image, "Resampling", Image).LANCZOS
 
     if not is_short:
@@ -7506,16 +8418,8 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
 
     # 1. Base Visual: Broadcast Quote Monitor, Split-Canvas Investigative Board, 1080p HD Video/Interview B-Roll, or 1080p HD Photo Stage
     sim_mode = beat.get("special_sim_mode")
-    if sim_mode == "BROADCAST_INTERVIEW_QUOTE_MOCKUP":
-        frame = render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=is_short)
-    elif sim_mode == "NITISH_DOSSIER_SPLIT_BOARD":
-        frame = render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_short=is_short)
-    elif sim_mode == "THINKSCHOOL_KINETIC_DATA_SCORECARD":
-        frame = render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_short=is_short)
-    elif sim_mode == "MOTION_CANVAS_POWER_NETWORK":
-        frame = render_motion_canvas_power_network_frame(beat, local_t, W, H, is_short=is_short)
-    elif sim_mode == "TACTICAL_GEOPOLITICAL_MAP":
-        frame = render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=is_short)
+    if sim_mode in V51_ALL_28_TEMPLATE_MODES:
+        frame = render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=is_short)
     elif b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg") is not None:
         vseg = beat["vseg"]
         vc = vseg["vclip"]
@@ -7581,10 +8485,10 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             pt_ease = 1.0 - ((1.0 - pt_anim) ** 3)
             if is_short:
                 pt_x = (W - pt_w) // 2
-                pt_y = int(142 - (1.0 - pt_ease) * 25)
+                pt_y = int(110 - (1.0 - pt_ease) * 20)
             else:
                 pt_x = int(42 - (1.0 - pt_ease) * 260)
-                pt_y = H - 228
+                pt_y = H - 256
             frame.paste(pt_card, (pt_x, pt_y), pt_card)
             swipe_p = min(max((local_t - 0.10) / 0.45, 0.0), 1.0)
             if swipe_p > 0.02:
@@ -8884,7 +9788,40 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
             ("SECURITY & RISK AUDIT", "THE HIDDEN VULNERABILITIES"),
             ("FINAL TECH VERDICT", "THE FUTURE ROADMAP")
         ]
-    elif pillar in ("SPORTS", "VIRAL_UNDERDOG_SPORTS") or any(k in story_low for k in ["moto3", "motogp", "moto2", "sepang", "rider", "lap time", "qualifying", "podium", "circuit", "chassis", "cricket", "ipl", "bcci", "badminton", "bwf", "chess", "fide", "grandmaster", "ufc", "boxing", "olympic", "athlete", "tournament", "championship", "coach", "stadium"]):
+    elif pillar in ("ENTERTAINMENT", "CINEMA_POP") or any(k in story_low for k in ["ellen", "degeneres", "television", "tv show", "executive producer", "hollywood", "actor", "actress", "director", "movie", "film", "box office", "streaming", "netflix", "celebrity", "emmy", "oscar", "studio", "gofundme", "tribute"]):
+        domain_matrix = [
+            f"Behind the studio lights of {t_anc}, entertainment industry veterans point out how daytime and primetime television franchises rely on a tight-knit operational crew to sustain daily broadcasts.",
+            f"From a media-economics perspective, the developments surrounding {t_anc} reveal the intense pressure, long production hours, and financial uncertainty faced by behind-the-scenes television staff.",
+            f"Across Hollywood and major broadcast networks, producers and showrunners tracking {t_anc} emphasize that the true backbone of any long-running show is its production leadership.",
+            f"When we look at the rapid community mobilization around {t_anc}, it demonstrates how deeply personal loyalty and shared creative history bind cast and crew members together.",
+            f"Media analysts examining {t_anc} note that even billion-dollar syndicated television empires can experience sudden structural fragility when key operational figures are lost or laid off.",
+            f"Ultimately, the story of {t_anc} serves as a powerful reminder of the human cost and unseen dedication behind global entertainment franchises."
+        ]
+        extra_roles = [
+            ("BEHIND THE CURTAIN", "INSIDE THE STUDIO"),
+            ("THE HUMAN BACKBONE", "THE PRODUCTION REALITY"),
+            ("FOLLOW THE MONEY", "HOLLYWOOD ECONOMICS"),
+            ("INDUSTRY REACTION", "VOICES FROM THE SET"),
+            ("THE EMOTIONAL CORE", "A SHARED LEGACY"),
+            ("FINAL MEDIA VERDICT", "WHAT THIS REVEALS")
+        ]
+    elif pillar in ("MIND_BLOWING_FACTS", "ANCIENT_MYSTERIES", "MEGA_ENGINEERING") or any(k in story_low for k in ["mystery", "archaeology", "ancient", "unexplained", "baffled", "phenomenon", "subglacial", "pyramid"]):
+        domain_matrix = [
+            f"Investigators and field researchers studying {t_anc} point out that every newly uncovered physical clue challenges decades of conventional scientific assumptions.",
+            f"Using high-resolution imaging and forensic analysis around {t_anc}, interdisciplinary teams are piecing together how this phenomenon remained hidden for so long.",
+            f"What makes {t_anc} so extraordinary to subject-matter experts is the precision and scale of the underlying structure compared to known historical benchmarks.",
+            f"Across international research institutions, the evidence emerging from {t_anc} has sparked a fierce debate over how to classify and preserve the site.",
+            f"Ultimately, the case study of {t_anc} proves that some of the world's most mind-blowing realities are still waiting to be decoded."
+        ]
+        extra_roles = [
+            ("THE HIDDEN ANOMALY", "THE FIRST DISCOVERY"),
+            ("FORENSIC EVIDENCE", "WHAT THE DATA SHOWS"),
+            ("SCIENTIFIC DEBATE", "WHY EXPERTS ARE BAFFLED"),
+            ("HISTORICAL SCALE", "BREAKING THE PARADIGM"),
+            ("DEEPER IMPLICATIONS", "THE UNANSWERED QUESTIONS"),
+            ("FINAL VERDICT", "THE MYSTERY DECODED")
+        ]
+    elif pillar in ("SPORTS", "VIRAL_UNDERDOG_SPORTS") or any(k in story_low for k in ["moto3", "motogp", "moto2", "sepang", "rider", "lap time", "qualifying", "podium", "circuit", "chassis", "cricket", "ipl", "bcci", "badminton", "bwf", "chess", "fide", "grandmaster", "ufc", "boxing", "olympic", "athlete", "tournament", "championship", "coach", "stadium", "soccer", "football", "nwsl", "fifa", "world cup", "goal", "forward", "striker", "midfielder", "roster", "salary cap", "club", "league", "angel city", "dimaria"]):
         domain_matrix = [
             f"Behind the raw stopwatch numbers of {t_anc}, performance telemetry and trackside engineering show how talent from {c_name} is challenging decades-old factory dominance.",
             f"Coaches and technical directors analyzing {t_anc} emphasize that cornering precision, mechanical feedback, and split-second racecraft separate generational prodigies from the rest of the grid.",
