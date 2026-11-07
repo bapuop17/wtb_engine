@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T02:49:26.613485",
-  "round_robin_idx": 6,
-  "country_rot_idx": 8,
-  "bgm_track_counter": 2450052411,
+  "updated_at": "2026-11-07T04:16:18.299759",
+  "round_robin_idx": 7,
+  "country_rot_idx": 20,
+  "bgm_track_counter": 2483708545,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -567,92 +567,13 @@
     "china_s_top_spy_agency_recruited",
     "china_s_secret_spy_infiltration_of",
     "ancient_tomb_discovery_suggests_oldest_evidence",
-    "turkey_tomb_the_world_s_oldest"
+    "turkey_tomb_the_world_s_oldest",
+    "south_korea_military_mission_to_protect",
+    "south_korea_s_hormuz_gamble_why",
+    "anwar_says_malaysia_assessing_impact_of",
+    "malaysia_s_trade_shock_anwar_s"
   ],
   "event_fingerprints": [
-    {
-      "title": "Pressure grows on Sage as fans turn on Palace boss",
-      "tokens": [
-        "boss",
-        "pierre",
-        "four",
-        "crystal",
-        "grows",
-        "turn",
-        "months",
-        "fans",
-        "oliver",
-        "glasner",
-        "palace",
-        "tough",
-        "sage",
-        "pressure",
-        "frenchman",
-        "follow"
-      ]
-    },
-    {
-      "title": "Sharon Osbourne: 'I visit Ozzy's grave every day'",
-      "tokens": [
-        "osbourne",
-        "burial",
-        "presenter",
-        "grave",
-        "visit",
-        "window",
-        "ozzy",
-        "every",
-        "sharon",
-        "regularly",
-        "site",
-        "talks"
-      ]
-    },
-    {
-      "title": "The Gambia's first blind magistrate tests a system built for the sighted",
-      "tokens": [
-        "tests",
-        "blind",
-        "built",
-        "possible",
-        "shown",
-        "system",
-        "magistrate",
-        "sighted",
-        "still",
-        "krubally",
-        "decade",
-        "needs",
-        "gambia",
-        "first",
-        "change",
-        "muhammed"
-      ]
-    },
-    {
-      "title": "Hottest toy for Christmas? Nvidia CEO plays with adorable Microduck robots, 20,000 sell",
-      "tokens": [
-        "christmas",
-        "little",
-        "sell",
-        "fell",
-        "their",
-        "summersaulted",
-        "microduck",
-        "down",
-        "robots",
-        "adorable",
-        "noises",
-        "nvidia",
-        "stomping",
-        "hottest",
-        "feet",
-        "plays",
-        "making",
-        "tiny",
-        "dead"
-      ]
-    },
     {
       "title": "A Bizarre 170-Million-Year-Old Predator Is Rewriting What We Know About Ancient Crocodiles",
       "tokens": [
@@ -8222,11 +8143,89 @@
         "turkey",
         "years"
       ]
+    },
+    {
+      "title": "South Korea Military Mission to Protect Commercial Shipping in the Strait of Hormuz",
+      "tokens": [
+        "aircraft",
+        "commercial",
+        "hormuz",
+        "korea",
+        "maritime",
+        "military",
+        "mission",
+        "modern",
+        "near",
+        "patrol",
+        "plans",
+        "protect",
+        "send",
+        "shipping",
+        "south",
+        "strait",
+        "teams",
+        "times",
+        "tokyo",
+        "waters"
+      ]
+    },
+    {
+      "title": "South Korea's Hormuz Gamble: Why Seoul Is Moving Ships",
+      "tokens": [
+        "commercial",
+        "gamble",
+        "hormuz",
+        "korea",
+        "military",
+        "mission",
+        "moving",
+        "protect",
+        "seoul",
+        "shipping",
+        "ships",
+        "south",
+        "strait"
+      ]
+    },
+    {
+      "title": "Anwar says Malaysia assessing impact of US midterm election results, including tariffs",
+      "tokens": [
+        "anwar",
+        "assessing",
+        "election",
+        "examining",
+        "impact",
+        "including",
+        "mail",
+        "malay",
+        "malaysia",
+        "midterm",
+        "polls",
+        "putrajaya",
+        "results",
+        "tariffs"
+      ]
+    },
+    {
+      "title": "Malaysia's Trade Shock: Anwar's US Tariff Strategy",
+      "tokens": [
+        "anwar",
+        "assessing",
+        "election",
+        "impact",
+        "including",
+        "malaysia",
+        "midterm",
+        "results",
+        "shock",
+        "strategy",
+        "tariff",
+        "tariffs",
+        "trade"
+      ]
     }
   ],
   "last_categories": [
-    "UNDERRATED_GEOPOLITICS",
-    "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GLOBAL_POWERS",
     "VIRAL_UNDERDOG_SPORTS",
@@ -8264,11 +8263,11 @@
     "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS",
     "AI_ROBOTICS",
-    "MIND_BLOWING_FACTS"
+    "MIND_BLOWING_FACTS",
+    "GEOPOLITICS",
+    "HEALTH"
   ],
   "last_sources": [
-    "DW Global In-Depth",
-    "Country Documentary Wire [CANADA]",
     "Top Viral News [PHILIPPINES]",
     "Top Viral News [ITALY]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
@@ -8306,11 +8305,11 @@
     "DW Global In-Depth",
     "Ars Technica",
     "Global AI, Nvidia, OpenAI & Semiconductor Race",
-    "Global Country Wire [RUSSIA \u2022 MIND_BLOWING_FACTS]"
+    "Global Country Wire [RUSSIA \u2022 MIND_BLOWING_FACTS]",
+    "Global Superpowers Geopolitics 24h",
+    "Global Country Wire [MALAYSIA \u2022 HEALTH]"
   ],
   "last_countries": [
-    "FRANCE",
-    "QATAR",
     "BRAZIL",
     "TURKEY",
     "VIETNAM",
@@ -8358,6 +8357,8 @@
     "GLOBAL BRIEFING",
     "UNITED KINGDOM",
     "CHINA",
-    "TURKEY"
+    "TURKEY",
+    "SOUTH KOREA",
+    "MALAYSIA"
   ]
 }
