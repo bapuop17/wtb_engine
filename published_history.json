@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T05:47:17.532565",
-  "round_robin_idx": 8,
-  "country_rot_idx": 32,
-  "bgm_track_counter": 2534062787,
+  "updated_at": "2026-11-07T07:20:59.892870",
+  "round_robin_idx": 9,
+  "country_rot_idx": 44,
+  "bgm_track_counter": 2537754723,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -575,84 +575,13 @@
     "spacex_launches_mystery_mission_for_us",
     "spacex_s_secret_ussf_432_launch",
     "us_military_carries_out_new_targeted",
-    "us_strikes_iran_the_48_hour"
+    "us_strikes_iran_the_48_hour",
+    "new_documentary_highlights_vietnam_war_s",
+    "soul_patrol_exposed_vietnam_s_first",
+    "ellen_degeneres_show_producer_matthew_wright",
+    "the_5_000_donation_inside_ellen"
   ],
   "event_fingerprints": [
-    {
-      "title": "Who has made Troy's Premier League team of the week?",
-      "tokens": [
-        "troy",
-        "deeney",
-        "made",
-        "team",
-        "agree",
-        "round",
-        "gives",
-        "week",
-        "every",
-        "season",
-        "premier",
-        "matches",
-        "league"
-      ]
-    },
-    {
-      "title": "'Why we think Milton Keynes can be a City of Culture'",
-      "tokens": [
-        "spotlight",
-        "milton",
-        "city",
-        "made",
-        "shortlist",
-        "culture",
-        "post",
-        "shining",
-        "keynes",
-        "think"
-      ]
-    },
-    {
-      "title": "The French government is hiding behind a 'riots' narrative",
-      "tokens": [
-        "hiding",
-        "behind",
-        "address",
-        "demands",
-        "french",
-        "students",
-        "protests",
-        "riots",
-        "delegitimise",
-        "easier",
-        "much",
-        "government",
-        "than",
-        "narrative",
-        "fearmonger"
-      ]
-    },
-    {
-      "title": "Left alone with nothing to do, AI agents started playing",
-      "tokens": [
-        "lost",
-        "agents",
-        "games",
-        "started",
-        "researchers",
-        "nothing",
-        "virtual",
-        "ring",
-        "they",
-        "left",
-        "island",
-        "playing",
-        "inventing",
-        "responded",
-        "mourning",
-        "marooned",
-        "alone"
-      ]
-    },
     {
       "title": "Tiny Atomic Defects Reveal a Quantum Secret Hidden Inside an Unusual Metal",
       "tokens": [
@@ -8256,11 +8185,83 @@
         "targeted",
         "total"
       ]
+    },
+    {
+      "title": "New documentary highlights Vietnam War's first Black special ops team",
+      "tokens": [
+        "american",
+        "being",
+        "black",
+        "chapter",
+        "documentary",
+        "featuring",
+        "first",
+        "hidden",
+        "highlights",
+        "military",
+        "special",
+        "team",
+        "told",
+        "vietnam"
+      ]
+    },
+    {
+      "title": "Soul Patrol Exposed: Vietnam\u2019s First All\u2011Black Special Ops Unit",
+      "tokens": [
+        "black",
+        "documentary",
+        "exposed",
+        "first",
+        "highlights",
+        "patrol",
+        "soul",
+        "special",
+        "team",
+        "unit",
+        "vietnam"
+      ]
+    },
+    {
+      "title": "'Ellen DeGeneres Show' Producer Matthew Wright's Cause of Death Revealed",
+      "tokens": [
+        "been",
+        "cause",
+        "death",
+        "degeneres",
+        "died",
+        "ellen",
+        "emmy",
+        "executive",
+        "longtime",
+        "matthew",
+        "nine",
+        "producer",
+        "revealed",
+        "show",
+        "time",
+        "winner",
+        "wright"
+      ]
+    },
+    {
+      "title": "The $5,000 Donation: Inside Ellen's Empire Collapse",
+      "tokens": [
+        "cause",
+        "collapse",
+        "death",
+        "degeneres",
+        "donation",
+        "ellen",
+        "inside",
+        "matthew",
+        "producer",
+        "revealed",
+        "show",
+        "wright"
+      ]
     }
   ],
   "last_categories": [
-    "VIRAL_UNDERDOG_SPORTS",
-    "GEOPOLITICS",
     "SCIENCE",
     "GEOPOLITICS",
     "UNDERRATED_GEOPOLITICS",
@@ -8298,11 +8299,11 @@
     "GEOPOLITICS",
     "HEALTH",
     "SCIENCE",
+    "ENTERTAINMENT",
+    "DEFENSE_MILITARY",
     "ENTERTAINMENT"
   ],
   "last_sources": [
-    "Teenage Prodigies & Underdog Upsets Across Global Sports",
-    "Top Viral News [QATAR]",
     "Space.com Breaking",
     "Country Documentary Wire [AUSTRIA]",
     "DW Global In-Depth",
@@ -8340,11 +8341,11 @@
     "Global Superpowers Geopolitics 24h",
     "Global Country Wire [MALAYSIA \u2022 HEALTH]",
     "Space.com Breaking",
-    "Global Country Wire [EGYPT \u2022 ENTERTAINMENT]"
+    "Global Country Wire [EGYPT \u2022 ENTERTAINMENT]",
+    "Global Country Wire [VIETNAM \u2022 DEFENSE_MILITARY]",
+    "Hollywood Reporter"
   ],
   "last_countries": [
-    "VIETNAM",
-    "SERBIA",
     "INDONESIA",
     "GREECE",
     "IRAQ",
@@ -8392,6 +8393,8 @@
     "SOUTH KOREA",
     "MALAYSIA",
     "SPACE & SCIENCE",
-    "IRAN"
+    "IRAN",
+    "VIETNAM",
+    "GLOBAL CINEMA"
   ]
 }
