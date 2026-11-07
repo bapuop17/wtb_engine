@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T20:16:53.146119",
-  "round_robin_idx": 18,
-  "country_rot_idx": 2,
-  "bgm_track_counter": 2822966996,
+  "updated_at": "2026-11-07T22:04:47.719057",
+  "round_robin_idx": 19,
+  "country_rot_idx": 14,
+  "bgm_track_counter": 2862402362,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -612,94 +612,13 @@
     "british_soldier_ignored_order_to_pull",
     "british_soldier_s_sim_card_slip",
     "in_1962_jeff_bezos_father_fled",
-    "the_250k_bet_how_one_cuban"
+    "the_250k_bet_how_one_cuban",
+    "israeli_president_picks_gadi_eisenkot_netanyahu",
+    "netanyahu_s_fall_why_israel_s",
+    "malaysia_s_king_warns_against_challenging",
+    "malaysia_s_king_issues_final_warning"
   ],
   "event_fingerprints": [
-    {
-      "title": "Cowboy Space unveils 'Big Iron' rocket to launch 20,000 AI data centers",
-      "tokens": [
-        "center",
-        "rocket",
-        "will",
-        "cowboy",
-        "first",
-        "centers",
-        "gave",
-        "data",
-        "iron",
-        "just",
-        "look",
-        "space",
-        "launch",
-        "build",
-        "unveils",
-        "which",
-        "company"
-      ]
-    },
-    {
-      "title": "Arsenal knocked out of League Cup by fourth-tier Fleetwood Town",
-      "tokens": [
-        "upset",
-        "league",
-        "fourth",
-        "town",
-        "major",
-        "beat",
-        "last",
-        "fleetwood",
-        "arsenal",
-        "knocked",
-        "pulling",
-        "tier",
-        "penalties"
-      ]
-    },
-    {
-      "title": "'Working our fingers to the bone': Can the UK save its struggling high streets?",
-      "tokens": [
-        "owners",
-        "small",
-        "working",
-        "streets",
-        "britain",
-        "bone",
-        "fingers",
-        "enough",
-        "high",
-        "save",
-        "some",
-        "budget",
-        "business",
-        "they",
-        "relief",
-        "wednesday",
-        "will",
-        "struggling"
-      ]
-    },
-    {
-      "title": "Mapping the siege of Yemen's Taiz, and the price families are paying",
-      "tokens": [
-        "families",
-        "paying",
-        "city",
-        "siege",
-        "down",
-        "weeks",
-        "taiz",
-        "yemen",
-        "three",
-        "prices",
-        "doubled",
-        "basics",
-        "mapping",
-        "have",
-        "third",
-        "price",
-        "largest"
-      ]
-    },
     {
       "title": "Black holes can split in two - but only if they spin at extreme speeds",
       "tokens": [
@@ -8367,11 +8286,90 @@
         "three",
         "years"
       ]
+    },
+    {
+      "title": "Israeli president picks Gadi Eisenkot, Netanyahu rival, to try to form government",
+      "tokens": [
+        "benjamin",
+        "chief",
+        "eisenkot",
+        "form",
+        "former",
+        "gadi",
+        "government",
+        "hopes",
+        "israel",
+        "israeli",
+        "military",
+        "minist",
+        "netanyahu",
+        "next",
+        "picks",
+        "president",
+        "prime",
+        "rival",
+        "setback",
+        "succeed",
+        "taps"
+      ]
+    },
+    {
+      "title": "Netanyahu's Fall? Why Israel's President Picked His Rival",
+      "tokens": [
+        "eisenkot",
+        "fall",
+        "form",
+        "gadi",
+        "government",
+        "israel",
+        "israeli",
+        "netanyahu",
+        "picked",
+        "picks",
+        "president",
+        "rival"
+      ]
+    },
+    {
+      "title": "Malaysia's king warns against challenging his order on Najib",
+      "tokens": [
+        "against",
+        "arrest",
+        "bangkok",
+        "challenging",
+        "decree",
+        "demands",
+        "following",
+        "house",
+        "immediate",
+        "king",
+        "malaysia",
+        "najib",
+        "order",
+        "post",
+        "umno",
+        "warns"
+      ]
+    },
+    {
+      "title": "Malaysia's King Issues Final Warning: Najib's Fate Sealed?",
+      "tokens": [
+        "against",
+        "challenging",
+        "fate",
+        "final",
+        "issues",
+        "king",
+        "malaysia",
+        "najib",
+        "order",
+        "sealed",
+        "warning",
+        "warns"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
     "SCIENCE",
     "GEOPOLITICS",
@@ -8409,11 +8407,11 @@
     "GEOPOLITICS",
     "SCIENCE",
     "TECHNOLOGY",
+    "MIND_BLOWING_FACTS",
+    "INDIA_TRENDING",
     "MIND_BLOWING_FACTS"
   ],
   "last_sources": [
-    "Top Viral News [INDIA]",
-    "Top Viral News [COLOMBIA]",
     "Top Viral News [BELGIUM]",
     "Top Viral News [PORTUGAL]",
     "Google World Top Headlines (US/Global)",
@@ -8451,11 +8449,11 @@
     "Google Trends Viral [IRELAND]",
     "NASA, SpaceX, ESA & Global Space Missions",
     "Ars Technica",
-    "Global Country Wire [CUBA \u2022 MIND_BLOWING_FACTS]"
+    "Global Country Wire [CUBA \u2022 MIND_BLOWING_FACTS]",
+    "Google World Top Headlines (US/Global)",
+    "Global Country Wire [MALAYSIA \u2022 MIND_BLOWING_FACTS]"
   ],
   "last_countries": [
-    "KENYA",
-    "NORWAY",
     "GEORGIA",
     "KUWAIT",
     "INTERNATIONAL",
@@ -8503,6 +8501,8 @@
     "EUROPE",
     "UNITED STATES",
     "UNITED KINGDOM",
-    "CUBA"
+    "CUBA",
+    "ISRAEL",
+    "MALAYSIA"
   ]
 }
