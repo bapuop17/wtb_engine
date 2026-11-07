@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T17:02:17.832588",
-  "round_robin_idx": 16,
-  "country_rot_idx": 53,
-  "bgm_track_counter": 2749644922,
+  "updated_at": "2026-11-07T18:33:02.146918",
+  "round_robin_idx": 17,
+  "country_rot_idx": 65,
+  "bgm_track_counter": 2792009068,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -604,91 +604,13 @@
     "knicks_defend_taylor_swift_after_players",
     "knicks_betray_taylor_swift_the_fake",
     "thunderstruck_what_does_the_future_hold",
-    "lightning_s_future_how_a_warming"
+    "lightning_s_future_how_a_warming",
+    "protesters_break_into_microsoft_data_centre",
+    "europe_revolts_why_activists_stormed_microsoft",
+    "trump_says_nasa_plans_to_launch",
+    "trump_s_nuclear_mars_gambit_the"
   ],
   "event_fingerprints": [
-    {
-      "title": "Ballon d'Or ceremony raises case of French sports journalist jailed in Algeria",
-      "tokens": [
-        "travelling",
-        "sports",
-        "journalist",
-        "french",
-        "politically",
-        "jail",
-        "sensitive",
-        "kabylie",
-        "algeria",
-        "supporting",
-        "terrorism",
-        "ballon",
-        "accused",
-        "case",
-        "raises",
-        "region",
-        "ceremony",
-        "jailed"
-      ]
-    },
-    {
-      "title": "Meta AI director Rohit Patel leaves to take on Microsoft Office and Google Workspace",
-      "tokens": [
-        "leaves",
-        "departing",
-        "director",
-        "meta",
-        "reinforcement",
-        "evaluations",
-        "rohit",
-        "techcrunch",
-        "eight",
-        "working",
-        "patel",
-        "workspace",
-        "years",
-        "office",
-        "microsoft",
-        "learning",
-        "google",
-        "take"
-      ]
-    },
-    {
-      "title": "24 Hours in 10 Minutes: Global Geopolitics & World News Briefing (October 27, 2026)",
-      "tokens": [
-        "global",
-        "briefing",
-        "24h",
-        "20261027"
-      ]
-    },
-    {
-      "title": "Alexander brothers each sentenced to 30 years in prison in sex trafficking case",
-      "tokens": [
-        "found",
-        "lure",
-        "alexander",
-        "status",
-        "their",
-        "high",
-        "each",
-        "social",
-        "sentenced",
-        "moguls",
-        "prison",
-        "whom",
-        "using",
-        "profile",
-        "years",
-        "trafficking",
-        "real",
-        "guilty",
-        "estate",
-        "trio",
-        "case",
-        "brothers"
-      ]
-    },
     {
       "title": "Astronomers discover the secrets of 'string of pearls' supernova relic and the zombie star at its heart",
       "tokens": [
@@ -8332,11 +8254,89 @@
         "thunderstruck",
         "warming"
       ]
+    },
+    {
+      "title": "Protesters break into Microsoft data centre site in Amsterdam",
+      "tokens": [
+        "across",
+        "amounts",
+        "amsterdam",
+        "break",
+        "center",
+        "centre",
+        "centres",
+        "computing",
+        "data",
+        "europe",
+        "face",
+        "microsoft",
+        "protesters",
+        "protests",
+        "site",
+        "they",
+        "water"
+      ]
+    },
+    {
+      "title": "Europe Revolts: Why Activists Stormed Microsoft's AI Fortress",
+      "tokens": [
+        "activists",
+        "amsterdam",
+        "break",
+        "centre",
+        "data",
+        "europe",
+        "fortress",
+        "microsoft",
+        "protesters",
+        "revolts",
+        "site",
+        "stormed"
+      ]
+    },
+    {
+      "title": "Trump says NASA plans to launch nuclear-powered Mars spacecraft within two years",
+      "tokens": [
+        "aiming",
+        "announced",
+        "astronauts",
+        "donald",
+        "first",
+        "launch",
+        "mars",
+        "nasa",
+        "nuclear",
+        "planet",
+        "plans",
+        "powered",
+        "president",
+        "send",
+        "spacecraft",
+        "trump",
+        "will",
+        "within",
+        "years"
+      ]
+    },
+    {
+      "title": "Trump's Nuclear Mars Gambit: The 2028 Deadline",
+      "tokens": [
+        "deadline",
+        "gambit",
+        "launch",
+        "mars",
+        "nasa",
+        "nuclear",
+        "plans",
+        "powered",
+        "spacecraft",
+        "trump",
+        "within",
+        "years"
+      ]
     }
   ],
   "last_categories": [
-    "INDIA_TRENDING",
-    "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
     "GLOBAL_POWERS",
@@ -8374,11 +8374,11 @@
     "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS",
     "ENTERTAINMENT",
+    "SCIENCE",
+    "GEOPOLITICS",
     "SCIENCE"
   ],
   "last_sources": [
-    "Top Viral News [UNITED STATES]",
-    "Country Documentary Wire [FRANCE]",
     "Top Viral News [PAKISTAN]",
     "Top Viral News [TURKEY]",
     "Top Viral News [INDIA]",
@@ -8416,11 +8416,11 @@
     "Google Trends Viral [ARGENTINA]",
     "Ars Technica",
     "BBC Entertainment & Arts",
-    "The Guardian Science"
+    "The Guardian Science",
+    "Google Trends Viral [IRELAND]",
+    "NASA, SpaceX, ESA & Global Space Missions"
   ],
   "last_countries": [
-    "SAUDI ARABIA",
-    "BRAZIL",
     "SOUTH AFRICA",
     "VIETNAM",
     "KENYA",
@@ -8468,6 +8468,8 @@
     "FRANCE",
     "GLOBAL TECH & AI",
     "GLOBAL CINEMA",
-    "SPACE & SCIENCE"
+    "SPACE & SCIENCE",
+    "EUROPE",
+    "UNITED STATES"
   ]
 }
