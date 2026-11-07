@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T00:41:34.407678",
-  "round_robin_idx": 4,
-  "country_rot_idx": 59,
-  "bgm_track_counter": 2366036459,
+  "updated_at": "2026-11-07T01:51:44.077115",
+  "round_robin_idx": 5,
+  "country_rot_idx": 71,
+  "bgm_track_counter": 2412165127,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -560,71 +560,12 @@
     "yankees_bleed_talent_the_swanson_purge",
     "4_billion_year_old_rosetta_stone",
     "mars_meteorite_found_the_4_billion",
-    "austrian_police_investigate_man_for_leaving"
+    "austrian_police_investigate_man_for_leaving",
+    "ueno_bank_scandal_plunges_paraguay_into",
+    "paraguay_s_850m_bank_collapse_how",
+    "man_unexpectedly_recovers_from_a_knife"
   ],
   "event_fingerprints": [
-    {
-      "title": "US actor Tom Skerritt, star of Top Gun, Steel Magnolias and Alien, dies aged 93",
-      "tokens": [
-        "century",
-        "alien",
-        "magnolias",
-        "aged",
-        "family",
-        "skerritt",
-        "films",
-        "causes",
-        "star",
-        "several",
-        "natural",
-        "moustachioed",
-        "steel",
-        "wednesday",
-        "died",
-        "actor",
-        "dies"
-      ]
-    },
-    {
-      "title": "Lula holds off far right with victory in Brazil presidential election",
-      "tokens": [
-        "stunning",
-        "flavio",
-        "right",
-        "leftist",
-        "supporters",
-        "election",
-        "president",
-        "holds",
-        "round",
-        "first",
-        "lula",
-        "unexpected",
-        "mounts",
-        "comeback",
-        "presidential",
-        "loss",
-        "galvanised",
-        "bolsonaro",
-        "victory",
-        "brazil"
-      ]
-    },
-    {
-      "title": "'Cyberselfish' author takes aim at techno-libertarianism as her book returns from the dead",
-      "tokens": [
-        "returns",
-        "cyberselfish",
-        "book",
-        "libertarianism",
-        "techno",
-        "view",
-        "author",
-        "dead",
-        "year",
-        "world"
-      ]
-    },
     {
       "title": "Researchers Claimed a Blurry Object on Apple Maps Was 'Very Likely' Amelia Earhart's Missing Plane. It Turned Out to Be a 'Collection of Large Trees'",
       "tokens": [
@@ -8238,11 +8179,73 @@
         "year",
         "zugspitze"
       ]
+    },
+    {
+      "title": "Ueno Bank scandal plunges Paraguay into political crisis",
+      "tokens": [
+        "affected",
+        "bank",
+        "collapse",
+        "customers",
+        "financial",
+        "following",
+        "fraud",
+        "millions",
+        "money",
+        "paraguay",
+        "plunges",
+        "political",
+        "president",
+        "public",
+        "risk",
+        "santiago",
+        "scandal",
+        "serious",
+        "sudden",
+        "suspected",
+        "ueno"
+      ]
+    },
+    {
+      "title": "Paraguay's $850M Bank Collapse: How One Digital Bank Broke a Nation",
+      "tokens": [
+        "bank",
+        "broke",
+        "collapse",
+        "digital",
+        "nation",
+        "paraguay",
+        "plunges",
+        "political",
+        "scandal",
+        "ueno"
+      ]
+    },
+    {
+      "title": "Man unexpectedly recovers from a knife wound through his eye and brain",
+      "tokens": [
+        "apparent",
+        "brain",
+        "doctors",
+        "exact",
+        "face",
+        "hilt",
+        "hospital",
+        "knife",
+        "matters",
+        "most",
+        "path",
+        "recovers",
+        "severity",
+        "showed",
+        "sticking",
+        "through",
+        "unexpectedly",
+        "wound"
+      ]
     }
   ],
   "last_categories": [
-    "UNDERRATED_GEOPOLITICS",
-    "GEOPOLITICS",
     "AI_ROBOTICS",
     "INDIA_TRENDING",
     "UNDERRATED_GEOPOLITICS",
@@ -8280,11 +8283,11 @@
     "VIRAL_UNDERDOG_SPORTS",
     "GLOBAL_POWERS",
     "STOCK_MARKETS",
-    "STOCK_MARKETS"
+    "STOCK_MARKETS",
+    "UNDERRATED_GEOPOLITICS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "DW Global In-Depth",
-    "Top Viral News [DENMARK]",
     "Top Viral News [GREECE]",
     "Country Documentary Wire [IRAQ]",
     "DW Global In-Depth",
@@ -8322,11 +8325,11 @@
     "Country Documentary Wire [MEXICO]",
     "Google Trends USA Viral 24h",
     "Global Country Wire [ALGERIA \u2022 STOCK_MARKETS]",
-    "Global Country Wire [AUSTRIA \u2022 STOCK_MARKETS]"
+    "Global Country Wire [AUSTRIA \u2022 STOCK_MARKETS]",
+    "DW Global In-Depth",
+    "Ars Technica"
   ],
   "last_countries": [
-    "EGYPT",
-    "FINLAND",
     "AZERBAIJAN",
     "INDIA",
     "FRANCE",
@@ -8374,6 +8377,8 @@
     "INTERNATIONAL",
     "GLOBAL MARKETS",
     "AUSTRIA",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "GLOBAL BRIEFING",
+    "UNITED KINGDOM"
   ]
 }
