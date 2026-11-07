@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T18:33:02.146918",
-  "round_robin_idx": 17,
-  "country_rot_idx": 65,
-  "bgm_track_counter": 2792009068,
+  "updated_at": "2026-11-07T20:16:53.146119",
+  "round_robin_idx": 18,
+  "country_rot_idx": 2,
+  "bgm_track_counter": 2822966996,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -608,91 +608,13 @@
     "protesters_break_into_microsoft_data_centre",
     "europe_revolts_why_activists_stormed_microsoft",
     "trump_says_nasa_plans_to_launch",
-    "trump_s_nuclear_mars_gambit_the"
+    "trump_s_nuclear_mars_gambit_the",
+    "british_soldier_ignored_order_to_pull",
+    "british_soldier_s_sim_card_slip",
+    "in_1962_jeff_bezos_father_fled",
+    "the_250k_bet_how_one_cuban"
   ],
   "event_fingerprints": [
-    {
-      "title": "Astronomers discover the secrets of 'string of pearls' supernova relic and the zombie star at its heart",
-      "tokens": [
-        "celestial",
-        "zombie",
-        "witnessed",
-        "about",
-        "learning",
-        "still",
-        "unique",
-        "star",
-        "cosmic",
-        "scientists",
-        "string",
-        "heart",
-        "supernova",
-        "astronomers",
-        "discover",
-        "secrets",
-        "left",
-        "relic",
-        "pearls"
-      ]
-    },
-    {
-      "title": "Egypt court fines journalist Lina Attalah and orders news site's closure",
-      "tokens": [
-        "attalah",
-        "lina",
-        "closure",
-        "fines",
-        "verdict",
-        "mada",
-        "amnesty",
-        "against",
-        "egypt",
-        "court",
-        "independent",
-        "represented",
-        "crushing",
-        "news",
-        "site",
-        "blow",
-        "international",
-        "journalist",
-        "outlet",
-        "masr",
-        "orders"
-      ]
-    },
-    {
-      "title": "Beyond Bad Cholesterol: Scientists Uncover a Hidden Driver of Heart Disease",
-      "tokens": [
-        "disease",
-        "uncover",
-        "beyond",
-        "driver",
-        "cholesterol",
-        "hidden",
-        "scientists",
-        "heart"
-      ]
-    },
-    {
-      "title": "VCs will make billions on Anthropic's IPO, but Amazon is set to make much more",
-      "tokens": [
-        "anthropic",
-        "extent",
-        "billions",
-        "reveal",
-        "amazon",
-        "note",
-        "true",
-        "will",
-        "make",
-        "much",
-        "ownership",
-        "more",
-        "conversions",
-        "massive"
-      ]
-    },
     {
       "title": "Cowboy Space unveils 'Big Iron' rocket to launch 20,000 AI data centers",
       "tokens": [
@@ -8334,11 +8256,120 @@
         "within",
         "years"
       ]
+    },
+    {
+      "title": "British soldier ignored order to pull his SIM card, then got blackmailed",
+      "tokens": [
+        "before",
+        "blackmailed",
+        "british",
+        "card",
+        "court",
+        "deploying",
+        "devices",
+        "down",
+        "element",
+        "engage",
+        "ignored",
+        "lock",
+        "martialed",
+        "operational",
+        "order",
+        "pull",
+        "refusal",
+        "repeatedly",
+        "result",
+        "security",
+        "sextorted",
+        "soldier",
+        "then",
+        "told"
+      ]
+    },
+    {
+      "title": "British Soldier's SIM Card Slip Leads to \u00a3250 Blackmail Scandal",
+      "tokens": [
+        "blackmail",
+        "blackmailed",
+        "british",
+        "card",
+        "ignored",
+        "leads",
+        "order",
+        "pull",
+        "scandal",
+        "slip",
+        "soldier",
+        "then"
+      ]
+    },
+    {
+      "title": "In 1962, Jeff Bezos' father fled Cuba with just three shirts. Thirty-two years later, he invested $250,000 of his hard-earned savings to hel",
+      "tokens": [
+        "alone",
+        "amazon",
+        "bezos",
+        "cuba",
+        "didn",
+        "earned",
+        "expect",
+        "father",
+        "fled",
+        "hard",
+        "help",
+        "invested",
+        "jeff",
+        "just",
+        "know",
+        "later",
+        "left",
+        "life",
+        "miguel",
+        "much",
+        "panama",
+        "savings",
+        "shirts",
+        "stake",
+        "start",
+        "teen",
+        "then",
+        "thirty",
+        "three",
+        "worth",
+        "would",
+        "years"
+      ]
+    },
+    {
+      "title": "The $250K Bet: How One Cuban Refugee Built Amazon's Empire",
+      "tokens": [
+        "alone",
+        "amazon",
+        "bezos",
+        "built",
+        "cuba",
+        "cuban",
+        "earned",
+        "father",
+        "fled",
+        "hard",
+        "help",
+        "invested",
+        "jeff",
+        "just",
+        "later",
+        "refugee",
+        "savings",
+        "shirts",
+        "stake",
+        "start",
+        "thirty",
+        "three",
+        "years"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "DEFENSE_MILITARY",
     "GLOBAL_POWERS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
@@ -8376,11 +8407,11 @@
     "ENTERTAINMENT",
     "SCIENCE",
     "GEOPOLITICS",
-    "SCIENCE"
+    "SCIENCE",
+    "TECHNOLOGY",
+    "MIND_BLOWING_FACTS"
   ],
   "last_sources": [
-    "Top Viral News [PAKISTAN]",
-    "Top Viral News [TURKEY]",
     "Top Viral News [INDIA]",
     "Top Viral News [COLOMBIA]",
     "Top Viral News [BELGIUM]",
@@ -8418,11 +8449,11 @@
     "BBC Entertainment & Arts",
     "The Guardian Science",
     "Google Trends Viral [IRELAND]",
-    "NASA, SpaceX, ESA & Global Space Missions"
+    "NASA, SpaceX, ESA & Global Space Missions",
+    "Ars Technica",
+    "Global Country Wire [CUBA \u2022 MIND_BLOWING_FACTS]"
   ],
   "last_countries": [
-    "SOUTH AFRICA",
-    "VIETNAM",
     "KENYA",
     "NORWAY",
     "GEORGIA",
@@ -8470,6 +8501,8 @@
     "GLOBAL CINEMA",
     "SPACE & SCIENCE",
     "EUROPE",
-    "UNITED STATES"
+    "UNITED STATES",
+    "UNITED KINGDOM",
+    "CUBA"
   ]
 }
