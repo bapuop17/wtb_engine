@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T04:16:18.299759",
-  "round_robin_idx": 7,
-  "country_rot_idx": 20,
-  "bgm_track_counter": 2483708545,
+  "updated_at": "2026-11-07T05:47:17.532565",
+  "round_robin_idx": 8,
+  "country_rot_idx": 32,
+  "bgm_track_counter": 2534062787,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -571,70 +571,13 @@
     "south_korea_military_mission_to_protect",
     "south_korea_s_hormuz_gamble_why",
     "anwar_says_malaysia_assessing_impact_of",
-    "malaysia_s_trade_shock_anwar_s"
+    "malaysia_s_trade_shock_anwar_s",
+    "spacex_launches_mystery_mission_for_us",
+    "spacex_s_secret_ussf_432_launch",
+    "us_military_carries_out_new_targeted",
+    "us_strikes_iran_the_48_hour"
   ],
   "event_fingerprints": [
-    {
-      "title": "A Bizarre 170-Million-Year-Old Predator Is Rewriting What We Know About Ancient Crocodiles",
-      "tokens": [
-        "bizarre",
-        "crocodiles",
-        "predator",
-        "year",
-        "know",
-        "about",
-        "rewriting",
-        "ancient",
-        "million"
-      ]
-    },
-    {
-      "title": "US military gives Elon Musk's SpaceX access to sensitive tracking data",
-      "tokens": [
-        "spacex",
-        "tracking",
-        "musk",
-        "data",
-        "gives",
-        "elon",
-        "access",
-        "military",
-        "sensitive"
-      ]
-    },
-    {
-      "title": "Rosebank: Life on the oil field at the centre of a political storm",
-      "tokens": [
-        "rosebank",
-        "ship",
-        "like",
-        "untapped",
-        "finds",
-        "political",
-        "cook",
-        "centre",
-        "fate",
-        "field",
-        "life",
-        "board",
-        "editor",
-        "james",
-        "storm",
-        "awaiting",
-        "scotland"
-      ]
-    },
-    {
-      "title": "Snakebites Are Far Deadlier Than We Thought, New Study Reveals",
-      "tokens": [
-        "than",
-        "deadlier",
-        "thought",
-        "reveals",
-        "snakebites",
-        "study"
-      ]
-    },
     {
       "title": "Who has made Troy's Premier League team of the week?",
       "tokens": [
@@ -8223,11 +8166,99 @@
         "tariffs",
         "trade"
       ]
+    },
+    {
+      "title": "SpaceX launches mystery mission for US Space Force in gorgeous sunset liftoff from California",
+      "tokens": [
+        "breaking",
+        "california",
+        "classified",
+        "events",
+        "force",
+        "gorgeous",
+        "just",
+        "latest",
+        "launched",
+        "launches",
+        "liftoff",
+        "military",
+        "mission",
+        "more",
+        "mystery",
+        "rocket",
+        "skywatching",
+        "space",
+        "spacex",
+        "sunset",
+        "updates"
+      ]
+    },
+    {
+      "title": "SpaceX's Secret USSF-432 Launch: What\u2019s Inside the Classified Payload?",
+      "tokens": [
+        "california",
+        "classified",
+        "force",
+        "gorgeous",
+        "inside",
+        "launch",
+        "launches",
+        "liftoff",
+        "mission",
+        "mystery",
+        "payload",
+        "space",
+        "spacex",
+        "sunset",
+        "ussf"
+      ]
+    },
+    {
+      "title": "US military carries out new targeted strike on Iran; new security alert issued for region",
+      "tokens": [
+        "alert",
+        "assets",
+        "carries",
+        "fresh",
+        "iran",
+        "israeli",
+        "issued",
+        "leaders",
+        "mediator",
+        "military",
+        "orders",
+        "proposals",
+        "range",
+        "region",
+        "security",
+        "strike",
+        "strikes",
+        "targeted",
+        "tehran",
+        "weigh",
+        "within"
+      ]
+    },
+    {
+      "title": "US Strikes Iran: The 48-Hour Countdown to Total War",
+      "tokens": [
+        "alert",
+        "carries",
+        "countdown",
+        "hour",
+        "iran",
+        "issued",
+        "military",
+        "region",
+        "security",
+        "strike",
+        "strikes",
+        "targeted",
+        "total"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
-    "GLOBAL_POWERS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
     "SCIENCE",
@@ -8265,11 +8296,11 @@
     "AI_ROBOTICS",
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
-    "HEALTH"
+    "HEALTH",
+    "SCIENCE",
+    "ENTERTAINMENT"
   ],
   "last_sources": [
-    "Top Viral News [PHILIPPINES]",
-    "Top Viral News [ITALY]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "Top Viral News [QATAR]",
     "Space.com Breaking",
@@ -8307,11 +8338,11 @@
     "Global AI, Nvidia, OpenAI & Semiconductor Race",
     "Global Country Wire [RUSSIA \u2022 MIND_BLOWING_FACTS]",
     "Global Superpowers Geopolitics 24h",
-    "Global Country Wire [MALAYSIA \u2022 HEALTH]"
+    "Global Country Wire [MALAYSIA \u2022 HEALTH]",
+    "Space.com Breaking",
+    "Global Country Wire [EGYPT \u2022 ENTERTAINMENT]"
   ],
   "last_countries": [
-    "BRAZIL",
-    "TURKEY",
     "VIETNAM",
     "SERBIA",
     "INDONESIA",
@@ -8359,6 +8390,8 @@
     "CHINA",
     "TURKEY",
     "SOUTH KOREA",
-    "MALAYSIA"
+    "MALAYSIA",
+    "SPACE & SCIENCE",
+    "IRAN"
   ]
 }
