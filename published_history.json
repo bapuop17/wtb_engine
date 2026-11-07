@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T01:51:44.077115",
-  "round_robin_idx": 5,
-  "country_rot_idx": 71,
-  "bgm_track_counter": 2412165127,
+  "updated_at": "2026-11-07T02:49:26.613485",
+  "round_robin_idx": 6,
+  "country_rot_idx": 8,
+  "bgm_track_counter": 2450052411,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -563,107 +563,13 @@
     "austrian_police_investigate_man_for_leaving",
     "ueno_bank_scandal_plunges_paraguay_into",
     "paraguay_s_850m_bank_collapse_how",
-    "man_unexpectedly_recovers_from_a_knife"
+    "man_unexpectedly_recovers_from_a_knife",
+    "china_s_top_spy_agency_recruited",
+    "china_s_secret_spy_infiltration_of",
+    "ancient_tomb_discovery_suggests_oldest_evidence",
+    "turkey_tomb_the_world_s_oldest"
   ],
   "event_fingerprints": [
-    {
-      "title": "Researchers Claimed a Blurry Object on Apple Maps Was 'Very Likely' Amelia Earhart's Missing Plane. It Turned Out to Be a 'Collection of Large Trees'",
-      "tokens": [
-        "atoll",
-        "large",
-        "south",
-        "remote",
-        "surve",
-        "trees",
-        "turned",
-        "pacific",
-        "amelia",
-        "traveled",
-        "person",
-        "earhart",
-        "object",
-        "researchers",
-        "investigate",
-        "plane",
-        "claimed",
-        "maps",
-        "very",
-        "blurry",
-        "crew",
-        "likely",
-        "taraia",
-        "called",
-        "collection",
-        "missing",
-        "apple"
-      ]
-    },
-    {
-      "title": "From agriculture to AI-griculture: How tech is changing farming",
-      "tokens": [
-        "changing",
-        "remote",
-        "cattle",
-        "tech",
-        "becomi",
-        "time",
-        "processes",
-        "agriculture",
-        "took",
-        "valuable",
-        "farmers",
-        "farming",
-        "automation",
-        "griculture",
-        "rapidly",
-        "monitoring"
-      ]
-    },
-    {
-      "title": "Healey's Budget needs to sustain the stronger economy through gathering clouds",
-      "tokens": [
-        "gathering",
-        "government",
-        "stronger",
-        "through",
-        "come",
-        "sustain",
-        "clouds",
-        "things",
-        "budget",
-        "become",
-        "positive",
-        "trickier",
-        "january",
-        "economic",
-        "could",
-        "labour",
-        "economy",
-        "needs",
-        "healey"
-      ]
-    },
-    {
-      "title": "Is 'ferritin face' a real thing",
-      "tokens": [
-        "have",
-        "people",
-        "real",
-        "spot",
-        "claim",
-        "iron",
-        "views",
-        "attracted",
-        "ferritin",
-        "millions",
-        "online",
-        "signs",
-        "thing",
-        "videos",
-        "which",
-        "face"
-      ]
-    },
     {
       "title": "Pressure grows on Sage as fans turn on Palace boss",
       "tokens": [
@@ -8243,11 +8149,82 @@
         "unexpectedly",
         "wound"
       ]
+    },
+    {
+      "title": "China's Top Spy Agency Recruited Woman Who Targeted Jensen Huang",
+      "tokens": [
+        "agency",
+        "businesswoman",
+        "china",
+        "chinese",
+        "close",
+        "found",
+        "huang",
+        "jensen",
+        "passing",
+        "recruited",
+        "relationship",
+        "targeted",
+        "times",
+        "woman",
+        "york"
+      ]
+    },
+    {
+      "title": "China's Secret Spy Infiltration of Nvidia's AI Crown",
+      "tokens": [
+        "agency",
+        "china",
+        "crown",
+        "huang",
+        "infiltration",
+        "jensen",
+        "nvidia",
+        "recruited",
+        "targeted",
+        "woman"
+      ]
+    },
+    {
+      "title": "Ancient tomb discovery suggests oldest evidence of person getting high - 2,800 years ago",
+      "tokens": [
+        "ancient",
+        "burial",
+        "discovery",
+        "evidence",
+        "getting",
+        "high",
+        "oldest",
+        "person",
+        "post",
+        "reveal",
+        "suggests",
+        "tomb",
+        "turkey",
+        "wrestler",
+        "year",
+        "years",
+        "york"
+      ]
+    },
+    {
+      "title": "Turkey Tomb: The World's Oldest High (2,800 Years)",
+      "tokens": [
+        "ancient",
+        "discovery",
+        "evidence",
+        "getting",
+        "high",
+        "oldest",
+        "person",
+        "suggests",
+        "tomb",
+        "turkey",
+        "years"
+      ]
     }
   ],
   "last_categories": [
-    "AI_ROBOTICS",
-    "INDIA_TRENDING",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
     "DEFENSE_MILITARY",
@@ -8285,11 +8262,11 @@
     "STOCK_MARKETS",
     "STOCK_MARKETS",
     "UNDERRATED_GEOPOLITICS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "AI_ROBOTICS",
+    "MIND_BLOWING_FACTS"
   ],
   "last_sources": [
-    "Top Viral News [GREECE]",
-    "Country Documentary Wire [IRAQ]",
     "DW Global In-Depth",
     "Country Documentary Wire [CANADA]",
     "Top Viral News [PHILIPPINES]",
@@ -8327,11 +8304,11 @@
     "Global Country Wire [ALGERIA \u2022 STOCK_MARKETS]",
     "Global Country Wire [AUSTRIA \u2022 STOCK_MARKETS]",
     "DW Global In-Depth",
-    "Ars Technica"
+    "Ars Technica",
+    "Global AI, Nvidia, OpenAI & Semiconductor Race",
+    "Global Country Wire [RUSSIA \u2022 MIND_BLOWING_FACTS]"
   ],
   "last_countries": [
-    "AZERBAIJAN",
-    "INDIA",
     "FRANCE",
     "QATAR",
     "BRAZIL",
@@ -8379,6 +8356,8 @@
     "AUSTRIA",
     "GLOBAL TECH & AI",
     "GLOBAL BRIEFING",
-    "UNITED KINGDOM"
+    "UNITED KINGDOM",
+    "CHINA",
+    "TURKEY"
   ]
 }
