@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-06T22:48:38.802814",
-  "round_robin_idx": 2,
-  "country_rot_idx": 35,
-  "bgm_track_counter": 2301552650,
+  "updated_at": "2026-11-07T00:04:36.755395",
+  "round_robin_idx": 3,
+  "country_rot_idx": 47,
+  "bgm_track_counter": 2349731808,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -555,88 +555,13 @@
     "turkish_parliament_approves_mecca_defense_pact",
     "turkey_ratifies_mecca_pact_the_new",
     "3_mexico_logistics_stocks_riding_rising",
-    "mexico_logistics_stocks_soar_as_us"
+    "mexico_logistics_stocks_soar_as_us",
+    "yankees_lose_catching_coach_tanner_swanson",
+    "yankees_bleed_talent_the_swanson_purge",
+    "4_billion_year_old_rosetta_stone",
+    "mars_meteorite_found_the_4_billion"
   ],
   "event_fingerprints": [
-    {
-      "title": "Grok releases the first seven minutes of its AI-generated 'Odyssey'",
-      "tokens": [
-        "looks",
-        "interest",
-        "okay",
-        "footage",
-        "generated",
-        "human",
-        "minutes",
-        "artistry",
-        "odyssey",
-        "long",
-        "seven",
-        "seeking",
-        "grok",
-        "inspiration",
-        "first",
-        "releases"
-      ]
-    },
-    {
-      "title": "More Than 1,000 Birds Were Killed or Injured in Window Collisions Around Chicago Over the Weekend",
-      "tokens": [
-        "birds",
-        "five",
-        "through",
-        "which",
-        "window",
-        "evening",
-        "october",
-        "have",
-        "killed",
-        "estimated",
-        "injured",
-        "flown",
-        "more",
-        "than",
-        "cook",
-        "around",
-        "million",
-        "collisions",
-        "county",
-        "chicago",
-        "includ"
-      ]
-    },
-    {
-      "title": "Space debris: Are we on track for true sustainability?",
-      "tokens": [
-        "life",
-        "modern",
-        "true",
-        "enable",
-        "space",
-        "nearly",
-        "debris",
-        "sustainability",
-        "know",
-        "systems",
-        "layer",
-        "underpinning",
-        "track",
-        "critical",
-        "infrastructure"
-      ]
-    },
-    {
-      "title": "Will a new code end 'rip-off parking charges'?",
-      "tokens": [
-        "prime",
-        "will",
-        "minister",
-        "parking",
-        "code",
-        "work",
-        "charges"
-      ]
-    },
     {
       "title": "Hospital deemed 'dangerous' and 'dreadful' online claims to be among safest in the country",
       "tokens": [
@@ -8239,11 +8164,91 @@
         "stocks",
         "trade"
       ]
+    },
+    {
+      "title": "Yankees lose catching coach Tanner Swanson to Mariners for promotion to bench coach: Source",
+      "tokens": [
+        "another",
+        "bench",
+        "catching",
+        "coach",
+        "coaching",
+        "instructor",
+        "left",
+        "lose",
+        "mariners",
+        "promotion",
+        "purge",
+        "seattle",
+        "source",
+        "swanson",
+        "tanner",
+        "vaunted",
+        "yankees",
+        "york"
+      ]
+    },
+    {
+      "title": "Yankees Bleed Talent: The Swanson Purge & Mariners' Rise",
+      "tokens": [
+        "bench",
+        "bleed",
+        "catching",
+        "coach",
+        "lose",
+        "mariners",
+        "promotion",
+        "purge",
+        "rise",
+        "source",
+        "swanson",
+        "talent",
+        "tanner",
+        "yankees"
+      ]
+    },
+    {
+      "title": "4-billion-year-old 'Rosetta Stone' found in Sahara Desert could unlock the secret history of water on Mars",
+      "tokens": [
+        "ancient",
+        "billion",
+        "could",
+        "desert",
+        "found",
+        "mars",
+        "martian",
+        "meteorite",
+        "piece",
+        "reveals",
+        "rosetta",
+        "sahara",
+        "stone",
+        "traces",
+        "turns",
+        "unlock",
+        "water",
+        "year"
+      ]
+    },
+    {
+      "title": "Mars Meteorite Found: The 4 Billion Year Old Water Secret",
+      "tokens": [
+        "billion",
+        "could",
+        "desert",
+        "found",
+        "mars",
+        "meteorite",
+        "rosetta",
+        "sahara",
+        "stone",
+        "unlock",
+        "water",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "STOCK_MARKETS",
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
@@ -8281,11 +8286,11 @@
     "GLOBAL_POWERS",
     "TECHNOLOGY",
     "GEOPOLITICS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "GLOBAL_POWERS",
+    "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Top Viral News [BRAZIL]",
-    "Top Viral News [TURKEY]",
     "Top Viral News [VIETNAM]",
     "DW Global In-Depth",
     "Top Viral News [DENMARK]",
@@ -8323,11 +8328,11 @@
     "Top Viral News [GERMANY]",
     "The Verge Tech",
     "Country Documentary Wire [TURKEY]",
-    "Country Documentary Wire [MEXICO]"
+    "Country Documentary Wire [MEXICO]",
+    "Google Trends USA Viral 24h",
+    "Global Country Wire [ALGERIA \u2022 STOCK_MARKETS]"
   ],
   "last_countries": [
-    "UNITED STATES",
-    "PAKISTAN",
     "RUSSIA",
     "SPACE & SCIENCE",
     "EGYPT",
@@ -8375,6 +8380,8 @@
     "GERMANY",
     "UNITED STATES",
     "MIDDLE EAST",
-    "MEXICO"
+    "MEXICO",
+    "INTERNATIONAL",
+    "GLOBAL MARKETS"
   ]
 }
