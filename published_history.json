@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T10:58:17.671933",
-  "round_robin_idx": 12,
-  "country_rot_idx": 5,
-  "bgm_track_counter": 2605491066,
+  "updated_at": "2026-11-07T13:07:40.685080",
+  "round_robin_idx": 13,
+  "country_rot_idx": 17,
+  "bgm_track_counter": 2631371578,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -589,87 +589,13 @@
     "quiles_heads_almansa_in_moto3_practice",
     "moto3_chaos_quiles_vs_almansa_qatar",
     "early_count_in_new_zealand_s",
-    "nz_election_2026_deadlock_mmp_math"
+    "nz_election_2026_deadlock_mmp_math",
+    "max_verstappen_reveals_only_thing_that",
+    "verstappen_s_2026_war_how_antonelli",
+    "discover_hidden_gems_slow_food_and",
+    "the_philippines_why_slow_food_beats"
   ],
   "event_fingerprints": [
-    {
-      "title": "Anthropic files for stock market IPO; Meta announces $95 billion fundraising drive to pay for AI expansion - business live",
-      "tokens": [
-        "business",
-        "expansion",
-        "stock",
-        "billion",
-        "anthropic",
-        "live",
-        "meta",
-        "announces",
-        "drive",
-        "fundraising",
-        "files",
-        "market"
-      ]
-    },
-    {
-      "title": "Just Two Days on a Vegan Diet Triggered Unexpected Changes in the Liver",
-      "tokens": [
-        "liver",
-        "unexpected",
-        "triggered",
-        "changes",
-        "days",
-        "diet",
-        "just",
-        "vegan"
-      ]
-    },
-    {
-      "title": "End approaching for Carrick but Man Utd fans make clear who they blame",
-      "tokens": [
-        "michael",
-        "defeat",
-        "carrick",
-        "bournemouth",
-        "blame",
-        "clear",
-        "approaching",
-        "make",
-        "manchester",
-        "fans",
-        "during",
-        "voiced",
-        "sang",
-        "support",
-        "united",
-        "their",
-        "home",
-        "they"
-      ]
-    },
-    {
-      "title": "Chris Brown given suspended eight-month prison sentence over nightclub attack",
-      "tokens": [
-        "attack",
-        "star",
-        "chris",
-        "eight",
-        "month",
-        "music",
-        "pleaded",
-        "attacking",
-        "brown",
-        "guilty",
-        "affray",
-        "producer",
-        "previously",
-        "nightclub",
-        "sentence",
-        "prison",
-        "suspended",
-        "glass",
-        "given",
-        "bottle"
-      ]
-    },
     {
       "title": "Brazil's real sinks after Lula's re-election victory",
       "tokens": [
@@ -8285,11 +8211,88 @@
         "twist",
         "zealand"
       ]
+    },
+    {
+      "title": "Max Verstappen reveals 'only thing that we want' from F1 2026 battle",
+      "tokens": [
+        "about",
+        "antonelli",
+        "battle",
+        "briefing",
+        "clear",
+        "feelings",
+        "finishing",
+        "grand",
+        "made",
+        "mexican",
+        "only",
+        "place",
+        "prix",
+        "reveals",
+        "seals",
+        "second",
+        "thing",
+        "third",
+        "title",
+        "verstappen",
+        "want",
+        "wins"
+      ]
+    },
+    {
+      "title": "Verstappen's 2026 War: How Antonelli Stole The Crown",
+      "tokens": [
+        "antonelli",
+        "battle",
+        "crown",
+        "only",
+        "reveals",
+        "stole",
+        "thing",
+        "verstappen",
+        "want"
+      ]
+    },
+    {
+      "title": "Discover hidden gems, slow food and festivals in the Philippines",
+      "tokens": [
+        "activities",
+        "beyond",
+        "capital",
+        "coastal",
+        "colourful",
+        "discover",
+        "events",
+        "festivals",
+        "food",
+        "gems",
+        "hidden",
+        "manila",
+        "menu",
+        "offers",
+        "philippines",
+        "slow",
+        "travellers",
+        "trip"
+      ]
+    },
+    {
+      "title": "The Philippines: Why Slow Food Beats Wall Street",
+      "tokens": [
+        "beats",
+        "discover",
+        "festivals",
+        "food",
+        "gems",
+        "hidden",
+        "philippines",
+        "slow",
+        "street",
+        "wall"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
@@ -8327,11 +8330,11 @@
     "TECHNOLOGY",
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
-    "HEALTH"
+    "HEALTH",
+    "GLOBAL_POWERS",
+    "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Top Viral News [SAUDI ARABIA]",
-    "Top Viral News [BRAZIL]",
     "Top Viral News [SOUTH AFRICA]",
     "Country Documentary Wire [VIETNAM]",
     "Top Viral News [KENYA]",
@@ -8369,11 +8372,11 @@
     "Global Country Wire [IRELAND \u2022 TECHNOLOGY]",
     "The Guardian International",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
-    "Global Country Wire [NEW ZEALAND \u2022 HEALTH]"
+    "Global Country Wire [NEW ZEALAND \u2022 HEALTH]",
+    "Google Trends Viral [FRANCE]",
+    "Global Country Wire [PHILIPPINES \u2022 STOCK_MARKETS]"
   ],
   "last_countries": [
-    "ITALY",
-    "UNITED STATES",
     "QATAR",
     "SPACE & SCIENCE",
     "INDIA",
@@ -8421,6 +8424,8 @@
     "SOUTH AFRICA",
     "QATAR",
     "NEW ZEALAND",
-    "CHINA"
+    "CHINA",
+    "MEXICO",
+    "PHILIPPINES"
   ]
 }
