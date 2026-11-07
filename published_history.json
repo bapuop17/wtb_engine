@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T00:04:36.755395",
-  "round_robin_idx": 3,
-  "country_rot_idx": 47,
-  "bgm_track_counter": 2349731808,
+  "updated_at": "2026-11-07T00:41:34.407678",
+  "round_robin_idx": 4,
+  "country_rot_idx": 59,
+  "bgm_track_counter": 2366036459,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -559,56 +559,10 @@
     "yankees_lose_catching_coach_tanner_swanson",
     "yankees_bleed_talent_the_swanson_purge",
     "4_billion_year_old_rosetta_stone",
-    "mars_meteorite_found_the_4_billion"
+    "mars_meteorite_found_the_4_billion",
+    "austrian_police_investigate_man_for_leaving"
   ],
   "event_fingerprints": [
-    {
-      "title": "Hospital deemed 'dangerous' and 'dreadful' online claims to be among safest in the country",
-      "tokens": [
-        "criticism",
-        "staff",
-        "faced",
-        "long",
-        "shortages",
-        "among",
-        "dreadful",
-        "grange",
-        "online",
-        "overcrowding",
-        "university",
-        "deemed",
-        "hospital",
-        "dangerous",
-        "country",
-        "safest",
-        "claims",
-        "delays"
-      ]
-    },
-    {
-      "title": "Isak finally living up to price tag as Liverpool patience rewarded",
-      "tokens": [
-        "finally",
-        "their",
-        "four",
-        "price",
-        "living",
-        "make",
-        "isak",
-        "sixth",
-        "league",
-        "liverpool",
-        "season",
-        "scores",
-        "wins",
-        "alexander",
-        "rewarded",
-        "goal",
-        "patience",
-        "last",
-        "premier"
-      ]
-    },
     {
       "title": "US actor Tom Skerritt, star of Top Gun, Steel Magnolias and Alien, dies aged 93",
       "tokens": [
@@ -8246,10 +8200,47 @@
         "water",
         "year"
       ]
+    },
+    {
+      "title": "Austrian police investigate man for leaving 17-year-old on Germany's highest mountain Zugspitze",
+      "tokens": [
+        "austrian",
+        "been",
+        "discharged",
+        "eventually",
+        "germany",
+        "girl",
+        "highest",
+        "hospital",
+        "investigate",
+        "leaving",
+        "mountain",
+        "police",
+        "probed",
+        "rescued",
+        "since",
+        "stranded",
+        "teenager",
+        "year",
+        "zugspitze"
+      ]
+    },
+    {
+      "title": "Austrian police investigate man for leaving 17-year-old on Germany's highest mountain",
+      "tokens": [
+        "austrian",
+        "germany",
+        "highest",
+        "investigate",
+        "leaving",
+        "mountain",
+        "police",
+        "year",
+        "zugspitze"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
     "AI_ROBOTICS",
@@ -8288,10 +8279,10 @@
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "GLOBAL_POWERS",
+    "STOCK_MARKETS",
     "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Top Viral News [VIETNAM]",
     "DW Global In-Depth",
     "Top Viral News [DENMARK]",
     "Top Viral News [GREECE]",
@@ -8330,11 +8321,10 @@
     "Country Documentary Wire [TURKEY]",
     "Country Documentary Wire [MEXICO]",
     "Google Trends USA Viral 24h",
-    "Global Country Wire [ALGERIA \u2022 STOCK_MARKETS]"
+    "Global Country Wire [ALGERIA \u2022 STOCK_MARKETS]",
+    "Global Country Wire [AUSTRIA \u2022 STOCK_MARKETS]"
   ],
   "last_countries": [
-    "RUSSIA",
-    "SPACE & SCIENCE",
     "EGYPT",
     "FINLAND",
     "AZERBAIJAN",
@@ -8382,6 +8372,8 @@
     "MIDDLE EAST",
     "MEXICO",
     "INTERNATIONAL",
-    "GLOBAL MARKETS"
+    "GLOBAL MARKETS",
+    "AUSTRIA",
+    "GLOBAL TECH & AI"
   ]
 }
