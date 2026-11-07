@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T22:04:47.719057",
-  "round_robin_idx": 19,
-  "country_rot_idx": 14,
-  "bgm_track_counter": 2862402362,
+  "updated_at": "2026-11-07T23:41:11.211290",
+  "round_robin_idx": 0,
+  "country_rot_idx": 26,
+  "bgm_track_counter": 2894401278,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -616,93 +616,13 @@
     "israeli_president_picks_gadi_eisenkot_netanyahu",
     "netanyahu_s_fall_why_israel_s",
     "malaysia_s_king_warns_against_challenging",
-    "malaysia_s_king_issues_final_warning"
+    "malaysia_s_king_issues_final_warning",
+    "pakistan_s_government_would_consider_issuing",
+    "pakistan_offers_visa_to_punjab_cm",
+    "nations_championship_south_africa_and_new",
+    "springboks_vs_all_blacks_record_crowd"
   ],
   "event_fingerprints": [
-    {
-      "title": "Black holes can split in two - but only if they spin at extreme speeds",
-      "tokens": [
-        "more",
-        "spin",
-        "long",
-        "massive",
-        "collide",
-        "have",
-        "create",
-        "black",
-        "speeds",
-        "only",
-        "extreme",
-        "split",
-        "scientists",
-        "known",
-        "when",
-        "holes",
-        "hole",
-        "they",
-        "resear",
-        "merge"
-      ]
-    },
-    {
-      "title": "An unmanageable club? Carrick the latest to suffer in Manchester United's faded grandeur",
-      "tokens": [
-        "united",
-        "unmanageable",
-        "carrick",
-        "club",
-        "manchester",
-        "faded",
-        "suffer",
-        "latest",
-        "grandeur"
-      ]
-    },
-    {
-      "title": "US midterms: Six days left - who leads in the polls as Trump, Obama rally",
-      "tokens": [
-        "midterms",
-        "democrats",
-        "days",
-        "leads",
-        "lead",
-        "campaign",
-        "before",
-        "national",
-        "midterm",
-        "elections",
-        "trump",
-        "left",
-        "obama",
-        "polls",
-        "rally",
-        "states"
-      ]
-    },
-    {
-      "title": "Academy CEO Bill Kramer Makes the Case for a More Global Oscars at Tokyo Film Festival",
-      "tokens": [
-        "case",
-        "nominatio",
-        "deal",
-        "festival",
-        "growth",
-        "youtube",
-        "oscars",
-        "kramer",
-        "makes",
-        "pathway",
-        "global",
-        "international",
-        "film",
-        "more",
-        "bill",
-        "academy",
-        "tokyo",
-        "qualifying",
-        "membership"
-      ]
-    },
     {
       "title": "Families brace for a fourth winter of wind, rain and floods in Gaza's camps",
       "tokens": [
@@ -8367,11 +8287,118 @@
         "warning",
         "warns"
       ]
+    },
+    {
+      "title": "Pakistan's government would consider issuing a visa if the Chief Minister of Indian Punjab wishes to visit Pakistan, the Foreign Office spok",
+      "tokens": [
+        "allowed",
+        "application",
+        "attend",
+        "bhagwant",
+        "chief",
+        "conference",
+        "confirmed",
+        "consider",
+        "cultural",
+        "decide",
+        "foreign",
+        "gove",
+        "government",
+        "howev",
+        "india",
+        "indian",
+        "issuing",
+        "lahore",
+        "mann",
+        "minister",
+        "office",
+        "pakistan",
+        "pending",
+        "punjab",
+        "spokesperson",
+        "travel",
+        "visa",
+        "visit",
+        "whether",
+        "wishes",
+        "would"
+      ]
+    },
+    {
+      "title": "Pakistan Offers Visa to Punjab CM \u2013 What It Means for India\u2011Pakistan Relations",
+      "tokens": [
+        "allowed",
+        "chief",
+        "consider",
+        "foreign",
+        "government",
+        "india",
+        "indian",
+        "issuing",
+        "means",
+        "minister",
+        "offers",
+        "office",
+        "pakistan",
+        "punjab",
+        "relations",
+        "spokesperson",
+        "visa",
+        "visit",
+        "whether",
+        "wishes",
+        "would"
+      ]
+    },
+    {
+      "title": "Nations Championship: South Africa and New Zealand down Italy and Scotland to maintain unbeaten runs",
+      "tokens": [
+        "africa",
+        "cham",
+        "championship",
+        "down",
+        "irish",
+        "italy",
+        "maintain",
+        "nations",
+        "perfect",
+        "rugby",
+        "runs",
+        "scotland",
+        "south",
+        "stay",
+        "thump",
+        "times",
+        "unbeaten",
+        "zealand"
+      ]
+    },
+    {
+      "title": "Springboks vs All Blacks: Record Crowd, Hidden Tactics & the Future of Rugby",
+      "tokens": [
+        "africa",
+        "blacks",
+        "championship",
+        "crowd",
+        "down",
+        "future",
+        "hidden",
+        "italy",
+        "maintain",
+        "nations",
+        "record",
+        "rugby",
+        "runs",
+        "scotland",
+        "south",
+        "springboks",
+        "tactics",
+        "unbeaten",
+        "zealand"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "SCIENCE",
     "GEOPOLITICS",
     "UNDERRATED_GEOPOLITICS",
     "GLOBAL_POWERS",
@@ -8409,11 +8436,11 @@
     "TECHNOLOGY",
     "MIND_BLOWING_FACTS",
     "INDIA_TRENDING",
-    "MIND_BLOWING_FACTS"
+    "MIND_BLOWING_FACTS",
+    "UNDERRATED_GEOPOLITICS",
+    "HEALTH"
   ],
   "last_sources": [
-    "Top Viral News [BELGIUM]",
-    "Top Viral News [PORTUGAL]",
     "Google World Top Headlines (US/Global)",
     "DW Global In-Depth",
     "Top Viral News [GERMANY]",
@@ -8451,11 +8478,11 @@
     "Ars Technica",
     "Global Country Wire [CUBA \u2022 MIND_BLOWING_FACTS]",
     "Google World Top Headlines (US/Global)",
-    "Global Country Wire [MALAYSIA \u2022 MIND_BLOWING_FACTS]"
+    "Global Country Wire [MALAYSIA \u2022 MIND_BLOWING_FACTS]",
+    "Global Country Wire [PAKISTAN \u2022 UNDERRATED_GEOPOLITICS]",
+    "Global Country Wire [ITALY \u2022 HEALTH]"
   ],
   "last_countries": [
-    "GEORGIA",
-    "KUWAIT",
     "INTERNATIONAL",
     "FRANCE",
     "PAKISTAN",
@@ -8503,6 +8530,8 @@
     "UNITED KINGDOM",
     "CUBA",
     "ISRAEL",
-    "MALAYSIA"
+    "MALAYSIA",
+    "PAKISTAN",
+    "SOUTH AFRICA"
   ]
 }
