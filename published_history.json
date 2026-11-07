@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T08:53:16.769482",
-  "round_robin_idx": 10,
-  "country_rot_idx": 56,
-  "bgm_track_counter": 2563749679,
+  "updated_at": "2026-11-07T10:11:25.257821",
+  "round_robin_idx": 11,
+  "country_rot_idx": 68,
+  "bgm_track_counter": 2600226955,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -583,95 +583,13 @@
     "angel_city_sign_world_cup_record",
     "teen_soccer_prodigy_signs_10_year",
     "govt_will_go_after_those_behind",
-    "ireland_s_media_under_siege_who"
+    "ireland_s_media_under_siege_who",
+    "anc_faces_bruising_defeat_in_south",
+    "anc_collapse_south_africa_s_14",
+    "quiles_heads_almansa_in_moto3_practice",
+    "moto3_chaos_quiles_vs_almansa_qatar"
   ],
   "event_fingerprints": [
-    {
-      "title": "Vikings are last unbeaten team as Chiefs lose",
-      "tokens": [
-        "team",
-        "unbeaten",
-        "week",
-        "francisco",
-        "kansas",
-        "vikings",
-        "seven",
-        "leaving",
-        "seas",
-        "last",
-        "lose",
-        "minnesota",
-        "city",
-        "lost",
-        "chiefs"
-      ]
-    },
-    {
-      "title": "Rapper Nicki Minaj joins Trump onstage at Michigan rally",
-      "tokens": [
-        "super",
-        "michigan",
-        "race",
-        "latest",
-        "joins",
-        "singer",
-        "rapper",
-        "playing",
-        "ahead",
-        "rally",
-        "bass",
-        "senate",
-        "campaign",
-        "tight",
-        "minaj",
-        "name",
-        "nicki",
-        "onstage",
-        "trump",
-        "where"
-      ]
-    },
-    {
-      "title": "Serbia after Vucic: Who will be PM and when will a government be formed?",
-      "tokens": [
-        "dominance",
-        "formed",
-        "government",
-        "when",
-        "serbia",
-        "blow",
-        "remains",
-        "will",
-        "positions",
-        "movement",
-        "deals",
-        "leader",
-        "longtime",
-        "political",
-        "student",
-        "uncertainty",
-        "vucic"
-      ]
-    },
-    {
-      "title": "The hottest AI wearables and gadgets you should know about",
-      "tokens": [
-        "about",
-        "muse",
-        "know",
-        "hottest",
-        "list",
-        "plaud",
-        "compiled",
-        "more",
-        "charm",
-        "including",
-        "friend",
-        "gadgets",
-        "should",
-        "wearables"
-      ]
-    },
     {
       "title": "Scientists Discover a Protective Gene That Could Help Keep the Brain Young",
       "tokens": [
@@ -8280,11 +8198,90 @@
         "under",
         "will"
       ]
+    },
+    {
+      "title": "ANC faces bruising defeat in South African local elections with 80% of ballots counted",
+      "tokens": [
+        "african",
+        "almos",
+        "away",
+        "ballots",
+        "bruising",
+        "contributed",
+        "corruption",
+        "counted",
+        "crime",
+        "defeat",
+        "delivery",
+        "elections",
+        "faces",
+        "have",
+        "high",
+        "local",
+        "nationally",
+        "party",
+        "poor",
+        "service",
+        "south",
+        "turning",
+        "unemployment",
+        "vote",
+        "voters"
+      ]
+    },
+    {
+      "title": "ANC Collapse: South Africa's 14% Shock Explained",
+      "tokens": [
+        "africa",
+        "african",
+        "ballots",
+        "bruising",
+        "collapse",
+        "counted",
+        "defeat",
+        "elections",
+        "faces",
+        "local",
+        "shock",
+        "south"
+      ]
+    },
+    {
+      "title": "Quiles heads Almansa in Moto3 Practice, Carpe and Uriarte in Q1 in Qatar",
+      "tokens": [
+        "almansa",
+        "carpe",
+        "dominasi",
+        "heads",
+        "lolos",
+        "maximo",
+        "moto",
+        "practice",
+        "pratama",
+        "qatar",
+        "quiles",
+        "tercepat",
+        "uriarte",
+        "veda"
+      ]
+    },
+    {
+      "title": "Moto3 Chaos: Quiles vs Almansa Qatar Showdown",
+      "tokens": [
+        "almansa",
+        "carpe",
+        "chaos",
+        "heads",
+        "moto",
+        "practice",
+        "qatar",
+        "quiles",
+        "showdown",
+        "uriarte"
+      ]
     }
   ],
   "last_categories": [
-    "UNDERRATED_GEOPOLITICS",
-    "GLOBAL_POWERS",
     "TECHNOLOGY",
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
@@ -8322,11 +8319,11 @@
     "DEFENSE_MILITARY",
     "ENTERTAINMENT",
     "MIND_BLOWING_FACTS",
-    "TECHNOLOGY"
+    "TECHNOLOGY",
+    "GEOPOLITICS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "DW Global In-Depth",
-    "Country Documentary Wire [MYANMAR]",
     "Ars Technica",
     "Top Viral News [SAUDI ARABIA]",
     "Top Viral News [BRAZIL]",
@@ -8364,11 +8361,11 @@
     "Global Country Wire [VIETNAM \u2022 DEFENSE_MILITARY]",
     "Hollywood Reporter",
     "Global Country Wire [MOROCCO \u2022 MIND_BLOWING_FACTS]",
-    "Global Country Wire [IRELAND \u2022 TECHNOLOGY]"
+    "Global Country Wire [IRELAND \u2022 TECHNOLOGY]",
+    "The Guardian International",
+    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)"
   ],
   "last_countries": [
-    "IRAQ",
-    "GLOBAL BRIEFING",
     "CANADA",
     "PHILIPPINES",
     "ITALY",
@@ -8416,6 +8413,8 @@
     "VIETNAM",
     "GLOBAL CINEMA",
     "UNITED STATES",
-    "EUROPE"
+    "EUROPE",
+    "SOUTH AFRICA",
+    "QATAR"
   ]
 }
