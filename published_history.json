@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T13:07:40.685080",
-  "round_robin_idx": 13,
-  "country_rot_idx": 17,
-  "bgm_track_counter": 2631371578,
+  "updated_at": "2026-11-07T14:35:52.310817",
+  "round_robin_idx": 14,
+  "country_rot_idx": 29,
+  "bgm_track_counter": 2651125846,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -593,86 +593,12 @@
     "max_verstappen_reveals_only_thing_that",
     "verstappen_s_2026_war_how_antonelli",
     "discover_hidden_gems_slow_food_and",
-    "the_philippines_why_slow_food_beats"
+    "the_philippines_why_slow_food_beats",
+    "college_football_underdog_picks_week_10",
+    "underdog_uprising_how_keelon_russell_is",
+    "nitda_director_general_kashifu_inuwa_abdullahi"
   ],
   "event_fingerprints": [
-    {
-      "title": "Brazil's real sinks after Lula's re-election victory",
-      "tokens": [
-        "decline",
-        "spending",
-        "election",
-        "challe",
-        "victory",
-        "fiscal",
-        "brazil",
-        "investors",
-        "react",
-        "lula",
-        "sharp",
-        "increased",
-        "concern",
-        "sinks",
-        "real"
-      ]
-    },
-    {
-      "title": "Anthropic warns of 'catastrophic risk' to humankind ahead of blockbuster share listing",
-      "tokens": [
-        "heavily",
-        "share",
-        "tech",
-        "warns",
-        "company",
-        "humankind",
-        "first",
-        "catastrophic",
-        "intelligence",
-        "blockbuster",
-        "ahead",
-        "public",
-        "anthropic",
-        "continue",
-        "firms",
-        "will",
-        "risk",
-        "artificial",
-        "true",
-        "invest",
-        "listing"
-      ]
-    },
-    {
-      "title": "Scientists Uncover a Hidden Secret That Could Transform Chemical Manufacturing",
-      "tokens": [
-        "secret",
-        "uncover",
-        "scientists",
-        "hidden",
-        "transform",
-        "manufacturing",
-        "chemical",
-        "could"
-      ]
-    },
-    {
-      "title": "October full 'Hunter's Moon' dazzles in spectacular photos from around the world",
-      "tokens": [
-        "hunter",
-        "october",
-        "eyes",
-        "best",
-        "moon",
-        "full",
-        "photos",
-        "dazzles",
-        "around",
-        "spectacular",
-        "your",
-        "world",
-        "feast"
-      ]
-    },
     {
       "title": "Anthropic reveals rapid revenue gains and larger losses in stock market filing",
       "tokens": [
@@ -8290,11 +8216,113 @@
         "street",
         "wall"
       ]
+    },
+    {
+      "title": "College Football Underdog Picks: Week 10 Plays for Keelon Russell, Patrick Overmyer, Blake Barnett & More",
+      "tokens": [
+        "action",
+        "barnett",
+        "blake",
+        "college",
+        "football",
+        "including",
+        "keelon",
+        "more",
+        "network",
+        "overmyer",
+        "patrick",
+        "picks",
+        "player",
+        "plays",
+        "props",
+        "read",
+        "russell",
+        "underdog",
+        "week"
+      ]
+    },
+    {
+      "title": "Underdog Uprising: How Keelon Russell Is Shaking College Football",
+      "tokens": [
+        "barnett",
+        "blake",
+        "college",
+        "football",
+        "keelon",
+        "more",
+        "overmyer",
+        "patrick",
+        "picks",
+        "plays",
+        "russell",
+        "shaking",
+        "underdog",
+        "uprising",
+        "week"
+      ]
+    },
+    {
+      "title": "NITDA Director-General Kashifu Inuwa Abdullahi says President Bola Tinubu's government is investing in new skills, innovation and broadband ",
+      "tokens": [
+        "abdullahi",
+        "achie",
+        "africa",
+        "bola",
+        "boss",
+        "broadband",
+        "cancer",
+        "digital",
+        "director",
+        "economy",
+        "general",
+        "government",
+        "grow",
+        "highlighted",
+        "innovation",
+        "inuwa",
+        "investing",
+        "kano",
+        "kashifu",
+        "necessary",
+        "nigeria",
+        "nitda",
+        "plans",
+        "president",
+        "reelection",
+        "skills",
+        "speaking",
+        "tackling",
+        "tech",
+        "tinubu",
+        "year"
+      ]
+    },
+    {
+      "title": "NITDA Director-General Kashifu Inuwa Abdullahi says President Bola Tinubu's government",
+      "tokens": [
+        "abdullahi",
+        "bola",
+        "broadband",
+        "digital",
+        "director",
+        "economy",
+        "general",
+        "government",
+        "grow",
+        "innovation",
+        "inuwa",
+        "investing",
+        "kashifu",
+        "nigeria",
+        "nitda",
+        "president",
+        "skills",
+        "speak",
+        "tinubu"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "STOCK_MARKETS",
     "GLOBAL_POWERS",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
@@ -8332,11 +8360,11 @@
     "VIRAL_UNDERDOG_SPORTS",
     "HEALTH",
     "GLOBAL_POWERS",
-    "STOCK_MARKETS"
+    "STOCK_MARKETS",
+    "VIRAL_UNDERDOG_SPORTS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Top Viral News [SOUTH AFRICA]",
-    "Country Documentary Wire [VIETNAM]",
     "Top Viral News [KENYA]",
     "Country Documentary Wire [FINLAND]",
     "Top Viral News [GEORGIA]",
@@ -8374,11 +8402,11 @@
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "Global Country Wire [NEW ZEALAND \u2022 HEALTH]",
     "Google Trends Viral [FRANCE]",
-    "Global Country Wire [PHILIPPINES \u2022 STOCK_MARKETS]"
+    "Global Country Wire [PHILIPPINES \u2022 STOCK_MARKETS]",
+    "Teenage Prodigies & Underdog Upsets Across Global Sports",
+    "Global Country Wire [NIGERIA \u2022 AI_ROBOTICS]"
   ],
   "last_countries": [
-    "QATAR",
-    "SPACE & SCIENCE",
     "INDIA",
     "NORTH KOREA",
     "MALAYSIA",
@@ -8426,6 +8454,8 @@
     "NEW ZEALAND",
     "CHINA",
     "MEXICO",
-    "PHILIPPINES"
+    "PHILIPPINES",
+    "GLOBAL BRIEFING",
+    "NIGERIA"
   ]
 }
