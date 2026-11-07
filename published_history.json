@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T10:11:25.257821",
-  "round_robin_idx": 11,
-  "country_rot_idx": 68,
-  "bgm_track_counter": 2600226955,
+  "updated_at": "2026-11-07T10:58:17.671933",
+  "round_robin_idx": 12,
+  "country_rot_idx": 5,
+  "bgm_track_counter": 2605491066,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -587,51 +587,11 @@
     "anc_faces_bruising_defeat_in_south",
     "anc_collapse_south_africa_s_14",
     "quiles_heads_almansa_in_moto3_practice",
-    "moto3_chaos_quiles_vs_almansa_qatar"
+    "moto3_chaos_quiles_vs_almansa_qatar",
+    "early_count_in_new_zealand_s",
+    "nz_election_2026_deadlock_mmp_math"
   ],
   "event_fingerprints": [
-    {
-      "title": "Scientists Discover a Protective Gene That Could Help Keep the Brain Young",
-      "tokens": [
-        "protective",
-        "keep",
-        "could",
-        "young",
-        "brain",
-        "discover",
-        "scientists",
-        "gene",
-        "help"
-      ]
-    },
-    {
-      "title": "Rubin telescope should find more of Earth's mysterious 'mini-moons' - including some we can study up close",
-      "tokens": [
-        "could",
-        "mysterious",
-        "mini",
-        "some",
-        "future",
-        "study",
-        "tiny",
-        "including",
-        "telescope",
-        "close",
-        "earth",
-        "find",
-        "missions",
-        "should",
-        "rubin",
-        "moons",
-        "asteroid",
-        "easiest",
-        "more",
-        "temporary",
-        "likely",
-        "become",
-        "targets"
-      ]
-    },
     {
       "title": "Anthropic files for stock market IPO; Meta announces $95 billion fundraising drive to pay for AI expansion - business live",
       "tokens": [
@@ -8279,10 +8239,55 @@
         "showdown",
         "uriarte"
       ]
+    },
+    {
+      "title": "Early count in New Zealand's election suggests result too close to call",
+      "tokens": [
+        "call",
+        "close",
+        "come",
+        "could",
+        "count",
+        "down",
+        "early",
+        "election",
+        "handful",
+        "here",
+        "like",
+        "main",
+        "neck",
+        "parties",
+        "percentage",
+        "result",
+        "seats",
+        "side",
+        "suggests",
+        "there",
+        "vote",
+        "zealand"
+      ]
+    },
+    {
+      "title": "NZ Election 2026: Deadlock, MMP Math & The Kingmaker Twist That Could Redraw Power",
+      "tokens": [
+        "call",
+        "close",
+        "could",
+        "count",
+        "deadlock",
+        "early",
+        "election",
+        "kingmaker",
+        "math",
+        "redraw",
+        "result",
+        "suggests",
+        "twist",
+        "zealand"
+      ]
     }
   ],
   "last_categories": [
-    "TECHNOLOGY",
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
@@ -8321,10 +8326,10 @@
     "MIND_BLOWING_FACTS",
     "TECHNOLOGY",
     "GEOPOLITICS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "HEALTH"
   ],
   "last_sources": [
-    "Ars Technica",
     "Top Viral News [SAUDI ARABIA]",
     "Top Viral News [BRAZIL]",
     "Top Viral News [SOUTH AFRICA]",
@@ -8363,11 +8368,10 @@
     "Global Country Wire [MOROCCO \u2022 MIND_BLOWING_FACTS]",
     "Global Country Wire [IRELAND \u2022 TECHNOLOGY]",
     "The Guardian International",
-    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)"
+    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
+    "Global Country Wire [NEW ZEALAND \u2022 HEALTH]"
   ],
   "last_countries": [
-    "CANADA",
-    "PHILIPPINES",
     "ITALY",
     "UNITED STATES",
     "QATAR",
@@ -8415,6 +8419,8 @@
     "UNITED STATES",
     "EUROPE",
     "SOUTH AFRICA",
-    "QATAR"
+    "QATAR",
+    "NEW ZEALAND",
+    "CHINA"
   ]
 }
