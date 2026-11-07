@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T15:43:03.912353",
-  "round_robin_idx": 15,
-  "country_rot_idx": 41,
-  "bgm_track_counter": 2699790710,
+  "updated_at": "2026-11-07T17:02:17.832588",
+  "round_robin_idx": 16,
+  "country_rot_idx": 53,
+  "bgm_track_counter": 2749644922,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -600,92 +600,13 @@
     "alcaraz_saves_match_points_to_reach",
     "why_alcaraz_saves_match_points_to",
     "the_bantu_expansion_changed_africa_scientists",
-    "bantu_empire_uncovered_dna_iron_the"
+    "bantu_empire_uncovered_dna_iron_the",
+    "knicks_defend_taylor_swift_after_players",
+    "knicks_betray_taylor_swift_the_fake",
+    "thunderstruck_what_does_the_future_hold",
+    "lightning_s_future_how_a_warming"
   ],
   "event_fingerprints": [
-    {
-      "title": "US court rules against Trump administration in California voting case",
-      "tokens": [
-        "citizens",
-        "voting",
-        "against",
-        "case",
-        "blocks",
-        "appeals",
-        "california",
-        "effort",
-        "administration",
-        "rules",
-        "court",
-        "stop",
-        "tabulating",
-        "trump",
-        "alleged",
-        "ballots",
-        "list",
-        "government"
-      ]
-    },
-    {
-      "title": "Cohere says Alibaba's Qwen model tried to send a file to Beijing",
-      "tokens": [
-        "tried",
-        "tools",
-        "while",
-        "wouldn",
-        "model",
-        "file",
-        "anyway",
-        "alibaba",
-        "resear",
-        "beijing",
-        "cohere",
-        "then",
-        "qwen",
-        "something",
-        "server",
-        "send"
-      ]
-    },
-    {
-      "title": "Tiny Magnets Implanted in Muscles Are Giving Prosthetic Hands a Remarkable New Ability",
-      "tokens": [
-        "hands",
-        "implanted",
-        "muscles",
-        "tiny",
-        "giving",
-        "prosthetic",
-        "ability",
-        "remarkable",
-        "magnets"
-      ]
-    },
-    {
-      "title": "SpaceX ignites giant Super Heavy booster engines ahead of daring Starship launch",
-      "tokens": [
-        "engines",
-        "conducted",
-        "boosters",
-        "campaign",
-        "spacex",
-        "static",
-        "ignites",
-        "sunday",
-        "ready",
-        "launch",
-        "starship",
-        "daring",
-        "heavy",
-        "super",
-        "fire",
-        "giant",
-        "booster",
-        "ahead",
-        "test",
-        "beginning"
-      ]
-    },
     {
       "title": "Ballon d'Or ceremony raises case of French sports journalist jailed in Algeria",
       "tokens": [
@@ -8336,11 +8257,84 @@
         "uncovered",
         "zimbabwe"
       ]
+    },
+    {
+      "title": "Knicks defend Taylor Swift after players name her 'fakest celebrity fan'",
+      "tokens": [
+        "appearances",
+        "celebrity",
+        "deemed",
+        "defend",
+        "fakest",
+        "games",
+        "guards",
+        "knicks",
+        "kolek",
+        "little",
+        "mcbride",
+        "miles",
+        "name",
+        "performative",
+        "players",
+        "point",
+        "superstar",
+        "swift",
+        "taylor",
+        "tyler",
+        "york"
+      ]
+    },
+    {
+      "title": "Knicks Betray Taylor Swift? The 'Fake Fan' Scandal Explained",
+      "tokens": [
+        "betray",
+        "celebrity",
+        "defend",
+        "fake",
+        "fakest",
+        "knicks",
+        "name",
+        "players",
+        "scandal",
+        "swift",
+        "taylor"
+      ]
+    },
+    {
+      "title": "Thunderstruck: what does the future hold for lightning?",
+      "tokens": [
+        "always",
+        "awed",
+        "beauty",
+        "been",
+        "change",
+        "does",
+        "experience",
+        "future",
+        "have",
+        "hold",
+        "humans",
+        "lightning",
+        "thunderstruck",
+        "understanding",
+        "warming"
+      ]
+    },
+    {
+      "title": "Lightning's Future: How a Warming Planet Is Supercharging the Sky",
+      "tokens": [
+        "does",
+        "future",
+        "hold",
+        "lightning",
+        "planet",
+        "supercharging",
+        "thunderstruck",
+        "warming"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "AI_ROBOTICS",
     "INDIA_TRENDING",
     "UNDERRATED_GEOPOLITICS",
     "GEOPOLITICS",
@@ -8378,11 +8372,11 @@
     "VIRAL_UNDERDOG_SPORTS",
     "AI_ROBOTICS",
     "UNDERRATED_GEOPOLITICS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "ENTERTAINMENT",
+    "SCIENCE"
   ],
   "last_sources": [
-    "Top Viral News [GEORGIA]",
-    "Top Viral News [KUWAIT]",
     "Top Viral News [UNITED STATES]",
     "Country Documentary Wire [FRANCE]",
     "Top Viral News [PAKISTAN]",
@@ -8420,11 +8414,11 @@
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "Global Country Wire [NIGERIA \u2022 AI_ROBOTICS]",
     "Google Trends Viral [ARGENTINA]",
-    "Ars Technica"
+    "Ars Technica",
+    "BBC Entertainment & Arts",
+    "The Guardian Science"
   ],
   "last_countries": [
-    "MALAYSIA",
-    "GLOBAL TECH & AI",
     "SAUDI ARABIA",
     "BRAZIL",
     "SOUTH AFRICA",
@@ -8472,6 +8466,8 @@
     "GLOBAL BRIEFING",
     "NIGERIA",
     "FRANCE",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "GLOBAL CINEMA",
+    "SPACE & SCIENCE"
   ]
 }
