@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-08T04:54:57.884458",
-  "round_robin_idx": 4,
-  "country_rot_idx": 74,
-  "bgm_track_counter": 2963786596,
+  "updated_at": "2026-11-08T06:21:25.346596",
+  "round_robin_idx": 5,
+  "country_rot_idx": 5,
+  "bgm_track_counter": 2973527247,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -635,45 +635,11 @@
     "bmw_reports_lower_q3_earnings",
     "why_bmw_reports_lower_q3_earnings",
     "camerimage_founder_marek_zydowicz_on_ai",
-    "ai_vs_the_lens_why_camerimage"
+    "ai_vs_the_lens_why_camerimage",
+    "ebola_why_is_there_still_no",
+    "ebola_s_50_year_vaccine_gap"
   ],
   "event_fingerprints": [
-    {
-      "title": "Cuts like a knife: Canadian rocker Bryan Adams trolls Trump with new song",
-      "tokens": [
-        "adams",
-        "bryan",
-        "like",
-        "cuts",
-        "canadian",
-        "knife",
-        "song",
-        "trump",
-        "rocker",
-        "trolls"
-      ]
-    },
-    {
-      "title": "Russian drone attack on Ukrainian train station kills at least 14, officials say",
-      "tokens": [
-        "station",
-        "others",
-        "kills",
-        "ukrainian",
-        "city",
-        "including",
-        "officials",
-        "least",
-        "russian",
-        "year",
-        "dnipro",
-        "drone",
-        "wounded",
-        "central",
-        "attack",
-        "train"
-      ]
-    },
     {
       "title": "Chemical recycling turns silicone waste into reusable building blocks with up to 99% yield",
       "tokens": [
@@ -8414,10 +8380,47 @@
         "technicians",
         "zydowicz"
       ]
+    },
+    {
+      "title": "Ebola: Why is there still no vaccine?",
+      "tokens": [
+        "about",
+        "against",
+        "been",
+        "bundibugyo",
+        "causing",
+        "current",
+        "decades",
+        "ebola",
+        "hopes",
+        "known",
+        "outbreak",
+        "protecti",
+        "raises",
+        "research",
+        "still",
+        "strain",
+        "there",
+        "vaccine",
+        "virus"
+      ]
+    },
+    {
+      "title": "Ebola's 50-Year Vaccine Gap: Science, Politics & the Next Breakthrough",
+      "tokens": [
+        "breakthrough",
+        "ebola",
+        "next",
+        "politics",
+        "science",
+        "still",
+        "there",
+        "vaccine",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "STOCK_MARKETS",
     "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS",
     "AI_ROBOTICS",
@@ -8456,10 +8459,10 @@
     "GLOBAL_POWERS",
     "AI_ROBOTICS",
     "STOCK_MARKETS",
-    "ENTERTAINMENT"
+    "ENTERTAINMENT",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Global Country Wire [AUSTRIA \u2022 STOCK_MARKETS]",
     "DW Global In-Depth",
     "Ars Technica",
     "Global AI, Nvidia, OpenAI & Semiconductor Race",
@@ -8498,10 +8501,10 @@
     "Google Trends Viral [BELGIUM]",
     "TechCrunch AI",
     "DW Business & Trade",
-    "Hollywood Reporter"
+    "Hollywood Reporter",
+    "DW Global In-Depth"
   ],
   "last_countries": [
-    "IRAN",
     "UKRAINE",
     "GERMANY",
     "UNITED STATES",
@@ -8550,6 +8553,7 @@
     "SPAIN",
     "GLOBAL TECH & AI",
     "CHINA",
-    "GLOBAL CINEMA"
+    "GLOBAL CINEMA",
+    "GLOBAL BRIEFING"
   ]
 }
