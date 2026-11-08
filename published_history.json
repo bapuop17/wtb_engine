@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-08T14:17:21.403928",
-  "last_upload_epoch": 1794147441,
-  "round_robin_idx": 6,
-  "country_rot_idx": 11,
-  "bgm_track_counter": 2993420842,
+  "updated_at": "2026-11-08T15:43:02.006102",
+  "last_upload_epoch": 1794152582,
+  "round_robin_idx": 7,
+  "country_rot_idx": 17,
+  "bgm_track_counter": 3020090183,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -640,45 +640,11 @@
     "ebola_why_is_there_still_no",
     "ebola_s_50_year_vaccine_gap",
     "who_is_king_ghidorah_the_cosmic",
-    "king_ghidorah_exposed_cosmic_monster_behind"
+    "king_ghidorah_exposed_cosmic_monster_behind",
+    "french_skipper_wins_route_du_rhum",
+    "29_year_old_breaks_sailing_history"
   ],
   "event_fingerprints": [
-    {
-      "title": "'An absurdity' to blame human error: Spain's deadly train crash 'should never' have happened",
-      "tokens": [
-        "spain",
-        "deadly",
-        "have",
-        "delano",
-        "train",
-        "badea",
-        "should",
-        "never",
-        "absurdity",
-        "francisco",
-        "director",
-        "high",
-        "blame",
-        "speed",
-        "human",
-        "error",
-        "souza",
-        "expert",
-        "joined",
-        "happened",
-        "crash",
-        "following"
-      ]
-    },
-    {
-      "title": "24 Hours in 10 Minutes: Global Geopolitics & World News Briefing (October 30, 2026)",
-      "tokens": [
-        "global",
-        "briefing",
-        "24h",
-        "20261030"
-      ]
-    },
     {
       "title": "Libya's Smuggling Empire: The EU's Dirty Secret / Eastern Libya Migrant Smuggling Tobruk to Crete",
       "tokens": [
@@ -8417,10 +8383,48 @@
         "universe",
         "zero"
       ]
+    },
+    {
+      "title": "French skipper wins Route du Rhum",
+      "tokens": [
+        "attem",
+        "crossed",
+        "finish",
+        "first",
+        "french",
+        "guadeloupe",
+        "laperche",
+        "line",
+        "race",
+        "record",
+        "rhum",
+        "route",
+        "sailor",
+        "setting",
+        "skipper",
+        "transatlantic",
+        "wins",
+        "yacht",
+        "year"
+      ]
+    },
+    {
+      "title": "29-Year-Old Breaks Sailing History: The Physics of Speed",
+      "tokens": [
+        "breaks",
+        "french",
+        "physics",
+        "rhum",
+        "route",
+        "sailing",
+        "skipper",
+        "speed",
+        "wins",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "AI_ROBOTICS",
     "AI_ROBOTICS",
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
@@ -8459,10 +8463,10 @@
     "STOCK_MARKETS",
     "ENTERTAINMENT",
     "UNDERRATED_GEOPOLITICS",
-    "SCIENCE"
+    "SCIENCE",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "Ars Technica",
     "Global AI, Nvidia, OpenAI & Semiconductor Race",
     "Global Country Wire [RUSSIA \u2022 MIND_BLOWING_FACTS]",
     "Global Superpowers Geopolitics 24h",
@@ -8501,10 +8505,10 @@
     "DW Business & Trade",
     "Hollywood Reporter",
     "DW Global In-Depth",
-    "Space.com Breaking"
+    "Space.com Breaking",
+    "France24 Global Affairs"
   ],
   "last_countries": [
-    "GERMANY",
     "UNITED STATES",
     "MIDDLE EAST",
     "MEXICO",
@@ -8553,6 +8557,7 @@
     "CHINA",
     "GLOBAL CINEMA",
     "GLOBAL BRIEFING",
-    "SPACE & SCIENCE"
+    "SPACE & SCIENCE",
+    "FRANCE"
   ]
 }
