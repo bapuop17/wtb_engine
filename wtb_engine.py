@@ -1893,6 +1893,7 @@ def save_published_history(hist_obj):
         with open(HISTORY_FILE, "w", encoding="utf-8") as f:
             json.dump({
                 "updated_at": datetime.utcnow().isoformat(),
+                "last_upload_epoch": int(time.time()),
                 "round_robin_idx": int(hist_obj.get("round_robin_idx", 0)),
                 "country_rot_idx": int(hist_obj.get("country_rot_idx", 0)),
                 "bgm_track_counter": int(hist_obj.get("bgm_track_counter", 0)),
