@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-08T03:40:31.315661",
-  "round_robin_idx": 3,
-  "country_rot_idx": 62,
-  "bgm_track_counter": 2933907992,
+  "updated_at": "2026-11-08T04:52:45.385295",
+  "round_robin_idx": 4,
+  "country_rot_idx": 74,
+  "bgm_track_counter": 2963786596,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -631,88 +631,13 @@
     "mourinho_this_team_is_very_united",
     "mourinho_s_madrid_gambit_the_united",
     "crusoe_sells_troubled_wyoming_data_center",
-    "google_snaps_up_crusoe_s_wyoming"
+    "google_snaps_up_crusoe_s_wyoming",
+    "bmw_reports_lower_q3_earnings",
+    "why_bmw_reports_lower_q3_earnings",
+    "camerimage_founder_marek_zydowicz_on_ai",
+    "ai_vs_the_lens_why_camerimage"
   ],
   "event_fingerprints": [
-    {
-      "title": "Obama and Trump spar at rallies in Georgia and Ohio: Key takeaways",
-      "tokens": [
-        "elections",
-        "house",
-        "ohio",
-        "obama",
-        "rallies",
-        "midterm",
-        "ahead",
-        "takeaways",
-        "traded",
-        "spar",
-        "georgia",
-        "iran",
-        "barbs",
-        "tariffs",
-        "trump",
-        "ballroom",
-        "white"
-      ]
-    },
-    {
-      "title": "As US midterms approach, farmers decide what to plant and how to vote",
-      "tokens": [
-        "back",
-        "farmer",
-        "spurred",
-        "decide",
-        "shot",
-        "hallie",
-        "farmers",
-        "costs",
-        "shoffner",
-        "will",
-        "plant",
-        "long",
-        "senate",
-        "rising",
-        "midterms",
-        "vote",
-        "campaign",
-        "arkansas",
-        "approach"
-      ]
-    },
-    {
-      "title": "Food safety in India: A challenge for the world's most populous country",
-      "tokens": [
-        "feeds",
-        "india",
-        "billion",
-        "reaches",
-        "people",
-        "industry",
-        "safety",
-        "every",
-        "populous",
-        "food",
-        "world",
-        "than",
-        "ensuring",
-        "challenge",
-        "safe",
-        "consumers",
-        "most",
-        "more",
-        "country"
-      ]
-    },
-    {
-      "title": "24 Hours in 10 Minutes: Global Geopolitics & World News Briefing (October 29, 2026)",
-      "tokens": [
-        "global",
-        "briefing",
-        "24h",
-        "20261029"
-      ]
-    },
     {
       "title": "Cuts like a knife: Canadian rocker Bryan Adams trolls Trump with new song",
       "tokens": [
@@ -8421,11 +8346,77 @@
         "troubled",
         "wyoming"
       ]
+    },
+    {
+      "title": "BMW reports lower Q3 earnings",
+      "tokens": [
+        "beat",
+        "china",
+        "competition",
+        "drop",
+        "earnings",
+        "expenses",
+        "fall",
+        "fierce",
+        "july",
+        "lower",
+        "profits",
+        "quarter",
+        "revenues",
+        "september"
+      ]
+    },
+    {
+      "title": "Why BMW reports lower Q3 earnings",
+      "tokens": [
+        "earnings",
+        "lower"
+      ]
+    },
+    {
+      "title": "Camerimage Founder Marek Zydowicz on AI, Aronofsky and Why Cinematographers Are Artists, Not Technicians",
+      "tokens": [
+        "aronofsky",
+        "artists",
+        "camerimage",
+        "cinematographers",
+        "cinematography",
+        "continues",
+        "director",
+        "drawing",
+        "embrace",
+        "explains",
+        "festival",
+        "founder",
+        "fully",
+        "leading",
+        "line",
+        "marek",
+        "technicians",
+        "technology",
+        "turns",
+        "while",
+        "zydowicz"
+      ]
+    },
+    {
+      "title": "AI vs. The Lens: Why Camerimage Banned AI Films",
+      "tokens": [
+        "aronofsky",
+        "artists",
+        "banned",
+        "camerimage",
+        "cinematographers",
+        "films",
+        "founder",
+        "lens",
+        "marek",
+        "technicians",
+        "zydowicz"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "STOCK_MARKETS",
     "STOCK_MARKETS",
     "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS",
@@ -8463,11 +8454,11 @@
     "VIRAL_UNDERDOG_SPORTS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "STOCK_MARKETS",
+    "ENTERTAINMENT"
   ],
   "last_sources": [
-    "Google Trends USA Viral 24h",
-    "Global Country Wire [ALGERIA \u2022 STOCK_MARKETS]",
     "Global Country Wire [AUSTRIA \u2022 STOCK_MARKETS]",
     "DW Global In-Depth",
     "Ars Technica",
@@ -8505,11 +8496,11 @@
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "CNBC Markets & Finance",
     "Google Trends Viral [BELGIUM]",
-    "TechCrunch AI"
+    "TechCrunch AI",
+    "DW Business & Trade",
+    "Hollywood Reporter"
   ],
   "last_countries": [
-    "BELGIUM",
-    "PORTUGAL",
     "IRAN",
     "UKRAINE",
     "GERMANY",
@@ -8557,6 +8548,8 @@
     "BRAZIL",
     "GLOBAL MARKETS",
     "SPAIN",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "CHINA",
+    "GLOBAL CINEMA"
   ]
 }
