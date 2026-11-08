@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-08T02:13:08.373789",
-  "round_robin_idx": 2,
-  "country_rot_idx": 50,
-  "bgm_track_counter": 2914848312,
+  "updated_at": "2026-11-08T03:40:31.315661",
+  "round_robin_idx": 3,
+  "country_rot_idx": 62,
+  "bgm_track_counter": 2933907992,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -627,94 +627,13 @@
     "who_is_rafael_cmara_what_to",
     "rafael_camara_s_wild_haas_debut",
     "cosm_rides_premium_moviegoing_wave_with",
-    "the_70_ticket_why_cosm_is"
+    "the_70_ticket_why_cosm_is",
+    "mourinho_this_team_is_very_united",
+    "mourinho_s_madrid_gambit_the_united",
+    "crusoe_sells_troubled_wyoming_data_center",
+    "google_snaps_up_crusoe_s_wyoming"
   ],
   "event_fingerprints": [
-    {
-      "title": "Anthropic just launched tools to show companies what their AI spending is buying",
-      "tokens": [
-        "curtain",
-        "companies",
-        "anthropic",
-        "ahead",
-        "just",
-        "money",
-        "show",
-        "launched",
-        "lifting",
-        "their",
-        "tools",
-        "spend",
-        "frontier",
-        "users",
-        "spending",
-        "models",
-        "buying",
-        "planned"
-      ]
-    },
-    {
-      "title": "What European students can learn from their Serbian peers",
-      "tokens": [
-        "failed",
-        "students",
-        "success",
-        "peers",
-        "student",
-        "mobilisation",
-        "their",
-        "others",
-        "ensured",
-        "european",
-        "serbian",
-        "where",
-        "political",
-        "chose",
-        "learn",
-        "strategy"
-      ]
-    },
-    {
-      "title": "Can Turkiye's Libya breakthrough reshape Eastern Mediterranean diplomacy?",
-      "tokens": [
-        "other",
-        "remain",
-        "reshape",
-        "adversaries",
-        "diplomacy",
-        "border",
-        "backing",
-        "maritime",
-        "turkiye",
-        "eastern",
-        "former",
-        "agreement",
-        "ankara",
-        "libya",
-        "breakthrough",
-        "tests",
-        "diplomatic",
-        "wins",
-        "mediterranean"
-      ]
-    },
-    {
-      "title": "Egypt fines prominent editor Lina Attalah and shuts independent news outlet Mada Masr",
-      "tokens": [
-        "mada",
-        "editor",
-        "independent",
-        "shuts",
-        "prominent",
-        "attalah",
-        "egypt",
-        "outlet",
-        "lina",
-        "fines",
-        "masr",
-        "news"
-      ]
-    },
     {
       "title": "Obama and Trump spar at rallies in Georgia and Ohio: Key takeaways",
       "tokens": [
@@ -8425,11 +8344,86 @@
         "wave",
         "wider"
       ]
+    },
+    {
+      "title": "Mourinho: This team is very united and very solid",
+      "tokens": [
+        "arsenal",
+        "curse",
+        "gets",
+        "involved",
+        "madrid",
+        "manchester",
+        "mourinho",
+        "prodigy",
+        "pursuit",
+        "real",
+        "renewed",
+        "rivalry",
+        "seeks",
+        "solid",
+        "team",
+        "united",
+        "very",
+        "wenger"
+      ]
+    },
+    {
+      "title": "Mourinho's Madrid Gambit: The United Prodigy War",
+      "tokens": [
+        "gambit",
+        "madrid",
+        "mourinho",
+        "prodigy",
+        "solid",
+        "team",
+        "united",
+        "very"
+      ]
+    },
+    {
+      "title": "Crusoe sells troubled Wyoming data center project to Google",
+      "tokens": [
+        "based",
+        "billion",
+        "center",
+        "centers",
+        "challenges",
+        "confirmed",
+        "crusoe",
+        "data",
+        "deal",
+        "denver",
+        "developer",
+        "developing",
+        "eight",
+        "google",
+        "highlights",
+        "project",
+        "recently",
+        "sells",
+        "troubled",
+        "valued",
+        "wyoming",
+        "year"
+      ]
+    },
+    {
+      "title": "Google Snaps Up Crusoe's Wyoming AI Data Center: $17B Power Play",
+      "tokens": [
+        "center",
+        "crusoe",
+        "data",
+        "google",
+        "project",
+        "sells",
+        "snaps",
+        "troubled",
+        "wyoming"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "VIRAL_UNDERDOG_SPORTS",
     "GLOBAL_POWERS",
     "STOCK_MARKETS",
     "STOCK_MARKETS",
@@ -8467,11 +8461,11 @@
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
-    "STOCK_MARKETS"
+    "STOCK_MARKETS",
+    "GLOBAL_POWERS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Country Documentary Wire [TURKEY]",
-    "Country Documentary Wire [MEXICO]",
     "Google Trends USA Viral 24h",
     "Global Country Wire [ALGERIA \u2022 STOCK_MARKETS]",
     "Global Country Wire [AUSTRIA \u2022 STOCK_MARKETS]",
@@ -8509,11 +8503,11 @@
     "DW World News (Europe & Global)",
     "Global Country Wire [THAILAND \u2022 STOCK_MARKETS]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
-    "CNBC Markets & Finance"
+    "CNBC Markets & Finance",
+    "Google Trends Viral [BELGIUM]",
+    "TechCrunch AI"
   ],
   "last_countries": [
-    "INDIA",
-    "GLOBAL BRIEFING",
     "BELGIUM",
     "PORTUGAL",
     "IRAN",
@@ -8561,6 +8555,8 @@
     "IRAN",
     "THAILAND",
     "BRAZIL",
-    "GLOBAL MARKETS"
+    "GLOBAL MARKETS",
+    "SPAIN",
+    "GLOBAL TECH & AI"
   ]
 }
