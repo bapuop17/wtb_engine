@@ -2542,6 +2542,46 @@ def classify_story_mood_and_category(title, claims_text, pillar_name="WORLD"):
     p_cfg = CATEGORY_FEEDS.get(pillar_name, CATEGORY_FEEDS["WORLD"])
     return p_cfg.get("bgm_mood", "dark_geopolitics")
 
+
+def resolve_google_or_bing_redirect_url(raw_link, headline_title=""):
+    """
+    V58 REAL PUBLISHER ARTICLE URL DECODER (`googlenewsdecoder` + Bing `apiclick` URL unwrapper):
+    Unwraps `news.google.com/rss/articles/...` and `bing.com/news/apiclick.aspx?...&url=...`
+    to the true original publisher URL (Reuters, BBC, AP, Bloomberg, CNBC, ESPN, The Verge, etc.)
+    so our scraper can harvest the authentic 1080p `og:image`, `<figure>` press photos, and `<video>`!
+    """
+    link_s = str(raw_link or "").strip()
+    if not link_s:
+        return ""
+    if "bing.com/news/apiclick" in link_s or "url=http" in link_s:
+        try:
+            qs = urllib.parse.parse_qs(urllib.parse.urlparse(link_s).query)
+            if qs.get("url"):
+                return str(qs["url"][0]).strip()
+        except Exception:
+            pass
+    if "news.google.com" in link_s:
+        try:
+            from googlenewsdecoder import new_decoderv1
+            dec = new_decoderv1(link_s, interval=0.5)
+            if isinstance(dec, dict) and dec.get("status") and dec.get("decoded_url"):
+                return str(dec["decoded_url"]).strip()
+        except Exception:
+            pass
+        # Fallback: resolve headline via Bing News RSS `url=` parameter in <1.5s!
+        if headline_title and len(headline_title) >= 12:
+            try:
+                q_clean = " ".join(re.findall(r"[A-Za-z0-9\-]+", headline_title)[:7])
+                b_rss = f"https://www.bing.com/news/search?q={urllib.parse.quote(q_clean)}&format=rss"
+                br = requests.get(b_rss, headers=HEADERS_WEB, timeout=3.5)
+                for m_u in re.findall(r'url=(https?%3a%2f%2f[^&"<>\s]+)', br.text, flags=re.I)[:4]:
+                    cand_dec = urllib.parse.unquote(m_u)
+                    if not any(b in cand_dec.lower() for b in ["aljazeera", "msn.com", "yahoo.com"]):
+                        return cand_dec
+            except Exception:
+                pass
+    return link_s
+
 def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fingerprints):
     """
     100% LATEST & TRENDING 24-HOUR NEWS HARVESTER:
@@ -2674,9 +2714,10 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                         "published_date": pub_date
                     })
 
-            if "news.google.com" not in link:
+            resolved_pub_link = resolve_google_or_bing_redirect_url(link, headline_title=title)
+            if resolved_pub_link and "news.google.com" not in resolved_pub_link:
                 try:
-                    r = requests.get(link, headers=HEADERS_WEB, timeout=6)
+                    r = requests.get(resolved_pub_link, headers=HEADERS_WEB, timeout=6)
                     if r.status_code == 200 and "permission to access" not in r.text.lower() and "visiting is protected" not in r.text.lower():
                         soup = BeautifulSoup(r.text, "html.parser")
                         m_og = soup.find("meta", property="og:image") or soup.find("meta", attrs={"name": "twitter:image"})
@@ -2752,6 +2793,25 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                                 continue
                             if geo_anchor_toks and not any(gt in ent_t_low for gt in geo_anchor_toks):
                                 continue
+                            # V58: Extract direct publisher article URL & 1080p og:image from corroborating news articles!
+                            try:
+                                b_raw_link = getattr(b_ent, "link", "")
+                                b_pub_url = resolve_google_or_bing_redirect_url(b_raw_link)
+                                if b_pub_url and b_pub_url.startswith("https://") and len(article_inline_images) < 10 and not any(b in b_pub_url.lower() for b in ["aljazeera", "news.google.com", "bing.com"]):
+                                    rb_art = requests.get(b_pub_url, headers=HEADERS_WEB, timeout=3.2)
+                                    if rb_art.status_code == 200:
+                                        m_og_b = re.search(r'<meta[^>]+(?:property|name)=["\'](?:og:image|twitter:image)["\'][^>]+content=["\'](https://[^"\']+)["\']', rb_art.text, flags=re.I)
+                                        if not m_og_b:
+                                            m_og_b = re.search(r'<meta[^>]+content=["\'](https://[^"\']+)["\'][^>]+(?:property|name)=["\'](?:og:image|twitter:image)["\']', rb_art.text, flags=re.I)
+                                        if m_og_b:
+                                            og_u_b = m_og_b.group(1).replace("&amp;", "&")
+                                            if og_u_b not in article_inline_images and not any(b in og_u_b.lower() for b in BANNED_IMAGE_SOURCES + ["logo", "icon", "avatar"]):
+                                                article_inline_images.append(og_u_b)
+                                        for mv_b in re.findall(r'(https?://[^\s"\'<>]+?\.mp4)', rb_art.text, flags=re.I)[:2]:
+                                            if mv_b not in article_video_urls and not any(b in mv_b.lower() for b in ["ad", "logo", "pixel"]):
+                                                article_video_urls.append(mv_b)
+                            except Exception:
+                                pass
                             b_desc = clean_fact(BeautifulSoup(getattr(b_ent, "summary", ""), "html.parser").get_text(separator=" "))
                             for bs in split_into_complete_sentences(b_desc):
                                 cbs = clean_fact(bs)
@@ -3631,7 +3691,7 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             "--extractor-args", "youtube:player_client=android_vr,tv,web_embedded,ios",
             "--downloader", "ffmpeg",
             "--downloader-args", "ffmpeg_i:-ss 00:08 -t 10.5",
-            "-f", "bestvideo[height<=1080][height>=720][ext=mp4]+bestaudio[ext=m4a]/22/best[height<=1080][height>=720][ext=mp4]/best[height>=720]/best[ext=mp4]",
+            "-f", "bestvideo[height<=1080][height>=480][ext=mp4]/22/best[height<=1080][height>=480][ext=mp4]/18/best[ext=mp4]",
             "-o", raw_local,
             search_or_url
         ]
@@ -3658,7 +3718,7 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             vw_y = int(cap_y.get(cv2.CAP_PROP_FRAME_WIDTH) or 0)
             vh_y = int(cap_y.get(cv2.CAP_PROP_FRAME_HEIGHT) or 0)
             cap_y.release()
-            if vw_y < 854 or vh_y < 480:
+            if vw_y < 640 or vh_y < 360:
                 return None
         except Exception:
             return None
@@ -4175,11 +4235,15 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
     # Extract strict subject nouns directly from the story headline (`story_title`) + `query_str`
     # so random words from paragraph 8 of `raw_facts` (like 'leave', 'votes', 'dive') can NEVER validate an off-topic video clip!
     headline_subj_toks = {
-        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{story_title} {topic_anchor} {query_str}")
+        w.lower() for w in re.findall(r"\b(?:[A-Z0-9]{2,3}|[A-Za-z0-9]{4,})\b", f"{story_title} {topic_anchor} {query_str}")
         if w.lower() not in HEADLINE_STOP_VERBS_ADJS
         and w.lower() not in SENTENCE_VISUAL_STOPWORDS
         and w.lower() not in geo_anchor_tokens
-        and w.lower() not in {"united", "kingdom", "states", "europe", "european", "global", "world", "news", "video", "footage", "face", "after", "false", "across"}
+        and w.lower() not in {"united", "kingdom", "states", "europe", "european", "global", "world", "news", "video", "footage", "face", "after", "false", "across", "why", "how", "the", "and", "for"}
+    }
+    primary_anchor_toks = {
+        w.lower() for w in re.findall(r"\b(?:[A-Z0-9]{2,3}|[A-Za-z0-9]{4,})\b", f"{topic_anchor} {story_title}")
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in {"why", "how", "the", "and", "for", "real", "story"}
     }
 
     def _is_valid_video_title_for_story(v_title_str, v_url_str="", relaxed_for_commons=False):
@@ -4203,10 +4267,11 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         has_geo = len(geo_anchor_tokens.intersection(v_toks)) >= 1
         subj_hits = len(headline_subj_toks.intersection(v_toks))
         ev_hits = len((event_context_tokens - {"leave", "votes", "vote", "euro", "dive", "face", "false", "after"}).intersection(v_toks))
+        anchor_hits = len(primary_anchor_toks.intersection(v_toks))
         if relaxed_for_commons:
-            return (has_geo and (subj_hits >= 1 or ev_hits >= 1)) or (subj_hits >= 2)
-        # Accept if video matches >= 2 specific subject/entity tokens (e.g. 'Ellen DeGeneres Matthew Wright' or 'Angel City DiMaria') OR geo + subject!
-        return (subj_hits >= 2) or (has_geo and (subj_hits >= 1 or ev_hits >= 2))
+            return (anchor_hits >= 1) or (has_geo and (subj_hits >= 1 or ev_hits >= 1)) or (subj_hits >= 2)
+        # V58: Accept real interview / event footage if it matches the primary topic anchor (`anchor_hits >= 1` and `subj_hits >= 1`)!
+        return (subj_hits >= 2) or (anchor_hits >= 1 and (subj_hits >= 1 or ev_hits >= 1)) or (has_geo and (subj_hits >= 1 or ev_hits >= 2))
 
     # V53 SHORT 2-TO-4 WORD VIDEO SEARCH QUERIES (Crucial for Dailymotion, Reddit, Wikimedia & Bing Video APIs!):
     # 7-word queries return 0 results on Dailymotion/Reddit/Wikimedia AND-search; 2-to-4 word entity queries return dozens of HD clips!
@@ -4217,7 +4282,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         c_name_v = ""
     short_q_3 = f"{c_name_v} {' '.join(topic_anchor.split()[:2])}".strip() if c_name_v else short_q_2
     candidate_video_queries = []
-    for cq in [short_q_1, short_q_2, short_q_3, f"{short_q_2} news", query_str[:42]]:
+    for cq in [short_q_1, short_q_2, f"{short_q_2} interview speech", f"{short_q_2} raw footage", short_q_3, f"{short_q_2} news", query_str[:42]]:
         cq_clean = " ".join(cq.split()).strip()
         if cq_clean and len(cq_clean) >= 4 and cq_clean.lower() not in [x.lower() for x in candidate_video_queries]:
             candidate_video_queries.append(cq_clean)
@@ -6276,7 +6341,64 @@ def draw_manim_glowing_bezier_arc(draw_obj, p0, p1, p2, prog, main_col=(0, 240, 
         draw_obj.ellipse([(hx - 6, hy - 6), (hx + 6, hy + 6)], fill=(255, 255, 255, 255))
 
 def warp_rgba_in_3d_perspective(card_rgba, yaw_deg=4.5, pitch_deg=3.0, specular_prog=0.5):
-    return card_rgba
+    """
+    V58 REAL OPENCV 3D PERSPECTIVE HOMOGRAPHY + AFTER-EFFECTS SPECULAR GLASS LIGHT SWEEP:
+    Applies genuine 3D camera yaw/pitch perspective warping via `cv2.getPerspectiveTransform`
+    and animates a soft diagonal specular glass highlight across the card surface!
+    """
+    try:
+        im = card_rgba.convert("RGBA")
+        w, h = im.size
+        if w < 60 or h < 60:
+            return im
+        # 1. Animated Diagonal Specular Glass Light Sweep (`specular_prog` 0.0 -> 1.0)
+        if 0.02 < specular_prog < 0.98:
+            sweep = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+            sd = ImageDraw.Draw(sweep, "RGBA")
+            sx_center = int((w + h) * specular_prog) - h // 2
+            band_w = max(28, w // 9)
+            poly_s = [
+                (sx_center - band_w, 0),
+                (sx_center + band_w, 0),
+                (sx_center + band_w - int(h * 0.45), h),
+                (sx_center - band_w - int(h * 0.45), h)
+            ]
+            sd.polygon(poly_s, fill=(255, 255, 255, 34))
+            # Mask specular sweep to existing card alpha
+            a_mask = im.split()[3]
+            sweep.putalpha(ImageChops.multiply(sweep.split()[3], a_mask))
+            im = Image.alpha_composite(im, sweep)
+
+        # 2. Subtle 3D Perspective Homography Tilt via OpenCV (`cv2.warpPerspective`)
+        pad = 18
+        padded = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+        padded.paste(im, (pad, pad))
+        pw, ph = padded.size
+        arr = np.array(padded, dtype=np.uint8)
+
+        dx = max(-14.0, min(14.0, (yaw_deg / 12.0) * (w * 0.022)))
+        dy = max(-10.0, min(10.0, (pitch_deg / 12.0) * (h * 0.020)))
+        src_pts = np.float32([[pad, pad], [w + pad, pad], [w + pad, h + pad], [pad, h + pad]])
+        if yaw_deg >= 0:
+            dst_pts = np.float32([
+                [pad + dx * 0.4, pad + dy],
+                [w + pad - dx, pad + dy * 1.4],
+                [w + pad - dx * 0.6, h + pad - dy],
+                [pad + dx * 0.2, h + pad - dy * 0.5]
+            ])
+        else:
+            ax = abs(dx)
+            dst_pts = np.float32([
+                [pad + ax, pad + dy * 1.4],
+                [w + pad - ax * 0.4, pad + dy],
+                [w + pad - ax * 0.2, h + pad - dy * 0.5],
+                [pad + ax * 0.6, h + pad - dy]
+            ])
+        M = cv2.getPerspectiveTransform(src_pts, dst_pts)
+        warped = cv2.warpPerspective(arr, M, (pw, ph), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
+        return Image.fromarray(warped, mode="RGBA")
+    except Exception:
+        return card_rgba
 
 def extract_diverse_camera_frame_from_stage(stage_tuple, W, H, bp, camera_mode=0, local_t=0.0):
     try:
@@ -8438,17 +8560,13 @@ HIGH_DETAIL_WORLD_LAND_POLYGONS = [
     [(70, -165), (71, -156), (69, -136), (60, -125), (58, -110), (62, -95), (60, -78), (62, -65), (52, -56), (47, -61), (44, -66), (41, -70), (39, -74), (35, -75), (30, -81), (25, -80), (29, -85), (29, -90), (26, -97), (22, -97), (19, -96), (18, -92), (21, -87), (16, -88), (10, -83), (8, -78), (9, -84), (14, -92), (16, -99), (20, -105), (23, -106), (31, -114), (23, -110), (32, -117), (38, -122), (48, -124), (55, -132), (60, -141), (61, -150), (55, -162), (64, -165)],
     # South America
     [(11, -75), (12, -71), (10, -62), (6, -52), (1, -50), (-3, -38), (-8, -35), (-13, -38), (-23, -42), (-33, -52), (-38, -57), (-46, -65), (-54, -68), (-53, -73), (-42, -74), (-33, -71), (-18, -70), (-12, -77), (-5, -81), (1, -79), (7, -77)],
-    # Europe & Scandinavia
-    [(36, -9), (38, -9), (43, -9), (43, -2), (48, -4), (50, 2), (53, 5), (54, 8), (57, 8), (55, 12), (54, 14), (55, 21), (58, 10), (62, 6), (68, 16), (70, 26), (68, 36), (62, 42), (56, 42), (47, 40), (45, 37), (46, 30), (41, 29), (40, 26), (38, 24), (37, 22), (40, 20), (45, 14), (42, 14), (40, 18), (38, 15), (41, 13), (44, 9), (43, 5), (42, 3), (38, 0), (36, -5)],
+    # Unified Eurasia & Arabian Peninsula (Zero internal vertical seam lines!)
+    [(36, -9), (43, -9), (43, -2), (48, -4), (50, 2), (54, 8), (58, 10), (62, 6), (68, 16), (70, 28), (70, 60), (71, 105), (68, 145), (64, 170), (54, 140), (43, 132), (39, 128), (35, 129), (35, 126), (39, 122), (31, 122), (23, 115), (21, 108), (15, 109), (9, 105), (13, 101), (3, 103), (15, 98), (22, 91), (20, 86), (13, 80), (8, 77), (15, 74), (20, 72), (23, 68), (25, 62), (26, 56), (30, 49), (26, 50), (22, 59), (16, 53), (13, 44), (20, 39), (28, 35), (31, 32), (35, 36), (37, 28), (41, 29), (41, 26), (38, 23), (40, 19), (44, 13), (40, 17), (38, 15), (42, 12), (44, 9), (43, 4), (37, -2), (36, -6)],
     # UK & Ireland
     [(50, -5), (51, 1), (53, 1), (56, -2), (58, -3), (58, -6), (55, -5), (53, -4), (51, -5)],
     [(52, -10), (52, -6), (55, -6), (55, -10)],
     # Africa
-    [(36, -6), (37, 10), (33, 11), (32, 24), (31, 32), (28, 34), (22, 37), (15, 40), (12, 43), (12, 51), (5, 48), (-2, 41), (-10, 40), (-16, 40), (-24, 35), (-34, 26), (-35, 19), (-29, 17), (-18, 12), (-12, 13), (-5, 12), (4, 9), (6, 3), (5, -4), (4, -8), (8, -13), (15, -17), (21, -17), (28, -13), (32, -9)],
-    # Middle East, Arabian Peninsula & Turkey
-    [(42, 27), (42, 35), (41, 41), (39, 44), (38, 48), (30, 49), (26, 56), (22, 60), (17, 54), (13, 45), (17, 42), (22, 39), (28, 35), (31, 32), (33, 35), (36, 36), (36, 28), (40, 26)],
-    # Asia (Iran, India, China, Russia, SE Asia)
-    [(30, 49), (26, 56), (25, 60), (25, 67), (22, 69), (19, 73), (15, 74), (8, 77), (13, 80), (16, 82), (21, 87), (22, 91), (16, 97), (6, 100), (2, 103), (8, 98), (13, 101), (9, 105), (11, 109), (16, 108), (21, 108), (22, 114), (25, 119), (31, 122), (35, 120), (40, 120), (39, 124), (35, 126), (35, 129), (39, 128), (43, 132), (52, 140), (60, 155), (66, 170), (70, 150), (71, 115), (70, 80), (65, 55), (50, 45), (42, 48)],
+    [(35, -6), (37, 10), (33, 11), (32, 24), (31, 32), (28, 34), (22, 37), (15, 40), (12, 43), (12, 51), (5, 48), (-2, 41), (-10, 40), (-16, 40), (-24, 35), (-34, 26), (-35, 19), (-29, 17), (-18, 12), (-12, 13), (-5, 12), (4, 9), (6, 3), (5, -4), (4, -8), (8, -13), (15, -17), (21, -17), (28, -13), (32, -9)],
     # Japan
     [(31, 130), (34, 135), (35, 140), (41, 141), (44, 144), (43, 140), (37, 137), (34, 131)],
     # Taiwan & Philippines
@@ -8467,6 +8585,90 @@ HIGH_DETAIL_WORLD_LAND_POLYGONS = [
     [(9, 80), (7, 82), (6, 80), (8, 79)],
     [(-12, 49), (-20, 49), (-25, 47), (-25, 44), (-16, 45)]
 ]
+
+
+NATURAL_EARTH_COUNTRY_POLYGONS_CACHE = {}
+
+# Built-in Country Boundary Polygons `(lat, lon)` for instant offline/fallback GeoLayers-3 Country Highlighting!
+BUILTIN_COUNTRY_POLYGONS = {
+    "INDIA": [(35.5, 74.0), (34.0, 78.5), (30.0, 80.5), (27.5, 88.5), (28.5, 96.5), (24.0, 94.5), (22.0, 88.5), (16.5, 82.2), (13.0, 80.3), (8.1, 77.5), (15.0, 74.0), (19.0, 72.8), (21.0, 70.0), (23.5, 68.5), (28.0, 70.5), (32.0, 74.5)],
+    "CHINA": [(49.0, 118.0), (48.0, 134.0), (40.0, 124.0), (35.0, 120.0), (31.0, 122.0), (23.0, 117.0), (21.5, 108.0), (22.5, 100.0), (28.0, 97.0), (28.0, 88.0), (35.0, 76.0), (40.0, 74.0), (45.0, 80.0), (49.0, 88.0), (43.0, 105.0)],
+    "UNITED STATES": [(49.0, -124.0), (49.0, -95.0), (47.0, -68.0), (41.0, -70.0), (35.0, -75.0), (25.5, -80.2), (29.5, -89.5), (26.0, -97.2), (31.5, -111.0), (32.5, -117.1), (40.0, -124.0)],
+    "SAUDI ARABIA": [(31.0, 37.5), (29.0, 47.5), (24.0, 51.5), (19.0, 55.0), (16.5, 43.0), (21.5, 39.1), (28.0, 35.0)],
+    "ISRAEL": [(33.1, 35.6), (31.5, 35.5), (29.5, 34.9), (31.2, 34.2), (32.8, 35.0)],
+    "IRAN": [(39.5, 44.5), (38.0, 49.0), (37.5, 54.0), (36.0, 61.0), (29.5, 61.5), (25.2, 60.5), (26.5, 56.2), (30.0, 48.5), (35.0, 45.5)],
+    "TURKEY": [(41.2, 29.0), (41.5, 36.0), (41.0, 43.5), (37.0, 44.5), (36.5, 36.0), (36.8, 28.0), (39.5, 26.2)],
+    "RUSSIA": [(60.0, 30.0), (68.0, 38.0), (70.0, 85.0), (68.0, 140.0), (64.0, 175.0), (52.0, 156.0), (43.0, 132.0), (50.0, 115.0), (52.0, 85.0), (45.0, 38.0), (54.0, 32.0)],
+    "UKRAINE": [(51.5, 24.0), (52.0, 34.0), (49.5, 40.0), (46.5, 37.0), (45.2, 29.6), (48.0, 23.0)],
+    "GERMANY": [(54.8, 8.5), (54.2, 14.2), (51.0, 15.0), (47.5, 13.0), (47.6, 7.6), (51.8, 6.0)],
+    "FRANCE": [(51.0, 2.5), (49.0, 8.0), (46.0, 7.0), (43.5, 7.2), (42.5, 3.0), (43.3, -1.7), (48.4, -4.7)],
+    "SPAIN": [(43.5, -8.5), (43.3, -1.8), (42.4, 3.2), (38.5, 0.2), (36.0, -5.6), (37.0, -7.4), (42.0, -8.8)],
+    "ITALY": [(46.5, 11.5), (45.6, 13.8), (42.0, 15.0), (40.0, 18.5), (38.0, 15.6), (41.5, 12.5), (44.0, 10.0), (45.8, 7.0)],
+    "UNITED KINGDOM": [(58.5, -4.0), (56.0, -2.5), (52.8, 1.7), (51.0, 1.3), (50.1, -5.2), (53.4, -4.2), (55.5, -5.0)],
+    "JAPAN": [(43.5, 141.5), (40.5, 141.8), (35.7, 140.8), (33.5, 131.0), (37.5, 137.2)],
+    "AUSTRALIA": [(-12.5, 131.0), (-12.0, 142.5), (-19.0, 147.0), (-28.0, 153.5), (-37.5, 150.0), (-38.0, 141.0), (-32.0, 133.0), (-34.5, 115.0), (-22.0, 114.0), (-15.0, 125.0)],
+    "NEW ZEALAND": [(-34.5, 173.0), (-37.8, 178.5), (-41.5, 175.0), (-46.5, 168.0), (-44.0, 168.5), (-39.0, 174.0)],
+    "BRAZIL": [(4.0, -60.0), (0.0, -50.0), (-6.0, -35.0), (-15.0, -39.0), (-23.0, -43.0), (-32.0, -52.0), (-25.0, -57.0), (-15.0, -60.0), (-7.0, -73.0)],
+    "INDONESIA": [(5.5, 95.3), (0.0, 102.0), (-6.2, 106.8), (-7.8, 113.5), (-5.0, 119.5), (1.0, 117.0), (1.5, 109.5)],
+    "PAKISTAN": [(36.5, 73.0), (31.5, 74.5), (24.5, 70.5), (24.8, 67.0), (25.2, 62.0), (29.5, 61.5), (34.0, 70.0)],
+    "EGYPT": [(31.5, 25.2), (31.2, 34.0), (28.0, 34.5), (22.0, 36.5), (22.0, 25.0)],
+    "SOUTH AFRICA": [(-22.5, 30.0), (-27.0, 32.8), (-34.0, 25.5), (-34.2, 18.4), (-28.5, 16.5), (-25.0, 20.0)],
+    "CANADA": [(49.0, -123.0), (60.0, -138.0), (68.0, -135.0), (65.0, -90.0), (58.0, -64.0), (45.0, -61.0), (45.0, -75.0), (49.0, -95.0)],
+    "QATAR": [(26.1, 51.2), (25.3, 51.6), (24.6, 51.3), (25.4, 50.8)],
+    "UNITED ARAB EMIRATES": [(26.0, 56.1), (24.2, 55.8), (22.9, 55.2), (24.0, 51.6), (24.5, 54.4)],
+}
+
+def get_country_boundary_polygons(country_name_upper):
+    """
+    V58 NATURAL EARTH ADMIN-0 GEOJSON COUNTRY BOUNDARY LOADER:
+    Loads exact country border polygons `(lat, lon)` from `ne_110m_admin_0_countries.geojson`
+    (downloading & caching once on GitHub Actions) with instant fallback to `BUILTIN_COUNTRY_POLYGONS`!
+    """
+    c_key = str(country_name_upper or "").upper().strip()
+    if not NATURAL_EARTH_COUNTRY_POLYGONS_CACHE.get("_loaded"):
+        NATURAL_EARTH_COUNTRY_POLYGONS_CACHE["_loaded"] = True
+        for bk, bpoly in BUILTIN_COUNTRY_POLYGONS.items():
+            NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[bk] = [bpoly]
+        geo_path = "temp/ne_110m_countries.geojson"
+        try:
+            if not os.path.exists(geo_path):
+                r_geo = requests.get(
+                    "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson",
+                    headers=HEADERS_WEB, timeout=3.5
+                )
+                if r_geo.status_code == 200 and len(r_geo.content) > 50000:
+                    os.makedirs("temp", exist_ok=True)
+                    with open(geo_path, "wb") as gf:
+                        gf.write(r_geo.content)
+            if os.path.exists(geo_path):
+                with open(geo_path, "r", encoding="utf-8") as gf:
+                    gj = json.load(gf)
+                for feat in (gj.get("features") or []):
+                    props = feat.get("properties") or {}
+                    nm = str(props.get("ADMIN") or props.get("NAME") or "").upper()
+                    iso2 = str(props.get("ISO_A2") or "").upper()
+                    geom = feat.get("geometry") or {}
+                    gtype = geom.get("type")
+                    coords = geom.get("coordinates") or []
+                    polys = []
+                    if gtype == "Polygon" and coords:
+                        ring = [(float(pt[1]), float(pt[0])) for pt in coords[0][::max(1, len(coords[0]) // 45)]]
+                        if len(ring) >= 3:
+                            polys.append(ring)
+                    elif gtype == "MultiPolygon" and coords:
+                        for sub_p in coords:
+                            if sub_p and sub_p[0]:
+                                ring = [(float(pt[1]), float(pt[0])) for pt in sub_p[0][::max(1, len(sub_p[0]) // 45)]]
+                                if len(ring) >= 3:
+                                    polys.append(ring)
+                    if polys:
+                        if nm:
+                            NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[nm] = polys
+                        if iso2 and len(iso2) == 2:
+                            NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[f"ISO_{iso2}"] = polys
+        except Exception:
+            pass
+    return NATURAL_EARTH_COUNTRY_POLYGONS_CACHE.get(c_key) or []
 
 def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     """
@@ -8562,12 +8764,18 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
             if 0 <= gy <= mh_s:
                 md.line([(0, gy), (mw_s, gy)], fill=(26, 46, 74, 120), width=2)
 
-        # Render Smooth Catmull-Rom Continental & Island Landmasses with Coastal Glow
+        # Render Smooth Catmull-Rom Continental & Island Landmasses with Anti-Wrap Guard & Coastal Glow
         for poly in HIGH_DETAIL_WORLD_LAND_POLYGONS:
-            raw_pts = [
-                _latlon_to_mercator_xy(plat, plon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
-                for (plat, plon) in poly
-            ]
+            raw_pts = []
+            wrap_jump = False
+            for (plat, plon) in poly:
+                px_m, py_m = _latlon_to_mercator_xy(plat, plon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
+                if raw_pts and abs(px_m - raw_pts[-1][0]) > mw_s * 0.48:
+                    wrap_jump = True
+                    break
+                raw_pts.append((px_m, py_m))
+            if wrap_jump or len(raw_pts) < 3 or abs(raw_pts[0][0] - raw_pts[-1][0]) > mw_s * 0.48:
+                continue
             pts = _smooth_closed_polygon(raw_pts, subdiv=5)
             if len(pts) >= 3:
                 md.line(pts + [pts[0]], fill=(0, 185, 255, 55), width=14)
@@ -8578,6 +8786,27 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
         def proj_fn(lat_p, lon_p):
             return _latlon_to_mercator_xy(lat_p, lon_p, W, H, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
 
+    draw = ImageDraw.Draw(bg, "RGBA")
+
+    # 2B. V58 GEOLAYERS-3 STYLE ACTIVE COUNTRY POLYGON HIGHLIGHT (Glow-fills the exact story countries!)
+    highlight_palette = [
+        ((255, 215, 0, 88), (255, 225, 0, 245)),
+        ((0, 235, 255, 82), (0, 240, 255, 245)),
+        ((255, 65, 95, 82), (255, 75, 105, 245)),
+        ((45, 245, 165, 82), (45, 245, 165, 245))
+    ]
+    poly_ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    pd_ov = ImageDraw.Draw(poly_ov, "RGBA")
+    for idx_hc, (hc_title, hc_d) in enumerate(matched_countries[:4]):
+        c_polys = get_country_boundary_polygons(hc_title.upper()) or get_country_boundary_polygons(f"ISO_{hc_d.get('iso2', '')}")
+        fill_c, rim_c = highlight_palette[idx_hc % len(highlight_palette)]
+        for c_ring in c_polys:
+            ring_xy = [proj_fn(plat, plon) for (plat, plon) in c_ring]
+            if len(ring_xy) >= 3:
+                sm_ring = _smooth_closed_polygon(ring_xy, subdiv=4)
+                pd_ov.polygon(sm_ring, fill=fill_c)
+                pd_ov.line(sm_ring + [sm_ring[0]], fill=rim_c, width=3)
+    bg.alpha_composite(poly_ov)
     draw = ImageDraw.Draw(bg, "RGBA")
 
     # 3. Plot Real Story Countries, Meaningful Dotted Route Curves & Flag Pin Cards!
@@ -8608,7 +8837,8 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
                 if d_i == n_dots:
                     draw.ellipse([(dx - 9, dy - 9), (dx + 9, dy + 9)], fill=(255, 255, 255, 255), outline=r_col, width=3)
 
-    # Draw Pulsing Radar Rings & Real Country Flag Pin Cards at Each Country Coordinate
+    # Draw Pulsing Radar Rings & Real Country Flag Pin Cards with Automatic Collision Avoidance!
+    placed_pill_boxes = []
     for idx_p, (px_c, py_c, cnt_up, cnt_d) in enumerate(pin_coords):
         is_primary = (idx_p == 0)
         p_col = (255, 55, 75, 255) if is_primary else (0, 235, 255, 255)
@@ -8619,12 +8849,22 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
                 draw.ellipse([(px_c - pr, py_c - pr), (px_c + pr, py_c + pr)], outline=(255, 65, 85, pa), width=3)
         draw.ellipse([(px_c - 8, py_c - 8), (px_c + 8, py_c + 8)], fill=p_col, outline=(255, 255, 255, 255), width=3)
 
-        # Country Flag + Name Pin Pill right next to the coordinate
+        # Country Flag + Name Pin Pill with Automatic Collision Avoidance so nearby countries never overlap!
         f_pin = get_font(18 if not is_short else 17)
         tw_p = int(f_pin.getlength(cnt_up))
         pw_pin, ph_pin = tw_p + 66, 38
+        cand_offsets = [(-pw_pin // 2, -56), (-pw_pin // 2, 20), (-pw_pin - 18, -18), (18, -18), (-pw_pin // 2, -104), (-pw_pin // 2, 68)]
         bx_p = max(24, min(W - pw_pin - 24, px_c - pw_pin // 2))
         by_p = max(120, py_c - 54 if idx_p % 2 == 0 else py_c + 16)
+        for dx_o, dy_o in cand_offsets:
+            cx_try = max(24, min(W - pw_pin - 24, px_c + dx_o))
+            cy_try = max(120, min(H - 210, py_c + dy_o))
+            box_try = (cx_try - 8, cy_try - 6, cx_try + pw_pin + 8, cy_try + ph_pin + 6)
+            if not any(not (box_try[2] < ob[0] or box_try[0] > ob[2] or box_try[3] < ob[1] or box_try[1] > ob[3]) for ob in placed_pill_boxes):
+                bx_p, by_p = cx_try, cy_try
+                break
+        placed_pill_boxes.append((bx_p, by_p, bx_p + pw_pin, by_p + ph_pin))
+        draw.line([(px_c, py_c), (bx_p + pw_pin // 2, by_p + ph_pin // 2)], fill=(p_col[0], p_col[1], p_col[2], 195), width=2)
         draw.rounded_rectangle([(bx_p + 2, by_p + 3), (bx_p + pw_pin + 2, by_p + ph_pin + 3)], radius=12, fill=(0, 0, 0, 160))
         draw.rounded_rectangle([(bx_p, by_p), (bx_p + pw_pin, by_p + ph_pin)], radius=12, fill=(12, 20, 38, 235), outline=p_col, width=2)
         try:
@@ -8874,6 +9114,18 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             ox, oy = (zw - W) // 2, (zh - H) // 2
             frame = zoomed_vf.crop((ox, oy, ox + W, oy + H)).convert("RGBA")
             frame.alpha_composite(get_prebuilt_vignette_overlay(W, H))
+            # V58 Live Footage & Interview Broadcast Verification Pill (Top-Center / Upper-Left below HUD)
+            if not vseg.get("is_parallax"):
+                vf_d = ImageDraw.Draw(frame, "RGBA")
+                vf_lbl = f"LIVE EVENT FOOTAGE  •  {fit_whole_words_limit(str(vseg.get('source_query') or beat.get('section_headline') or 'OFFICIAL FEED').upper(), 28)}"
+                f_vfl = get_font(17 if not is_short else 18)
+                vfw = int(f_vfl.getlength(vf_lbl)) + 52
+                vfx = 32 if not is_short else (W - vfw) // 2
+                vfy = 82 if not is_short else 84
+                vf_d.rounded_rectangle([(vfx, vfy), (vfx + vfw, vfy + 36)], radius=18, fill=(14, 22, 38, 215), outline=(255, 65, 95, 225), width=2)
+                pulse_r = 6 if int(local_t * 4) % 2 == 0 else 4
+                vf_d.ellipse([(vfx + 18 - pulse_r, vfy + 18 - pulse_r), (vfx + 18 + pulse_r, vfy + 18 + pulse_r)], fill=(255, 45, 70, 255))
+                vf_d.text((vfx + 34, vfy + 7), vf_lbl, fill=(255, 255, 255, 255), font=f_vfl)
         except Exception:
             frame = extract_diverse_camera_frame_from_stage(beat["stage_1"], W, H, bp, camera_mode=cam_mode, local_t=local_t)
     else:
