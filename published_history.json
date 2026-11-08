@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-08T00:45:33.434651",
-  "round_robin_idx": 1,
-  "country_rot_idx": 38,
-  "bgm_track_counter": 2905323564,
+  "updated_at": "2026-11-08T02:13:08.373789",
+  "round_robin_idx": 2,
+  "country_rot_idx": 50,
+  "bgm_track_counter": 2914848312,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -623,82 +623,13 @@
     "springboks_vs_all_blacks_record_crowd",
     "son_of_iran_s_shah_receives",
     "iran_s_exiled_prince_wins_controversial",
-    "former_miss_thailand_boom_panadda_arrested"
+    "former_miss_thailand_boom_panadda_arrested",
+    "who_is_rafael_cmara_what_to",
+    "rafael_camara_s_wild_haas_debut",
+    "cosm_rides_premium_moviegoing_wave_with",
+    "the_70_ticket_why_cosm_is"
   ],
   "event_fingerprints": [
-    {
-      "title": "China's secretive space plane caught on camera in incredible new photo released by US military",
-      "tokens": [
-        "showing",
-        "photograph",
-        "incredible",
-        "intelligence",
-        "secretive",
-        "space",
-        "plane",
-        "caught",
-        "camera",
-        "released",
-        "china",
-        "agency",
-        "photo",
-        "military"
-      ]
-    },
-    {
-      "title": "Balad leader blasts 'racist' exclusion of Arab parties in Israel",
-      "tokens": [
-        "ally",
-        "elections",
-        "balad",
-        "israel",
-        "opposition",
-        "refuses",
-        "yielded",
-        "parties",
-        "bloc",
-        "have",
-        "winner",
-        "leader",
-        "exclusion",
-        "blasts",
-        "clear",
-        "racist",
-        "arab"
-      ]
-    },
-    {
-      "title": "24 Hours in 10 Minutes: Global Geopolitics & World News Briefing (October 28, 2026)",
-      "tokens": [
-        "global",
-        "briefing",
-        "24h",
-        "20261028"
-      ]
-    },
-    {
-      "title": "ISS astronaut will conduct Canada's 1st spacewalk in 7 years on Oct. 29: Watch it live",
-      "tokens": [
-        "conduct",
-        "international",
-        "watch",
-        "years",
-        "kutryk",
-        "astronaut",
-        "first",
-        "astr",
-        "canada",
-        "canadian",
-        "live",
-        "venture",
-        "outside",
-        "station",
-        "space",
-        "spacewalk",
-        "joshua",
-        "will"
-      ]
-    },
     {
       "title": "Anthropic just launched tools to show companies what their AI spending is buying",
       "tokens": [
@@ -8399,11 +8330,104 @@
         "three",
         "year"
       ]
+    },
+    {
+      "title": "Who is Rafael Cmara? What to know about the Haas rookie making his F1 debut in Brazil",
+      "tokens": [
+        "about",
+        "axing",
+        "ayao",
+        "before",
+        "boss",
+        "brazil",
+        "cmara",
+        "debut",
+        "decision",
+        "dismiss",
+        "esteban",
+        "everybody",
+        "haas",
+        "know",
+        "komatsu",
+        "making",
+        "ocon",
+        "rafael",
+        "reflects",
+        "rookie",
+        "season",
+        "surprised",
+        "team"
+      ]
+    },
+    {
+      "title": "Rafael Camara's Wild Haas Debut: How a Rookie Shocked F1 Brazil",
+      "tokens": [
+        "about",
+        "brazil",
+        "camara",
+        "cmara",
+        "debut",
+        "haas",
+        "know",
+        "making",
+        "rafael",
+        "rookie",
+        "shocked",
+        "wild"
+      ]
+    },
+    {
+      "title": "Cosm rides premium moviegoing wave with more immersive screenings and a wider library",
+      "tokens": [
+        "anywhere",
+        "around",
+        "cosm",
+        "cost",
+        "demand",
+        "format",
+        "immersive",
+        "inspirati",
+        "large",
+        "library",
+        "matinee",
+        "more",
+        "moviegoing",
+        "next",
+        "premium",
+        "prime",
+        "rides",
+        "screenings",
+        "seats",
+        "showings",
+        "theatrical",
+        "thing",
+        "tickets",
+        "viewing",
+        "wave",
+        "wider"
+      ]
+    },
+    {
+      "title": "The $70 Ticket: Why Cosm Is Killing The Movie Theater",
+      "tokens": [
+        "cosm",
+        "immersive",
+        "killing",
+        "library",
+        "more",
+        "movie",
+        "moviegoing",
+        "premium",
+        "rides",
+        "screenings",
+        "theater",
+        "ticket",
+        "wave",
+        "wider"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
-    "TECHNOLOGY",
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "GLOBAL_POWERS",
@@ -8441,11 +8465,11 @@
     "UNDERRATED_GEOPOLITICS",
     "HEALTH",
     "GEOPOLITICS",
+    "STOCK_MARKETS",
+    "VIRAL_UNDERDOG_SPORTS",
     "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Top Viral News [GERMANY]",
-    "The Verge Tech",
     "Country Documentary Wire [TURKEY]",
     "Country Documentary Wire [MEXICO]",
     "Google Trends USA Viral 24h",
@@ -8483,11 +8507,11 @@
     "Global Country Wire [PAKISTAN \u2022 UNDERRATED_GEOPOLITICS]",
     "Global Country Wire [ITALY \u2022 HEALTH]",
     "DW World News (Europe & Global)",
-    "Global Country Wire [THAILAND \u2022 STOCK_MARKETS]"
+    "Global Country Wire [THAILAND \u2022 STOCK_MARKETS]",
+    "Teenage Prodigies & Underdog Upsets Across Global Sports",
+    "CNBC Markets & Finance"
   ],
   "last_countries": [
-    "PAKISTAN",
-    "TURKEY",
     "INDIA",
     "GLOBAL BRIEFING",
     "BELGIUM",
@@ -8535,6 +8559,8 @@
     "PAKISTAN",
     "SOUTH AFRICA",
     "IRAN",
-    "THAILAND"
+    "THAILAND",
+    "BRAZIL",
+    "GLOBAL MARKETS"
   ]
 }
