@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-08T20:07:21.466046",
-  "last_upload_epoch": 1794168441,
+  "updated_at": "2026-11-08T21:09:31.849791",
+  "last_upload_epoch": 1794172171,
   "round_robin_idx": 8,
   "country_rot_idx": 23,
-  "bgm_track_counter": 3045002468,
+  "bgm_track_counter": 3032650492,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -643,22 +643,11 @@
     "king_ghidorah_exposed_cosmic_monster_behind",
     "french_skipper_wins_route_du_rhum",
     "29_year_old_breaks_sailing_history",
-    "bangladesh_must_protect_digital_inclusion_as",
-    "bangladesh_s_ai_surge_why_rising"
+    "bangladesh_s_ai_surge_why_rising",
+    "bangladesh_s_ai_experience_is_taking",
+    "bangladesh_s_ai_tsunami_ryze_s"
   ],
   "event_fingerprints": [
-    {
-      "title": "Beijing Queer Film Festival cancelled after police intervention",
-      "tokens": [
-        "beijing",
-        "queer",
-        "film",
-        "festival",
-        "cancelled",
-        "police",
-        "intervention"
-      ]
-    },
     {
       "title": "Sinkholes, scarred land and scapegoats: the hidden cost of critical minerals",
       "tokens": [
@@ -8393,42 +8382,87 @@
       ]
     },
     {
-      "title": "Bangladesh must protect digital inclusion as the AI boom drives up costs",
-      "tokens": [
-        "bangladesh",
-        "becoming",
-        "boom",
-        "computer",
-        "costs",
-        "daily",
-        "digital",
-        "drives",
-        "exorbitantly",
-        "high",
-        "inclusion",
-        "manufacturers",
-        "must",
-        "prices",
-        "protect",
-        "smartphone",
-        "star"
-      ]
-    },
-    {
       "title": "Bangladesh's AI Surge: Why Rising Tech Costs Threaten Digital Inclusion",
       "tokens": [
         "bangladesh",
-        "boom",
         "costs",
         "digital",
-        "drives",
         "inclusion",
-        "must",
-        "protect",
         "rising",
         "surge",
         "tech",
         "threaten"
+      ]
+    },
+    {
+      "title": "Bangladesh's AI experience is taking a new turn as RYZE AI relaunches with 25+ AI models, including OpenAI, Gemini, Claude, Grok and DeepSee",
+      "tokens": [
+        "bangladesh",
+        "based",
+        "been",
+        "claude",
+        "deepseek",
+        "design",
+        "dhaka",
+        "doing",
+        "editing",
+        "experience",
+        "freelancer",
+        "gemini",
+        "generation",
+        "graphic",
+        "grok",
+        "image",
+        "imagine",
+        "including",
+        "kazi",
+        "learnin",
+        "mamun",
+        "management",
+        "models",
+        "music",
+        "offers",
+        "openai",
+        "performed",
+        "platform",
+        "project",
+        "relaunches",
+        "research",
+        "ryze",
+        "studio",
+        "subsequently",
+        "taking",
+        "team",
+        "through",
+        "turn",
+        "using",
+        "work"
+      ]
+    },
+    {
+      "title": "Bangladesh's AI Tsunami: RYZE's 25\u2011Model Juggernaut & Freelancer Fallout",
+      "tokens": [
+        "bangladesh",
+        "claude",
+        "deepseek",
+        "experience",
+        "fallout",
+        "freelancer",
+        "gemini",
+        "grok",
+        "image",
+        "including",
+        "juggernaut",
+        "model",
+        "models",
+        "offers",
+        "openai",
+        "platform",
+        "relaunches",
+        "ryze",
+        "taking",
+        "tsunami",
+        "turn"
       ]
     }
   ],
