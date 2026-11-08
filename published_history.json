@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-08T13:39:11.978743",
-  "last_upload_epoch": 1794145151,
-  "round_robin_idx": 5,
-  "country_rot_idx": 5,
-  "bgm_track_counter": 2973527247,
+  "updated_at": "2026-11-08T14:17:21.403928",
+  "last_upload_epoch": 1794147441,
+  "round_robin_idx": 6,
+  "country_rot_idx": 11,
+  "bgm_track_counter": 2993420842,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -638,56 +638,11 @@
     "camerimage_founder_marek_zydowicz_on_ai",
     "ai_vs_the_lens_why_camerimage",
     "ebola_why_is_there_still_no",
-    "ebola_s_50_year_vaccine_gap"
+    "ebola_s_50_year_vaccine_gap",
+    "who_is_king_ghidorah_the_cosmic",
+    "king_ghidorah_exposed_cosmic_monster_behind"
   ],
   "event_fingerprints": [
-    {
-      "title": "Chemical recycling turns silicone waste into reusable building blocks with up to 99% yield",
-      "tokens": [
-        "chemical",
-        "stab",
-        "medicine",
-        "their",
-        "silicones",
-        "waste",
-        "silicone",
-        "building",
-        "exceptional",
-        "blocks",
-        "everyday",
-        "recycling",
-        "products",
-        "widely",
-        "yield",
-        "reusable",
-        "used",
-        "thermal",
-        "industry",
-        "turns"
-      ]
-    },
-    {
-      "title": "ECB President Lagarde steps down in order to speak out",
-      "tokens": [
-        "bank",
-        "will",
-        "european",
-        "several",
-        "post",
-        "speak",
-        "order",
-        "early",
-        "have",
-        "lagarde",
-        "president",
-        "step",
-        "christine",
-        "central",
-        "down",
-        "months",
-        "steps"
-      ]
-    },
     {
       "title": "'An absurdity' to blame human error: Spain's deadly train crash 'should never' have happened",
       "tokens": [
@@ -8419,10 +8374,52 @@
         "vaccine",
         "year"
       ]
+    },
+    {
+      "title": "Who is King Ghidorah? The cosmic connections of Godzilla Minus Zero's foe",
+      "tokens": [
+        "aren",
+        "based",
+        "connections",
+        "cosmic",
+        "ghidorah",
+        "godzilla",
+        "headed",
+        "just",
+        "kaiju",
+        "king",
+        "largest",
+        "long",
+        "minus",
+        "origins",
+        "space",
+        "structures",
+        "three",
+        "time",
+        "will",
+        "zero"
+      ]
+    },
+    {
+      "title": "King Ghidorah EXPOSED: Cosmic Monster Behind the Universe's Biggest Supercluster",
+      "tokens": [
+        "behind",
+        "biggest",
+        "connections",
+        "cosmic",
+        "exposed",
+        "ghidorah",
+        "godzilla",
+        "king",
+        "minus",
+        "monster",
+        "supercluster",
+        "universe",
+        "zero"
+      ]
     }
   ],
   "last_categories": [
-    "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS",
     "AI_ROBOTICS",
     "MIND_BLOWING_FACTS",
@@ -8461,10 +8458,10 @@
     "AI_ROBOTICS",
     "STOCK_MARKETS",
     "ENTERTAINMENT",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "SCIENCE"
   ],
   "last_sources": [
-    "DW Global In-Depth",
     "Ars Technica",
     "Global AI, Nvidia, OpenAI & Semiconductor Race",
     "Global Country Wire [RUSSIA \u2022 MIND_BLOWING_FACTS]",
@@ -8503,10 +8500,10 @@
     "TechCrunch AI",
     "DW Business & Trade",
     "Hollywood Reporter",
-    "DW Global In-Depth"
+    "DW Global In-Depth",
+    "Space.com Breaking"
   ],
   "last_countries": [
-    "UKRAINE",
     "GERMANY",
     "UNITED STATES",
     "MIDDLE EAST",
@@ -8555,6 +8552,7 @@
     "GLOBAL TECH & AI",
     "CHINA",
     "GLOBAL CINEMA",
-    "GLOBAL BRIEFING"
+    "GLOBAL BRIEFING",
+    "SPACE & SCIENCE"
   ]
 }
