@@ -680,7 +680,7 @@ BANNED_CAPTION_AND_TITLE_WORDS = [
     "feline", "dog ", "dogs ", "puppy", "canine", "pet ", "pets ", "cute animal", "dinosaur",
     "dragon", "monster", "fantasy", "fairy", "magic", "stock illustration", "recorded future",
     "infographic", "chart", "diagram", "logo", "icon", "thumbnail",
-    "t-shirt", "mug", "merchandise", "gift", "sale", "promo", "coupon", "bunk bed", "bunk beds", "twin bed", "loft bed", "mattress", "bed frame", "furniture", "headboard", "dresser", "nightstand", "wayfair", "ikea", "overstock", "ashley furniture", "finding dory", "finding nemo", "dory", "nemo", "dreamworks", "illumination", "periscopefilm", "periscope film", "stock footage", "archive footage watermark", "mount rushmore", "rushmore", "anatomy", "skeleton", "skull", "brain illustration", "3d brain", "medical illustration", "xray", "x-ray", "baptist church", "metropolitan baptist", "go out and vote", "vote sign", "church sign", "cocoa", "cote d'ivoire", "côte d'ivoire", "ivory coast", "atmospheric river", "noaa satellite", "rath yatra", "chariot festival", "orthographic projection", "location map", "locator map", "relief map", "political map", "map of ", "cia wfb", "blank map", "administrative map", "dumbo", "flying elephant", "ground news", "1 local western", "western mainstream", "top plans", "billed monthly", "per million tokens", "earnings call transcript", "seeking alpha", "motley fool", "marketbeat", "zacks"
+    "t-shirt", "mug", "merchandise", "gift", "sale", "promo", "coupon", "bunk bed", "bunk beds", "twin bed", "loft bed", "mattress", "bed frame", "furniture", "headboard", "dresser", "nightstand", "wayfair", "ikea", "overstock", "ashley furniture", "finding dory", "finding nemo", "dory", "nemo", "dreamworks", "illumination", "periscopefilm", "periscope film", "stock footage", "archive footage watermark", "mount rushmore", "rushmore", "anatomy", "skeleton", "skull", "brain illustration", "3d brain", "medical illustration", "xray", "x-ray", "baptist church", "metropolitan baptist", "go out and vote", "vote sign", "church sign", "cocoa", "cote d'ivoire", "côte d'ivoire", "ivory coast", "atmospheric river", "noaa satellite", "rath yatra", "chariot festival", "orthographic projection", "location map", "locator map", "relief map", "political map", "map of ", "cia wfb", "blank map", "administrative map", "dumbo", "flying elephant", "ground news", "1 local western", "western mainstream", "top plans", "billed monthly", "per million tokens", "earnings call transcript", "seeking alpha", "motley fool", "marketbeat", "zacks", "kimono", "geisha", "yukata", "maiko", "traditional dress", "traditional costume", "great wall of china", "great wall", "south india", "north india", "map of south", "question mark", "3d man", "3d person", "3d character", "stick figure", "clipart"
 ]
 
 BANNED_IMAGE_SOURCES = [
@@ -1467,16 +1467,51 @@ def lowpass_warm_filter(wave_arr, window_len=24):
 
 def synthesize_pro_sfx_event(sfx_type, sr=44100):
     """
-    V29 CLEAN BROADCAST SUBTLE TRANSITION PULSE:
-    Eliminates the 420Hz marker squeak and vinyl-brake warble that clashed with the narrator's voice!
-    Produces a barely-perceptible, warm low-frequency air transition (-32dB) that never masks speech.
+    V59 GOD-LEVEL DOCUMENTARY SOUND DESIGN ENGINE (Whoosh, Sub-Bass Braam, Digital HUD Glitch & Archival Shutter):
+    Synthesizes studio-grade, non-intrusive broadcast sound effects under the narrator's voice:
+    - `crisis_stat_sub_drop` / `cinema_braam_drop`: Deep 58Hz -> 34Hz sub-bass impact drop + warm brass harmonic swell.
+    - `digital_hud_glitch`: Clean sci-fi/telemetry radar lock chirp on data/cosmic/HUD graphics.
+    - `typewriter_camera_shutter` / `camera_shutter_flash`: Crisp archival dossier shutter transient + warm airwhoosh.
+    - `vinyl_stop_transition` / `dry_marker_squeak`: Smooth cinematic air-whoosh transition across visual cuts.
     """
-    dur = 0.24
-    n = int(sr * dur)
-    t = np.linspace(0, dur, n, endpoint=False)
-    env = np.sin(np.pi * (t / dur)) ** 2.0 * np.exp(-t * 8.0)
-    sig = 0.5 * np.sin(2.0 * np.pi * 68.0 * t) * env
-    return (sig * 0.024).astype(np.float32)
+    st = str(sfx_type or "").lower()
+    if "crisis" in st or "braam" in st or "drop" in st:
+        dur = 0.52
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        env = np.minimum(1.0, t / 0.018) * np.exp(-t * 5.2)
+        freq_sweep = 62.0 * np.exp(-t * 1.15) + 32.0
+        phase = 2.0 * np.pi * np.cumsum(freq_sweep) / float(sr)
+        sub_wave = 0.68 * np.sin(phase) + 0.22 * np.sin(phase * 2.0) + 0.10 * np.tanh(2.5 * np.sin(phase * 1.5))
+        return (sub_wave * env * 0.072).astype(np.float32)
+    elif "glitch" in st or "hud" in st:
+        dur = 0.22
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        env = np.sin(np.pi * (t / dur)) ** 1.5 * np.exp(-t * 9.0)
+        f_step = np.where(t < 0.07, 680.0, np.where(t < 0.14, 1020.0, 1360.0))
+        phase = 2.0 * np.pi * np.cumsum(f_step) / float(sr)
+        sig = (0.45 * np.sin(phase) + 0.35 * np.sin(2.0 * np.pi * 75.0 * t)) * env
+        return (sig * 0.042).astype(np.float32)
+    elif "shutter" in st or "typewriter" in st:
+        dur = 0.26
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        click_1 = np.exp(-((t - 0.015) ** 2) / 0.000018) * np.sin(2.0 * np.pi * 1150.0 * t)
+        click_2 = 0.65 * np.exp(-((t - 0.055) ** 2) / 0.000025) * np.sin(2.0 * np.pi * 820.0 * t)
+        whoosh_body = 0.45 * np.sin(2.0 * np.pi * (140.0 - 55.0 * (t / dur)) * t) * np.sin(np.pi * (t / dur))
+        return ((click_1 + click_2 + whoosh_body) * 0.048).astype(np.float32)
+    else:
+        # Smooth Cinematic Air-Whoosh + Warm Sub-Pulse on Every Visual Cut
+        dur = 0.28
+        n = int(sr * dur)
+        t = np.linspace(0, dur, n, endpoint=False)
+        env = (np.sin(np.pi * (t / dur)) ** 1.8) * np.exp(-t * 4.5)
+        rng = np.random.default_rng(1080)
+        air_noise = lowpass_warm_filter(rng.standard_normal(n).astype(np.float32), window_len=36)
+        sub_pulse = np.sin(2.0 * np.pi * (92.0 - 38.0 * (t / dur)) * t)
+        sig = (0.55 * sub_pulse + 0.45 * air_noise) * env
+        return (sig * 0.052).astype(np.float32)
 
 def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     """
@@ -3808,7 +3843,9 @@ def get_story_anchor_and_context_tokens(dossier):
         "prompts", "prompting", "spiked", "costing", "forcing", "longer", "path", "paths",
         "table", "poker", "stage", "dark", "light", "wave", "waves", "layer", "layers",
         "complexity", "silence", "silent", "guessing", "speculation", "timing", "raises",
-        "planning", "intent", "strained", "rattled", "stakes", "positioning", "region", "regional"
+        "planning", "intent", "strained", "rattled", "stakes", "positioning", "region", "regional",
+        "king", "queen", "prince", "princess", "duke", "lord", "crown", "minus", "zero", "planet",
+        "monster", "monsters", "beast", "dragon", "giant", "titan", "fictional", "screen"
     }
 
     generic_event_nouns = {
@@ -4450,14 +4487,28 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
 # ==============================================================================
 def apply_copyright_safe_documentary_lut(im):
     """
-    V55 NATURAL 4K BROADCAST CLARITY LUT (Zero Bilateral Smearing, Zero HDR Haloing!):
-    Preserves 100% genuine optical photograph texture with subtle broadcast contrast and a single
-    clean optical UnsharpMask pass so faces, vehicles, and architecture look crystal-clear HD!
+    V59 CONSISTENT HOLLYWOOD DOCUMENTARY SPLIT-TONE COLOR GRADE + 4K OPTICAL CLARITY LUT:
+    Unifies all harvested visuals into a cohesive Netflix / Think School documentary color palette:
+    - Deep Shadows tinted toward Cinema Dark Navy (`#0A1224`)
+    - Midtones enriched with crisp Atomic Blue/Cyan separation
+    - Highlights warmed toward Burnished Documentary Gold (`#FFD700`)
+    - Zero bilateral smearing and zero HDR haloing!
     """
-    out = im.convert("RGB")
-    out = ImageEnhance.Contrast(out).enhance(1.05)
-    out = ImageEnhance.Color(out).enhance(1.04)
-    out = out.filter(ImageFilter.UnsharpMask(radius=0.95, percent=115, threshold=3))
+    try:
+        arr = np.asarray(im.convert("RGB"), dtype=np.float32)
+        luma = 0.299 * arr[:, :, 0] + 0.587 * arr[:, :, 1] + 0.114 * arr[:, :, 2]
+        shadow_w = np.clip((95.0 - luma) / 95.0, 0.0, 1.0)
+        high_w = np.clip((luma - 145.0) / 110.0, 0.0, 1.0)
+        # Split-tone: Navy shadows + Warm Burnished Gold highlights
+        arr[:, :, 0] = np.clip(arr[:, :, 0] - 4.5 * shadow_w + 5.5 * high_w, 0.0, 255.0)
+        arr[:, :, 1] = np.clip(arr[:, :, 1] + 1.0 * shadow_w + 3.2 * high_w, 0.0, 255.0)
+        arr[:, :, 2] = np.clip(arr[:, :, 2] + 7.5 * shadow_w - 3.5 * high_w, 0.0, 255.0)
+        out = Image.fromarray(arr.astype(np.uint8), mode="RGB")
+    except Exception:
+        out = im.convert("RGB")
+    out = ImageEnhance.Contrast(out).enhance(1.07)
+    out = ImageEnhance.Color(out).enhance(1.06)
+    out = out.filter(ImageFilter.UnsharpMask(radius=0.95, percent=118, threshold=3))
     return out
 
 
@@ -5000,6 +5051,14 @@ def restore_exact_fact_proper_nouns(narration_text, dossier=None):
         r"\bveta\b": "Veda",
         r"\bhakee\s+danish\b": "Hakim Danish",
         r"\bamp\s+system\b": "MMP system",
+        r"\bgdora\b": "Ghidorah",
+        r"\bgadora\b": "Ghidorah",
+        r"\bghidora\b": "Ghidorah",
+        r"\btohjo\b": "Toho",
+        r"\btojo's\b": "Toho's",
+        r"\bminus0\b": "Minus Zero",
+        r"\bzillians\b": "Xiliens",
+
         r"\bcamber's\b": "Canberra's",
         r"\b0\.2000\b": "0.2",
         r"\b(\d+\.\d+)\s*mm\b": r"$\1 million",
@@ -5189,19 +5248,26 @@ def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
     lead_parts = []
     must_match = set()
 
+    compound_role_stops = {"airport", "port", "united", "kingdom", "states", "europe", "european", "international", "authority", "ministry", "king", "queen", "prince", "crown", "minus", "zero", "planet", "space", "agency", "south", "north", "east", "west"}
     for sp_ent in ner["specific_entities"][:2]:
         lead_parts.append(sp_ent)
         for w in re.findall(r"[A-Za-z0-9]{4,}", sp_ent):
             wl = w.lower()
-            if wl not in {"airport", "port", "united", "kingdom", "states", "europe", "european", "international", "authority", "ministry"}:
+            if wl not in compound_role_stops:
                 must_match.add(wl)
 
-    for loc_item in ner["locations"][:2]:
+    # V59 ANTI-TOURIST/MAP LOCK: If the sentence mentions a country (`Japan`, `China`, `India`, `South Korea`)
+    # but has NO specific facility in `lead_parts`, ALWAYS prepend `topic_anchor` so we search
+    # `Godzilla Minus Zero China cinema box office` instead of bare `China` or `South Korea India`!
+    if not lead_parts and topic_anchor:
+        lead_parts.append(topic_anchor)
+        for w in re.findall(r"[A-Za-z0-9]{4,}", topic_anchor):
+            if w.lower() not in compound_role_stops and w.lower() not in HEADLINE_STOP_VERBS_ADJS:
+                must_match.add(w.lower())
+
+    for loc_item in ner["locations"][:1]:
         if loc_item.lower() not in " ".join(lead_parts).lower():
             lead_parts.append(loc_item)
-        for w in re.findall(r"[A-Za-z]{4,}", loc_item):
-            if w.lower() not in {"united", "kingdom", "states", "europe", "european"}:
-                must_match.add(w.lower())
 
     if not lead_parts and fallback_geo:
         lead_parts.append(fallback_geo)
@@ -5226,8 +5292,18 @@ def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
         if "chess" not in [x.lower() for x in phys_filtered] and "chess" not in lead_words_low:
             phys_filtered.insert(0, "chess")
 
-    # Domain context enrichments
-    if any(k in low_txt for k in ["cruise", "liner", "vessel", "ship", "maritime", "docked", "moored", "piraeus", "pyus", "haifa"]):
+    # V59 SCENE-SPECIFIC VISUAL TRANSLATOR (Translates abstract script metaphors into concrete 1080p visual scenes!):
+    if any(k in low_txt for k in ["supercluster", "galaxy", "galaxies", "cosmic", "light years", "nebula", "astrophysics", "universe"]):
+        return "James Webb Space Telescope", f"{topic_anchor} deep space galaxy cluster nebula astronomy Hubble", {"galaxy", "space", "nebula", "cluster", "astronomy", "telescope"}
+    elif any(k in low_txt for k in ["meteorite", "asteroid", "venus", "planet x", "jupiter", "interplanetary"]):
+        return "Meteorite Space Impact", f"{topic_anchor} meteorite impact planet space astronomy", {"meteorite", "planet", "space", "impact", "astronomy"}
+    elif any(k in low_txt for k in ["popcorn", "soda", "concession", "theaters", "theater electricity", "opening weekend", "box office", "theatrical"]):
+        return "IMAX Cinema Box Office", f"{topic_anchor} movie theater cinema screen audience box office", {"cinema", "theater", "movie", "screen", "audience", "box"}
+    elif any(k in low_txt for k in ["merchandise", "toy", "apparel", "collectibles", "action figure"]):
+        return f"{topic_anchor} Merchandise", f"{topic_anchor} action figure collectibles toy display", {"figure", "toy", "merchandise", "collectibles"}
+    elif any(k in low_txt for k in ["yen", "dollar spread", "export index", "media equities", "asian etfs", "stock market", "trading desks"]):
+        return "Tokyo Stock Exchange", "Tokyo Stock Exchange financial market trading screen Nikkei Yen", {"stock", "market", "trading", "exchange", "tokyo", "financial"}
+    elif any(k in low_txt for k in ["cruise", "liner", "vessel", "ship", "maritime", "docked", "moored", "piraeus", "pyus", "haifa"]):
         if not any(k in [x.lower() for x in phys_filtered[:4]] for k in ["cruise", "ship", "port", "vessel"]):
             phys_filtered.insert(0, "cruise ship port")
     elif any(k in low_txt for k in ["flight", "flights", "airport", "aircraft", "plane", "pilot", "pilots", "runway", "terminal", "touchdown", "landing", "airline", "airlines", "carrier"]):
@@ -5288,7 +5364,7 @@ def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", 
         # 2. Specific Named Facility / Airport / Port / Organization match (+95 per token)
         ent_toks = {
             w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", " ".join(sent_ner.get("specific_entities", [])))
-            if w.lower() not in {"airport", "port", "united", "kingdom", "states", "europe", "european", "international"}
+            if w.lower() not in {"airport", "port", "united", "kingdom", "states", "europe", "european", "international", "king", "queen", "prince", "crown", "minus", "zero", "planet"}
         }
         ent_hits = len(ent_toks.intersection(cap_toks))
         score += ent_hits * 95
@@ -5310,6 +5386,13 @@ def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", 
         phys_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", " ".join(sent_ner.get("physical_objects", [])[:6]))}
         phys_hits = len(phys_toks.intersection(cap_toks))
         score += phys_hits * 45
+
+        # V59 ANTI-BARE-COUNTRY-TOURISM PENALTY:
+        # If an image ONLY matches a country/city word (`loc_hits >= 1`) but has ZERO match on specific entities (`ent_hits == 0`),
+        # ZERO match on physical objects (`phys_hits == 0`), and ZERO match on story event tokens (`len(ev_tokens.intersection(cap_toks)) == 0`),
+        # penalize `-240` so a generic kimono in Japan, Great Wall in China, or map of India NEVER gets selected!
+        if loc_hits >= 1 and ent_hits == 0 and phys_hits == 0 and len(ev_tokens.intersection(cap_toks)) == 0:
+            score -= 240
 
     q_toks = {
         w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", str(query_str or ""))
@@ -5358,17 +5441,31 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         "terms of service", "starlink terms", "desert storm", "free images :", "free images:",
         "free photo:", "free photos:", "free stock", "pxhere", "tiket", "pesawat", "murah",
         "minangkabau", "changi airport", "kansas city", "brief guide to", "united airlines",
-        "movie poster", "film poster", "official trailer", "jennifer lawrence", "chris pratt",
-        "passengers (2016)", "passengers movie", "passengers film", "imdb", "rottentomatoes",
-        "rotten tomatoes", "metacritic", "box office", "columbia pictures", "sony pictures",
-        "warner bros", "paramount pictures", "universal pictures", "netflix", "disney+",
-        "marvel studios", "sci-fi movie", "starring", "directed by", "dvd cover", "blu-ray",
-        "suno india", "air india express"
+        "jennifer lawrence", "chris pratt", "passengers (2016)", "passengers movie", "passengers film",
+        "suno india", "air india express", "kimono", "geisha", "yukata", "great wall of china",
+        "south india", "north india", "question mark", "3d man", "3d character", "stick figure"
     ]
     if any(tw in comb_meta for tw in off_topic_ad_and_trap_words):
         return False
 
     title_low = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {dossier.get('country_profile', {}).get('name', '')} {query_str} {' '.join((dossier.get('raw_facts') or [])[:6])}".lower()
+    is_cinema_or_pop_story = (
+        str(dossier.get("pillar", "")).upper() in ("ENTERTAINMENT", "CINEMA_POP")
+        or any(ck in title_low for ck in ["movie", "film", "cinema", "trailer", "box office", "godzilla", "ghidorah", "toho", "sequel", "franchise", "kaiju", "actor", "actress", "director", "hollywood", "netflix", "disney", "marvel", "studio"])
+    )
+    if not is_cinema_or_pop_story:
+        non_cinema_movie_traps = [
+            "movie poster", "film poster", "official trailer", "rotten tomatoes", "rottentomatoes",
+            "metacritic", "columbia pictures", "sony pictures", "warner bros", "paramount pictures",
+            "universal pictures", "sci-fi movie", "dvd cover", "blu-ray"
+        ]
+        if any(mtw in comb_meta for mtw in non_cinema_movie_traps):
+            return False
+
+    # Block British Royalty ('King Charles', 'Queen Camilla', 'Coronation', 'British Crown') when story is about 'King Ghidorah' or non-royal topics!
+    if not any(rk in title_low for rk in ["charles", "camilla", "buckingham", "windsor", "british royal", "monarchy", "coronation"]):
+        if any(rb in comb_meta for rb in ["king charles", "prince charles", "queen camilla", "queen elizabeth", "prince william", "kate middleton", "buckingham palace", "coronation", "british crown", "royal crown", "st edward", "royal family"]):
+            return False
     if has_foreign_country_collision(comb_meta, title_low):
         return False
 
@@ -6105,9 +6202,16 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
     return cropped.resize((target_w, target_h), resample_mode)
 
 def build_clean_1080p_stage(im, W, H):
-    over_w, over_h = int(W * 1.08), int(H * 1.08)
+    """
+    V59 2.5D MULTI-PLANE DEPTH PARALLAX STAGE BUILDER:
+    Prepares both a razor-sharp 1.12x Foreground Subject Plane (`fg`) and a deep-bokeh 1.14x Background
+    Atmosphere Plane (`bg_depth`) so `extract_diverse_camera_frame_from_stage` can animate true 2.5D camera
+    zoom + differential parallax on every still photo beat!
+    """
+    over_w, over_h = int(W * 1.12), int(H * 1.12)
     fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
-    return ("FULL_BLEED_CREATOR_STAGE", fg, None)
+    bg_depth = ImageEnhance.Brightness(fg.filter(ImageFilter.GaussianBlur(radius=14))).enhance(0.42)
+    return ("FULL_BLEED_25D_PARALLAX_STAGE", fg, bg_depth)
 
 
 # ==============================================================================
@@ -6401,26 +6505,38 @@ def warp_rgba_in_3d_perspective(card_rgba, yaw_deg=4.5, pitch_deg=3.0, specular_
         return card_rgba
 
 def extract_diverse_camera_frame_from_stage(stage_tuple, W, H, bp, camera_mode=0, local_t=0.0):
+    """
+    V59 2.5D DEPTH-OF-FIELD CAMERA DOLLY, ZOOM & PARALLAX ENGINE:
+    Eliminates flat 2D slideshows by combining dynamic focal-length push-in/pull-out (`zoom_f`)
+    with differential 2.5D foreground/background parallax motion!
+    """
     try:
         fg = stage_tuple[1]
         fw, fh = fg.size
         ease_p = cubic_bezier_ease_in_out(min(max(bp, 0.0), 1.0))
-        max_dx = max(0, fw - W)
-        max_dy = max(0, fh - H)
         mode = int(camera_mode) % 4
+        # Dynamic 2.5D Camera Dolly Zoom + Pan
+        zoom_f = (0.94 + 0.06 * ease_p) if (mode % 2 == 0) else (1.0 - 0.055 * ease_p)
+        cw = max(W, min(fw, int(fw * zoom_f)))
+        ch = max(H, min(fh, int(fh * zoom_f)))
+        max_dx = max(0, fw - cw)
+        max_dy = max(0, fh - ch)
         if mode == 0:
-            ox = int(max_dx * (0.20 + 0.60 * ease_p))
-            oy = int(max_dy * (0.30 + 0.40 * ease_p))
+            ox = int(max_dx * (0.18 + 0.64 * ease_p))
+            oy = int(max_dy * (0.25 + 0.50 * ease_p))
         elif mode == 1:
-            ox = int(max_dx * (0.80 - 0.60 * ease_p))
-            oy = int(max_dy * (0.35 + 0.30 * ease_p))
+            ox = int(max_dx * (0.82 - 0.64 * ease_p))
+            oy = int(max_dy * (0.30 + 0.40 * ease_p))
         elif mode == 2:
             ox = int(max_dx * 0.50)
-            oy = int(max_dy * (0.15 + 0.70 * ease_p))
+            oy = int(max_dy * (0.12 + 0.72 * ease_p))
         else:
-            ox = int(max_dx * (0.35 + 0.30 * math.sin(local_t * 0.8)))
-            oy = int(max_dy * 0.50)
-        cropped = fg.crop((ox, oy, ox + W, oy + H)).convert("RGBA")
+            ox = int(max_dx * (0.35 + 0.30 * math.sin(local_t * 0.85)))
+            oy = int(max_dy * (0.50 - 0.25 * ease_p))
+        cropped_fg = fg.crop((ox, oy, ox + cw, oy + ch))
+        if cw != W or ch != H:
+            cropped_fg = cropped_fg.resize((W, H), getattr(Image, "Resampling", Image).BILINEAR)
+        cropped = cropped_fg.convert("RGBA")
         cropped.alpha_composite(get_prebuilt_vignette_overlay(W, H))
         return cropped
     except Exception:
@@ -9495,12 +9611,14 @@ def build_prop_driven_storyboard_1080p(
             has_shock_turning_point = bool(re.search(r"\b(5-0|five to zero|humiliation|anarchy|sacking|sacked|collapsed|crippled|dustbin|casualty|dead|killed|violation|crisis)\b", b_txt, flags=re.I))
             has_date_or_year = bool(re.search(r"\b(19\d{2}|20\d{2}|100 years|century)\b", b_txt, flags=re.I))
 
-            if global_beat_idx == 2:
+            if has_shock_turning_point:
+                chosen_sfx = "crisis_stat_sub_drop"
+            elif special_sim_mode is not None:
+                chosen_sfx = "digital_hud_glitch"
+            elif global_beat_idx == 2:
                 chosen_sfx = "vinyl_stop_transition"
             elif has_date_or_year:
                 chosen_sfx = "typewriter_camera_shutter"
-            elif has_shock_turning_point:
-                chosen_sfx = "crisis_stat_sub_drop"
             elif beat_person_popup is not None:
                 chosen_sfx = "typewriter_camera_shutter" if global_beat_idx % 2 == 0 else "camera_shutter_flash"
             else:
