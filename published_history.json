@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-07T23:41:11.211290",
-  "round_robin_idx": 0,
-  "country_rot_idx": 26,
-  "bgm_track_counter": 2894401278,
+  "updated_at": "2026-11-08T00:45:33.434651",
+  "round_robin_idx": 1,
+  "country_rot_idx": 38,
+  "bgm_track_counter": 2905323564,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -620,74 +620,12 @@
     "pakistan_s_government_would_consider_issuing",
     "pakistan_offers_visa_to_punjab_cm",
     "nations_championship_south_africa_and_new",
-    "springboks_vs_all_blacks_record_crowd"
+    "springboks_vs_all_blacks_record_crowd",
+    "son_of_iran_s_shah_receives",
+    "iran_s_exiled_prince_wins_controversial",
+    "former_miss_thailand_boom_panadda_arrested"
   ],
   "event_fingerprints": [
-    {
-      "title": "Families brace for a fourth winter of wind, rain and floods in Gaza's camps",
-      "tokens": [
-        "camps",
-        "fourth",
-        "wind",
-        "floods",
-        "lead",
-        "palestinians",
-        "further",
-        "likely",
-        "families",
-        "winter",
-        "impending",
-        "rain",
-        "devastation",
-        "gaza",
-        "brace"
-      ]
-    },
-    {
-      "title": "What is the controversy between Real Madrid's Kylian Mbappe and China?",
-      "tokens": [
-        "zedong",
-        "kylian",
-        "drawn",
-        "between",
-        "french",
-        "sports",
-        "real",
-        "have",
-        "mbappe",
-        "comments",
-        "about",
-        "controversy",
-        "market",
-        "teams",
-        "lucrative",
-        "china",
-        "madrid",
-        "superstar"
-      ]
-    },
-    {
-      "title": "Why Arab parties may not be the 'kingmakers' in this Israeli election",
-      "tokens": [
-        "bloc",
-        "exit",
-        "bibi",
-        "parties",
-        "potentially",
-        "poll",
-        "show",
-        "kingmakers",
-        "arab",
-        "israeli",
-        "could",
-        "they",
-        "teamed",
-        "election",
-        "projections",
-        "eisenkot",
-        "unseat"
-      ]
-    },
     {
       "title": "China's secretive space plane caught on camera in incredible new photo released by US military",
       "tokens": [
@@ -8396,11 +8334,74 @@
         "unbeaten",
         "zealand"
       ]
+    },
+    {
+      "title": "Son of Iran's shah receives 'Freedom Prize' in Frankfurt",
+      "tokens": [
+        "accused",
+        "autocrat",
+        "distancing",
+        "factions",
+        "father",
+        "frankfurt",
+        "freedom",
+        "have",
+        "himself",
+        "iran",
+        "last",
+        "mohammed",
+        "opposition",
+        "pahlavi",
+        "prize",
+        "receives",
+        "reza",
+        "rule",
+        "shah"
+      ]
+    },
+    {
+      "title": "Iran's Exiled Prince Wins Controversial Freedom Prize \u2013 Why the World Is Watching",
+      "tokens": [
+        "controversial",
+        "exiled",
+        "frankfurt",
+        "freedom",
+        "iran",
+        "prince",
+        "prize",
+        "receives",
+        "shah",
+        "watching",
+        "wins"
+      ]
+    },
+    {
+      "title": "Former Miss Thailand Boom Panadda arrested over charity donation scandal",
+      "tokens": [
+        "actress",
+        "arrested",
+        "beauty",
+        "boom",
+        "charges",
+        "charity",
+        "donation",
+        "english",
+        "faces",
+        "former",
+        "khaosod",
+        "miss",
+        "panadda",
+        "presenter",
+        "publi",
+        "queen",
+        "scandal",
+        "thailand",
+        "three",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
-    "UNDERRATED_GEOPOLITICS",
     "GLOBAL_POWERS",
     "TECHNOLOGY",
     "GEOPOLITICS",
@@ -8438,11 +8439,11 @@
     "INDIA_TRENDING",
     "MIND_BLOWING_FACTS",
     "UNDERRATED_GEOPOLITICS",
-    "HEALTH"
+    "HEALTH",
+    "GEOPOLITICS",
+    "STOCK_MARKETS"
   ],
   "last_sources": [
-    "Google World Top Headlines (US/Global)",
-    "DW Global In-Depth",
     "Top Viral News [GERMANY]",
     "The Verge Tech",
     "Country Documentary Wire [TURKEY]",
@@ -8480,11 +8481,11 @@
     "Google World Top Headlines (US/Global)",
     "Global Country Wire [MALAYSIA \u2022 MIND_BLOWING_FACTS]",
     "Global Country Wire [PAKISTAN \u2022 UNDERRATED_GEOPOLITICS]",
-    "Global Country Wire [ITALY \u2022 HEALTH]"
+    "Global Country Wire [ITALY \u2022 HEALTH]",
+    "DW World News (Europe & Global)",
+    "Global Country Wire [THAILAND \u2022 STOCK_MARKETS]"
   ],
   "last_countries": [
-    "INTERNATIONAL",
-    "FRANCE",
     "PAKISTAN",
     "TURKEY",
     "INDIA",
@@ -8532,6 +8533,8 @@
     "ISRAEL",
     "MALAYSIA",
     "PAKISTAN",
-    "SOUTH AFRICA"
+    "SOUTH AFRICA",
+    "IRAN",
+    "THAILAND"
   ]
 }
