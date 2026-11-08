@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-08T21:09:31.849791",
-  "last_upload_epoch": 1794172171,
-  "round_robin_idx": 8,
-  "country_rot_idx": 23,
-  "bgm_track_counter": 3032650492,
+  "updated_at": "2026-11-08T23:53:06.474916",
+  "last_upload_epoch": 1794181986,
+  "round_robin_idx": 9,
+  "country_rot_idx": 29,
+  "bgm_track_counter": 3046083001,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -645,32 +645,11 @@
     "29_year_old_breaks_sailing_history",
     "bangladesh_s_ai_surge_why_rising",
     "bangladesh_s_ai_experience_is_taking",
-    "bangladesh_s_ai_tsunami_ryze_s"
+    "bangladesh_s_ai_tsunami_ryze_s",
+    "collision_between_2_trains_in_egypt",
+    "egypt_train_disaster_billion_dollar_modernisation"
   ],
   "event_fingerprints": [
-    {
-      "title": "Sinkholes, scarred land and scapegoats: the hidden cost of critical minerals",
-      "tokens": [
-        "sinkholes",
-        "scarred",
-        "land",
-        "scapegoats",
-        "hidden",
-        "cost",
-        "critical",
-        "minerals"
-      ]
-    },
-    {
-      "title": "Oh captain, our captain: Ars staff remembers Patrick",
-      "tokens": [
-        "captain",
-        "staff",
-        "remembers",
-        "patrick",
-        "obituary"
-      ]
-    },
     {
       "title": "Bollywood's $10B Bloodbath: The New Underworld Threat",
       "tokens": [
@@ -8464,10 +8443,54 @@
         "tsunami",
         "turn"
       ]
+    },
+    {
+      "title": "Collision between 2 trains in Egypt kills 7 and injures at least 125",
+      "tokens": [
+        "authorities",
+        "between",
+        "cairo",
+        "capital",
+        "collided",
+        "collision",
+        "egypt",
+        "egyptian",
+        "injured",
+        "injures",
+        "killed",
+        "kills",
+        "least",
+        "more",
+        "others",
+        "people",
+        "seven",
+        "south",
+        "sunday",
+        "than",
+        "trains"
+      ]
+    },
+    {
+      "title": "Egypt Train Disaster: Billion\u2011Dollar Modernisation vs Deadly Reality",
+      "tokens": [
+        "between",
+        "billion",
+        "collision",
+        "deadly",
+        "disaster",
+        "dollar",
+        "egypt",
+        "injures",
+        "kills",
+        "least",
+        "modernisation",
+        "reality",
+        "train",
+        "trains"
+      ]
     }
   ],
   "last_categories": [
-    "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
     "HEALTH",
     "SCIENCE",
@@ -8506,10 +8529,10 @@
     "UNDERRATED_GEOPOLITICS",
     "SCIENCE",
     "GEOPOLITICS",
-    "TECHNOLOGY"
+    "TECHNOLOGY",
+    "DEFENSE_MILITARY"
   ],
   "last_sources": [
-    "Global Country Wire [RUSSIA \u2022 MIND_BLOWING_FACTS]",
     "Global Superpowers Geopolitics 24h",
     "Global Country Wire [MALAYSIA \u2022 HEALTH]",
     "Space.com Breaking",
@@ -8548,10 +8571,10 @@
     "DW Global In-Depth",
     "Space.com Breaking",
     "France24 Global Affairs",
-    "Global Country Wire [BANGLADESH \u2022 TECHNOLOGY]"
+    "Global Country Wire [BANGLADESH \u2022 TECHNOLOGY]",
+    "Google World Top Headlines (US/Global)"
   ],
   "last_countries": [
-    "MIDDLE EAST",
     "MEXICO",
     "INTERNATIONAL",
     "GLOBAL MARKETS",
@@ -8600,6 +8623,7 @@
     "GLOBAL BRIEFING",
     "SPACE & SCIENCE",
     "FRANCE",
-    "BANGLADESH"
+    "BANGLADESH",
+    "EGYPT"
   ]
 }
