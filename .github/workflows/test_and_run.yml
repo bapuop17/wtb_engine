@@ -1,4 +1,4 @@
-name: WTB News Engine V57 (15m Unstoppable Cron + 2-Hour Smart Cooldown Gate • 1 Pair/2h • Zero Spam Throttle)
+name: WTB News Engine V58 (15m Unstoppable Cron + 2-Hour Smart Cooldown Gate • 1 Pair/2h • Zero Spam Throttle)
 
 on:
   workflow_dispatch:
@@ -104,7 +104,7 @@ jobs:
           elapsed_mins = (now_epoch - last_epoch) / 60.0 if last_epoch > 0 else 999.0
 
           if elapsed_mins >= cooldown_mins:
-              print(f"✅ [2-Hour Cooldown Complete] {elapsed_mins:.1f} mins elapsed since last upload (>= {cooldown_mins}m). Launching V57 build!")
+              print(f"✅ [2-Hour Cooldown Complete] {elapsed_mins:.1f} mins elapsed since last upload (>= {cooldown_mins}m). Launching V58 build!")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out:
                   out.write("should_run=true\n")
           else:
@@ -135,7 +135,7 @@ jobs:
             fonts-freefont-ttf \
             fonts-noto-core
 
-      - name: Install Python V57 Documentary & Motion-Graphics Libraries
+      - name: Install Python V58 Documentary & Motion-Graphics Libraries
         if: steps.cooldown_gate.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
@@ -155,11 +155,14 @@ jobs:
             opencv-python-headless \
             ddgs \
             yt-dlp \
+            googlenewsdecoder \
+            trafilatura \
+            youtube-transcript-api \
             google-api-python-client \
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V57 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
+      - name: Run WTB V58 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
         if: steps.cooldown_gate.outputs.should_run == 'true'
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
@@ -184,7 +187,7 @@ jobs:
           git checkout -- .github/workflows/ || true
           git rm -f --ignore-unmatch workflow_schedule_state.json .github/scripts/claim_schedule_slot.py || true
           test -f published_history.json && git add published_history.json || true
-          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V57]"
+          git diff --staged --quiet || git commit -m "Auto-sync published_history.json [V58]"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main || (sleep 3 && git pull --rebase -X theirs origin main && git push origin HEAD:main) || true
 
