@@ -448,7 +448,7 @@ LOW_INTEREST_BORING_WORDS = [
     "queer film", "film festival", "staff remembers", "our captain", "obituary", "sinkholes", "sinkhole", "starting lineup", "carabao cup", "premier league", "champions league", "la liga", "serie a", "bundesliga", "europa league", "match preview", "penalty shootout", "squad rotation", "cup tie", "etihad stadium", "old trafford", "anfield", "stamford bridge", "haaland", "manchester city", "manchester united", "arsenal", "chelsea", "liverpool", "tottenham", "spurs", "real madrid", "barcelona", "transfer window", "sacking season", "ballon d'or", "grand prix", "touchdown",
     "farmers decide what to plan", "what to plant", "food safety", "cooking oil", "recipe",
     "gardening", "horoscope", "weather forecast", "local traffic", "high school", "county fair",
-    "spelling bee", "pet adoption", "charity run", "book club", "restaurant review", "at home in space", "air and space museum", "museum opens", "exhibit opens", "exhibition opens", "gallery opens", "match thread", "unofficial test", "test match", "live score", "live blog", "stumps"
+    "spelling bee", "pet adoption", "charity run", "book club", "restaurant review", "at home in space", "air and space museum", "museum opens", "exhibit opens", "exhibition opens", "gallery opens", "match thread", "unofficial test", "test match", "live score", "live blog", "stumps", "q1 earnings", "q2 earnings", "q3 earnings", "q4 earnings", "reports lower q1", "reports lower q2", "reports lower q3", "reports lower q4", "earnings call", "earnings transcript", "call transcript", "quarterly results", "adjusted eps", "beats expectations", "misses expectations", "dividend", "q3 2026", "q2 2026", "q1 2026", "director-general", "director general", "nitda", "permanent secretary", "communique", "committee meets", "memorandum of understanding", "courtesy visit", "stakeholders meeting", "workshop on", "seminar on", "municipal elections", "by-election", "local council"
 ]
 
 def build_dynamic_country_viral_feeds(hist_obj, count_countries=8, sub_pillar="GEOPOLITICS"):
@@ -680,7 +680,7 @@ BANNED_CAPTION_AND_TITLE_WORDS = [
     "feline", "dog ", "dogs ", "puppy", "canine", "pet ", "pets ", "cute animal", "dinosaur",
     "dragon", "monster", "fantasy", "fairy", "magic", "stock illustration", "recorded future",
     "infographic", "chart", "diagram", "logo", "icon", "thumbnail",
-    "t-shirt", "mug", "merchandise", "gift", "sale", "promo", "coupon", "bunk bed", "bunk beds", "twin bed", "loft bed", "mattress", "bed frame", "furniture", "headboard", "dresser", "nightstand", "wayfair", "ikea", "overstock", "ashley furniture", "finding dory", "finding nemo", "dory", "nemo", "dreamworks", "illumination", "periscopefilm", "periscope film", "stock footage", "archive footage watermark", "mount rushmore", "rushmore", "anatomy", "skeleton", "skull", "brain illustration", "3d brain", "medical illustration", "xray", "x-ray", "baptist church", "metropolitan baptist", "go out and vote", "vote sign", "church sign", "cocoa", "cote d'ivoire", "côte d'ivoire", "ivory coast", "atmospheric river", "noaa satellite", "rath yatra", "chariot festival", "orthographic projection", "location map", "locator map", "relief map", "political map", "map of ", "cia wfb", "blank map", "administrative map"
+    "t-shirt", "mug", "merchandise", "gift", "sale", "promo", "coupon", "bunk bed", "bunk beds", "twin bed", "loft bed", "mattress", "bed frame", "furniture", "headboard", "dresser", "nightstand", "wayfair", "ikea", "overstock", "ashley furniture", "finding dory", "finding nemo", "dory", "nemo", "dreamworks", "illumination", "periscopefilm", "periscope film", "stock footage", "archive footage watermark", "mount rushmore", "rushmore", "anatomy", "skeleton", "skull", "brain illustration", "3d brain", "medical illustration", "xray", "x-ray", "baptist church", "metropolitan baptist", "go out and vote", "vote sign", "church sign", "cocoa", "cote d'ivoire", "côte d'ivoire", "ivory coast", "atmospheric river", "noaa satellite", "rath yatra", "chariot festival", "orthographic projection", "location map", "locator map", "relief map", "political map", "map of ", "cia wfb", "blank map", "administrative map", "dumbo", "flying elephant", "ground news", "1 local western", "western mainstream", "top plans", "billed monthly", "per million tokens", "earnings call transcript", "seeking alpha", "motley fool", "marketbeat", "zacks"
 ]
 
 BANNED_IMAGE_SOURCES = [
@@ -707,7 +707,7 @@ BANNED_IMAGE_SOURCES = [
     "emblem", "insignia", "seal", "badge", "coat_of_arms", "3d-render", "3d_render",
     "illustration", "vector", "futuristic", "cyberpunk", "sci-fi", "scifi",
     "nude", "naked", "nsfw", "erotic", "bikini", "lingerie", "swimsuit", "underwear",
-    "playboy", "onlyfans", "statue_of_venus", "aphrodite", "nymph", "odalisque", "boudoir", "stripclub", "adult", "hermes.media.static.aol.com", "static.aol.com", "yimg.com/uu/api", "wayfair.com", "wfcdn.com", "ikea.com", "homedepot.com", "lowes.com", "walmartimages.com", "target.scene7.com", "overstock.com", "ostkcdn.com", "periscopefilm", "123rf", "shutterstock", "getty", "alamy", "istock", "orthographic", "location_map", "locator_map", "relief_map", "map_of_", "cia_wfb", "baptist", "cocoa"
+    "playboy", "onlyfans", "statue_of_venus", "aphrodite", "nymph", "odalisque", "boudoir", "stripclub", "adult", "hermes.media.static.aol.com", "static.aol.com", "yimg.com/uu/api", "wayfair.com", "wfcdn.com", "ikea.com", "homedepot.com", "lowes.com", "walmartimages.com", "target.scene7.com", "overstock.com", "ostkcdn.com", "periscopefilm", "123rf", "shutterstock", "getty", "alamy", "istock", "orthographic", "location_map", "locator_map", "relief_map", "map_of_", "cia_wfb", "baptist", "cocoa", "ground.news", "groundnews", "seekingalpha", "fool.com", "benzinga", "marketbeat", "zacks.com", "tipranks", "simplywall.st", "tradingview"
 ]
 
 PERSON_WIKI_MAP = {
@@ -2219,20 +2219,37 @@ HEADLINE_STOP_VERBS_ADJS = {
     "object", "very", "likely", "holds", "author", "changing", "bizarre", "million", "billion",
     "trillion", "ancient", "adorable", "hottest", "secretly", "scary", "tiny", "little", "year",
     "years", "predator", "rewriting", "know", "plays", "sell", "sold", "left", "alone", "nothing",
-    "james", "john", "michael", "david", "robert"
+    "james", "john", "michael", "david", "robert",
+    "earnings", "quarter", "quarterly", "lower", "higher", "profit", "profits", "revenue",
+    "revenues", "shares", "stock", "stocks", "results", "transcript", "adjusted", "expenses",
+    "guidance", "drop", "drops", "fell", "falls", "rises", "rose", "amid", "fierce", "competition"
 }
 
 def extract_primary_topic_anchor(dossier):
     """
-    V52 PROPER-ENTITY & FACT-GROUNDED TOPIC ANCHOR EXTRACTOR:
-    Extracts the true named subject (Person, Club, Organization, Company, Treaty, or Place) from BOTH
-    `dossier['title']` and `dossier['raw_facts'][:2]`, skipping clickbait hook words like 'Donation',
-    'Empire', 'Collapse', 'Teen', 'Prodigy', 'Bold', 'Gamble'!
+    V55 HEADLINE-LOCKED PROPER-ENTITY & ACRONYM TOPIC ANCHOR EXTRACTOR:
+    1. Always prioritizes 2-to-4 letter uppercase brands/acronyms in the headline (`BMW`, `BYD`, `TSMC`, `IDF`,
+       `NATO`, `BRICS`, `OPEC`, `ISRO`, `NASA`, `UEFA`, `FIFA`) and named entities in `raw_t` FIRST so polluted
+       secondary claims (like `MTG Q3`) can NEVER hijack the topic anchor!
     """
     raw_t = str(dossier.get("original_rss_headline") or dossier.get("title", ""))
-    facts_head = " ".join(str(x) for x in (dossier.get("raw_facts") or [])[:2])
+    facts_head = " ".join(str(x) for x in (dossier.get("raw_facts") or [])[:1])
     comb_text = f"{raw_t}. {facts_head}"
-    low = comb_text.lower()
+    low = raw_t.lower()
+    acronyms_in_title = [
+        m.group(1) for m in re.finditer(r"\b([A-Z]{2,5})\b", raw_t)
+        if m.group(1) not in {"WHY", "HOW", "THE", "AND", "FOR", "NEW", "TOP", "BIG", "WAR", "NOW", "OUT", "OFF", "Q1", "Q2", "Q3", "Q4", "CEO", "CFO", "USD", "EUR", "GBP", "INR"}
+    ]
+    if acronyms_in_title:
+        lead_acr = acronyms_in_title[0]
+        # Pair the acronym with the main capitalized subject noun in the title if present
+        cap_nouns = [
+            w for w in re.findall(r"\b[A-Z][a-zA-Z0-9\-]{2,}\b", raw_t)
+            if w.upper() != lead_acr and w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.upper() not in {"Q1", "Q2", "Q3", "Q4", "WHY", "HOW", "THE"}
+        ]
+        if cap_nouns:
+            return f"{lead_acr} {cap_nouns[0]}"
+        return lead_acr
 
     for p_key, (wiki_page, _, _) in PERSON_WIKI_MAP.items():
         if re.search(rf"\b{re.escape(p_key)}\b", low):
@@ -2289,15 +2306,27 @@ def extract_primary_topic_anchor(dossier):
 
 def build_100_percent_original_youtube_title(raw_title, pillar, c_prof, topic_anchor, is_update=False):
     """
-    V45 44K-VIEW VIRAL TITLE ENGINE (Modeled on 'Why A 17-Year-Old Indonesian Rider Is Breaking Honda\'s Grip'):
-    - Strips any robotic '| Geopolitics Explained' suffix so mobile CTR stays maximal (55-82 chars).
-    - Converts dry declarative headlines into 'Why ...' / 'How ...' curiosity-gap hooks when appropriate.
+    V55 HIGH-CTR THINK SCHOOL / NITISH RAJPUT VIRAL DOCUMENTARY TITLE ENGINE:
+    - Converts flat lowercase RSS headlines (like 'BMW reports lower Q3 earnings') into high-intrigue,
+      Title-Cased documentary hooks with real stakes!
     """
     clean_t = re.sub(r"\s*\|\s*[A-Za-z0-9_\s]+Explained$", "", str(raw_title or "").strip(), flags=re.I).strip()
     clean_t = re.sub(r"\s+[-–—]\s+(?:BBC|Reuters|AP|The Guardian|CNN|DW|France 24|ESPN).*$", "", clean_t, flags=re.I).strip()
+    small_words = {"a", "an", "the", "in", "on", "at", "to", "for", "of", "and", "or", "vs", "by", "with", "from", "into"}
+    tc_words = []
+    for idx_w, w in enumerate(clean_t.split()):
+        if w.isupper() and len(w) >= 2:
+            tc_words.append(w)
+        elif idx_w > 0 and w.lower() in small_words:
+            tc_words.append(w.lower())
+        else:
+            tc_words.append(w[0].upper() + w[1:] if len(w) > 1 else w.upper())
+    clean_t = " ".join(tc_words)
     prefix = "BREAKING: " if is_update and not clean_t.lower().startswith(("why ", "how ", "breaking")) else ""
     base_t = f"{prefix}{clean_t}".strip()
-    if not base_t.lower().startswith(("why ", "how ", "inside ", "the ", "breaking")) and "?" not in base_t and len(base_t) <= 68:
+    if not base_t.lower().startswith(("why ", "how ", "inside ", "the ", "breaking")) and "?" not in base_t and ":" not in base_t and len(base_t) <= 58:
+        base_t = f"How {base_t}: The Real Story"
+    elif not base_t.lower().startswith(("why ", "how ", "inside ", "the ", "breaking")) and "?" not in base_t and len(base_t) <= 68:
         base_t = f"Why {base_t}"
     if len(base_t) <= 88:
         return base_t
@@ -2600,14 +2629,22 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             if any((len(cur_fp_set.intersection(bfp)) >= 2 or (len(cur_fp_set.intersection(bfp)) / float(max(1, min(len(cur_fp_set), len(bfp)))) >= 0.22)) for bfp in batch_fingerprints):
                 continue
 
-            # Extract specific headline subject tokens (excluding generic country names) so sidebar links never pollute claims!
+            # V55 2-to-3 Letter Acronym & Proper Subject Lock (Prevents 'BMW' from being dropped by {4,} regex!):
             generic_geo_words = {c.lower() for c in COUNTRY_GEO_DB.keys()} | set(DEMONYM_TO_COUNTRY.keys()) | {"the", "and", "for", "with", "from", "that", "this", "news", "court", "police", "government"}
-            headline_specific_tokens = {
-                w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", title)
-                if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in generic_geo_words
+            headline_acronyms = {
+                m.group(1).lower() for m in re.finditer(r"\b([A-Z0-9]{2,4})\b", title)
+                if m.group(1).upper() not in {"WHY", "HOW", "THE", "AND", "FOR", "NEW", "TOP", "NOW", "Q1", "Q2", "Q3", "Q4"}
+            }
+            headline_specific_tokens = headline_acronyms | {
+                w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", title)
+                if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in generic_geo_words and w.lower() not in {"the", "and", "for", "with", "from", "are", "was", "were", "has", "had", "not", "but", "its", "his", "her", "who", "out", "off", "now"}
+            }
+            primary_entity_must_toks = headline_acronyms | {
+                w.lower() for w in re.findall(r"\b[A-Z][a-zA-Z0-9\-]{2,}\b", title)
+                if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in generic_geo_words and w.upper() not in {"WHY", "HOW", "THE", "Q1", "Q2", "Q3", "Q4"}
             }
             core_topic_tokens = headline_specific_tokens or {
-                w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{title} {summary}")
+                w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", f"{title} {summary}")
                 if w.lower() not in HEADLINE_STOP_VERBS_ADJS
             }
 
@@ -2697,8 +2734,11 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
 
             if len(verified_claims) < 10:
                 try:
-                    # Anchor Bing News expansion on the FULL headline (including country/location words like Guinea-Bissau!)
-                    all_title_toks = [w for w in re.findall(r"[A-Za-z0-9\-]{4,}", title) if w.lower() not in HEADLINE_STOP_VERBS_ADJS]
+                    # V55: Include 2-3 letter acronyms (e.g. BMW, BYD, AI, UN, IDF) in Bing News expansion query and require primary entity match!
+                    all_title_toks = [
+                        w for w in re.findall(r"\b(?:[A-Z0-9]{2,3}|[A-Za-z0-9\-]{4,})\b", title)
+                        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.upper() not in {"WHY", "HOW", "THE", "AND", "FOR", "Q1", "Q2", "Q3", "Q4"}
+                    ]
                     geo_anchor_toks = {w.lower() for w in all_title_toks if w.lower() in generic_geo_words and w.lower() not in {"the", "and", "for", "with", "from", "that", "this", "news", "court", "police", "government"}}
                     kw_q = " ".join(all_title_toks[:6])
                     if kw_q:
@@ -2707,6 +2747,8 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                         b_feed = feedparser.parse(br.content)
                         for b_ent in b_feed.entries[:10]:
                             ent_t_low = getattr(b_ent, "title", "").lower()
+                            if primary_entity_must_toks and not any(pt in ent_t_low for pt in primary_entity_must_toks):
+                                continue
                             if geo_anchor_toks and not any(gt in ent_t_low for gt in geo_anchor_toks):
                                 continue
                             b_desc = clean_fact(BeautifulSoup(getattr(b_ent, "summary", ""), "html.parser").get_text(separator=" "))
@@ -3382,14 +3424,11 @@ def build_prebuilt_person_card_rgba(person_info, is_short=True):
 # ==============================================================================
 def has_collage_or_text_banner_artifacts(im_rgb):
     """
-    V34 CALIBRATED ANTI-COLLAGE & ANTI-DOCUMENT-SCAN DETECTOR:
-    Fixes the bug in Run #158 where `full_text_strokes > 0.145` rejected 19 out of 20 real street/crowd/protest
-    press photos (leaving only 1 photo in the vault!).
-    1. Blocks true 2-panel split-screens down the center (`x = 154..166`).
-    2. Blocks full-screen text slides (`full_text_strokes > 0.42`).
-    3. Blocks scanned white-paper newspaper/magazine pages ONLY when >50% of pixels are white paper AND
-       >72% of pixels are desaturated grayscale (`low_sat_ratio > 0.72`) with text strokes (`> 0.22`),
-       so colorful real-world photos of crowds, buildings, police, and streets ALWAYS pass!
+    V55 STRICT ANTI-SCREENSHOT, ANTI-PRICING-TABLE & ANTI-TEXT-BANNER DETECTOR:
+    1. Blocks 2-panel split-screens down the center (`x = 154..166`).
+    2. Blocks white-background pricing tables, charts, maps, and logo cards (`paper_bg > 0.34`).
+    3. Blocks dark UI / Ground News screenshots and social media cards with big burned-in text headlines
+       in the middle or lower third (`band_strokes > 0.24` on low-variance banner backgrounds).
     """
     try:
         arr_c = np.array(im_rgb.resize((320, 180)), dtype=np.uint8)
@@ -3402,19 +3441,26 @@ def has_collage_or_text_banner_artifacts(im_rgb):
         if np.max(center_jumps) > 82.0 or (np.min(center_stds) < 1.2 and np.max(center_jumps) > 48.0):
             return True
 
-        # 2. Giant presentation slide / text-only banner covering >42% of the frame
+        # 2. Text-stroke density check across full frame and horizontal bands
         kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 3))
         grad = cv2.morphologyEx(small_g, cv2.MORPH_GRADIENT, kernel_rect)
-        full_text_strokes = float(np.mean(grad[20:160, 20:300] > 145))
-        if full_text_strokes > 0.42:
+        full_text_strokes = float(np.mean(grad[18:162, 18:302] > 135))
+        if full_text_strokes > 0.30:
             return True
 
-        # 3. Scanned newspaper/magazine text page (high white paper background + desaturated black ink lines)
+        # 3. White-paper tables, LLM pricing sheets, white logo flags, or white maps
         hsv_c = cv2.cvtColor(arr_c, cv2.COLOR_RGB2HSV)
-        paper_bg = float(np.mean((arr_c[:, :, 0] > 215) & (arr_c[:, :, 1] > 210) & (arr_c[:, :, 2] > 200)))
-        low_sat_ratio = float(np.mean(hsv_c[:, :, 1] < 32))
-        if paper_bg > 0.50 and low_sat_ratio > 0.72 and full_text_strokes > 0.22:
+        paper_bg = float(np.mean((arr_c[:, :, 0] > 218) & (arr_c[:, :, 1] > 215) & (arr_c[:, :, 2] > 210)))
+        low_sat_ratio = float(np.mean(hsv_c[:, :, 1] < 36))
+        if paper_bg > 0.35 and (low_sat_ratio > 0.62 or full_text_strokes > 0.09):
             return True
+
+        # 4. Social media headline overlay / Ground News UI screenshot detector (lower/mid horizontal bands)
+        for y0_b, y1_b in [(55, 115), (95, 162), (115, 172)]:
+            band_strokes = float(np.mean(grad[y0_b:y1_b, 20:300] > 140))
+            band_dark_or_flat = float(np.mean((small_g[y0_b:y1_b, 20:300] < 55) | (small_g[y0_b:y1_b, 20:300] > 215)))
+            if band_strokes > 0.22 and band_dark_or_flat > 0.42:
+                return True
 
         return False
     except Exception:
@@ -3584,13 +3630,13 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             "--extractor-args", "youtube:player_client=android_vr,tv,web_embedded,ios",
             "--downloader", "ffmpeg",
             "--downloader-args", "ffmpeg_i:-ss 00:08 -t 10.5",
-            "-f", "18/22/best[height<=720][ext=mp4]/best[ext=mp4]/best",
+            "-f", "bestvideo[height<=1080][height>=720][ext=mp4]+bestaudio[ext=m4a]/22/best[height<=1080][height>=720][ext=mp4]/best[height>=720]/best[ext=mp4]",
             "-o", raw_local,
             search_or_url
         ]
-        run_isolated_subprocess(cmd_dl, timeout_sec=22)
+        run_isolated_subprocess(cmd_dl, timeout_sec=24)
         if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 25000:
-            # Fallback without --downloader ffmpeg for direct progressively downloadable formats
+            # Fallback without --downloader ffmpeg for direct progressively downloadable HD formats
             cmd_dl2 = [
                 "yt-dlp",
                 "--no-playlist",
@@ -3598,12 +3644,12 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
                 "--quiet",
                 "--geo-bypass",
                 "--extractor-args", "youtube:player_client=android_vr,tv,web_embedded,ios",
-                "--max-filesize", "16M",
-                "-f", "18/best[height<=720][ext=mp4]/best[ext=mp4]",
+                "--max-filesize", "24M",
+                "-f", "22/best[height<=1080][height>=720][ext=mp4]/best[height>=480][ext=mp4]/best[ext=mp4]",
                 "-o", raw_local,
                 search_or_url
             ]
-            run_isolated_subprocess(cmd_dl2, timeout_sec=18)
+            run_isolated_subprocess(cmd_dl2, timeout_sec=20)
         if not os.path.exists(raw_local) or os.path.getsize(raw_local) < 25000:
             return None
         try:
@@ -3611,7 +3657,7 @@ def download_ytdlp_news_broll_clip(search_or_url, used_video_urls, tag_id, label
             vw_y = int(cap_y.get(cv2.CAP_PROP_FRAME_WIDTH) or 0)
             vh_y = int(cap_y.get(cv2.CAP_PROP_FRAME_HEIGHT) or 0)
             cap_y.release()
-            if vw_y < 600 or vh_y < 340:
+            if vw_y < 854 or vh_y < 480:
                 return None
         except Exception:
             return None
@@ -4338,34 +4384,15 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
 # ==============================================================================
 def apply_copyright_safe_documentary_lut(im):
     """
-    V41 4K-STYLE BILATERAL SUPER-RESOLUTION & CINEMA DOCUMENTARY LUT:
-    1. Applies edge-preserving Bilateral Filtering (`cv2.bilateralFilter`) to eliminate JPEG compression noise
-       on skies and skin tones while keeping hair, buildings, and text edges razor-sharp.
-    2. Applies adaptive LAB CLAHE local micro-contrast + UnsharpMask super-sharpening.
+    V55 NATURAL 4K BROADCAST CLARITY LUT (Zero Bilateral Smearing, Zero HDR Haloing!):
+    Preserves 100% genuine optical photograph texture with subtle broadcast contrast and a single
+    clean optical UnsharpMask pass so faces, vehicles, and architecture look crystal-clear HD!
     """
-    try:
-        arr_rgb = np.asarray(im.convert("RGB"), dtype=np.uint8)
-        arr_clean = cv2.bilateralFilter(arr_rgb, d=5, sigmaColor=24, sigmaSpace=24)
-        lab = cv2.cvtColor(arr_clean, cv2.COLOR_RGB2LAB)
-        l_ch, a_ch, b_ch = cv2.split(lab)
-        clahe = cv2.createCLAHE(clipLimit=1.55, tileGridSize=(8, 8))
-        l_enh = clahe.apply(l_ch)
-        lab_enh = cv2.merge((l_enh, a_ch, b_ch))
-        arr = cv2.cvtColor(lab_enh, cv2.COLOR_LAB2RGB).astype(np.float32)
-    except Exception:
-        arr = np.asarray(im.convert("RGB"), dtype=np.float32)
-
-    arr[:, :, 0] = np.clip(arr[:, :, 0] * 1.03, 0, 255)
-    arr[:, :, 1] = np.clip(arr[:, :, 1] * 1.01, 0, 255)
-    arr[:, :, 2] = np.clip(arr[:, :, 2] * 1.04 + 3.0, 0, 255)
-    try:
-        det = cv2.detailEnhance(arr.astype(np.uint8), sigma_s=10, sigma_r=0.12)
-        arr = (arr * 0.72 + det.astype(np.float32) * 0.28).clip(0, 255)
-    except Exception:
-        pass
-    out = Image.fromarray(arr.astype(np.uint8))
-    out = out.filter(ImageFilter.UnsharpMask(radius=1.6, percent=165, threshold=2))
-    return ImageEnhance.Contrast(out).enhance(1.09)
+    out = im.convert("RGB")
+    out = ImageEnhance.Contrast(out).enhance(1.05)
+    out = ImageEnhance.Color(out).enhance(1.04)
+    out = out.filter(ImageFilter.UnsharpMask(radius=0.95, percent=115, threshold=3))
+    return out
 
 
 AI_VISION_AUDIT_BUDGET = {"calls": 0}
@@ -4507,20 +4534,19 @@ def passes_double_visual_audit(im_rgb, story_title="", query_context=""):
     except Exception:
         return True
 
-def validate_and_enhance_1080p(im, existing_hashes, min_w=760, min_h=420, story_title="", query_context=""):
+def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450, story_title="", query_context=""):
     """
-    V36 TRUE FULL-HD 1080p RESOLUTION & SUPER-SHARPNESS VALIDATOR:
-    - Accepts standard broadcast news `og:image` dimensions (`min_w=640, min_h=360`, including 1200x630,
-      1024x576, 800x450, and 768x432 Reuters/BBC/The Hindu press photos that ChatGPT's 1280x720 filter rejected!)
-      while rejecting tiny blurry thumbnails (`<640x360` or `blur_score < 20.0`).
-    - Upsamples via Lanczos to 1920x1080 and applies CLAHE + UnsharpMask documentary super-sharpening!
+    V55 TRUE FULL-HD 1080p OPTICAL SHARPNESS & NATIVE RESOLUTION GATE:
+    - Rejects low-resolution thumbnails (`<800x450`) and server-stretched blurry images (`blur_score < 58.0`
+      or low high-frequency Tenengrad Sobel gradient energy).
+    - Preserves 100% of the clean image frame (zero 6% border crop loss!) and scales via Lanczos to 1920x1080.
     """
     im = im.convert("RGB")
     w, h = im.size
-    if w < min_w or h < min_h:
+    eff_min_w = max(760, int(min_w))
+    eff_min_h = max(420, int(min_h))
+    if w < eff_min_w or h < eff_min_h:
         return None
-
-    im = im.crop((int(w * 0.03), int(h * 0.03), int(w * 0.97), int(h * 0.94)))
 
     if not is_safe_family_friendly_image(im, is_portrait=False):
         return None
@@ -4563,7 +4589,10 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=760, min_h=420, story_
 
     gray_cv = cv2.cvtColor(np.array(im.resize((640, 360))), cv2.COLOR_RGB2GRAY)
     blur_score = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
-    if blur_score < 36.0 or im.entropy() < 4.5:
+    gx = cv2.Sobel(gray_cv, cv2.CV_32F, 1, 0, ksize=3)
+    gy = cv2.Sobel(gray_cv, cv2.CV_32F, 0, 1, ksize=3)
+    tenengrad_mean = float(np.mean(np.sqrt(gx * gx + gy * gy)))
+    if blur_score < 56.0 or tenengrad_mean < 19.5 or im.entropy() < 4.65:
         return None
 
     gray = im.convert("L").resize((13, 12))
@@ -4637,7 +4666,7 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                     continue
                 if not ai_audit_caption_and_scene_match(cap_t, u_clean, d_obj.get('title', ''), clean_q, dossier=d_obj):
                     continue
-                for try_u in ([u_turl, u_clean] if u_turl else [u_clean]):
+                for try_u in ([u_clean, u_turl] if u_turl and u_turl != u_clean else [u_clean]):
                     try:
                         ir = requests.get(try_u, headers=HEADERS_WEB, timeout=4.5)
                         if ir.status_code == 200 and len(ir.content) > 12000:
@@ -5652,10 +5681,8 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     def download_candidate_bytes(cand_obj):
         t_u = cand_obj.get("turl") or ""
         m_u = cand_obj["url"]
-        if ("th.bing.com" in t_u and "w=1920" in t_u) or "wikimedia.org" in t_u:
-            urls_to_try = [t_u, m_u] if t_u != m_u else [t_u]
-        else:
-            urls_to_try = [m_u, t_u] if (t_u and t_u != m_u) else [m_u]
+        # V55 TRUE-HD PRIORITY: Always try `m_u` (the original full-resolution publisher image URL) FIRST!
+        urls_to_try = [m_u, t_u] if (t_u and t_u != m_u) else [m_u]
         for try_u in urls_to_try:
             try:
                 hdrs = HEADERS_WIKI if "wikimedia.org" in try_u or "wikipedia.org" in try_u else HEADERS_WEB
@@ -5862,7 +5889,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
 
             scored_blocks.sort(key=lambda x: x[0], reverse=True)
             for rel_sc, u_clean, u_turl, cap_t in scored_blocks[:10]:
-                for try_u in ([u_turl, u_clean] if u_turl else [u_clean]):
+                for try_u in ([u_clean, u_turl] if u_turl and u_turl != u_clean else [u_clean]):
                     try:
                         ir = requests.get(try_u, headers=HEADERS_WEB, timeout=4.5)
                         if ir.status_code == 200 and len(ir.content) > 12000:
@@ -5913,7 +5940,7 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                 cap_full = f"{tm.group(1) if tm else ''} {desc_m.group(1) if desc_m else ''} {deep_q}".strip()
                 if not passes_audit_gate_1_caption_and_url(u_primary, cap_full, dossier, query_str=deep_q):
                     continue
-                for try_u in ([turl_hd, u_primary] if turl_hd else [u_primary]):
+                for try_u in ([u_primary, turl_hd] if turl_hd and turl_hd != u_primary else [u_primary]):
                     try:
                         ir = requests.get(try_u, headers=HEADERS_WEB, timeout=4.0)
                         if ir.status_code == 200 and len(ir.content) > 12000:
@@ -5976,7 +6003,7 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
         left_c = (rw - card_w) // 2
         top_c = max(0, int((rh - card_h) * 0.20))
         fg_card = fg_resized.crop((left_c, top_c, left_c + card_w, top_c + card_h))
-        fg_card = fg_card.filter(ImageFilter.UnsharpMask(radius=1.2, percent=125, threshold=2)).convert("RGBA")
+        fg_card = fg_card.convert("RGBA")
 
         y_pos = int(target_h * 0.145)
         rad = 28
@@ -6374,7 +6401,7 @@ def render_thinkschool_multi_photo_popup_cards_frame(beat, local_t, W, H, is_sho
     or 'Brazil, Spain, Italy, and Qatar'), pops up 3 framed HD photo cards one after another with smooth
     spring transitions (`spring_physics_ease`), real country flags, and clean bold titles!
     """
-    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.45, blur_radius=12).convert("RGBA")
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.52, blur_radius=2).convert("RGBA")
     story_obj = beat.get("story") or {}
     c_prof = story_obj.get("country_profile") or {}
     c_name = fit_whole_words_limit(str(c_prof.get("name") or "GLOBAL").upper(), 16)
@@ -6588,7 +6615,7 @@ def render_motion_canvas_power_network_frame(beat, local_t, W, H, is_short=True)
       rotating orbital telemetry arcs, with a sleek frosted glass hub pill cleanly below the ring!
     - Connects 4 frosted-glass intelligence cards via smooth glowing Bezier conduits with traveling energy pulses.
     """
-    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.48, blur_radius=10).convert("RGBA")
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.52, blur_radius=2).convert("RGBA")
     story_obj = beat.get("story") or {}
     c_prof = story_obj.get("country_profile") or {}
     c_name = fit_whole_words_limit(str(c_prof.get("name") or "GLOBAL").upper(), 18)
@@ -6723,7 +6750,7 @@ def render_nitish_thinkschool_dossier_split_board_frame(beat, local_t, W, H, is_
     - Left/Top: Full-bleed rounded HD Subject Photo Frame with a frosted glass lower-third identity bar.
     - Right/Bottom: 3 Staggered Frosted-Glass Evidence Cards with glowing badges and pixel-wrapped complete facts!
     """
-    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.50, blur_radius=12).convert("RGBA")
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.52, blur_radius=2).convert("RGBA")
     story_obj = beat.get("story") or {}
     c_prof = story_obj.get("country_profile") or {}
     c_name = fit_whole_words_limit(str(c_prof.get("name") or "GLOBAL").upper(), 18)
@@ -6827,7 +6854,7 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     - Right/Middle Glass Card: 3 Sleek Horizontal Gradient Telemetry Bars with clean domain labels (never stopwords!).
     - Bottom Glass Card: Pixel-wrapped complete context sentence that NEVER overflows!
     """
-    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.50, blur_radius=10).convert("RGBA")
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.52, blur_radius=2).convert("RGBA")
     b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
     story_obj = beat.get("story") or {}
     c_prof = story_obj.get("country_profile") or {}
@@ -6908,10 +6935,14 @@ def render_thinkschool_kinetic_data_scorecard_frame(beat, local_t, W, H, is_shor
     draw = ImageDraw.Draw(bg, "RGBA")
     draw.text((right_box[0] + 32, right_box[1] + 22), "COMPARATIVE IMPACT BREAKDOWN", fill=(0, 235, 255, 255), font=get_font(19))
 
+    sc_clauses = extract_clean_story_clauses(beat, count=3)
+    kp_a, _ = extract_key_point_from_sentence(sc_clauses[0], beat_num=1)
+    kp_b, _ = extract_key_point_from_sentence(sc_clauses[1] if len(sc_clauses) > 1 else b_txt, beat_num=2)
+    kp_c, _ = extract_key_point_from_sentence(sc_clauses[2] if len(sc_clauses) > 2 else b_txt, beat_num=3)
     bar_rows = [
-        (f"01 • {c_name} PRIMARY SCALE", primary_num, 0.90, (0, 235, 255)),
-        ("02 • REGIONAL CORRIDOR SHIFT", cleaned_nums[1] if len(cleaned_nums) > 1 else "HIGH IMPACT", 0.74, (255, 215, 0)),
-        ("03 • STRATEGIC EXPOSURE INDEX", cleaned_nums[2] if len(cleaned_nums) > 2 else "CRITICAL", 0.84, (255, 65, 95))
+        (f"01 • {fit_whole_words_limit(kp_a, 24)}", format_animated_countup_number(primary_num, anim_p), 0.90, (0, 235, 255)),
+        (f"02 • {fit_whole_words_limit(kp_b, 24)}", format_animated_countup_number(cleaned_nums[1], anim_p) if len(cleaned_nums) > 1 else "KEY DRIVER", 0.76, (255, 215, 0)),
+        (f"03 • {fit_whole_words_limit(kp_c, 24)}", format_animated_countup_number(cleaned_nums[2], anim_p) if len(cleaned_nums) > 2 else "DIRECT IMPACT", 0.84, (45, 245, 165))
     ]
     for r_i, (r_lbl, r_val, r_ratio, r_col) in enumerate(bar_rows):
         by_r = right_box[1] + 68 + r_i * (102 if not is_short else 118)
@@ -7094,12 +7125,16 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     if "subscribe to world talk brief" in low or "watch the full documentary" in low:
         return None
 
-    # Never cover Beat 0 of a chapter — Beat 0 is always 100% real event video / HD photo!
-    if beat_in_sec == 0:
+    # Keep opening hook beat (sec_idx == 0 and beat_in_sec == 0) 100% full-bleed real video/photo!
+    if sec_idx == 0 and beat_in_sec == 0:
+        return None
+    if not is_short and beat_in_sec == 0 and not any(k in low for k in ["on one side", "out of 100", "100-unit", "100 unit", "chokepoint", "three questions", "three lessons", "domino"]):
         return None
 
-    used_templates = dossier.setdefault("_v51_used_templates", set())
-    used_chapters = dossier.setdefault("_v51_used_chapters", set())
+    tpl_key = "_v55_used_templates_short" if is_short else "_v55_used_templates_long"
+    ch_key = "_v55_used_chapters_short" if is_short else "_v55_used_chapters_long"
+    used_templates = dossier.setdefault(tpl_key, set())
+    used_chapters = dossier.setdefault(ch_key, set())
     max_graphics = 3 if is_short else 6
     if sec_idx in used_chapters or len(used_templates) >= max_graphics:
         return None
@@ -7110,8 +7145,11 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     best_mode = None
     best_score = -1
 
+    has_digit_in_beat = bool(re.search(r"\d", low))
     for t_mode, grp_code, pat_str, base_sc in V51_TEMPLATE_RULES:
         if t_mode in used_templates:
+            continue
+        if t_mode in ("BIZ_14_FOLLOW_THE_MONEY_WATERFALL", "TS_06_SIMPLE_100_MATH_GRID", "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE") and not has_digit_in_beat:
             continue
         if not _does_category_allow_group(pillar, story_low, grp_code):
             continue
@@ -7160,7 +7198,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     if mode in ("GEO_11_CHRONOLOGY_TIMELINE_RIBBON", "MYST_27_DECLASSIFIED_FORENSIC_BOARD"):
         return render_thinkschool_multi_photo_popup_cards_frame(beat, local_t, W, H, is_short=is_short)
 
-    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.46, blur_radius=12).convert("RGBA")
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.52, blur_radius=2).convert("RGBA")
     story_obj = beat.get("story") or {}
     c_prof = story_obj.get("country_profile") or {}
     c_name = fit_whole_words_limit(str(c_prof.get("name") or "GLOBAL").upper(), 16)
@@ -7186,7 +7224,10 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     num_matches = re.findall(r"((?:\d+:)?(?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|km|miles|seats|years|days|planes|nations|states|seconds))?)", b_txt, flags=re.I)
     clean_nums = [re.sub(r"\s+", " ", n.strip().upper().replace("PERCENT", "%").replace("BILLION", "B").replace("MILLION", "M")) for n in num_matches if n.strip()]
     if not clean_nums:
-        clean_nums = ["61 MAJORITY", "53 BLOC A", "48 BLOC B"]
+        story_nums = re.findall(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|km|miles|seats|years|days))?)", f"{story_obj.get('title', '')} {' '.join(str(x) for x in (story_obj.get('raw_facts') or [])[:3])}", flags=re.I)
+        clean_nums = [re.sub(r"\s+", " ", n.strip().upper().replace("PERCENT", "%").replace("BILLION", "B").replace("MILLION", "M")) for n in story_nums if n.strip()]
+    if not clean_nums:
+        clean_nums = [fit_whole_words_limit(topic_anc, 14), fit_whole_words_limit(c_name, 14), "KEY FACTOR"]
 
     # Common Stage Bounds (16:9 vs 9:16)
     if not is_short:
@@ -7205,7 +7246,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         "TS_02_HEAD_TO_HEAD_VS_SPLIT": ("HEAD-TO-HEAD CONTENDER CLASH", (255, 65, 95)),
         "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE": ("COALITION & MAJORITY ARITHMETIC", (0, 235, 255)),
         "TS_04_DOMINO_CHAIN_FLOWCHART": ("SYSTEMIC DOMINO CHAIN REACTION", (255, 185, 0)),
-        "TS_06_SIMPLE_100_MATH_GRID": ("PROPORTIONAL BREAKDOWN // 100-UNIT MODEL", (0, 235, 255)),
+        "TS_06_SIMPLE_100_MATH_GRID": ("PROPORTIONAL BREAKDOWN  •  100-UNIT MODEL", (0, 235, 255)),
         "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD": ("CRITICAL ROADMAP & SCENARIOS", (255, 215, 0)),
         "GEO_08_MILITARY_FIREPOWER_RADAR": ("STRATEGIC DEFENSE & FIREPOWER MATRIX", (255, 65, 95)),
         "GEO_09_SANCTIONS_TARIFF_BARRIER": ("SANCTIONS & TRADE BLOCKADE WALL", (255, 165, 0)),
@@ -7252,7 +7293,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         draw.rounded_rectangle([(nx0, ny0), (nx1, ny1)], radius=20, fill=(247, 244, 236, 252), outline=(220, 215, 200, 255), width=3)
         # Newspaper Masthead Bar
         draw.rounded_rectangle([(nx0, ny0), (nx1, ny0 + 62)], radius=18, fill=(14, 20, 34, 255))
-        draw.text((nx0 + 28, ny0 + 17), f"THE INTERNATIONAL DOSSIER  •  VERIFIED ARCHIVE // {c_name}", fill=(255, 215, 0, 255), font=get_font(21 if not is_short else 18))
+        draw.text((nx0 + 28, ny0 + 17), f"THE INTERNATIONAL DOSSIER  •  {c_name}", fill=(255, 215, 0, 255), font=get_font(21 if not is_short else 18))
 
         if not is_short:
             im_box = (nx0 + 28, ny0 + 84, nx0 + int(pw_n * 0.54), ny1 - 28)
@@ -7297,8 +7338,8 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         pt1, _ = extract_key_point_from_sentence(clauses[0], beat_num=1)
         pt2, _ = extract_key_point_from_sentence(clauses[1] if len(clauses) > 1 else b_txt, beat_num=2)
         sides = [
-            (b_left, src_im, "CONTENDER // SIDE A", (0, 235, 255), pt1, clean_nums[0]),
-            (b_right, sec_im, "CHALLENGER // SIDE B", (255, 65, 95), pt2, clean_nums[1] if len(clean_nums) > 1 else "CONTENDER")
+            (b_left, src_im, "CONTENDER  •  SIDE A", (0, 235, 255), pt1, clean_nums[0]),
+            (b_right, sec_im, "CHALLENGER  •  SIDE B", (255, 65, 95), pt2, clean_nums[1] if len(clean_nums) > 1 else "CONTENDER")
         ]
         for bx, pim, s_hdr, scol, key_pt, stat_pill in sides:
             draw_2026_visionos_glass_card(bg, bx, radius=24, tint=(10, 18, 34, 198), border_col=(scol[0], scol[1], scol[2], 175), accent_col=scol, accent_pos="top", blur_px=18)
@@ -7364,9 +7405,9 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         ry_p = (sy0 + 54) if not is_short else (sy0 + int(sh * 0.52))
         rw_p = (sx1 - rx_p - 32) if not is_short else (sw - 64)
         blocs = [
-            ("BLOC A // LEADING CAMP", clean_nums[0], (0, 235, 255)),
-            ("KINGMAKER // SWING BLOC", clean_nums[1] if len(clean_nums) > 1 else "DECISIVE", (255, 215, 0)),
-            ("BLOC B // OPPOSITION", clean_nums[2] if len(clean_nums) > 2 else "RIVAL CAMP", (255, 65, 95))
+            ("BLOC A  •  LEADING CAMP", clean_nums[0], (0, 235, 255)),
+            ("KINGMAKER  •  SWING BLOC", clean_nums[1] if len(clean_nums) > 1 else "DECISIVE", (255, 215, 0)),
+            ("BLOC B  •  OPPOSITION", clean_nums[2] if len(clean_nums) > 2 else "RIVAL CAMP", (255, 65, 95))
         ]
         for b_i, (b_lbl, b_val, b_col) in enumerate(blocs):
             by_b = ry_p + b_i * 112
@@ -7383,9 +7424,9 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         kp2, _ = extract_key_point_from_sentence(clauses[1] if len(clauses) > 1 else b_txt, beat_num=2)
         kp3, _ = extract_key_point_from_sentence(clauses[2] if len(clauses) > 2 else b_txt, beat_num=3)
         steps_meta = [
-            ("01 // TRIGGER", (0, 235, 255), kp1, src_im, 0.65),
-            ("02 // MECHANISM", (255, 215, 0), kp2, sec_im, 0.82),
-            ("03 // FALLOUT", (255, 65, 95), kp3, src_im, 0.96)
+            ("01  •  TRIGGER", (0, 235, 255), kp1, src_im, 0.65),
+            ("02  •  MECHANISM", (255, 215, 0), kp2, sec_im, 0.82),
+            ("03  •  FALLOUT", (255, 65, 95), kp3, src_im, 0.96)
         ]
         if not is_short:
             card_w = (sw - 96) // 3
@@ -7480,9 +7521,9 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     elif mode in ("TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD", "GEO_11_CHRONOLOGY_TIMELINE_RIBBON"):
         is_tl = (mode == "GEO_11_CHRONOLOGY_TIMELINE_RIBBON")
         labels_3 = [
-            ("PHASE 01 // ORIGIN" if is_tl else "01 // CRITICAL QUESTION #1", (0, 235, 255), clauses[0]),
-            ("PHASE 02 // ESCALATION" if is_tl else "02 // STRATEGIC MECHANISM #2", (255, 215, 0), clauses[1]),
-            ("PHASE 03 // PRESENT FLASHPOINT" if is_tl else "03 // DECISIVE OUTCOME #3", (45, 245, 165), clauses[2] if len(clauses) > 2 else b_txt),
+            ("PHASE 01  •  ORIGIN" if is_tl else "01  •  CRITICAL FACTOR #1", (0, 235, 255), clauses[0]),
+            ("PHASE 02  •  ESCALATION" if is_tl else "02  •  STRATEGIC MECHANISM #2", (255, 215, 0), clauses[1]),
+            ("PHASE 03  •  PRESENT FLASHPOINT" if is_tl else "03  •  DECISIVE OUTCOME #3", (45, 245, 165), clauses[2] if len(clauses) > 2 else b_txt),
         ]
         row_h = (sh - 40) // 3
         for r_i, (r_tag, r_col, r_txt) in enumerate(labels_3):
@@ -7591,7 +7632,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
             draw.line(pts_w, fill=(w_col[0], w_col[1], w_col[2], 75), width=10)
             draw.line(pts_w, fill=w_col, width=4)
 
-        draw.text((gx0, sy0 + 24), f"LIVE TELEMETRY // {c_name} • {clean_nums[0]}", fill=(45, 245, 165, 255), font=get_font(22))
+        draw.text((gx0, sy0 + 24), f"MARKET & DATA MONITOR  •  {c_name}  •  {clean_nums[0]}", fill=(45, 245, 165, 255), font=get_font(22))
         f_ch = get_font(25 if not is_short else 23)
         for l_i, ln_c in enumerate(wrap_text_px(b_txt, f_ch, sw - 96, max_lines=3)):
             draw.text((gx0, gy1 + 28 + l_i * 40), ln_c, fill=(245, 249, 255, 255), font=f_ch)
@@ -7685,7 +7726,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
 
         # Right/Bottom Telemetry Explanation
         tx0, ty0, tx1, ty1 = t_box
-        draw.text((tx0 + 32, ty0 + 26), f"SYSTEM TELEMETRY // {c_name}", fill=(0, 235, 255, 255), font=get_font(20))
+        draw.text((tx0 + 32, ty0 + 26), f"TECHNICAL ARCHITECTURE  •  {c_name}", fill=(0, 235, 255, 255), font=get_font(20))
         draw.text((tx0 + 32, ty0 + 62), fit_whole_words_limit(point_hl, 24), fill=(255, 215, 0, 255), font=get_font(32 if not is_short else 28))
         f_tb = get_font(24)
         for l_i, ln_t in enumerate(wrap_text_px(b_txt, f_tb, (tx1 - tx0) - 64, max_lines=4)):
@@ -7724,7 +7765,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         ty0, ty1 = sy0 + 20, sy0 + 165
         draw_2026_visionos_glass_card(bg, (tx0, ty0, tx0 + top_w, ty1), radius=22, tint=(12, 22, 42, 212), border_col=(255, 215, 0, 195), accent_col=(255, 215, 0), accent_pos="top", blur_px=18)
         draw = ImageDraw.Draw(bg, "RGBA")
-        draw.text((tx0 + 28, ty0 + 22), f"APEX COMMAND // {c_name}", fill=(255, 215, 0, 255), font=get_font(19))
+        draw.text((tx0 + 28, ty0 + 22), f"LEADERSHIP & STRUCTURE  •  {c_name}", fill=(255, 215, 0, 255), font=get_font(19))
         draw.text((tx0 + 28, ty0 + 56), fit_whole_words_limit(topic_anc, 26), fill=(255, 255, 255, 255), font=get_font(30 if not is_short else 25))
         draw.text((tx0 + 28, ty0 + 102), f"STRATEGIC MANDATE • {clean_nums[0]}", fill=(0, 235, 255, 255), font=get_font(19))
 
@@ -7772,7 +7813,7 @@ def render_broadcast_interview_quote_mockup_frame(beat, local_t, W, H, is_short=
       and smooth 2x-supersampled studio audio spectrum bars.
     - Right/Bottom: Properly proportioned Frosted-Glass Statement Card with pixel-wrapped text (zero overflow!).
     """
-    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.48, blur_radius=12).convert("RGBA")
+    bg = extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.52, blur_radius=2).convert("RGBA")
     story_obj = beat.get("story") or {}
     c_prof = story_obj.get("country_profile") or {}
     c_name = fit_whole_words_limit(str(c_prof.get("name") or "GLOBAL").upper(), 16)
@@ -8325,9 +8366,11 @@ def _latlon_to_mercator_xy(lat, lon, map_w, map_h, center_lat, center_lon, zoom_
 
 def _fetch_real_cartodb_map_canvas(center_lat, center_lon, map_w, map_h, zoom_lvl=4):
     """
-    Stitches a crisp 4x3 grid of real CartoDB DarkMatter / Voyager `@2x` cartographic map tiles
-    centered on `(center_lat, center_lon)` when running online on GitHub Actions!
-    Returns `(pil_im, tile_transform_fn)` or `(None, None)` if offline.
+    V55 100% WATERMARK-FREE KEYLESS SATELLITE & DARK CARTOGRAPHIC TILE ENGINE:
+    - Replaces CartoDB `@2x.png` (which returned 'API KEY REQUIRED carto.com/basemaps/apikey' watermarks!)
+      with Esri ArcGIS World Imagery & World Dark Gray Base 100% keyless public map tiles!
+    - Verifies that fetched tiles have distinct content hashes (`len(unique_tile_hashes) >= 5`) so placeholder
+      error tiles can NEVER be rendered!
     """
     cache_k = (round(center_lat, 1), round(center_lon, 1), map_w, map_h, zoom_lvl)
     if cache_k in REAL_MAP_TILE_CACHE:
@@ -8343,18 +8386,24 @@ def _fetch_real_cartodb_map_canvas(center_lat, center_lon, map_w, map_h, zoom_lv
         grid_cols, grid_rows = 4, 3
         stitched = Image.new("RGB", (grid_cols * tile_px, grid_rows * tile_px), (11, 20, 34))
         ok_tiles = 0
+        unique_tile_hashes = set()
         for dy in range(-1, 2):
             for dx in range(-1, 3):
                 tx = (cx_t + dx) % int(n)
                 ty = max(0, min(int(n) - 1, cy_t + dy))
-                t_url = f"https://a.basemaps.cartocdn.com/dark_all/{zoom_lvl}/{tx}/{ty}@2x.png"
+                t_url = f"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{zoom_lvl}/{ty}/{tx}"
                 r_t = requests.get(t_url, headers=HEADERS_WEB, timeout=1.8)
-                if r_t.status_code == 200 and len(r_t.content) > 800:
+                if r_t.status_code == 200 and len(r_t.content) > 1200:
                     from io import BytesIO
+                    t_hash = hashlib.md5(r_t.content).hexdigest()
+                    unique_tile_hashes.add(t_hash)
                     t_im = Image.open(BytesIO(r_t.content)).convert("RGB").resize((tile_px, tile_px))
+                    # Blend satellite imagery with dark studio navy tint so glowing borders & flag pins pop!
+                    t_im = ImageEnhance.Brightness(t_im).enhance(0.62)
+                    t_im = ImageEnhance.Contrast(t_im).enhance(1.18)
                     stitched.paste(t_im, ((dx + 1) * tile_px, (dy + 1) * tile_px))
                     ok_tiles += 1
-        if ok_tiles >= 6:
+        if ok_tiles >= 8 and len(unique_tile_hashes) >= 5:
             # Crop around exact `(cx_tile_f, cy_tile_f)` center
             center_px_x = int((1.0 + (cx_tile_f - cx_t)) * tile_px)
             center_px_y = int((1.0 + (cy_tile_f - cy_t)) * tile_px)
@@ -8490,6 +8539,12 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     if map_im is not None and tile_proj is not None:
         bg = map_im.convert("RGBA")
         proj_fn = tile_proj
+        md_top = ImageDraw.Draw(bg, "RGBA")
+        for poly in HIGH_DETAIL_WORLD_LAND_POLYGONS:
+            raw_pts = [proj_fn(lat_p, lon_p) for (lat_p, lon_p) in poly]
+            smooth_pts = _smooth_closed_polygon(raw_pts, subdiv=5)
+            if len(smooth_pts) >= 3:
+                md_top.line(smooth_pts + [smooth_pts[0]], fill=(75, 215, 255, 155), width=2)
     else:
         ss = 2
         mw_s, mh_s = W * ss, H * ss
@@ -8635,7 +8690,7 @@ def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
         d.line([(24, ny), (cw - 36, ny)], fill=(205, 198, 182, 95), width=1)
 
     topic_tag = fit_whole_words_limit(str(beat["story"].get("topic_anchor") or "INVESTIGATIVE FILE").upper(), 24)
-    doc_header = f"[+] OFFICIAL CASE EVIDENCE // {topic_tag}"
+    doc_header = f"OFFICIAL CASE EVIDENCE  •  {topic_tag}"
     d.text((24, 12), doc_header, fill=(255, 225, 0, 255), font=get_font(21))
 
     point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY FACT HIGHLIGHTED").upper(), 28)
@@ -8780,7 +8835,7 @@ def build_corner_person_dossier_badge_rgba(person_info, is_short=True):
     d.ellipse([(14, 12), (14 + ava_d + 4, 12 + ava_d + 4)], fill=(12, 20, 36, 255), outline=(0, 240, 255, 255), width=3)
     badge.paste(ava_resized, (16, 14), mask)
 
-    d.text((118, 16), ">> VERIFIED KEY FIGURE", fill=(0, 240, 255, 245), font=get_font(15))
+    d.text((118, 16), "VERIFIED KEY FIGURE", fill=(0, 240, 255, 245), font=get_font(15))
     d.text((118, 40), name_s, fill=(255, 255, 255, 255), font=get_font(24))
     d.text((118, 74), role_s, fill=(255, 220, 0, 245), font=get_font(16))
 
@@ -8844,7 +8899,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         cx_b, cy_b = (W - cw_b) // 2, (H - ch_b) // 2 - 30
         ch_d.rounded_rectangle([(cx_b, cy_b), (cx_b + cw_b, cy_b + ch_b)], radius=18, fill=(8, 14, 28, ch_alpha), outline=(255, 215, 0, ch_alpha), width=3)
         ch_d.rectangle([(cx_b, cy_b), (cx_b + 12, cy_b + ch_b)], fill=(225, 25, 50, ch_alpha))
-        ch_d.text((cx_b + 34, cy_b + 16), f"CHAPTER {ch_num:02d} // INVESTIGATIVE DOSSIER", fill=(0, 240, 255, ch_alpha), font=get_font(20))
+        ch_d.text((cx_b + 34, cy_b + 16), f"CHAPTER {ch_num:02d}  •  INVESTIGATIVE DOSSIER", fill=(0, 240, 255, ch_alpha), font=get_font(20))
         ch_d.text((cx_b + 34, cy_b + 50), ch_title, fill=(255, 255, 255, ch_alpha), font=get_font(35))
         frame.alpha_composite(ch_ov)
 
@@ -9046,7 +9101,7 @@ def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used
     print(f"🎬 [V49 Real 1080p Event/Interview Video Pool Ready] Locked {len(pool_clips)} Verified HD Clips for '{dossier.get('title', '')[:44]}'!", flush=True)
     return pool_clips
 
-def extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.30, blur_radius=14):
+def extract_supporting_background_frame(beat, local_t, W, H, darken_factor=0.52, blur_radius=2):
     sup_vseg = beat.get("bg_support_vseg") or beat.get("vseg")
     base_im = beat.get("primary_im") or Image.new("RGB", (1920, 1080), (12, 18, 32))
     if sup_vseg is not None and sup_vseg.get("vclip") is not None:
@@ -9091,6 +9146,9 @@ def build_prop_driven_storyboard_1080p(
     is_short = W < H
 
     # Pre-harvest 300+ topic-locked visual candidates AND topic-locked 1080p video/interview clips once per story!
+    if start_beat_offset == 0:
+        dossier["_v55_used_templates_short" if is_short else "_v55_used_templates_long"] = set()
+        dossier["_v55_used_chapters_short" if is_short else "_v55_used_chapters_long"] = set()
     if start_beat_offset == 0 and dossier.get("_cached_200_audited_pool") is None:
         harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=sections_list)
     if start_beat_offset == 0 and not dossier.get("_cached_video_broll_pool"):
@@ -10228,16 +10286,33 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
             ("DEEPER IMPLICATIONS", "THE UNANSWERED QUESTIONS"),
             ("FINAL VERDICT", "THE MYSTERY DECODED")
         ]
-    elif pillar in ("SPORTS", "VIRAL_UNDERDOG_SPORTS") or any(k in story_low for k in ["moto3", "motogp", "moto2", "sepang", "rider", "lap time", "qualifying", "podium", "circuit", "chassis", "cricket", "ipl", "bcci", "badminton", "bwf", "chess", "fide", "grandmaster", "ufc", "boxing", "olympic", "athlete", "tournament", "championship", "coach", "stadium", "soccer", "football", "nwsl", "fifa", "world cup", "goal", "forward", "striker", "midfielder", "roster", "salary cap", "club", "league", "angel city", "dimaria"]):
+    elif any(k in headline_only_low for k in ["moto3", "motogp", "moto2", "sepang", "f1", "formula 1", "grand prix", "lap time", "podium", "circuit", "chassis"]):
         domain_matrix = [
             f"Behind the raw stopwatch numbers of {t_anc}, performance telemetry and trackside engineering show how talent from {c_name} is challenging decades-old factory dominance.",
             f"Coaches and technical directors analyzing {t_anc} emphasize that cornering precision, mechanical feedback, and split-second racecraft separate generational prodigies from the rest of the grid.",
-            f"From a grassroots sports-development perspective, the rise of {t_anc} reflects years of relentless physical conditioning and high-pressure competition starting from childhood.",
-            f"Across fan communities in {c_name} and international arenas, the breakthrough of {t_anc} is inspiring a new wave of young athletes who refuse to be intimidated by multi-million-dollar factory giants.",
-            f"Looking closely at the championship math surrounding {t_anc}, every fraction of a second gained under unpredictable track and weather conditions shifts the psychological balance of the locker room.",
-            f"Sports historians note that when an underrated challenger in {t_anc} breaks into the top tier despite equipment limitations, it forces every established team to rethink its talent pipeline.",
-            f"Telemetry comparisons and qualifying splits confirm that the mental edge displayed in {t_anc} is the exact trait that turns a promising rookie into a world champion.",
-            f"Ultimately, the story of {t_anc} proves that disciplined preparation, fearless adaptability, and raw athletic instinct can overcome even the steepest technical odds."
+            f"From a grassroots motorsport perspective, the rise of {t_anc} reflects years of relentless physical conditioning and high-pressure competition starting from childhood.",
+            f"Across fan communities in {c_name} and international circuits, the breakthrough of {t_anc} is inspiring a new wave of young riders who refuse to be intimidated by multi-million-dollar factory giants.",
+            f"Looking closely at the championship math surrounding {t_anc}, every fraction of a second gained under unpredictable track conditions shifts the psychological balance of the paddock.",
+            f"Ultimately, the story of {t_anc} proves that disciplined preparation, fearless adaptability, and raw racing instinct can overcome even the steepest technical odds."
+        ]
+        extra_roles = [
+            ("THE STOPWATCH SHOCK", "THE BREAKTHROUGH MOMENT"),
+            ("ORIGIN OF A PRODIGY", "RELENTLESS EARLY GRIND"),
+            ("TECHNICAL TELEMETRY", "SKILL VS MACHINE LIMITS"),
+            ("MENTAL EDGE UNDER FIRE", "CHAMPIONSHIP PSYCHOLOGY"),
+            ("GIANT-KILLING IMPACT", "HOW THE SPORT IS CHANGING"),
+            ("FINAL ARENA VERDICT", "WHAT THIS MEANS NEXT")
+        ]
+    elif pillar in ("SPORTS", "VIRAL_UNDERDOG_SPORTS") or any(k in story_low for k in ["cricket", "ipl", "bcci", "badminton", "bwf", "chess", "fide", "grandmaster", "ufc", "boxing", "olympic", "athlete", "tournament", "championship", "coach", "stadium", "soccer", "football", "nwsl", "fifa", "world cup", "goal", "forward", "striker", "midfielder", "roster", "salary cap", "club", "league", "angel city", "dimaria", "mourinho", "madrid", "united", "arsenal"]):
+        domain_matrix = [
+            f"Behind the headlines surrounding {t_anc}, sporting directors and tactical analysts point out how modern elite competition is won through academy scouting, contract leverage, and squad depth.",
+            f"Coaches and performance specialists analyzing {t_anc} emphasize that tactical adaptability, composure under stadium pressure, and locker-room leadership separate generational talents from the rest of the field.",
+            f"From a Follow-the-Money sports-economics perspective, the decisions around {t_anc} reveal how multi-million-dollar transfer budgets, commercial rights, and wage structures shape championship dynasties.",
+            f"Across passionate fan communities in {c_name} and global arenas, the developments around {t_anc} have ignited a fierce debate over long-term youth development versus instant star power.",
+            f"Looking closely at the competitive math behind {t_anc}, every roster move and tactical adjustment directly shifts the balance of power across the league table.",
+            f"Sports historians note that when an emerging prodigy or tactical mastermind in {t_anc} challenges established giants, it forces every rival club to rethink its recruitment blueprint.",
+            f"Match data and scouting evaluations confirm that the mental resilience displayed in {t_anc} is the defining trait of championship-caliber contenders.",
+            f"Ultimately, the case study of {t_anc} proves that vision, tactical discipline, and fearless execution remain the true currency of global sport."
         ]
         extra_roles = [
             ("THE STOPWATCH SHOCK", "THE BREAKTHROUGH MOMENT"),
@@ -10317,7 +10392,7 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
         nar = normalize_narration_entity_spelling(str(sec.get("narration", "")).strip())
         if nar and nar[-1] not in ".!?":
             nar += "."
-        while len(nar.split()) < 48:
+        while len(nar.split()) < 84:
             add_s = domain_matrix[matrix_cursor % len(domain_matrix)]
             matrix_cursor += 1
             if add_s and add_s[:28].lower() not in nar.lower():
@@ -10732,7 +10807,7 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     ev_crop = ImageEnhance.Contrast(ImageEnhance.Brightness(ev_crop).enhance(1.06)).enhance(1.16)
     ev_card.paste(ev_crop.convert("RGBA"), (18, 54))
     ev_d.rounded_rectangle([(12, 12), (ev_w + 8, 50)], radius=14, fill=ribbon_bg + (255,))
-    card_tab_txt = f"● {arch['widget_title']} // {c_name}"
+    card_tab_txt = f"● {arch['widget_title']} • {c_name}"
     f_ctab, _ = _fit_font_for_width(ev_d, card_tab_txt, 21, 16, ev_w - 28)
     ev_d.text((26, 18), card_tab_txt, fill=(255, 255, 255, 255), font=f_ctab)
     ev_tilted = ev_card.rotate(4.5, expand=True, resample=getattr(Image, "Resampling", Image).BICUBIC)
@@ -10788,7 +10863,7 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
         canvas.paste(fl, (cur_tx, 50), fl)
         cur_tx += 116
 
-    kicker_top = f"● {arch['kicker_prefix']} // {c_name}"
+    kicker_top = f"● {arch['kicker_prefix']} • {c_name}"
     f_ktop, kw_txt = _fit_font_for_width(draw, kicker_top, 25, 18, 820)
     kw_top = kw_txt + 44
     draw.rounded_rectangle([(cur_tx, 52), (cur_tx + kw_top, 106)], radius=26, fill=(10, 18, 34, 238), outline=ribbon_fg + (235,), width=3)
@@ -11486,7 +11561,7 @@ async def main():
         hot_geo_surge = detect_hot_geopolitics_surge()
         rr_idx = hist_obj.get("round_robin_idx", 0)
         batch_fingerprints = []
-        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "2"))
+        pairs_to_build = int(os.environ.get("PAIRS_PER_RUN", "1"))
 
         # ==============================================================================
         # V31 4-VIDEO MULTI-COUNTRY & MULTI-CATEGORY SELECTION ENGINE:
@@ -11511,15 +11586,27 @@ async def main():
             key=lambda c_p: (recent_cats.count(c_p), -(len(recent_cats) - 1 - recent_cats[::-1].index(c_p)) if c_p in recent_cats else -999)
         )
 
-        # Lock Pair #1 from `ORDERED_PILLARS`
-        for slot_step in range(len(ORDERED_PILLARS)):
-            target_pillar = ORDERED_PILLARS[(rr_idx + slot_step) % len(ORDERED_PILLARS)]
-            cand_d = discover_dossier_for_pillar(target_pillar, hist_obj, winning_keywords, batch_fingerprints)
-            if cand_d is not None:
-                selected_dossiers.append(cand_d)
-                hist_obj["round_robin_idx"] = (rr_idx + slot_step + 1) % len(ORDERED_PILLARS)
-                print(f"📌 [V48 Pair #1 - {target_pillar}] Locked Story: '{cand_d['title'][:58]}' (Country: {cand_d['country_profile']['name']})", flush=True)
-                break
+        # V56 SMART 2.5-3 HOUR SINGLE-PAIR ROTATION (Alternates Top Viral Geopolitics & Most Overdue Playlist Category!):
+        # When `pairs_to_build == 1`, odd runs pick the most overdue category from `overdue_non_geo` so all 8 Playlists
+        # stay 100% active every day, while even runs pick the hottest global/geopolitics story from `ORDERED_PILLARS`!
+        if pairs_to_build == 1 and (rr_idx % 2 == 1) and overdue_non_geo:
+            for ng_pillar in overdue_non_geo:
+                cand_d = discover_dossier_for_pillar(ng_pillar, hist_obj, winning_keywords, batch_fingerprints)
+                if cand_d is not None:
+                    selected_dossiers.append(cand_d)
+                    hist_obj["round_robin_idx"] = (rr_idx + 1) % len(ORDERED_PILLARS)
+                    print(f"📂 [V56 Smart 8-Playlist Rotation - {ng_pillar}] Locked Viral Story: '{cand_d['title'][:58]}' (Country: {cand_d['country_profile']['name']})", flush=True)
+                    break
+
+        if not selected_dossiers:
+            for slot_step in range(len(ORDERED_PILLARS)):
+                target_pillar = ORDERED_PILLARS[(rr_idx + slot_step) % len(ORDERED_PILLARS)]
+                cand_d = discover_dossier_for_pillar(target_pillar, hist_obj, winning_keywords, batch_fingerprints)
+                if cand_d is not None:
+                    selected_dossiers.append(cand_d)
+                    hist_obj["round_robin_idx"] = (rr_idx + slot_step + 1) % len(ORDERED_PILLARS)
+                    print(f"📌 [V56 Viral Lead - {target_pillar}] Locked Story: '{cand_d['title'][:58]}' (Country: {cand_d['country_profile']['name']})", flush=True)
+                    break
 
         # Lock Pair #2 from the Most Overdue Non-Geopolitics Playlist Category (`NON_GEO_PLAYLIST_PILLARS`)!
         if len(selected_dossiers) < pairs_to_build:
