@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-09T00:28:44.906488",
-  "last_upload_epoch": 1794184124,
-  "round_robin_idx": 9,
-  "country_rot_idx": 29,
-  "bgm_track_counter": 3060954719,
+  "updated_at": "2026-11-09T03:53:02.909433",
+  "last_upload_epoch": 1794196382,
+  "round_robin_idx": 10,
+  "country_rot_idx": 35,
+  "bgm_track_counter": 3065856640,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -648,46 +648,11 @@
     "bangladesh_s_ai_tsunami_ryze_s",
     "egypt_train_disaster_billion_dollar_modernisation",
     "parents_sister_of_far_right_krakw",
-    "why_parents_sister_of_far_right"
+    "why_parents_sister_of_far_right",
+    "egypt_unearths_2_600_year_old",
+    "hidden_2_600_year_old_city"
   ],
   "event_fingerprints": [
-    {
-      "title": "North Korea's $6.3B Crypto Heist: The Real Mastermind",
-      "tokens": [
-        "binance",
-        "crypto",
-        "documentary",
-        "events",
-        "full",
-        "heist",
-        "here",
-        "https",
-        "korea",
-        "mastermind",
-        "north",
-        "real",
-        "shocking",
-        "turn",
-        "twnbyor",
-        "watch",
-        "youtube"
-      ]
-    },
-    {
-      "title": "Why El Ni\u00f1o Is Turning Papua New Guinea Into a Crisis Zone",
-      "tokens": [
-        "documentary",
-        "full",
-        "guinea",
-        "here",
-        "https",
-        "papua",
-        "turning",
-        "watch",
-        "youtube",
-        "zone"
-      ]
-    },
     {
       "title": "Why A 17-Year-Old Indonesian Rider Is Breaking Honda's Grip",
       "tokens": [
@@ -8482,10 +8447,47 @@
         "shooter",
         "sister"
       ]
+    },
+    {
+      "title": "Egypt unearths 2,600-year-old structure buried beneath Nile Delta",
+      "tokens": [
+        "ancient",
+        "beneath",
+        "buried",
+        "city",
+        "complex",
+        "delta",
+        "egypt",
+        "gulf",
+        "imagery",
+        "nile",
+        "reveals",
+        "satellite",
+        "structure",
+        "unearths",
+        "year"
+      ]
+    },
+    {
+      "title": "Hidden 2,600\u2011Year\u2011Old City Unearthed Beneath the Nile Delta \u2013 Satellite Spy Reveals Egypt's Big",
+      "tokens": [
+        "beneath",
+        "buried",
+        "city",
+        "delta",
+        "egypt",
+        "hidden",
+        "nile",
+        "reveals",
+        "satellite",
+        "structure",
+        "unearthed",
+        "unearths",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "HEALTH",
     "SCIENCE",
     "ENTERTAINMENT",
@@ -8524,10 +8526,10 @@
     "SCIENCE",
     "GEOPOLITICS",
     "TECHNOLOGY",
-    "DEFENSE_MILITARY"
+    "DEFENSE_MILITARY",
+    "MIND_BLOWING_FACTS"
   ],
   "last_sources": [
-    "Global Superpowers Geopolitics 24h",
     "Global Country Wire [MALAYSIA \u2022 HEALTH]",
     "Space.com Breaking",
     "Global Country Wire [EGYPT \u2022 ENTERTAINMENT]",
@@ -8566,10 +8568,10 @@
     "Space.com Breaking",
     "France24 Global Affairs",
     "Global Country Wire [BANGLADESH \u2022 TECHNOLOGY]",
-    "Google World Top Headlines (US/Global)"
+    "Google World Top Headlines (US/Global)",
+    "Global Country Wire [EGYPT \u2022 MIND_BLOWING_FACTS]"
   ],
   "last_countries": [
-    "MEXICO",
     "INTERNATIONAL",
     "GLOBAL MARKETS",
     "AUSTRIA",
@@ -8618,6 +8620,7 @@
     "SPACE & SCIENCE",
     "FRANCE",
     "BANGLADESH",
-    "POLAND"
+    "POLAND",
+    "EGYPT"
   ]
 }
