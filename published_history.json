@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-09T08:32:09.004659",
-  "last_upload_epoch": 1794213129,
-  "round_robin_idx": 11,
-  "country_rot_idx": 41,
-  "bgm_track_counter": 3098994741,
+  "updated_at": "2026-11-09T09:16:47.177426",
+  "last_upload_epoch": 1794215807,
+  "round_robin_idx": 12,
+  "country_rot_idx": 47,
+  "bgm_track_counter": 3104045272,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -651,49 +651,13 @@
     "why_parents_sister_of_far_right",
     "egypt_unearths_2_600_year_old",
     "hidden_2_600_year_old_city",
+    "pope_leo_delivers_stinging_rebuke_of",
     "pope_leo_vs_milei_the_austerity",
-    "bennedict_mathurin_welcome_back_to_la",
-    "bennedict_mathurin_s_la_return_how"
+    "bennedict_mathurin_s_la_return_how",
+    "american_claire_liu_wins_hong_kong",
+    "how_claire_liu_s_shock_win"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why The Belarusian Power Couple Just Broke Apart",
-      "tokens": [
-        "apart",
-        "belarusian",
-        "broke",
-        "couple",
-        "documentary",
-        "full",
-        "here",
-        "https",
-        "just",
-        "jyosbytboeg",
-        "most",
-        "powerful",
-        "watch",
-        "youtube"
-      ]
-    },
-    {
-      "title": "Libya's Smuggling Empire: The $1B Power Play",
-      "tokens": [
-        "documentary",
-        "easter",
-        "full",
-        "here",
-        "https",
-        "irregular",
-        "latest",
-        "libya",
-        "migration",
-        "pydixymn",
-        "smuggling",
-        "watch",
-        "wave",
-        "youtube"
-      ]
-    },
     {
       "title": "Bolsonaro's Flee to Miami: The $4.4M Vote Collapse",
       "tokens": [
@@ -8471,10 +8435,61 @@
         "return",
         "welcome"
       ]
+    },
+    {
+      "title": "Bennedict Mathurin's LA Return: How One Player Could Shift NBA Power & Global Money",
+      "tokens": [
+        "bennedict",
+        "could",
+        "mathurin",
+        "money",
+        "player",
+        "return"
+      ]
+    },
+    {
+      "title": "American Claire Liu wins Hong Kong Tennis Open for her 1st career WTA title",
+      "tokens": [
+        "alexandra",
+        "american",
+        "career",
+        "claims",
+        "claire",
+        "defeated",
+        "eala",
+        "hong",
+        "kong",
+        "maiden",
+        "open",
+        "sets",
+        "straight",
+        "stunned",
+        "sunday",
+        "tennis",
+        "title",
+        "wins"
+      ]
+    },
+    {
+      "title": "How Claire Liu's Shock Win Could Redefine Women's Tennis",
+      "tokens": [
+        "american",
+        "career",
+        "claire",
+        "could",
+        "hong",
+        "kong",
+        "open",
+        "redefine",
+        "shock",
+        "tennis",
+        "title",
+        "wins",
+        "women"
+      ]
     }
   ],
   "last_categories": [
-    "SCIENCE",
     "ENTERTAINMENT",
     "DEFENSE_MILITARY",
     "ENTERTAINMENT",
@@ -8513,10 +8528,10 @@
     "TECHNOLOGY",
     "DEFENSE_MILITARY",
     "MIND_BLOWING_FACTS",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "HEALTH"
   ],
   "last_sources": [
-    "Space.com Breaking",
     "Global Country Wire [EGYPT \u2022 ENTERTAINMENT]",
     "Global Country Wire [VIETNAM \u2022 DEFENSE_MILITARY]",
     "Hollywood Reporter",
@@ -8555,10 +8570,10 @@
     "Global Country Wire [BANGLADESH \u2022 TECHNOLOGY]",
     "Google World Top Headlines (US/Global)",
     "Global Country Wire [EGYPT \u2022 MIND_BLOWING_FACTS]",
-    "Google Trends Viral [COLOMBIA]"
+    "The Guardian International",
+    "Global Country Wire [MOROCCO \u2022 HEALTH]"
   ],
   "last_countries": [
-    "GLOBAL MARKETS",
     "AUSTRIA",
     "GLOBAL TECH & AI",
     "GLOBAL BRIEFING",
@@ -8607,6 +8622,7 @@
     "BANGLADESH",
     "POLAND",
     "EGYPT",
-    "INTERNATIONAL"
+    "ARGENTINA",
+    "UNITED STATES"
   ]
 }
