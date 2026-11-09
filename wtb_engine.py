@@ -6,9 +6,11 @@ import wave
 import json
 import time
 import base64
+import io
 import random
 import asyncio
 import hashlib
+import html
 import signal
 import traceback
 import subprocess
@@ -59,6 +61,7 @@ HEADERS_WIKI = {
 }
 
 HISTORY_FILE = "published_history.json"
+VISUAL_RIGHTS_MODE = os.environ.get("VISUAL_RIGHTS_MODE", "licensed_only").strip().lower()
 
 # ==============================================================================
 # 1. 20 HIGH-CTR BREAKING & TRENDING CATEGORIES + GEOPOLITICS SURGE SYSTEM
@@ -1224,7 +1227,7 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
         f"CRITICAL FACTUAL GROUNDING & ANTI-HALLUCINATION RULES (TODAY'S DATE IS {today_date_str}): "
         "1. NEVER invent fake historical dates from 2023 or 2024, NEVER invent fake ship names or fake dollar figures not supported by context, and NEVER mention deceased/former leaders as current. "
         "2. NEVER paste raw news headlines or say 'according to BBC/Reuters' inside the narration. NEVER inject India, New Delhi, or Mumbai into a non-India story unless the headline explicitly involves India. "
-        "3. 100% POINT-TO-POINT VISUAL MAPPING: For every single sentence in `beat_visuals`, write a `photo_query` of 5-7 concrete physical nouns + exact country/entity so the exact real video/photo of that sentence appears on screen! "
+        "3. SCRIPT-LOCKED VISUAL MAPPING: Build each `photo_query` only from the named person, place, object, or event stated in that exact narration sentence. Do not invent a scene, setting, interview, or action. If no source image can be tied to the sentence, recommend a simple editorial graphic instead of pretending a real photo exists. "
         "Output STRICT JSON only."
     )
 
@@ -1288,7 +1291,7 @@ Return ONLY valid JSON in this exact structure:
 }}
 CRITICAL RULES:
 1. Generate EXACTLY {num_scenes} distinct scenes in "scenes".
-2. Every `photo_query` and `video_broll_query` MUST be a concrete Google Images / YouTube News search query describing the exact physical subject of that sentence (ships, missiles, ports, parliament, stock exchange, leaders, laboratories) — NEVER generic words like 'hole', 'attack', 'table', or a country name alone!
+2. Every `photo_query` and `video_broll_query` must name the exact subject and location stated in its narration sentence. Do not use a broad story keyword, generic stock scene, or the overall topic as evidence that a result depicts the sentence. Prefer an editorial graphic when a real source cannot be verified.
 """
     ai_pkg = call_multi_api_ai_brain_json(sys_prompt, usr_prompt)
     if ai_pkg and isinstance(ai_pkg.get("scenes"), list) and len(ai_pkg["scenes"]) >= 4:
@@ -3342,7 +3345,65 @@ def has_verified_human_face_with_skin(im_sq_rgb):
     except Exception:
         return False
 
+def is_reusable_commons_license(license_name, license_url=""):
+    """Allow only licenses suitable for an edited, monetized video and attribution."""
+    label = re.sub(r"\s+", " ", html.unescape(str(license_name or ""))).strip().lower()
+    url = str(license_url or "").strip().lower()
+    if any(tag in label for tag in ("noncommercial", "non-commercial", "nc ", "no derivatives", "no-derivatives", "nd ")):
+        return False
+    if any(tag in url for tag in ("by-nc", "by-nd", "-nc-", "-nd-")):
+        return False
+    if "public domain" in label or "public domain" in url or "creativecommons.org/publicdomain/" in url:
+        return True
+    if label.startswith("cc0") or "/cc0/" in url:
+        return True
+    if re.match(r"^cc by(?:-sa)?(?:\s|$)", label) or "creativecommons.org/licenses/by/" in url or "creativecommons.org/licenses/by-sa/" in url:
+        return True
+    return False
+
+
+def commons_asset_rights(imageinfo, file_title):
+    """Return reusable Commons license and credit metadata, or None if rights are unclear."""
+    ext = (imageinfo or {}).get("extmetadata") or {}
+    def meta_text(key):
+        val = (ext.get(key) or {}).get("value", "")
+        return html.unescape(BeautifulSoup(str(val), "html.parser").get_text(" ", strip=True)).strip()
+
+    license_name = meta_text("LicenseShortName")
+    license_url = meta_text("LicenseUrl")
+    if not is_reusable_commons_license(license_name, license_url):
+        return None
+    title = str(file_title or "").replace("File:", "").strip()
+    artist = meta_text("Artist") or meta_text("Credit") or "Author not listed"
+    source_url = str((imageinfo or {}).get("descriptionurl") or "").strip()
+    if not source_url and title:
+        source_url = "https://commons.wikimedia.org/wiki/" + urllib.parse.quote("File:" + title.replace(" ", "_"), safe=":_")
+    return {
+        "source_name": "Wikimedia Commons",
+        "source_url": source_url,
+        "license": license_name,
+        "license_url": license_url,
+        "artist": artist,
+        "title": title,
+        "attribution": f"{title} — {artist} — {license_name}"[:220]
+    }
+
+
+def set_last_visual_provenance(dossier, metadata=None, caption="", score=0):
+    d = dossier if isinstance(dossier, dict) else {}
+    m = metadata if isinstance(metadata, dict) else {}
+    d["_last_beat_visual_score"] = int(score or 0)
+    d["_last_beat_visual_caption"] = str(caption or m.get("title") or "")[:180]
+    d["_last_beat_visual_source"] = str(m.get("source_name") or "Editorial graphic")
+    d["_last_beat_visual_url"] = str(m.get("source_url") or "")
+    d["_last_beat_visual_license"] = str(m.get("license") or "")
+    d["_last_beat_visual_license_url"] = str(m.get("license_url") or "")
+    d["_last_beat_visual_credit"] = str(m.get("attribution") or "")[:220]
+
+
 def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
+    if VISUAL_RIGHTS_MODE == "licensed_only":
+        return None
     cache_key = display_name.lower().strip()
     if cache_key in PERSON_PORTRAIT_CACHE:
         return PERSON_PORTRAIT_CACHE[cache_key]
@@ -4218,7 +4279,80 @@ def synthesize_3d_parallax_broadcast_video_broll(pil_im, tag_id="parallax_vclip"
         pass
     return None
 
+def fetch_commons_licensed_video_broll(video_query, dossier, used_video_urls, tag_id="vclip"):
+    """Fetch only Commons video files with explicit reusable license metadata."""
+    topic_anchor = str(dossier.get("topic_anchor") or extract_primary_topic_anchor(dossier)).strip()
+    query_list = []
+    for q in [video_query, topic_anchor] + extract_topic_master_queries(dossier)[:4]:
+        q = " ".join(str(q or "").split()).strip()
+        if q and q.lower() not in {x.lower() for x in query_list}:
+            query_list.append(q)
+    story_tokens = {
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", f"{dossier.get('title', '')} {topic_anchor}")
+        if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in SENTENCE_VISUAL_STOPWORDS
+    }
+    for q_idx, query in enumerate(query_list[:5]):
+        try:
+            api_url = (
+                "https://commons.wikimedia.org/w/api.php?action=query&generator=search"
+                f"&gsrsearch={urllib.parse.quote(query + ' filetype:video')}&gsrnamespace=6&gsrlimit=10"
+                "&prop=imageinfo&iiprop=url|size|mime|extmetadata&format=json"
+            )
+            response = requests.get(api_url, headers=HEADERS_WIKI, timeout=6)
+            if response.status_code != 200:
+                continue
+            pages = (response.json().get("query") or {}).get("pages") or {}
+            for p_obj in pages.values():
+                title = str(p_obj.get("title") or "")
+                info_list = p_obj.get("imageinfo") or []
+                if not info_list:
+                    continue
+                info = info_list[0]
+                rights = commons_asset_rights(info, title)
+                if rights is None:
+                    continue
+                video_url = str(info.get("url") or "")
+                mime = str(info.get("mime") or "").lower()
+                size = int(info.get("size") or 0)
+                if not video_url or video_url in used_video_urls or "video" not in mime:
+                    continue
+                if size < 150000 or size > 45000000:
+                    continue
+                ext = info.get("extmetadata") or {}
+                description = BeautifulSoup(
+                    str((ext.get("ImageDescription") or {}).get("value") or ""), "html.parser"
+                ).get_text(" ", strip=True)
+                candidate_text = f"{title.replace('File:', '')} {description}"
+                candidate_tokens = {
+                    w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", candidate_text)
+                    if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in SENTENCE_VISUAL_STOPWORDS
+                }
+                query_tokens = {
+                    w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", query)
+                    if w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in SENTENCE_VISUAL_STOPWORDS
+                }
+                topical_hits = len(candidate_tokens.intersection(query_tokens or story_tokens))
+                if topical_hits < min(2, max(1, len(query_tokens or story_tokens))):
+                    continue
+                res = download_and_transcode_mp4_url(
+                    video_url, used_video_urls, f"{tag_id}_commons{q_idx}", candidate_text[:60]
+                )
+                if res is not None:
+                    res.update(rights)
+                    res["source_title"] = rights.get("title") or title.replace("File:", "")
+                    res["source_description"] = description[:240]
+                    res["source_query"] = query
+                    res["is_licensed_asset"] = True
+                    res["label"] = res["source_title"][:60]
+                    return res
+        except Exception:
+            continue
+    return None
+
+
 def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, used_video_queries, tag_id="vclip"):
+    if VISUAL_RIGHTS_MODE == "licensed_only":
+        return fetch_commons_licensed_video_broll(video_query, dossier, used_video_urls, tag_id=tag_id)
     """
     V36 5-ENGINE BULLETPROOF HD VIDEO & INTERVIEW HARVESTER:
     Combines 5 independent video engines so datacenter rate-limits on any single platform NEVER stop video B-roll:
@@ -4487,12 +4621,8 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
 # ==============================================================================
 def apply_copyright_safe_documentary_lut(im):
     """
-    V59 CONSISTENT HOLLYWOOD DOCUMENTARY SPLIT-TONE COLOR GRADE + 4K OPTICAL CLARITY LUT:
-    Unifies all harvested visuals into a cohesive Netflix / Think School documentary color palette:
-    - Deep Shadows tinted toward Cinema Dark Navy (`#0A1224`)
-    - Midtones enriched with crisp Atomic Blue/Cyan separation
-    - Highlights warmed toward Burnished Documentary Gold (`#FFD700`)
-    - Zero bilateral smearing and zero HDR haloing!
+    Apply a restrained editorial grade while preserving the source's natural color.
+    This is a look adjustment only; it does not change rights or verify the image.
     """
     try:
         arr = np.asarray(im.convert("RGB"), dtype=np.float32)
@@ -4500,15 +4630,15 @@ def apply_copyright_safe_documentary_lut(im):
         shadow_w = np.clip((95.0 - luma) / 95.0, 0.0, 1.0)
         high_w = np.clip((luma - 145.0) / 110.0, 0.0, 1.0)
         # Split-tone: Navy shadows + Warm Burnished Gold highlights
-        arr[:, :, 0] = np.clip(arr[:, :, 0] - 4.5 * shadow_w + 5.5 * high_w, 0.0, 255.0)
-        arr[:, :, 1] = np.clip(arr[:, :, 1] + 1.0 * shadow_w + 3.2 * high_w, 0.0, 255.0)
-        arr[:, :, 2] = np.clip(arr[:, :, 2] + 7.5 * shadow_w - 3.5 * high_w, 0.0, 255.0)
+        arr[:, :, 0] = np.clip(arr[:, :, 0] - 1.2 * shadow_w + 1.0 * high_w, 0.0, 255.0)
+        arr[:, :, 1] = np.clip(arr[:, :, 1] + 0.2 * shadow_w + 0.4 * high_w, 0.0, 255.0)
+        arr[:, :, 2] = np.clip(arr[:, :, 2] + 1.6 * shadow_w - 0.2 * high_w, 0.0, 255.0)
         out = Image.fromarray(arr.astype(np.uint8), mode="RGB")
     except Exception:
         out = im.convert("RGB")
-    out = ImageEnhance.Contrast(out).enhance(1.07)
-    out = ImageEnhance.Color(out).enhance(1.06)
-    out = out.filter(ImageFilter.UnsharpMask(radius=0.95, percent=118, threshold=3))
+    out = ImageEnhance.Contrast(out).enhance(1.035)
+    out = ImageEnhance.Color(out).enhance(1.015)
+    out = out.filter(ImageFilter.UnsharpMask(radius=0.75, percent=48, threshold=4))
     return out
 
 
@@ -4726,6 +4856,10 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450, story_
     return apply_copyright_safe_documentary_lut(im)
 
 def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, tag_id="real_fallback", is_short=False, dossier=None, beat_text="", sent_ner=None):
+    if VISUAL_RIGHTS_MODE == "licensed_only":
+        # A search thumbnail is neither proof of what the image depicts nor a reuse license.
+        # Let the storyboard render its narration-led evidence graphic when Commons has no match.
+        return None
     d_obj = dossier or {"title": str(ai_prompt or ""), "topic_anchor": str(ai_prompt or "")[:30], "pillar": "WORLD"}
     if sent_ner is None and beat_text:
         sent_ner = extract_sentence_ner_and_context(beat_text, {}, d_obj)
@@ -5369,9 +5503,16 @@ def sentence_visual_match(caption, sent_ner):
     """Require caption evidence for this beat's subject, not merely the overall topic."""
     if not isinstance(sent_ner, dict):
         return False
-    cap_tokens = _visual_tokens(caption)
+    # Match descriptive source text only. Image URLs, broad search queries, and the overall
+    # story title can share keywords with an unrelated asset and must not count as evidence.
+    cap_text = re.sub(r"[^a-z0-9]+", " ", str(caption or "").lower()).strip()
+    cap_tokens = _visual_tokens(cap_text)
     if not cap_tokens:
         return False
+
+    def phrase_present(value):
+        phrase = re.sub(r"[^a-z0-9]+", " ", str(value or "").lower()).strip()
+        return bool(phrase and re.search(rf"(?<![a-z0-9]){re.escape(phrase)}(?![a-z0-9])", cap_text))
 
     def target_tokens(key, minimum_length=4):
         vals = sent_ner.get(key) or []
@@ -5382,13 +5523,30 @@ def sentence_visual_match(caption, sent_ner):
 
     person_tokens = target_tokens("persons")
     if person_tokens:
-        # One distinctive name token is enough for captions that use a surname only.
-        return bool(person_tokens.intersection(cap_tokens))
+        for person in (sent_ner.get("persons") or []):
+            p_parts = [w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", str(person))]
+            if phrase_present(person):
+                return True
+            # News captions often identify a speaker by surname. Allow that only when it is
+            # distinctive and do not let a first-name/common-word collision pass.
+            if len(p_parts) >= 2 and len(p_parts[-1]) >= 6 and p_parts[-1] in cap_tokens:
+                return True
+        return False
 
     entity_tokens = target_tokens("specific_entities")
     entity_tokens.difference_update({"airport", "port", "station", "agency", "authority", "ministry", "international", "company", "group"})
     if entity_tokens:
-        return bool(entity_tokens.intersection(cap_tokens))
+        for entity in (sent_ner.get("specific_entities") or []):
+            e_parts = [w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", str(entity))]
+            if phrase_present(entity):
+                return True
+            # Require two identifying words for multiword entities. A single token is
+            # accepted only for a short acronym explicitly present in the narration.
+            hits = len(set(e_parts).intersection(cap_tokens))
+            is_acronym = len(e_parts) == 1 and str(entity).strip().isupper() and len(e_parts[0]) >= 3
+            if hits >= 2 or (is_acronym and hits == 1):
+                return True
+        return False
 
     location_tokens = target_tokens("locations")
     physical_tokens = target_tokens("physical_objects", minimum_length=4)
@@ -5400,6 +5558,80 @@ def sentence_visual_match(caption, sent_ner):
     if physical_tokens:
         return len(physical_hits) >= 2 or (len(physical_tokens) == 1 and len(next(iter(physical_tokens))) >= 8 and bool(physical_hits))
     return False
+
+
+def verify_media_frame_matches_sentence(image, sentence, source_caption, dossier=None):
+    """Use Gemini vision on selected frames so text metadata alone cannot approve a mismatch."""
+    d = dossier if isinstance(dossier, dict) else {}
+    d["_last_beat_vision_audit"] = "not_configured"
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        return True
+
+    budget = d.setdefault("_visual_vision_audit_budget", {"calls": 0, "max_calls": 24})
+    cache = d.setdefault("_visual_vision_audit_cache", {})
+    try:
+        small = image.convert("RGB").resize((512, 288), getattr(Image, "Resampling", Image).LANCZOS)
+        buf = io.BytesIO()
+        small.save(buf, format="JPEG", quality=76, optimize=True)
+        image_bytes = buf.getvalue()
+        cache_key = hashlib.sha256(image_bytes + str(sentence).encode("utf-8")).hexdigest()
+        if cache_key in cache:
+            cached = cache[cache_key]
+            d["_last_beat_vision_audit"] = cached.get("status", "cached")
+            return bool(cached.get("match"))
+        if int(budget.get("calls", 0)) >= int(budget.get("max_calls", 24)):
+            d["_last_beat_vision_audit"] = "text_only_budget"
+            return True
+
+        prompt = (
+            "Check whether the attached real photo/video frame visibly depicts the subject or event in the narration. "
+            "Treat the caption as a clue only; the pixels must support the match. If the scene is generic, a different "
+            "person/place/event, or ambiguous, reject it. Do not infer the event from the caption alone. "
+            "Return JSON only: {\"match\":true|false,\"confidence\":0.0,\"visible_subject\":\"short description\"}.\n"
+            f"Narration sentence: {str(sentence or '')[:900]}\n"
+            f"Source caption: {str(source_caption or '')[:500]}"
+        )
+        request_body = {
+            "contents": [{"parts": [
+                {"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(image_bytes).decode("ascii")}},
+                {"text": prompt}
+            ]}],
+            "generationConfig": {"temperature": 0, "maxOutputTokens": 180, "responseMimeType": "application/json"}
+        }
+        budget["calls"] = int(budget.get("calls", 0)) + 1
+        response = requests.post(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
+            headers={"x-goog-api-key": api_key, "Content-Type": "application/json"},
+            json=request_body,
+            timeout=18
+        )
+        if response.status_code != 200:
+            d["_last_beat_vision_audit"] = f"api_error_{response.status_code}"
+            cache[cache_key] = {"status": d["_last_beat_vision_audit"], "match": False}
+            return False
+        parts = (((response.json().get("candidates") or [{}])[0].get("content") or {}).get("parts") or [])
+        result = parse_json_safely(" ".join(str(part.get("text", "")) for part in parts)) or {}
+        confidence = float(result.get("confidence", 0) or 0)
+        match = result.get("match") is True and confidence >= 0.72
+        d["_last_beat_vision_audit"] = "pass" if match else "reject"
+        cache[cache_key] = {
+            "status": d["_last_beat_vision_audit"],
+            "match": match,
+            "confidence": confidence,
+            "visible_subject": str(result.get("visible_subject", ""))[:180]
+        }
+        d.setdefault("_visual_vision_audit_log", []).append({
+            "sentence": str(sentence or "")[:350],
+            "source_caption": str(source_caption or "")[:220],
+            "match": match,
+            "confidence": confidence,
+            "visible_subject": str(result.get("visible_subject", ""))[:180]
+        })
+        return match
+    except Exception:
+        d["_last_beat_vision_audit"] = "audit_error"
+        return False
 
 
 def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", sent_ner=None):
@@ -5422,7 +5654,7 @@ def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", 
     if not cap_toks:
         return -999
 
-    if sent_ner is not None and not sentence_visual_match(f"{img_caption} {img_url}", sent_ner):
+    if sent_ner is not None and not sentence_visual_match(img_caption, sent_ner):
         return -999
 
     geo_tokens, ev_tokens = get_story_anchor_and_context_tokens(dossier)
@@ -5766,6 +5998,9 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                     if not ii_list:
                         continue
                     ii = ii_list[0]
+                    rights = commons_asset_rights(ii, p_obj.get("title", ""))
+                    if rights is None:
+                        continue
                     w_px = int(ii.get("width") or 0)
                     h_px = int(ii.get("height") or 0)
                     if w_px < 640 or h_px < 360 or w_px < h_px:
@@ -5780,8 +6015,10 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                             "turl": str(ii.get("url") or img_u),
                             "caption": desc_clean[:220],
                             "media_type": "image",
-                            "source_angle": wc_q,
-                            "base_priority": 38
+                            "source_angle": "wikimedia_commons",
+                            "source_query": wc_q,
+                            "base_priority": 38,
+                            "rights": rights
                         })
         except Exception:
             pass
@@ -5864,11 +6101,12 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=14) as ex:
         futs = []
-        for i, aq in enumerate(search_angles):
-            futs.append(ex.submit(fetch_angle_candidates, (i, aq)))
-        for kw_rss in search_angles[:10]:
-            futs.append(ex.submit(fetch_bing_news_rss_angle, kw_rss))
-        for kw_wc in search_angles[:6]:
+        if VISUAL_RIGHTS_MODE != "licensed_only":
+            for i, aq in enumerate(search_angles):
+                futs.append(ex.submit(fetch_angle_candidates, (i, aq)))
+            for kw_rss in search_angles[:10]:
+                futs.append(ex.submit(fetch_bing_news_rss_angle, kw_rss))
+        for kw_wc in search_angles[:16]:
             futs.append(ex.submit(fetch_wikimedia_commons_angle, kw_wc))
         for ft in concurrent.futures.as_completed(futs):
             try:
@@ -5882,6 +6120,8 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     geo_tokens, ev_tokens = get_story_anchor_and_context_tokens(dossier)
     pre_passed = []
     for cand in raw_candidates:
+        if VISUAL_RIGHTS_MODE == "licensed_only" and not cand.get("rights"):
+            continue
         u = cand["url"]
         cap = cand["caption"]
         if not passes_audit_gate_1_caption_and_url(u, cap, dossier, cand["source_angle"]):
@@ -5951,6 +6191,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                         "url": cand_obj["url"],
                         "caption": cand_obj["caption"],
                         "tokens": cand_obj["tokens"],
+                        "rights": cand_obj.get("rights") or {},
                         "relevance_score": cand_obj["relevance_score"] + hd_bonus,
                         "has_face": has_well_framed_face(vim)
                     })
@@ -6002,8 +6243,7 @@ def select_best_visual_from_200_pool(beat_text, search_q, dossier, used_image_ur
     if not pool:
         return None
 
-    best_item = None
-    best_score = -999
+    ranked_items = []
     for item in pool:
         if item["url"] in used_image_urls:
             continue
@@ -6020,22 +6260,23 @@ def select_best_visual_from_200_pool(beat_text, search_q, dossier, used_image_ur
         if require_strong_overlap and rel_sc < 60:
             continue
         total_sc = item["relevance_score"] + rel_sc
-        if total_sc > best_score:
-            best_score = total_sc
-            best_item = item
+        ranked_items.append((total_sc, item))
 
-    if best_item is None:
-        return None
-
-    # Require high visual relevance score (`best_score >= 165`) if `require_strong_overlap` is True!
-    if require_strong_overlap and best_score < 165:
-        return None
-
-    used_image_urls.add(best_item["url"])
-    existing_hashes.append(best_item["dhash"])
-    dossier["_last_beat_visual_score"] = int(best_score)
-    dossier["_last_beat_visual_caption"] = str(best_item.get("caption", ""))[:100]
-    return best_item["im"]
+    ranked_items.sort(key=lambda pair: pair[0], reverse=True)
+    for total_sc, item in ranked_items[:4]:
+        if require_strong_overlap and total_sc < 165:
+            continue
+        if not verify_media_frame_matches_sentence(
+            item["im"], beat_text, item.get("caption", ""), dossier=dossier
+        ):
+            continue
+        used_image_urls.add(item["url"])
+        existing_hashes.append(item["dhash"])
+        set_last_visual_provenance(
+            dossier, item.get("rights"), caption=item.get("caption", ""), score=total_sc
+        )
+        return item["im"]
+    return None
 
 
 def select_secondary_visual_for_same_sentence(search_q, dossier, used_image_urls, existing_hashes, sent_ner):
@@ -6093,14 +6334,23 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     # Step 2: If the sentence mentions a specific facility/airport/port/organization (`wiki_entity_targets`),
     # fetch the verified encyclopedia visual for that specific facility/entity!
     if sent_ner.get("wiki_entity_targets"):
-        wiki_ent_im = fetch_wikipedia_specific_entity_visual(
-            sent_ner["wiki_entity_targets"], existing_hashes, used_image_urls,
-            story_title=story_title, tag_id=f"{tag_id}_ner"
-        )
-        if wiki_ent_im is not None:
-            dossier["_last_beat_visual_score"] = 240
-            dossier["_last_beat_visual_caption"] = f"Wikipedia Verified Entity: {sent_ner['wiki_entity_targets'][0]}"
-            return wiki_ent_im
+        if VISUAL_RIGHTS_MODE == "licensed_only":
+            # Entity pages do not guarantee that their default thumbnail has a reusable license.
+            pass
+        else:
+            wiki_ent_im = fetch_wikipedia_specific_entity_visual(
+                sent_ner["wiki_entity_targets"], existing_hashes, used_image_urls,
+                story_title=story_title, tag_id=f"{tag_id}_ner"
+            )
+            if wiki_ent_im is not None:
+                dossier["_last_beat_visual_score"] = 240
+                dossier["_last_beat_visual_caption"] = f"Wikipedia Verified Entity: {sent_ner['wiki_entity_targets'][0]}"
+                return wiki_ent_im
+
+    if VISUAL_RIGHTS_MODE == "licensed_only":
+        # All Commons candidates were harvested with license metadata above. Do not fall
+        # through to anonymous search-engine thumbnails if the exact beat has no match.
+        return None
 
     master_qs = extract_topic_master_queries(dossier)
     bv_photo_q = sanitize_visual_search_query((bv_dict or {}).get("photo_query", ""), dossier) if bv_dict else ""
@@ -6318,7 +6568,7 @@ def build_sentence_evidence_card(beat_text, dossier, W, H):
     small_font = get_font(max(15, int(min(w, h) * 0.021)))
     x = margin + max(34, int(w * 0.045))
     y = margin + max(32, int(h * 0.07))
-    draw.text((x, y), "EVIDENCE CARD  /  SCENE-MATCHED IMAGE UNAVAILABLE", font=label_font, fill=accent)
+    draw.text((x, y), "THE STORY, IN CONTEXT", font=label_font, fill=accent)
     y += max(62, int(h * 0.12))
 
     topic = str((dossier or {}).get("topic_anchor") or (dossier or {}).get("title") or "STORY EVIDENCE").strip().upper()
@@ -6683,8 +6933,7 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
     px, py = 32, 26
     d.rounded_rectangle([(px + 2, py + 4), (px + pw + 2, py + ph + 4)], radius=22, fill=(0, 0, 0, 125))
     d.rounded_rectangle([(px, py), (px + pw, py + ph)], radius=22, fill=(10, 16, 30, 195), outline=(255, 255, 255, 72), width=2)
-    d.ellipse([(px + 16, py + 15), (px + 30, py + 29)], fill=(255, 45, 70, 255))
-    d.text((px + 42, py + 11), pill_txt, fill=(245, 248, 255, 255), font=f_hud)
+    d.text((px + 18, py + 11), pill_txt, fill=(245, 248, 255, 255), font=f_hud)
 
     if watermark is not None:
         try:
@@ -7427,7 +7676,6 @@ V51_TEMPLATE_RULES = [
     # 26-28: Cinema, Mystery & Direct Quote
     ("CINE_26_BOX_OFFICE_AUDIENCE_METER", "CINE", r"\b(movie|film|box office|cinema|trailer|director|actor|streaming|netflix|hollywood|bollywood|gaming|esports)\b", 94),
     ("MYST_27_DECLASSIFIED_FORENSIC_BOARD", "MYST", r"\b(mystery|unexplained|ancient|archaeology|secret|classified|declassified|forensic|clue|phenomenon|paradox|conspiracy)\b", 90),
-    ("TS_28_STUDIO_QUOTE_PRESS_MONITOR", "ALL", r'("|“|”|\bsaid\b|\bstated\b|\bwarned\b|\bannounced\b|\bdeclared\b|\bpromised\b)', 84),
 ]
 
 def _does_category_allow_group(pillar_str, story_low, group_code):
@@ -9413,18 +9661,6 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             ox, oy = (zw - W) // 2, (zh - H) // 2
             frame = zoomed_vf.crop((ox, oy, ox + W, oy + H)).convert("RGBA")
             frame.alpha_composite(get_prebuilt_vignette_overlay(W, H))
-            # V58 Live Footage & Interview Broadcast Verification Pill (Top-Center / Upper-Left below HUD)
-            if not vseg.get("is_parallax"):
-                vf_d = ImageDraw.Draw(frame, "RGBA")
-                vf_lbl = f"LIVE EVENT FOOTAGE  •  {fit_whole_words_limit(str(vseg.get('source_query') or beat.get('section_headline') or 'OFFICIAL FEED').upper(), 28)}"
-                f_vfl = get_font(17 if not is_short else 18)
-                vfw = int(f_vfl.getlength(vf_lbl)) + 52
-                vfx = 32 if not is_short else (W - vfw) // 2
-                vfy = 82 if not is_short else 84
-                vf_d.rounded_rectangle([(vfx, vfy), (vfx + vfw, vfy + 36)], radius=18, fill=(14, 22, 38, 215), outline=(255, 65, 95, 225), width=2)
-                pulse_r = 6 if int(local_t * 4) % 2 == 0 else 4
-                vf_d.ellipse([(vfx + 18 - pulse_r, vfy + 18 - pulse_r), (vfx + 18 + pulse_r, vfy + 18 + pulse_r)], fill=(255, 45, 70, 255))
-                vf_d.text((vfx + 34, vfy + 7), vf_lbl, fill=(255, 255, 255, 255), font=f_vfl)
         except Exception:
             frame = extract_diverse_camera_frame_from_stage(beat["stage_1"], W, H, bp, camera_mode=cam_mode, local_t=local_t)
     else:
@@ -9439,6 +9675,30 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     # 2. Composite Pre-Built HUD Layer (Top-Left Live Country Flag Bug + Top-Right WORLD TALK BRIEF Logo!)
     hud_layer = build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=is_short)
     frame.alpha_composite(hud_layer)
+
+    # Compact, factual source credit. Never label archive material as live, and do not
+    # manufacture source names from the search query.
+    source_credits = []
+    if beat.get("vseg") is not None:
+        video_credit = str(beat["vseg"].get("attribution") or "").strip()
+        if video_credit:
+            source_credits.append(video_credit)
+    if beat.get("visual_source") == "Wikimedia Commons":
+        image_credit = str(beat.get("visual_credit") or "").strip()
+        if image_credit and image_credit not in source_credits:
+            source_credits.append(image_credit)
+    source_credit = "  •  ".join(source_credits)
+    if source_credit:
+        credit_txt = fit_whole_words_limit(source_credit, 78)
+        credit_font = get_font(14 if not is_short else 16)
+        credit_w = min(W - 64, int(credit_font.getlength(credit_txt)) + 28)
+        credit_y = H - (480 if is_short else 202)
+        credit_layer = ImageDraw.Draw(frame, "RGBA")
+        credit_layer.rounded_rectangle(
+            [(30, credit_y), (30 + credit_w, credit_y + 30)], radius=8,
+            fill=(8, 13, 22, 180), outline=(255, 255, 255, 56), width=1
+        )
+        credit_layer.text((42, credit_y + 7), credit_txt, fill=(238, 242, 247, 230), font=credit_font)
 
     # 2B. Sleek Chapter Header Card (first 1.05s of each chapter in Long Documentary)
     if not is_short and beat_in_sec_cur == 0 and local_t < 1.05 and beat.get("person_popup") is None and sim_mode is None:
@@ -9473,7 +9733,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             nx_c = 42 if not is_short else (W - nw_c) // 2
             ny_c = (H - 256) if not is_short else 110
             frame.paste(num_card, (nx_c, ny_c), num_card)
-        else:
+        elif beat_in_sec_cur == 0:
             pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short)
             if pt_card is not None:
                 pt_w, pt_h = pt_card.size
@@ -9809,6 +10069,12 @@ def build_prop_driven_storyboard_1080p(
             #    so Beat 0 and Beat 2 NEVER show an un-synced clip from `v_pool`!
             dossier["_last_beat_visual_score"] = 0
             dossier["_last_beat_visual_caption"] = ""
+            set_last_visual_provenance(
+                dossier,
+                {"source_name": "Narration-led graphic", "license": "Original editorial graphic"},
+                caption="No licensed visual passed the exact-sentence match gate.",
+                score=0
+            )
             beat_im = None
             comparison_secondary_im = None
             comparison_visual_records = []
@@ -9841,7 +10107,13 @@ def build_prop_driven_storyboard_1080p(
                             "subject": side_wiki,
                             "query": side_q,
                             "caption": dossier.get("_last_beat_visual_caption", ""),
-                            "score": dossier.get("_last_beat_visual_score", 0)
+                            "score": dossier.get("_last_beat_visual_score", 0),
+                            "source": dossier.get("_last_beat_visual_source", ""),
+                            "credit": dossier.get("_last_beat_visual_credit", ""),
+                            "source_url": dossier.get("_last_beat_visual_url", ""),
+                            "license": dossier.get("_last_beat_visual_license", ""),
+                            "license_url": dossier.get("_last_beat_visual_license_url", ""),
+                            "sentence_match_passed": bool(side_im is not None)
                         })
                     if len(side_images) == 2:
                         beat_im, comparison_secondary_im = side_images
@@ -9873,6 +10145,12 @@ def build_prop_driven_storyboard_1080p(
                     unit_used_photos.add(id(comparison_secondary_im))
             else:
                 beat_im = build_sentence_evidence_card(b_txt, dossier, W, H)
+                set_last_visual_provenance(
+                    dossier,
+                    {"source_name": "Narration-led graphic", "license": "Original editorial graphic"},
+                    caption="No licensed visual passed the exact-sentence match gate.",
+                    score=0
+                )
 
             stage_1 = build_clean_1080p_stage(beat_im, W, H)
 
@@ -9889,24 +10167,29 @@ def build_prop_driven_storyboard_1080p(
                     vc_id = id(cand_vp.get("vclip"))
                     if vc_id in unit_used_vclips:
                         continue
-                    vp_q_low = f"{cand_vp.get('source_query', '')} {cand_vp.get('label', '')}".lower()
+                    vp_q_low = f"{cand_vp.get('source_title', '')} {cand_vp.get('source_description', '')}".lower()
                     if sentence_visual_match(vp_q_low, cur_ner):
+                        try:
+                            vc_check = cand_vp.get("vclip")
+                            frame_check = Image.fromarray(
+                                vc_check.get_frame(min(vc_check.duration * 0.5, 2.0))
+                            ).convert("RGB") if vc_check is not None else None
+                        except Exception:
+                            frame_check = None
+                        if frame_check is None or not verify_media_frame_matches_sentence(
+                            frame_check, b_txt,
+                            f"{cand_vp.get('source_title', '')} {cand_vp.get('source_description', '')}",
+                            dossier=dossier
+                        ):
+                            dossier["_last_video_vision_audit"] = dossier.get("_last_beat_vision_audit", "reject")
+                            continue
+                        dossier["_last_video_vision_audit"] = dossier.get("_last_beat_vision_audit", "pass")
                         vseg = cand_vp
                         unit_used_vclips.add(vc_id)
                         videos_in_section += 1
                         break
-                # If no pre-pooled clip matched THIS sentence's specific entity (e.g. 'Warsaw Chopin Airport', 'Madrid-Barajas',
-                # 'Sofia Airport', 'Port of Piraeus', 'Europol'), convert THIS sentence's exact `beat_im` into a 30fps 3D Parallax Moving Video Clip!
-                if vseg is None and beat_im is not None:
-                    syn_beat_vc = synthesize_3d_parallax_broadcast_video_broll(
-                        beat_im,
-                        tag_id=f"{tag_prefix}_b{global_beat_idx}_syncv",
-                        caption_str=search_q[:44],
-                        motion_idx=global_beat_idx
-                    )
-                    if syn_beat_vc is not None:
-                        vseg = syn_beat_vc
-                        videos_in_section += 1
+                # Do not turn a still image into pretend event footage. The photo stage already
+                # receives a restrained camera move; an actual video clip is used only on a match.
 
             if vseg is not None:
                 b_type = "PARALLAX_PHOTO_MOTION" if vseg.get("is_parallax") else "VIDEO_BROLL_BEAT"
@@ -9924,8 +10207,28 @@ def build_prop_driven_storyboard_1080p(
                 "spoken_sentence": b_txt,
                 "extracted_ner": dossier.get("_last_beat_ner", {}),
                 "search_query": search_q,
+                "google_video_search_query": f"{search_q} official interview press conference footage",
+                "google_video_search_url": "https://www.google.com/search?tbm=vid&q=" + urllib.parse.quote(f"{search_q} official interview press conference footage"),
+                "google_image_search_url": "https://www.google.com/search?tbm=isch&q=" + urllib.parse.quote(search_q),
                 "visual_relevance_score": dossier.get("_last_beat_visual_score", 0),
                 "matched_visual_caption": dossier.get("_last_beat_visual_caption", ""),
+                "visual_source": dossier.get("_last_beat_visual_source", ""),
+                "visual_source_url": dossier.get("_last_beat_visual_url", ""),
+                "visual_license": dossier.get("_last_beat_visual_license", ""),
+                "visual_license_url": dossier.get("_last_beat_visual_license_url", ""),
+                "visual_credit": dossier.get("_last_beat_visual_credit", ""),
+                "sentence_visual_match_passed": bool(
+                    has_verified_primary or dossier.get("_last_beat_visual_source") == "Narration-led graphic"
+                ),
+                "visual_vision_audit": dossier.get("_last_beat_vision_audit", ""),
+                "video_source": (vseg or {}).get("source_name", "") if "vseg" in locals() else "",
+                "video_source_title": (vseg or {}).get("source_title", "") if "vseg" in locals() else "",
+                "video_source_url": (vseg or {}).get("source_url", "") if "vseg" in locals() else "",
+                "video_license": (vseg or {}).get("license", "") if "vseg" in locals() else "",
+                "video_license_url": (vseg or {}).get("license_url", "") if "vseg" in locals() else "",
+                "video_credit": (vseg or {}).get("attribution", "") if "vseg" in locals() else "",
+                "video_sentence_match_passed": bool(vseg is not None),
+                "video_vision_audit": dossier.get("_last_video_vision_audit", ""),
                 "comparison_visuals": comparison_visual_records,
                 "beat_render_mode": b_type
             })
@@ -9968,6 +10271,10 @@ def build_prop_driven_storyboard_1080p(
                 "stage_1": stage_1,
                 "prev_stage": prev_stage,
                 "primary_im": beat_im,
+                "visual_source": dossier.get("_last_beat_visual_source", ""),
+                "visual_source_url": dossier.get("_last_beat_visual_url", ""),
+                "visual_license": dossier.get("_last_beat_visual_license", ""),
+                "visual_credit": dossier.get("_last_beat_visual_credit", ""),
                 "primary_lbl": prop_badge,
                 "secondary_im": secondary_im,
                 "vseg": vseg,
@@ -10735,6 +11042,7 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
                 "ai_prompt": f"{exact_pq} real editorial press photo"
             })
         sec["beat_visuals"] = locked_bvs
+        sec["dossier"] = dossier
         audited_sections.append(sec)
 
     mode_lbl = "SHORT" if is_short else "LONG DOCUMENTARY"
@@ -11543,7 +11851,7 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
     1. Video file exists, non-empty, exact aspect ratio (16:9 or 9:16), and frame rate.
     2. Audio stream presence and duration synchronization (`|v_dur - a_dur| < 1.0s`).
     3. Zero black frames (`mean_luma < 4.0`) and zero frozen frame sequences across 8 sample timestamps.
-    4. Visual uniqueness & confidence score across beats.
+    4. Every external image/video is sentence-matched and carries a confirmed reusable license and credit.
     Writes `output/wtb_qc_audit_report.json` and returns `(passed_bool, qc_report_dict)`.
     """
     qc_report = {
@@ -11611,7 +11919,55 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         qc_report["checks"]["black_frames_sampled"] = black_frames
         qc_report["checks"]["frozen_frame_pairs"] = frozen_pairs
         qc_report["checks"]["audio_sync_verified"] = audio_sync_ok
-        qc_report["checks"]["licensing_and_attribution_audit"] = "PASS (Editorial Transformative Commentary + Verified Wire/Commons Attribution)"
+        rights_issues = []
+        audited_asset_count = 0
+        for beat_idx, beat in enumerate(planned_beats or []):
+            if not isinstance(beat, dict):
+                rights_issues.append(f"beat {beat_idx + 1}: malformed visual audit record")
+                continue
+            for kind in ("visual", "video"):
+                source = str(beat.get(f"{kind}_source") or "").strip()
+                source_url = str(beat.get(f"{kind}_source_url") or "").strip()
+                license_name = str(beat.get(f"{kind}_license") or "").strip()
+                license_url = str(beat.get(f"{kind}_license_url") or "").strip()
+                credit = str(beat.get(f"{kind}_credit") or "").strip()
+                if kind == "video" and not source and not source_url and not license_name:
+                    continue
+                if kind == "visual" and source == "Narration-led graphic" and not source_url:
+                    continue
+                audited_asset_count += 1
+                if not source_url or not credit or not is_reusable_commons_license(license_name, license_url):
+                    rights_issues.append(f"beat {beat_idx + 1}: {kind} has missing or non-reusable rights metadata")
+                match_key = "sentence_visual_match_passed" if kind == "visual" else "video_sentence_match_passed"
+                if not bool(beat.get(match_key)):
+                    rights_issues.append(f"beat {beat_idx + 1}: {kind} did not pass the sentence-match gate")
+            for cmp_idx, asset in enumerate(beat.get("comparison_visuals") or [], start=1):
+                audited_asset_count += 1
+                if (
+                    not asset.get("source_url") or not asset.get("credit")
+                    or not is_reusable_commons_license(asset.get("license"), asset.get("license_url"))
+                ):
+                    rights_issues.append(f"beat {beat_idx + 1}: comparison visual {cmp_idx} has missing or non-reusable rights metadata")
+                if not asset.get("sentence_match_passed"):
+                    rights_issues.append(f"beat {beat_idx + 1}: comparison visual {cmp_idx} did not pass the sentence-match gate")
+
+        qc_report["checks"]["visual_assets_audited"] = audited_asset_count
+        qc_report["checks"]["licensing_and_attribution_audit"] = "FAIL: " + "; ".join(rights_issues[:8]) if rights_issues else "PASS: reusable licenses and attribution recorded"
+        if not planned_beats:
+            qc_report["checks"]["visual_asset_audit"] = "FAIL: storyboard audit records unavailable"
+            try:
+                with open("output/wtb_qc_audit_report.json", "w", encoding="utf-8") as qf:
+                    json.dump(qc_report, qf, indent=2)
+            except Exception:
+                pass
+            return False, qc_report
+        if rights_issues:
+            try:
+                with open("output/wtb_qc_audit_report.json", "w", encoding="utf-8") as qf:
+                    json.dump(qc_report, qf, indent=2)
+            except Exception:
+                pass
+            return False, qc_report
         if black_frames >= 3 or frozen_pairs >= 5 or not audio_sync_ok:
             return False, qc_report
 
@@ -11626,7 +11982,7 @@ def run_automatic_pre_upload_qc_gate(video_path, is_short=False, story_title="",
         return True, qc_report
     except Exception as e:
         qc_report["checks"]["exception"] = str(e)
-        return True, qc_report
+        return False, qc_report
 
 
 # ==============================================================================
@@ -11737,6 +12093,61 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
     """
     return
 
+def collect_section_visual_audit_records(sections_list):
+    records = []
+    seen = set()
+    for section in sections_list or []:
+        dossier = section.get("dossier") if isinstance(section, dict) else None
+        if not isinstance(dossier, dict):
+            dossier = (section.get("claim_meta") or {}).get("dossier") if isinstance(section, dict) else None
+        for record in (dossier or {}).get("_visual_sync_audit_log") or []:
+            if not isinstance(record, dict):
+                continue
+            key = (
+                record.get("chapter_idx"), record.get("beat_in_chapter"), record.get("start_sec"),
+                record.get("spoken_sentence", "")
+            )
+            if key not in seen:
+                seen.add(key)
+                records.append(record)
+    return records
+
+
+def build_visual_credits_description(audit_records):
+    lines = []
+    seen = set()
+    for record in audit_records or []:
+        assets = []
+        for kind in ("visual", "video"):
+            assets.append({
+                "source_url": record.get(f"{kind}_source_url"),
+                "license": record.get(f"{kind}_license"),
+                "license_url": record.get(f"{kind}_license_url"),
+                "credit": record.get(f"{kind}_credit")
+            })
+        assets.extend(record.get("comparison_visuals") or [])
+        for asset in assets:
+            source_url = str(asset.get("source_url") or "").strip()
+            license_name = str(asset.get("license") or "").strip()
+            license_url = str(asset.get("license_url") or "").strip()
+            credit = str(asset.get("credit") or "").strip()
+            if not source_url or not credit or not license_name:
+                continue
+            key = (source_url, license_name, credit)
+            if key in seen:
+                continue
+            seen.add(key)
+            line = f"• {credit}. Source: {source_url}. Edited for this video (trimmed, resized, or cropped)."
+            if license_url:
+                line += f" | License: {license_name} ({license_url})"
+            else:
+                line += f" | License: {license_name}"
+            lines.append(line)
+    if not lines:
+        return ""
+    return "VISUAL CREDITS\n" + "\n".join(lines[:36])
+
+
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
     is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway="",
@@ -11752,12 +12163,18 @@ def try_youtube_auto_upload(
     2. Rotates/Failovers across all configured OAuth tokens (`YOUTUBE_TOKEN_JSON_B64`..`YOUTUBE_TOKEN_JSON_B64_5`)
        so 15+ Geopolitics + Stock Market + All Category videos upload smoothly every day!
     """
-    qc_ok, qc_rep = run_automatic_pre_upload_qc_gate(video_path, is_short=is_short, story_title=title)
+    visual_audit_records = collect_section_visual_audit_records(sections_list)
+    qc_ok, qc_rep = run_automatic_pre_upload_qc_gate(
+        video_path, is_short=is_short, story_title=title, planned_beats=visual_audit_records
+    )
     if not qc_ok:
         print(f"🛑 [QC GATE BLOCKED UPLOAD] Critical quality check failed: {qc_rep}", flush=True)
         return None
 
     final_title = sanitize_youtube_metadata_text((title[:88] + " #Shorts") if is_short and "#shorts" not in title.lower() else title[:95], 95)
+    visual_credits = build_visual_credits_description(visual_audit_records)
+    if visual_credits:
+        description = f"{description.rstrip()}\n\n{visual_credits}"
     loc_map = build_20_country_youtube_localizations(final_title, description)
     clean_desc = loc_map["en"]["description"]
 
