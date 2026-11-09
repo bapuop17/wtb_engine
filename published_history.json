@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-08T23:53:06.474916",
-  "last_upload_epoch": 1794181986,
+  "updated_at": "2026-11-09T00:28:44.906488",
+  "last_upload_epoch": 1794184124,
   "round_robin_idx": 9,
   "country_rot_idx": 29,
-  "bgm_track_counter": 3046083001,
+  "bgm_track_counter": 3060954719,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -646,29 +646,11 @@
     "bangladesh_s_ai_surge_why_rising",
     "bangladesh_s_ai_experience_is_taking",
     "bangladesh_s_ai_tsunami_ryze_s",
-    "collision_between_2_trains_in_egypt",
-    "egypt_train_disaster_billion_dollar_modernisation"
+    "egypt_train_disaster_billion_dollar_modernisation",
+    "parents_sister_of_far_right_krakw",
+    "why_parents_sister_of_far_right"
   ],
   "event_fingerprints": [
-    {
-      "title": "Bollywood's $10B Bloodbath: The New Underworld Threat",
-      "tokens": [
-        "bloodbath",
-        "bollywood",
-        "documentary",
-        "full",
-        "gangsters",
-        "golden",
-        "here",
-        "https",
-        "izxri",
-        "jeghu",
-        "threat",
-        "underworld",
-        "watch",
-        "youtube"
-      ]
-    },
     {
       "title": "North Korea's $6.3B Crypto Heist: The Real Mastermind",
       "tokens": [
@@ -8445,48 +8427,60 @@
       ]
     },
     {
-      "title": "Collision between 2 trains in Egypt kills 7 and injures at least 125",
-      "tokens": [
-        "authorities",
-        "between",
-        "cairo",
-        "capital",
-        "collided",
-        "collision",
-        "egypt",
-        "egyptian",
-        "injured",
-        "injures",
-        "killed",
-        "kills",
-        "least",
-        "more",
-        "others",
-        "people",
-        "seven",
-        "south",
-        "sunday",
-        "than",
-        "trains"
-      ]
-    },
-    {
       "title": "Egypt Train Disaster: Billion\u2011Dollar Modernisation vs Deadly Reality",
       "tokens": [
-        "between",
         "billion",
-        "collision",
         "deadly",
         "disaster",
         "dollar",
         "egypt",
-        "injures",
-        "kills",
-        "least",
         "modernisation",
         "reality",
-        "train",
-        "trains"
+        "train"
+      ]
+    },
+    {
+      "title": "Parents, sister of far-right Krakw shooter found dead in family home",
+      "tokens": [
+        "allegedly",
+        "before",
+        "city",
+        "crowds",
+        "dead",
+        "driving",
+        "family",
+        "fire",
+        "found",
+        "historic",
+        "home",
+        "killing",
+        "krakw",
+        "main",
+        "market",
+        "more",
+        "murdered",
+        "opening",
+        "parents",
+        "right",
+        "shooter",
+        "sister",
+        "square",
+        "suspect",
+        "year"
+      ]
+    },
+    {
+      "title": "Why Parents, Sister of Far-right Krakw Shooter Found Dead in Family Home",
+      "tokens": [
+        "dead",
+        "family",
+        "found",
+        "home",
+        "krakw",
+        "parents",
+        "right",
+        "shooter",
+        "sister"
       ]
     }
   ],
@@ -8624,6 +8618,6 @@
     "SPACE & SCIENCE",
     "FRANCE",
     "BANGLADESH",
-    "EGYPT"
+    "POLAND"
   ]
 }
