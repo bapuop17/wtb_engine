@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-09T09:16:47.177426",
-  "last_upload_epoch": 1794215807,
-  "round_robin_idx": 12,
-  "country_rot_idx": 47,
-  "bgm_track_counter": 3104045272,
+  "updated_at": "2026-11-09T12:50:53.950293",
+  "last_upload_epoch": 1794228653,
+  "round_robin_idx": 13,
+  "country_rot_idx": 53,
+  "bgm_track_counter": 3109910887,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -655,76 +655,11 @@
     "pope_leo_vs_milei_the_austerity",
     "bennedict_mathurin_s_la_return_how",
     "american_claire_liu_wins_hong_kong",
-    "how_claire_liu_s_shock_win"
+    "how_claire_liu_s_shock_win",
+    "man_arrested_after_shootings_kill_1",
+    "wssu_campus_chaos_the_homecoming_tragedy"
   ],
   "event_fingerprints": [
-    {
-      "title": "Bolsonaro's Flee to Miami: The $4.4M Vote Collapse",
-      "tokens": [
-        "bolsonaro",
-        "claimed",
-        "collapse",
-        "documentary",
-        "flavio",
-        "flee",
-        "full",
-        "here",
-        "https",
-        "jair",
-        "miami",
-        "nvbf",
-        "victor",
-        "vote",
-        "watch",
-        "youtube"
-      ]
-    },
-    {
-      "title": "Bolsonaro's 'President' Claim: The 48-Hour Global Scandal",
-      "tokens": [
-        "bolsonaro",
-        "claim",
-        "defied",
-        "democ",
-        "documentary",
-        "full",
-        "here",
-        "hour",
-        "https",
-        "idbfy",
-        "president",
-        "scandal",
-        "shocking",
-        "twist",
-        "watch",
-        "youtube"
-      ]
-    },
-    {
-      "title": "'Amateur morons': Flvio Bolsonaro's short-lived 'president-elect' claim met with mockery",
-      "tokens": [
-        "amateur",
-        "bolsonaro",
-        "case",
-        "chapter",
-        "claim",
-        "deep",
-        "defense",
-        "dive",
-        "elect",
-        "flvio",
-        "lived",
-        "military",
-        "mockery",
-        "morons",
-        "original",
-        "presents",
-        "president",
-        "short",
-        "study",
-        "talk"
-      ]
-    },
     {
       "title": "Trump's Secret Deal: Why Seoul Is Terrified of Being Left Behind",
       "tokens": [
@@ -8487,10 +8422,54 @@
         "wins",
         "women"
       ]
+    },
+    {
+      "title": "Man arrested after shootings kill 1 and injure 3 others on Winston-Salem State University campus",
+      "tokens": [
+        "arrested",
+        "campus",
+        "connected",
+        "department",
+        "determine",
+        "injure",
+        "injured",
+        "investigators",
+        "kill",
+        "killed",
+        "others",
+        "police",
+        "salem",
+        "shootings",
+        "state",
+        "university",
+        "whether",
+        "winston",
+        "woman",
+        "working",
+        "year"
+      ]
+    },
+    {
+      "title": "WSSU Campus Chaos: The Homecoming Tragedy Explained",
+      "tokens": [
+        "arrested",
+        "campus",
+        "chaos",
+        "homecoming",
+        "injure",
+        "kill",
+        "others",
+        "salem",
+        "shootings",
+        "state",
+        "tragedy",
+        "university",
+        "winston",
+        "wssu"
+      ]
     }
   ],
   "last_categories": [
-    "ENTERTAINMENT",
     "DEFENSE_MILITARY",
     "ENTERTAINMENT",
     "MIND_BLOWING_FACTS",
@@ -8529,10 +8508,10 @@
     "DEFENSE_MILITARY",
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
-    "HEALTH"
+    "HEALTH",
+    "GLOBAL_POWERS"
   ],
   "last_sources": [
-    "Global Country Wire [EGYPT \u2022 ENTERTAINMENT]",
     "Global Country Wire [VIETNAM \u2022 DEFENSE_MILITARY]",
     "Hollywood Reporter",
     "Global Country Wire [MOROCCO \u2022 MIND_BLOWING_FACTS]",
@@ -8571,10 +8550,10 @@
     "Google World Top Headlines (US/Global)",
     "Global Country Wire [EGYPT \u2022 MIND_BLOWING_FACTS]",
     "The Guardian International",
-    "Global Country Wire [MOROCCO \u2022 HEALTH]"
+    "Global Country Wire [MOROCCO \u2022 HEALTH]",
+    "Google Trends Viral [NORWAY]"
   ],
   "last_countries": [
-    "AUSTRIA",
     "GLOBAL TECH & AI",
     "GLOBAL BRIEFING",
     "UNITED KINGDOM",
@@ -8623,6 +8602,7 @@
     "POLAND",
     "EGYPT",
     "ARGENTINA",
-    "UNITED STATES"
+    "UNITED STATES",
+    "INTERNATIONAL"
   ]
 }
