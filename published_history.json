@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-09T12:50:53.950293",
-  "last_upload_epoch": 1794228653,
-  "round_robin_idx": 13,
-  "country_rot_idx": 53,
-  "bgm_track_counter": 3109910887,
+  "updated_at": "2026-11-09T13:29:56.678831",
+  "last_upload_epoch": 1794230996,
+  "round_robin_idx": 14,
+  "country_rot_idx": 59,
+  "bgm_track_counter": 3115541968,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -657,49 +657,11 @@
     "american_claire_liu_wins_hong_kong",
     "how_claire_liu_s_shock_win",
     "man_arrested_after_shootings_kill_1",
-    "wssu_campus_chaos_the_homecoming_tragedy"
+    "wssu_campus_chaos_the_homecoming_tragedy",
+    "hsbc_citi_turn_bullish_as_indian",
+    "hsbc_citi_bet_big_why_india"
   ],
   "event_fingerprints": [
-    {
-      "title": "Trump's Secret Deal: Why Seoul Is Terrified of Being Left Behind",
-      "tokens": [
-        "behind",
-        "being",
-        "cold",
-        "deal",
-        "donald",
-        "korea",
-        "left",
-        "making",
-        "move",
-        "north",
-        "reaches",
-        "seoul",
-        "south",
-        "sweat",
-        "terrified",
-        "trump"
-      ]
-    },
-    {
-      "title": "Why Johannesburg Is Literally Falling Apart Underground",
-      "tokens": [
-        "apart",
-        "blame",
-        "documentary",
-        "falling",
-        "full",
-        "here",
-        "https",
-        "johannesburg",
-        "literally",
-        "rklgcaxug",
-        "sinking",
-        "underground",
-        "watch",
-        "youtube"
-      ]
-    },
     {
       "title": "Johannesburg Is Collapsing: The 40,000 Ton Gold Lie",
       "tokens": [
@@ -8467,10 +8429,55 @@
         "winston",
         "wssu"
       ]
+    },
+    {
+      "title": "HSBC, Citi Turn Bullish as Indian Stocks Draw Record Inflows",
+      "tokens": [
+        "banks",
+        "bullish",
+        "citi",
+        "draw",
+        "draws",
+        "equities",
+        "foreign",
+        "four",
+        "holdings",
+        "hsbc",
+        "indian",
+        "inflows",
+        "lifted",
+        "local",
+        "market",
+        "more",
+        "rally",
+        "record",
+        "sharpest",
+        "stocks",
+        "than",
+        "turn",
+        "turning",
+        "years"
+      ]
+    },
+    {
+      "title": "HSBC & Citi Bet Big: Why India Is The New Wall Street",
+      "tokens": [
+        "bullish",
+        "citi",
+        "draw",
+        "hsbc",
+        "india",
+        "indian",
+        "inflows",
+        "record",
+        "stocks",
+        "street",
+        "turn",
+        "wall"
+      ]
     }
   ],
   "last_categories": [
-    "DEFENSE_MILITARY",
     "ENTERTAINMENT",
     "MIND_BLOWING_FACTS",
     "TECHNOLOGY",
@@ -8509,10 +8516,10 @@
     "MIND_BLOWING_FACTS",
     "GEOPOLITICS",
     "HEALTH",
-    "GLOBAL_POWERS"
+    "GLOBAL_POWERS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "Global Country Wire [VIETNAM \u2022 DEFENSE_MILITARY]",
     "Hollywood Reporter",
     "Global Country Wire [MOROCCO \u2022 MIND_BLOWING_FACTS]",
     "Global Country Wire [IRELAND \u2022 TECHNOLOGY]",
@@ -8551,10 +8558,10 @@
     "Global Country Wire [EGYPT \u2022 MIND_BLOWING_FACTS]",
     "The Guardian International",
     "Global Country Wire [MOROCCO \u2022 HEALTH]",
-    "Google Trends Viral [NORWAY]"
+    "Google Trends Viral [NORWAY]",
+    "High-Shareability National Sports Heroes (Indonesia, India, Philippines, Brazil, Turkey)"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
     "GLOBAL BRIEFING",
     "UNITED KINGDOM",
     "CHINA",
@@ -8603,6 +8610,7 @@
     "EGYPT",
     "ARGENTINA",
     "UNITED STATES",
-    "INTERNATIONAL"
+    "INTERNATIONAL",
+    "INDIA"
   ]
 }
