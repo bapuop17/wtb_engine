@@ -4517,15 +4517,17 @@ AI_CAPTION_AUDIT_CACHE = {}
 
 def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_context="", dossier=None):
     """
-    V36 STRICT TOPIC-LOCKED PHOTO & SCENE AUDITOR:
+    STRICT TOPIC-LOCKED PHOTO & SCENE AUDITOR:
     - Blocks all tourist scenery/postcards ('pagoda', 'cherry blossom', 'sakura', 'mount fuji',
       'osaka castle', 'waterfall', 'sightseeing', 'places to visit', 'famous landmarks'),
       foreign country collisions ('Delhi Dancing Thief', 'Pachaiyappa', 'Malaysia', 'Subic'),
       and trap words ('cheese board', 'western movie', 'cowboy', 'apple watch', 'calculator').
-    - Trusted editorial/news/encyclopedia feeds (`bing_news_rss`, `ddg_news`, `wikimedia_commons`,
-      `wikipedia_rest`, `multi_site_original_article`, `direct_article`) pass once verified free of
-      foreign country collisions and tourist/trap words with at least 1 story token (`g_hits >= 1 or e_hits >= 1`).
-    - Generic web image search requires `(g_hits >= 1 and e_hits >= 1) or (e_hits >= 2)`.
+    - Source reputation alone never approves an image. Every candidate must match story anchors
+      and event terms in its caption or URL.
+    - News feeds require at least one geo token and one event token; other sources require a
+      geo token plus two event tokens, or three event tokens.
+    - The caller also checks the candidate against the exact narrated sentence's named entities,
+      locations, and concrete subjects before it can be used in a scene.
     """
     if not img_caption or len(img_caption.strip()) < 5:
         return False
@@ -4567,21 +4569,18 @@ def ai_audit_caption_and_scene_match(img_caption, img_url, story_title, query_co
     if has_foreign_country_collision(cap_low, ctx_low):
         return False
 
-    if query_context in ("multi_site_original_article", "direct_article", "wikipedia_rest"):
-        return True
-
-    if dossier is not None:
-        geo_toks, ev_toks = get_story_anchor_and_context_tokens(dossier)
-        cap_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{2,}", cap_low)}
-        g_hits = len(geo_toks.intersection(cap_toks))
-        e_hits = len(ev_toks.intersection(cap_toks))
-        if query_context in ("bing_news_rss", "ddg_news", "wikimedia_commons") and (g_hits >= 1 or e_hits >= 1):
-            return True
-        if (g_hits >= 1 and e_hits >= 1) or (e_hits >= 2):
-            return True
+    # Source reputation is not evidence that a particular image depicts this story.
+    # Every source must carry caption/URL tokens that actually identify the story.
+    if dossier is None:
         return False
-
-    return True
+    geo_toks, ev_toks = get_story_anchor_and_context_tokens(dossier)
+    cap_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", cap_low)}
+    g_hits = len(geo_toks.intersection(cap_toks))
+    e_hits = len(ev_toks.intersection(cap_toks))
+    is_news_source = query_context in ("bing_news_rss", "ddg_news", "wikimedia_commons")
+    if is_news_source:
+        return g_hits >= 1 and e_hits >= 1
+    return (g_hits >= 1 and e_hits >= 2) or e_hits >= 3
 
 def verify_image_with_ai_vision_auditor(small_pil_rgb, story_title, query_context=""):
     try:
@@ -4726,10 +4725,13 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450, story_
 
     return apply_copyright_safe_documentary_lut(im)
 
-def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, tag_id="real_fallback", is_short=False, dossier=None):
+def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, tag_id="real_fallback", is_short=False, dossier=None, beat_text="", sent_ner=None):
     d_obj = dossier or {"title": str(ai_prompt or ""), "topic_anchor": str(ai_prompt or "")[:30], "pillar": "WORLD"}
-    master_qs = extract_topic_master_queries(d_obj)
-    cand_qs = ([str(ai_prompt).strip()] if ai_prompt and len(str(ai_prompt).strip()) >= 6 else []) + master_qs[:5]
+    if sent_ner is None and beat_text:
+        sent_ner = extract_sentence_ner_and_context(beat_text, {}, d_obj)
+    # This fallback is still a real web search, not a generative image model.
+    # Keep it on the exact beat query; broad story queries can return unrelated headlines.
+    cand_qs = [str(ai_prompt).strip()] if ai_prompt and len(str(ai_prompt).strip()) >= 6 else []
     neg_suffix = "-cartoon -illustration -stock -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
     for clean_q in cand_qs[:5]:
         # 1. Try Bing News RSS HD CDN first (never blocked on GitHub Actions!)
@@ -4745,8 +4747,11 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                         tu_hd = re.sub(r"&w=\d+&h=\d+", "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95", tu)
                         if "w=1920" not in tu_hd and "th?id=" in tu_hd:
                             tu_hd = tu_hd + "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95"
-                        cap_t = f"{ent_title} {clean_q}"
+                        cap_t = str(ent_title or "").strip()
                         if not passes_audit_gate_1_caption_and_url(tu_hd, cap_t, d_obj, "bing_news_rss"):
+                            continue
+                        rel_sc = compute_visual_relevance_score(tu_hd, cap_t, d_obj, query_str=clean_q, sent_ner=sent_ner)
+                        if rel_sc < 60 or not ai_audit_caption_and_scene_match(cap_t, tu_hd, d_obj.get("title", ""), "bing_news_rss", dossier=d_obj):
                             continue
                         ir = requests.get(tu_hd, headers=HEADERS_WEB, timeout=4.5)
                         if ir.status_code == 200 and len(ir.content) > 12000:
@@ -4755,6 +4760,8 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                                 f.write(ir.content)
                             vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=640, min_h=360, story_title=d_obj.get("title", ""), query_context="bing_news_rss")
                             if vim is not None:
+                                d_obj["_last_beat_visual_score"] = int(rel_sc)
+                                d_obj["_last_beat_visual_caption"] = cap_t[:100]
                                 return vim
         except Exception:
             pass
@@ -4781,6 +4788,9 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                 u_clean = u.replace("&amp;", "&")
                 if not passes_audit_gate_1_caption_and_url(u_clean, cap_t, d_obj, clean_q):
                     continue
+                rel_sc = compute_visual_relevance_score(u_clean, cap_t, d_obj, query_str=clean_q, sent_ner=sent_ner)
+                if rel_sc < 60:
+                    continue
                 if not ai_audit_caption_and_scene_match(cap_t, u_clean, d_obj.get('title', ''), clean_q, dossier=d_obj):
                     continue
                 for try_u in ([u_clean, u_turl] if u_turl and u_turl != u_clean else [u_clean]):
@@ -4792,6 +4802,8 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                                 f.write(ir.content)
                             vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=640, min_h=360, story_title=d_obj.get("title", ""), query_context=clean_q)
                             if vim is not None:
+                                d_obj["_last_beat_visual_score"] = int(rel_sc)
+                                d_obj["_last_beat_visual_caption"] = cap_t[:100]
                                 print(f"   📸 [Topic-Locked HD Press Photo Locked]: {clean_q[:42]}", flush=True)
                                 return vim
                     except Exception:
@@ -5184,7 +5196,9 @@ def extract_sentence_ner_and_context(beat_text, bv_dict, dossier):
         "mobilize", "quickly", "highlighted", "seeking", "close"
     }
     loc_and_ent_words = {w.lower() for w in re.findall(r"[A-Za-z0-9]+", " ".join(locations + specific_entities + persons))}
-    for src_chunk in [clean_sent, bv_q_raw]:
+    # The sentence is the source of truth. AI-suggested search terms must not
+    # introduce subjects that were never spoken in the narration.
+    for src_chunk in [clean_sent]:
         for w in re.findall(r"[A-Za-z0-9\-]{3,}", str(src_chunk or "")):
             wl = w.lower().strip("-")
             if len(wl) < 3 or wl.isdigit():
@@ -5227,6 +5241,7 @@ def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
 
     low_txt = str(beat_text or "").lower()
     if "watch the full documentary" in low_txt or "subscribe to world talk brief" in low_txt:
+        dossier["_last_beat_ner"] = extract_sentence_ner_and_context(beat_text, bv_dict, dossier)
         return topic_anchor, base_topic_q, set()
 
     ner = extract_sentence_ner_and_context(beat_text, bv_dict, dossier)
@@ -5329,6 +5344,64 @@ def sanitize_visual_search_query(raw_q, dossier):
     master_qs = extract_topic_master_queries(dossier)
     return master_qs[0] if master_qs else str(dossier.get("topic_anchor") or dossier.get("title", ""))[:40]
 
+VISUAL_MATCH_STOPWORDS = {
+    "about", "across", "after", "against", "among", "around", "because", "before", "being", "between",
+    "could", "during", "every", "from", "have", "into", "just", "more", "most", "over", "same", "some",
+    "than", "that", "their", "them", "there", "these", "they", "this", "those", "through", "under", "were",
+    "what", "when", "where", "which", "while", "with", "would", "year", "years", "today", "story", "world",
+    "global", "news", "report", "reports", "analysis", "impact", "effect", "effects", "change", "changes",
+    "future", "system", "issue", "question", "result", "results", "people", "official", "officials", "leader",
+    "leaders", "government", "governments", "country", "countries", "region", "regions", "international",
+    "strategy", "strategic", "pressure", "crisis", "shock", "major", "critical", "important", "new", "latest",
+    "says", "said", "according", "shows", "reveals", "could", "will", "can", "may", "must", "one", "two",
+    "first", "second", "third", "another", "also", "very", "much", "many", "some", "even", "only", "still"
+}
+
+
+def _visual_tokens(text):
+    return {
+        w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", str(text or ""))
+        if w.lower() not in VISUAL_MATCH_STOPWORDS and not w.isdigit()
+    }
+
+
+def sentence_visual_match(caption, sent_ner):
+    """Require caption evidence for this beat's subject, not merely the overall topic."""
+    if not isinstance(sent_ner, dict):
+        return False
+    cap_tokens = _visual_tokens(caption)
+    if not cap_tokens:
+        return False
+
+    def target_tokens(key, minimum_length=4):
+        vals = sent_ner.get(key) or []
+        return {
+            w.lower() for w in re.findall(r"[A-Za-z0-9]{%d,}" % minimum_length, " ".join(map(str, vals)))
+            if w.lower() not in VISUAL_MATCH_STOPWORDS and not w.isdigit()
+        }
+
+    person_tokens = target_tokens("persons")
+    if person_tokens:
+        # One distinctive name token is enough for captions that use a surname only.
+        return bool(person_tokens.intersection(cap_tokens))
+
+    entity_tokens = target_tokens("specific_entities")
+    entity_tokens.difference_update({"airport", "port", "station", "agency", "authority", "ministry", "international", "company", "group"})
+    if entity_tokens:
+        return bool(entity_tokens.intersection(cap_tokens))
+
+    location_tokens = target_tokens("locations")
+    physical_tokens = target_tokens("physical_objects", minimum_length=4)
+    location_hits = location_tokens.intersection(cap_tokens)
+    physical_hits = physical_tokens.intersection(cap_tokens)
+    if location_tokens and physical_tokens:
+        # A location by itself tends to select generic tourism imagery.
+        return bool(location_hits and physical_hits) or len(physical_hits) >= 2
+    if physical_tokens:
+        return len(physical_hits) >= 2 or (len(physical_tokens) == 1 and len(next(iter(physical_tokens))) >= 8 and bool(physical_hits))
+    return False
+
+
 def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", sent_ner=None):
     """
     V42 QUANTITATIVE VISUAL RELEVANCE SCORING ENGINE (0 TO 300+ POINTS):
@@ -5347,6 +5420,9 @@ def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", 
     comb_low = f"{img_caption} {img_url}".lower()
     cap_toks = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", comb_low)}
     if not cap_toks:
+        return -999
+
+    if sent_ner is not None and not sentence_visual_match(f"{img_caption} {img_url}", sent_ner):
         return -999
 
     geo_tokens, ev_tokens = get_story_anchor_and_context_tokens(dossier)
@@ -5493,9 +5569,6 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         if any(cb in comb_meta for cb in ["bitcoin", "crypto", "cryptocurrency", "blockchain", "nft", "memecoin", "altcoin", "mining rig"]):
             return False
 
-    if query_str in ("multi_site_original_article", "direct_article", "wikipedia_specific_entity"):
-        return True
-
     geo_tokens, ev_tokens = get_story_anchor_and_context_tokens(dossier)
     caption_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9]{3,}", comb_meta)}
     if not caption_tokens:
@@ -5604,24 +5677,14 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     for cap_obj in (dossier.get("article_captioned_photos") or []):
         cu = cap_obj.get("url", "")
         ccap = cap_obj.get("caption", "")
-        if cu and cu not in seen_cand_urls and not any(b in cu.lower() for b in ["livingcost", "numbeo", "statista", "chart", "logo"]):
+        if cu and len(str(ccap).strip()) >= 8 and cu not in seen_cand_urls and not any(b in cu.lower() for b in ["livingcost", "numbeo", "statista", "chart", "logo"]):
             seen_cand_urls.add(cu)
             raw_candidates.append({
                 "url": cu,
-                "caption": ccap or story_title,
+                "caption": ccap,
                 "media_type": "image",
-                "source_angle": "multi_site_original_article",
+                "source_angle": "publisher_captioned_photo",
                 "base_priority": 68
-            })
-    for a_u in ([dossier.get("lead_img")] if dossier.get("lead_img") else []) + list(dossier.get("article_inline_images") or []):
-        if a_u and a_u not in seen_cand_urls and not any(b in a_u.lower() for b in ["livingcost", "numbeo", "statista", "chart", "logo"]):
-            seen_cand_urls.add(a_u)
-            raw_candidates.append({
-                "url": a_u,
-                "caption": f"{story_title} {topic_anchor}",
-                "media_type": "image",
-                "source_angle": "direct_article",
-                "base_priority": 64
             })
 
     def fetch_bing_news_rss_angle(kw_news):
@@ -5833,7 +5896,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     pre_passed.sort(key=lambda x: x["relevance_score"], reverse=True)
     audit12_passed = []
     for cand in pre_passed[:190]:
-        if cand["source_angle"] in ("multi_site_original_article", "direct_article") or ai_audit_caption_and_scene_match(cand["caption"], cand["url"], story_title, cand["source_angle"], dossier=dossier):
+        if ai_audit_caption_and_scene_match(cand["caption"], cand["url"], story_title, cand["source_angle"], dossier=dossier):
             audit12_passed.append(cand)
             if len(audit12_passed) >= 140:
                 break
@@ -5952,7 +6015,9 @@ def select_best_visual_from_200_pool(beat_text, search_q, dossier, used_image_ur
         rel_sc = compute_visual_relevance_score(item["url"], item.get("caption", ""), dossier, query_str=search_q, sent_ner=sent_ner)
         # CRITICAL V44 GUARD: If `rel_sc < 0` (meaning the image missed the sentence's specific person, facility, or location),
         # never let its static `item["relevance_score"]` mask the mismatch when `require_strong_overlap` is True!
-        if require_strong_overlap and rel_sc < 45:
+        if rel_sc < 0:
+            continue
+        if require_strong_overlap and rel_sc < 60:
             continue
         total_sc = item["relevance_score"] + rel_sc
         if total_sc > best_score:
@@ -5970,6 +6035,27 @@ def select_best_visual_from_200_pool(beat_text, search_q, dossier, used_image_ur
     existing_hashes.append(best_item["dhash"])
     dossier["_last_beat_visual_score"] = int(best_score)
     dossier["_last_beat_visual_caption"] = str(best_item.get("caption", ""))[:100]
+    return best_item["im"]
+
+
+def select_secondary_visual_for_same_sentence(search_q, dossier, used_image_urls, existing_hashes, sent_ner):
+    """Find a second distinct image for a split layout only when it matches this same beat."""
+    best_item = None
+    best_score = -1
+    for item in dossier.get("_cached_200_audited_pool") or []:
+        if item.get("url") in used_image_urls:
+            continue
+        dhash = item.get("dhash")
+        if dhash is None or any(int(np.sum(dhash != old_h)) < 10 for old_h in existing_hashes):
+            continue
+        rel_sc = compute_visual_relevance_score(item.get("url", ""), item.get("caption", ""), dossier, query_str=search_q, sent_ner=sent_ner)
+        total_sc = int(item.get("relevance_score", 0)) + rel_sc
+        if rel_sc >= 60 and total_sc >= 165 and total_sc > best_score:
+            best_item, best_score = item, total_sc
+    if best_item is None:
+        return None
+    used_image_urls.add(best_item["url"])
+    existing_hashes.append(best_item["dhash"])
     return best_item["im"]
 
 def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, existing_hashes, failed_queries, tag_id="beat", used_image_urls=None, beat_text="", bv_dict=None):
@@ -6071,18 +6157,9 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         except Exception:
             pass
 
-    # Step 4: Fallback to best remaining unused photo in the verified vault
-    relaxed_im = select_best_visual_from_200_pool(
-        beat_text, exact_topic_q, dossier, used_image_urls, existing_hashes,
-        must_match_tokens=None, require_strong_overlap=False, sent_ner=sent_ner
-    )
-    if relaxed_im is not None:
-        return relaxed_im
-
-    # Step 4B (V45 ZERO-REPETITION DEEP-PAGE HARVESTER):
-    # Prevents cycling the same 4 photos when a niche/underdog topic has a small initial vault!
+    # Step 4: Search deeper pages, but keep the same sentence-level match gate.
     deep_off = (len(existing_hashes) * 14 + 20) % 105
-    for deep_q in (master_qs[:4] + [exact_topic_q]):
+    for deep_q in [exact_topic_q]:
         if not deep_q or len(deep_q.strip()) < 4:
             continue
         try:
@@ -6100,8 +6177,14 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                     continue
                 tm = re.search(r'"t"\s*:\s*"([^"]+)"', mc_u)
                 desc_m = re.search(r'"desc"\s*:\s*"([^"]+)"', mc_u)
-                cap_full = f"{tm.group(1) if tm else ''} {desc_m.group(1) if desc_m else ''} {deep_q}".strip()
+                pm_d = re.search(r'"purl"\s*:\s*"(https?://[^"]+)"', mc_u)
+                p_slug_d = re.sub(r"[^a-zA-Z0-9]+", " ", urllib.parse.urlparse(pm_d.group(1)).path).strip() if pm_d else ""
+                u_slug_d = re.sub(r"[^a-zA-Z0-9]+", " ", urllib.parse.urlparse(u_primary).path).strip()
+                cap_full = f"{tm.group(1) if tm else ''} {desc_m.group(1) if desc_m else ''} {p_slug_d} {u_slug_d}".strip()
                 if not passes_audit_gate_1_caption_and_url(u_primary, cap_full, dossier, query_str=deep_q):
+                    continue
+                rel_sc = compute_visual_relevance_score(u_primary, cap_full, dossier, query_str=deep_q, sent_ner=sent_ner)
+                if rel_sc < 60:
                     continue
                 for try_u in ([u_primary, turl_hd] if turl_hd and turl_hd != u_primary else [u_primary]):
                     try:
@@ -6113,6 +6196,8 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                             vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=640, min_h=360, story_title=story_title, query_context=deep_q)
                             if vim is not None:
                                 used_image_urls.add(u_primary)
+                                dossier["_last_beat_visual_score"] = int(rel_sc)
+                                dossier["_last_beat_visual_caption"] = cap_full[:100]
                                 return vim
                     except Exception:
                         pass
@@ -6212,6 +6297,45 @@ def build_clean_1080p_stage(im, W, H):
     fg = fit_full_height_face_aware_1080p(im, over_w, over_h)
     bg_depth = ImageEnhance.Brightness(fg.filter(ImageFilter.GaussianBlur(radius=14))).enhance(0.42)
     return ("FULL_BLEED_25D_PARALLAX_STAGE", fg, bg_depth)
+
+
+def build_sentence_evidence_card(beat_text, dossier, W, H):
+    """Render a factual text card when no source image passes the sentence match gate."""
+    w, h = max(1, int(W)), max(1, int(H))
+    canvas = Image.new("RGB", (w, h), (9, 17, 31))
+    draw = ImageDraw.Draw(canvas, "RGBA")
+    margin = max(36, int(min(w, h) * 0.075))
+    accent = (0, 215, 220, 255)
+    draw.rounded_rectangle((margin, margin, w - margin, h - margin), radius=max(18, margin // 3), fill=(14, 28, 48, 248), outline=(42, 91, 122, 210), width=max(2, margin // 24))
+    draw.rounded_rectangle((margin + 1, margin + 1, margin + max(8, int(w * 0.012)), h - margin - 1), radius=max(8, margin // 4), fill=accent)
+
+    label_size = max(18, int(min(w, h) * 0.027))
+    title_size = max(28, int(min(w, h) * 0.052))
+    body_size = max(23, int(min(w, h) * 0.037))
+    label_font = get_font(label_size)
+    title_font = get_font(title_size)
+    body_font = get_font(body_size)
+    small_font = get_font(max(15, int(min(w, h) * 0.021)))
+    x = margin + max(34, int(w * 0.045))
+    y = margin + max(32, int(h * 0.07))
+    draw.text((x, y), "EVIDENCE CARD  /  SCENE-MATCHED IMAGE UNAVAILABLE", font=label_font, fill=accent)
+    y += max(62, int(h * 0.12))
+
+    topic = str((dossier or {}).get("topic_anchor") or (dossier or {}).get("title") or "STORY EVIDENCE").strip().upper()
+    topic_lines = wrap_text_px(topic, title_font, w - (2 * x), max_lines=2)
+    for line in topic_lines:
+        draw.text((x, y), line, font=title_font, fill=(245, 248, 252, 255))
+        y += title_size + max(8, int(h * 0.012))
+    y += max(28, int(h * 0.05))
+
+    sentence_lines = wrap_text_px(beat_text, body_font, w - (2 * x), max_lines=5 if h > w else 4)
+    for line in sentence_lines:
+        draw.text((x, y), line, font=body_font, fill=(189, 207, 224, 255))
+        y += body_size + max(7, int(h * 0.01))
+
+    footer = "FACT CARD  •  NARRATION-LED VISUAL"
+    draw.text((x, h - margin - max(42, int(h * 0.065))), footer, font=small_font, fill=(126, 153, 176, 255))
+    return canvas
 
 
 # ==============================================================================
@@ -7348,6 +7472,28 @@ def _does_category_allow_group(pillar_str, story_low, group_code):
     return True
 
 
+def extract_comparison_sides(text):
+    clean = strip_news_publisher_mentions(str(text or "")).strip().rstrip(".!?;:")
+    patterns = [
+        r"\bon one side\b[:,]?\s*(.+?)\s*,?\s*\bon the other side\b[:,]?\s*(.+)$",
+        r"\b(.+?)\s+(?:versus|vs\.?|v\.)\s+(.+)$",
+        r"\b(.+?),\s*while\s+(.+)$"
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, clean, flags=re.I)
+        if match:
+            left = match.group(1).strip(" ,;:-")
+            right = match.group(2).strip(" ,;:-")
+            if len(left) >= 8 and len(right) >= 8 and left.lower() != right.lower():
+                return left, right
+    return None
+
+
+def comparison_side_has_named_subject(side_text, dossier):
+    ner = extract_sentence_ner_and_context(side_text, {}, dossier)
+    return bool(ner.get("persons") or ner.get("specific_entities"))
+
+
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False, sec_idx=0, beat_in_sec=0, is_short=False):
     """
     V51 SMART CONTEXT-ONLY 28-TEMPLATE THINK SCHOOL ROUTER (`jahan zaroorat pade wahin pe daalna hai`):
@@ -7384,12 +7530,41 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     best_mode = None
     best_score = -1
 
+    # These renderers contain fixed scores, unrelated photo pools, or fabricated
+    # quotes. Keep them out of production until they can be driven by source data.
+    unsupported_data_modes = {
+        "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE", "TS_04_DOMINO_CHAIN_FLOWCHART",
+        "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD", "GEO_08_MILITARY_FIREPOWER_RADAR",
+        "GEO_09_SANCTIONS_TARIFF_BARRIER", "GEO_10_ALLIANCE_POWER_NETWORK",
+        "GEO_11_CHRONOLOGY_TIMELINE_RIBBON", "BIZ_12_WALL_STREET_CANDLESTICK_CHART",
+        "BIZ_13_HOUSEHOLD_WALLET_IMPACT_BOARD", "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
+        "BIZ_15_CORPORATE_EMPIRE_HIERARCHY", "BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD",
+        "SPACE_20_ORBITAL_APOGEE_TRAJECTORY",
+        "SCI_21_SEISMIC_CLIMATE_WAVEFORM", "MED_22_DNA_HELIX_CLINICAL_TRIAL",
+        "MED_23_PHYSIOLOGY_ECG_BIOMARKER", "SPORT_24_ATHLETE_TALE_OF_THE_TAPE",
+        "SPORT_25_CHAMPIONSHIP_LEADERBOARD_GAP", "CINE_26_BOX_OFFICE_AUDIENCE_METER",
+        "MYST_27_DECLASSIFIED_FORENSIC_BOARD", "TS_28_STUDIO_QUOTE_PRESS_MONITOR"
+    }
+
     has_digit_in_beat = bool(re.search(r"\d", low))
     for t_mode, grp_code, pat_str, base_sc in V51_TEMPLATE_RULES:
         if t_mode in used_templates:
             continue
+        if t_mode in unsupported_data_modes:
+            continue
+        if t_mode == "TS_05_CHOKEPOINT_CORRIDOR_MAP":
+            # The current map renderer does not validate a route against a source.
+            continue
+        if t_mode == "TS_02_HEAD_TO_HEAD_VS_SPLIT":
+            cmp_sides = extract_comparison_sides(beat_text)
+            if not cmp_sides or not all(comparison_side_has_named_subject(side, dossier) for side in cmp_sides):
+                continue
         if t_mode in ("BIZ_14_FOLLOW_THE_MONEY_WATERFALL", "TS_06_SIMPLE_100_MATH_GRID", "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE") and not has_digit_in_beat:
             continue
+        if t_mode == "TS_06_SIMPLE_100_MATH_GRID":
+            pct_match = re.search(r"\b(\d+(?:\.\d+)?)\s*(?:%|percent)\b", low)
+            if not pct_match or not float(pct_match.group(1)).is_integer() or not 0 <= float(pct_match.group(1)) <= 100:
+                continue
         if not _does_category_allow_group(pillar, story_low, grp_code):
             continue
         hits = re.findall(pat_str, low, flags=re.I)
@@ -7574,11 +7749,17 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
             b_left = (sx0, sy0, sx1, sy0 + sh // 2 - 26)
             b_right = (sx0, sy0 + sh // 2 + 26, sx1, sy1)
 
-        pt1, _ = extract_key_point_from_sentence(clauses[0], beat_num=1)
-        pt2, _ = extract_key_point_from_sentence(clauses[1] if len(clauses) > 1 else b_txt, beat_num=2)
+        cmp_sides = extract_comparison_sides(b_txt) or (b_txt, b_txt)
+        side_labels = []
+        side_points = []
+        for side_idx, side_text in enumerate(cmp_sides, 1):
+            side_ner = extract_sentence_ner_and_context(side_text, {}, story_obj)
+            named_subjects = side_ner.get("persons") or side_ner.get("specific_entities") or []
+            side_labels.append(fit_whole_words_limit(named_subjects[0] if named_subjects else f"SIDE {side_idx}", 18).upper())
+            side_points.append(extract_key_point_from_sentence(side_text, beat_num=side_idx)[0])
         sides = [
-            (b_left, src_im, "CONTENDER  •  SIDE A", (0, 235, 255), pt1, clean_nums[0]),
-            (b_right, sec_im, "CHALLENGER  •  SIDE B", (255, 65, 95), pt2, clean_nums[1] if len(clean_nums) > 1 else "CONTENDER")
+            (b_left, src_im, f"SIDE A  •  {side_labels[0]}", (0, 235, 255), side_points[0], "EVIDENCE A"),
+            (b_right, sec_im, f"SIDE B  •  {side_labels[1]}", (255, 65, 95), side_points[1], "EVIDENCE B")
         ]
         for bx, pim, s_hdr, scol, key_pt, stat_pill in sides:
             draw_2026_visionos_glass_card(bg, bx, radius=24, tint=(10, 18, 34, 198), border_col=(scol[0], scol[1], scol[2], 175), accent_col=scol, accent_pos="top", blur_px=18)
@@ -7730,7 +7911,9 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
 
         # 10x10 100-Unit Proportional Matrix
         pct_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:%|percent)", b_txt, flags=re.I)
-        target_units = min(96, max(12, int(float(pct_m.group(1))) if pct_m else 68))
+        if not pct_m or not float(pct_m.group(1)).is_integer() or not 0 <= float(pct_m.group(1)) <= 100:
+            return bg
+        target_units = int(float(pct_m.group(1)))
         active_units = int(target_units * anim_p)
         gw_c, gh_c = g_box[2] - g_box[0], g_box[3] - g_box[1]
         cell_s = min((gw_c - 80) // 10, (gh_c - 90) // 10)
@@ -9212,7 +9395,7 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
     sim_mode = beat.get("special_sim_mode")
     if sim_mode in V51_ALL_28_TEMPLATE_MODES:
         frame = render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=is_short)
-    elif b_type == "VIDEO_BROLL_BEAT" and beat.get("vseg") is not None:
+    elif b_type in ("VIDEO_BROLL_BEAT", "PARALLAX_PHOTO_MOTION") and beat.get("vseg") is not None:
         vseg = beat["vseg"]
         vc = vseg["vclip"]
         try:
@@ -9523,7 +9706,6 @@ def build_prop_driven_storyboard_1080p(
     if start_beat_offset == 0 and not dossier.get("_cached_video_broll_pool"):
         harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used_video_queries, tag_prefix=tag_prefix)
 
-    master_topic_queries = extract_topic_master_queries(dossier)
     global_beat_idx = start_beat_offset
 
     for sec_idx, sec in enumerate(sections_list):
@@ -9565,8 +9747,6 @@ def build_prop_driven_storyboard_1080p(
             _, sent_specific_q, _ = extract_sentence_proper_entities_and_query(b_txt, cur_bv_dict, dossier)
             if sent_specific_q and len(sent_specific_q) >= 4:
                 search_q = sent_specific_q
-            elif master_topic_queries:
-                search_q = master_topic_queries[(global_beat_idx + b_i) % len(master_topic_queries)]
 
             bv_point_hl = str(cur_bv_dict.get("point_highlight") or "").strip()
             bv_person = str(cur_bv_dict.get("mentioned_person") or "").strip()
@@ -9627,72 +9807,94 @@ def build_prop_driven_storyboard_1080p(
             # V42 100% SENTENCE-SYNCHRONIZED VISUAL & MOVING VIDEO ASSIGNMENT:
             # 1. ALWAYS fetch the exact sentence-matched 1080p visual (`beat_im`) for EVERY beat first (`b_i = 0, 1, 2, ...`)
             #    so Beat 0 and Beat 2 NEVER show an un-synced clip from `v_pool`!
-            beat_im = fetch_verified_news_or_wiki_visual(
-                wiki_target, search_q, dossier, existing_hashes, failed_queries,
-                tag_id=f"{tag_prefix}_b{global_beat_idx}", used_image_urls=used_image_urls,
-                beat_text=b_txt, bv_dict=cur_bv_dict
-            )
+            dossier["_last_beat_visual_score"] = 0
+            dossier["_last_beat_visual_caption"] = ""
+            beat_im = None
+            comparison_secondary_im = None
+            comparison_visual_records = []
+            if special_sim_mode == "TS_02_HEAD_TO_HEAD_VS_SPLIT":
+                cmp_sides = extract_comparison_sides(b_txt)
+                if cmp_sides:
+                    side_images = []
+                    for side_idx, side_text in enumerate(cmp_sides, 1):
+                        side_wiki, side_q, _side_must_match = extract_sentence_proper_entities_and_query(side_text, {}, dossier)
+                        side_ner = dossier.get("_last_beat_ner") or {}
+                        if not (side_ner.get("persons") or side_ner.get("specific_entities")):
+                            side_images = []
+                            break
+                        side_im = fetch_verified_news_or_wiki_visual(
+                            side_wiki, side_q, dossier, existing_hashes, failed_queries,
+                            tag_id=f"{tag_prefix}_b{global_beat_idx}_side{side_idx}", used_image_urls=used_image_urls,
+                            beat_text=side_text, bv_dict={}
+                        )
+                        if side_im is None:
+                            side_im = fetch_huggingface_or_pollinations_1080p_scene(
+                                side_q, existing_hashes, tag_id=f"{tag_prefix}_b{global_beat_idx}_side{side_idx}_fallback",
+                                is_short=is_short, dossier=dossier, beat_text=side_text, sent_ner=side_ner
+                            )
+                        if side_im is None:
+                            side_images = []
+                            break
+                        side_images.append(side_im)
+                        comparison_visual_records.append({
+                            "side": side_idx,
+                            "subject": side_wiki,
+                            "query": side_q,
+                            "caption": dossier.get("_last_beat_visual_caption", ""),
+                            "score": dossier.get("_last_beat_visual_score", 0)
+                        })
+                    if len(side_images) == 2:
+                        beat_im, comparison_secondary_im = side_images
+                        dossier["_last_beat_visual_score"] = min(x.get("score", 0) for x in comparison_visual_records)
+                        dossier["_last_beat_visual_caption"] = " | ".join(x.get("caption", "") for x in comparison_visual_records)
+                    else:
+                        special_sim_mode = None
+
+            # Restore the complete spoken sentence context after side-specific searches.
+            _, _full_sentence_query, _ = extract_sentence_proper_entities_and_query(b_txt, cur_bv_dict, dossier)
+            if beat_im is None:
+                beat_im = fetch_verified_news_or_wiki_visual(
+                    wiki_target, search_q, dossier, existing_hashes, failed_queries,
+                    tag_id=f"{tag_prefix}_b{global_beat_idx}", used_image_urls=used_image_urls,
+                    beat_text=b_txt, bv_dict=cur_bv_dict
+                )
             if beat_im is None:
                 beat_im = fetch_huggingface_or_pollinations_1080p_scene(
-                    search_q, existing_hashes, tag_id=f"{tag_prefix}_ai_{global_beat_idx}", is_short=is_short, dossier=dossier
+                    search_q, existing_hashes, tag_id=f"{tag_prefix}_ai_{global_beat_idx}", is_short=is_short,
+                    dossier=dossier, beat_text=b_txt, sent_ner=dossier.get("_last_beat_ner")
                 )
+            has_verified_primary = beat_im is not None
             unit_used_photos = dossier.setdefault("_unit_used_photo_ids", set())
             if beat_im is not None:
                 unique_real_photos.append(beat_im)
                 unit_used_photos.add(id(beat_im))
-            elif unique_real_photos:
-                unused_photos = [p_im for p_im in unique_real_photos if id(p_im) not in unit_used_photos]
-                if unused_photos:
-                    beat_im = unused_photos[0]
-                    unit_used_photos.add(id(beat_im))
-                else:
-                    pool_all = [it["im"] for it in (dossier.get("_cached_200_audited_pool") or []) if it.get("im") is not None]
-                    unused_pool_ims = [p_im for p_im in pool_all if id(p_im) not in unit_used_photos]
-                    if unused_pool_ims:
-                        beat_im = unused_pool_ims[0]
-                        unit_used_photos.add(id(beat_im))
-                        unique_real_photos.append(beat_im)
-                    else:
-                        beat_im = create_distinct_editorial_composition_variant(unique_real_photos[global_beat_idx % len(unique_real_photos)], global_beat_idx)
-            elif beat_person_popup is not None and beat_person_popup.get("portrait_im") is not None:
-                p_bg = beat_person_popup["portrait_im"].resize((1920, 1080)).filter(ImageFilter.GaussianBlur(radius=28))
-                beat_im = ImageEnhance.Brightness(p_bg).enhance(0.38)
+                if comparison_secondary_im is not None:
+                    unique_real_photos.append(comparison_secondary_im)
+                    unit_used_photos.add(id(comparison_secondary_im))
             else:
-                beat_im = Image.new("RGB", (1920, 1080), (12, 18, 32))
+                beat_im = build_sentence_evidence_card(b_txt, dossier, W, H)
 
             stage_1 = build_clean_1080p_stage(beat_im, W, H)
 
             # 2. On Beat 0 and Beat 2 (`b_i in (0, 2)`), deliver 30fps Moving 1080p Video B-Roll that is 100% synchronized
             #    with THIS sentence's exact visual (`beat_im`) or an exact sentence-matching real video clip!
             v_pool = dossier.get("_cached_video_broll_pool") or []
-            bg_support_vseg = v_pool[(global_beat_idx + b_i) % len(v_pool)] if v_pool else None
+            bg_support_vseg = None
             vseg = None
             if videos_in_section < 2 and b_i in (0, 2):
                 unit_used_vclips = dossier.setdefault("_unit_used_vclips", set())
                 cur_ner = dossier.get("_last_beat_ner") or {}
-                pref_ent_words = {
-                    w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", " ".join(cur_ner.get("specific_entities", []) + cur_ner.get("locations", []) + cur_ner.get("persons", [])))
-                }
-                # 1st Pass: Prefer an unused real video clip whose query/label shares a token with this sentence
+                # Use a pooled video only when its own title/query supports this sentence's subject.
                 for cand_vp in v_pool:
                     vc_id = id(cand_vp.get("vclip"))
                     if vc_id in unit_used_vclips:
                         continue
                     vp_q_low = f"{cand_vp.get('source_query', '')} {cand_vp.get('label', '')}".lower()
-                    if pref_ent_words and any(mw in vp_q_low for mw in pref_ent_words):
+                    if sentence_visual_match(vp_q_low, cur_ner):
                         vseg = cand_vp
                         unit_used_vclips.add(vc_id)
                         videos_in_section += 1
                         break
-                # 2nd Pass: Pick the next unused verified topic video clip from `v_pool` so real event video ALWAYS plays!
-                if vseg is None:
-                    for cand_vp in v_pool:
-                        vc_id = id(cand_vp.get("vclip"))
-                        if vc_id not in unit_used_vclips:
-                            vseg = cand_vp
-                            unit_used_vclips.add(vc_id)
-                            videos_in_section += 1
-                            break
                 # If no pre-pooled clip matched THIS sentence's specific entity (e.g. 'Warsaw Chopin Airport', 'Madrid-Barajas',
                 # 'Sofia Airport', 'Port of Piraeus', 'Europol'), convert THIS sentence's exact `beat_im` into a 30fps 3D Parallax Moving Video Clip!
                 if vseg is None and beat_im is not None:
@@ -9707,7 +9909,7 @@ def build_prop_driven_storyboard_1080p(
                         videos_in_section += 1
 
             if vseg is not None:
-                b_type = "VIDEO_BROLL_BEAT"
+                b_type = "PARALLAX_PHOTO_MOTION" if vseg.get("is_parallax") else "VIDEO_BROLL_BEAT"
                 moving_video_beats += 1
             else:
                 b_type = "CINEMA_HERO_ZOOM"
@@ -9722,12 +9924,21 @@ def build_prop_driven_storyboard_1080p(
                 "spoken_sentence": b_txt,
                 "extracted_ner": dossier.get("_last_beat_ner", {}),
                 "search_query": search_q,
-                "visual_relevance_score": dossier.get("_last_beat_visual_score", 100),
-                "matched_visual_caption": dossier.get("_last_beat_visual_caption", search_q),
+                "visual_relevance_score": dossier.get("_last_beat_visual_score", 0),
+                "matched_visual_caption": dossier.get("_last_beat_visual_caption", ""),
+                "comparison_visuals": comparison_visual_records,
                 "beat_render_mode": b_type
             })
 
-            secondary_im = unique_real_photos[(len(unique_real_photos) - 2) % len(unique_real_photos)] if len(unique_real_photos) >= 2 else beat_im
+            secondary_im = comparison_secondary_im
+            if secondary_im is None and has_verified_primary:
+                secondary_im = select_secondary_visual_for_same_sentence(
+                    search_q, dossier, used_image_urls, existing_hashes, dossier.get("_last_beat_ner") or {}
+                )
+                if secondary_im is not None:
+                    unique_real_photos.append(secondary_im)
+            if secondary_im is None:
+                secondary_im = beat_im
             prev_stage = planned_beats[-1]["stage_1"] if planned_beats else None
 
             beat_sit_mood = detect_sentence_situation_mood(b_txt, base_mood=dossier.get("category", "dark_geopolitics"), beat_idx=global_beat_idx)
@@ -9813,28 +10024,47 @@ class VoiceAndSubtitleEngine:
         r"\bADSB\b": "A-D-S-B"
     }
 
-    async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD", is_short=False):
+    def voice_config_for_section(self, pillar="WORLD", is_short=False, voice_index=0):
+        core_hub = PILLAR_TO_CORE_HUB.get(pillar, pillar)
+        long_v, short_v, _dg_backup, long_rate, short_rate = CATEGORY_VOICE_CAST.get(
+            core_hub, ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+1%", "+3%")
+        )
+        category_leads = {
+            "STOCK_MARKETS": "en-US-BrianMultilingualNeural",
+            "BUSINESS": "en-US-BrianMultilingualNeural",
+            "AI_ROBOTICS": "en-US-BrianMultilingualNeural",
+            "TECHNOLOGY": "en-US-BrianMultilingualNeural",
+            "SCIENCE": "en-US-BrianMultilingualNeural",
+            "VIRAL_UNDERDOG_SPORTS": "en-US-AndrewMultilingualNeural",
+            "SPORTS": "en-US-AndrewMultilingualNeural"
+        }
+        preferred = category_leads.get(pillar, short_v if is_short else long_v)
+        available = [(preferred, "+0Hz")]
+        for voice_name, _pool_rate, pitch in DOCUMENTARY_MULTI_VOICE_POOL:
+            if voice_name != preferred and all(voice_name != existing[0] for existing in available):
+                available.append((voice_name, pitch))
+        chosen_voice, chosen_pitch = available[int(voice_index or 0) % len(available)]
+        rate = short_rate if is_short else long_rate
+        return chosen_voice, rate, chosen_pitch
+
+    async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD", is_short=False, voice_index=None):
         """
         V30 HUMAN-LIKE MULTI-VOICE DOCUMENTARY NARRATOR:
-        - Uses Microsoft's most lifelike Gen-3 conversational & documentary voices (`AndrewMultilingualNeural`,
-          `BrianMultilingualNeural`, `GuyNeural`, `RyanNeural`, `AvaMultilingualNeural`).
-        - Rotates between the Lead Investigative Host Voice and the Co-Host / Analyst / Quote Voice across
-          sections (`अलग-अलग वॉइस`) with natural human prosody (`+5%` to `+7%` pace, warm chest resonance)
+        - Uses the configured Andrew, Brian, Ryan, and Guy neural voices.
+        - Keeps the category lead voice first, then rotates one voice per chapter in a stable order.
+          Retries for a chapter always keep its selected voice.
+        - Uses natural human prosody and word-boundary subtitle timing
           and studio broadcast EQ + silence tightening so it never sounds robotic!
         """
-        core_hub = PILLAR_TO_CORE_HUB.get(pillar, pillar)
+        if voice_index is None:
+            voice_index = self._chapter_voice_counter
+        self._chapter_voice_counter = int(voice_index) + 1
         tts_spoken_text = str(text)
         for pat_ph, rep_ph in self.PHONETIC_TTS_MAP.items():
             tts_spoken_text = re.sub(pat_ph, rep_ph, tts_spoken_text, flags=re.I)
 
-        long_v, short_v, dg_backup, long_rate, short_rate = CATEGORY_VOICE_CAST.get(
-            core_hub, ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+2%", "+4%")
-        )
-        # V48 CATEGORY-TAILORED STUDIO NARRATOR VOICE (100% Consistent Within Each Video, Tailored Per Category!):
-        # - Geopolitics / Global Powers / Defense: `en-US-AndrewMultilingualNeural` (Deep, warm Johnny Harris / Frontline tone)
-        # - Underrated / Mind-Blowing Mysteries: `en-GB-RyanNeural` (Crisp BBC World / Vox investigative documentary tone)
-        # - Stock Markets / Business / AI / Science: `en-US-BrianMultilingualNeural` (Sharp Bloomberg / Think School / Cleo Abram analyst tone)
-        # - Sports / Underdog Prodigies: `en-US-GuyNeural` (Energetic ESPN / Red Bull documentary storyteller tone)
+        # Keep the category's lead voice, then rotate clearly different voices by chapter.
+        # Voice selection is deterministic so retries and chapter rebuilds preserve the same cast.
         # Clean decimals, shorthand ($4.2M), and acronyms for natural human pronunciation:
         tts_spoken_text = re.sub(r"\$(\d+(?:\.\d+)?)\s*[Mm]\b", r"\1 million dollars", tts_spoken_text)
         tts_spoken_text = re.sub(r"\$(\d+(?:\.\d+)?)\s*[Bb]\b", r"\1 billion dollars", tts_spoken_text)
@@ -9847,29 +10077,12 @@ class VoiceAndSubtitleEngine:
         tts_spoken_text = re.sub(r"\bLusail\b", "Loo-sail", tts_spoken_text, flags=re.I)
         tts_spoken_text = re.sub(r"\bQuiles\b", "Kee-les", tts_spoken_text, flags=re.I)
 
-        # V53 100% GEN-3 EXPRESSIVE MULTILINGUAL HUMAN VOICE ENGINE (Zero Gen-1 Robotic Voices, Zero Artificial Pitch Warping!):
-        # Uses ONLY `en-US-AndrewMultilingualNeural` and `en-US-BrianMultilingualNeural` at natural `+0Hz` pitch and `+1%`/`+3%` conversational rate
-        # so Microsoft's DragonHD emotional sentence intonation stays 100% warm, expressive, and human!
-        voice_by_pillar = {
-            "STOCK_MARKETS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "BUSINESS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "AI_ROBOTICS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "SCIENCE": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "VIRAL_UNDERDOG_SPORTS": ("en-US-AndrewMultilingualNeural", "+2%", "+4%", "+0Hz"),
-            "SPORTS": ("en-US-AndrewMultilingualNeural", "+2%", "+4%", "+0Hz")
-        }
-        v_cfg = voice_by_pillar.get(pillar) or voice_by_pillar.get(core_hub) or ("en-US-AndrewMultilingualNeural", "+1%", "+3%", "+0Hz")
-        edge_voice = v_cfg[0]
-        rate = v_cfg[2] if is_short else v_cfg[1]
-        pitch = v_cfg[3]
+        edge_voice, rate, pitch = self.voice_config_for_section(pillar, is_short=is_short, voice_index=voice_index)
 
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
         word_timings = []
 
-        # V38 100% SINGLE-VOICE LOCK (`en-US-AndrewMultilingualNeural` ONLY — ZERO DEEPGRAM / gTTS VOICE SWITCHING!):
-        # Fixes the bug where a transient WebSocket timeout on Chapter 1 caused the first 10-45 seconds of a video
-        # to fall back to Deepgram (`aura-orion-en`) or `gTTS` before switching back to `en-US-AndrewMultilingualNeural`!
+        # Keep the selected chapter voice stable across streaming retries and CLI fallback.
         for attempt_v in range(6):
             try:
                 if os.path.exists(raw_mp3):
@@ -9904,7 +10117,7 @@ class VoiceAndSubtitleEngine:
             except Exception:
                 await asyncio.sleep(0.8 * (attempt_v + 1))
 
-        # If streaming failed, use `edge-tts` CLI with the EXACT SAME `en-US-AndrewMultilingualNeural` voice!
+        # If streaming failed, use `edge-tts` CLI with the exact same selected chapter voice.
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1500:
             try:
                 txt_f = out_path + "_tts_input.txt"
@@ -11122,17 +11335,26 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
         ribbon_bg = prim_col
         ribbon_fg = sec_col if sum(sec_col) > 400 else (255, 235, 0)
 
-    pool_ims = [it["im"] for it in (dossier.get("_cached_200_audited_pool") or []) if it.get("im") is not None]
-    all_cand_ims = list(unique_photos or []) + [im for im in pool_ims if im not in (unique_photos or [])]
+    # Thumbnails may reuse only photos already accepted for a spoken beat.
+    # The topic-wide candidate vault is not sentence-verified and can be misleading here.
+    all_cand_ims = [im for im in (unique_photos or []) if im is not None]
 
     face_photos = [im for im in all_cand_ims if has_well_framed_face(im)]
     non_face_photos = [im for im in all_cand_ims if im not in face_photos]
 
     hero_bg_im = non_face_photos[0] if non_face_photos else (all_cand_ims[0] if all_cand_ims else None)
     if hero_bg_im is None:
+        thumb_text = str(dossier.get("title", ""))
+        thumb_entity, thumb_query, _ = extract_sentence_proper_entities_and_query(thumb_text, {}, dossier)
         hero_bg_im = fetch_verified_news_or_wiki_visual(
-            dossier.get("topic_anchor", ""), dossier.get("title", ""), dossier, [], [], tag_id="thumb_hero"
+            thumb_entity, thumb_query, dossier, [], [], tag_id="thumb_hero",
+            used_image_urls=set(), beat_text=thumb_text, bv_dict={}
         )
+        if hero_bg_im is None:
+            hero_bg_im = fetch_huggingface_or_pollinations_1080p_scene(
+                thumb_query, [], tag_id="thumb_hero_fallback", dossier=dossier,
+                beat_text=thumb_text, sent_ner=dossier.get("_last_beat_ner")
+            )
     if hero_bg_im is None:
         hero_bg_im = Image.new("RGB", (W, H), dark_tint)
 
@@ -11666,7 +11888,8 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
 
     for idx, ch in enumerate(long_chapters):
         ap = f"temp/l{unit_num}_voice_{idx}.mp3"
-        vc, dur, w_timings = await voice_sub_dir.synthesize_with_word_boundaries(ch["narration"], ap, pillar=pillar, is_short=False)
+        vc, dur, w_timings = await voice_sub_dir.synthesize_with_word_boundaries(ch["narration"], ap, pillar=sub_pillar, is_short=False, voice_index=idx)
+        ch["voice_index"] = idx
         ch["audio_clip"] = vc
         ch["duration"] = dur
         ch["word_timings"] = w_timings
@@ -11797,7 +12020,8 @@ async def render_and_upload_short_unit(
 
     for idx, sec in enumerate(short_sections):
         ap = f"temp/s{unit_num}_voice_{idx}.mp3"
-        vc, dur, w_timings = await voice_sub_dir.synthesize_with_word_boundaries(sec["narration"], ap, pillar=pillar, is_short=True)
+        vc, dur, w_timings = await voice_sub_dir.synthesize_with_word_boundaries(sec["narration"], ap, pillar=sub_pillar, is_short=True, voice_index=idx)
+        sec["voice_index"] = idx
         sec["audio_clip"] = vc
         sec["duration"] = dur
         sec["word_timings"] = w_timings
