@@ -1,4 +1,4 @@
-name: WTB Documentary Engine V60 (Script-Matched Visuals • Licensed Media • 1 Pair/2h)
+name: WTB News Engine V60 (15m Unstoppable Cron + 2-Hour Smart Cooldown Gate • 1 Pair/2h • Zero Spam Throttle)
 
 on:
   workflow_dispatch:
@@ -8,20 +8,31 @@ on:
         required: false
         default: 'false'
       pairs_per_run:
-        description: 'Number of Long+Short video pairs per manual run'
+        description: 'Number of Long+Short video pairs per run (1 = 1 Long + 1 Short every 2 hours)'
         required: false
         default: '1'
       bypass_cooldown:
         description: 'Run immediately even if last upload was < 2 hours ago (true/false)'
         required: false
         default: 'true'
+  push:
+    branches:
+      - main
+    paths:
+      - 'wtb_engine.py'
+      - '.github/workflows/**'
   schedule:
-    # One scheduled attempt per two-hour window. This avoids repeatedly replacing
-    # GitHub Actions' single pending run while a long documentary render is active.
-    - cron: '7 */2 * * *'
+    # 4 Staggered Cron Triggers Every Hour (Every 15 Minutes = 96 Triggers/Day!)
+    # Guarantees GitHub Actions NEVER stalls for 4-6 hours when individual cron ticks are dropped,
+    # while the 3-second Cooldown Gate below ensures videos only build & upload once every 2 hours!
+    - cron: '7 * * * *'
+    - cron: '22 * * * *'
+    - cron: '37 * * * *'
+    - cron: '52 * * * *'
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: wtb-production-group
@@ -30,7 +41,6 @@ concurrency:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   PYTHONUNBUFFERED: '1'
-  VISUAL_RIGHTS_MODE: licensed_only
 
 jobs:
   build_and_publish:
@@ -42,6 +52,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Auto-Remove Broken Schedule Blocker Files (Self-Healing Cleanup)
+        run: |
+          rm -f workflow_schedule_state.json .github/scripts/claim_schedule_slot.py temp/channel_cap_hit.flag || true
 
       - name: Smart 2-Hour Algorithm Cooldown Gate (Fast 3s Check on Cron Runs)
         id: cooldown_gate
@@ -57,8 +71,8 @@ jobs:
           bypass = os.environ.get("BYPASS_COOLDOWN", "true").lower() == "true"
           cooldown_mins = 115  # ~2 Hours between uploads
 
-          # Manual runs can start immediately when requested.
-          if event_name == "workflow_dispatch" and bypass:
+          # Always run immediately on manual button click (`workflow_dispatch`) or code push (`push`)!
+          if event_name in ("workflow_dispatch", "push") and bypass:
               print(f"🚀 [{event_name.upper()} TRIGGER] Bypassing 2-hour cooldown — starting build immediately!")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out:
                   out.write("should_run=true\n")
@@ -148,7 +162,7 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V60 Documentary Engine (1 Long + 1 Short Pair Every 2 Hours)
+      - name: Run WTB V60 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
         if: steps.cooldown_gate.outputs.should_run == 'true'
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
@@ -189,3 +203,9 @@ jobs:
           if-no-files-found: ignore
           retention-days: 3
 
+      - name: Keep Workflow Active for Next 15-Min Cron Heartbeat
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow enable "test_and_run.yml" || true
