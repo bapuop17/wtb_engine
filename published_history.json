@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-09T13:29:56.678831",
-  "last_upload_epoch": 1794230996,
-  "round_robin_idx": 14,
-  "country_rot_idx": 59,
-  "bgm_track_counter": 3115541968,
+  "updated_at": "2026-11-09T16:23:01.417532",
+  "last_upload_epoch": 1794241381,
+  "round_robin_idx": 15,
+  "country_rot_idx": 65,
+  "bgm_track_counter": 3146144519,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -659,49 +659,11 @@
     "man_arrested_after_shootings_kill_1",
     "wssu_campus_chaos_the_homecoming_tragedy",
     "hsbc_citi_turn_bullish_as_indian",
-    "hsbc_citi_bet_big_why_india"
+    "hsbc_citi_bet_big_why_india",
+    "brazil_risks_missing_rare_earths_boom",
+    "brazil_s_rare_earth_gamble_will"
   ],
   "event_fingerprints": [
-    {
-      "title": "Johannesburg Is Collapsing: The 40,000 Ton Gold Lie",
-      "tokens": [
-        "blame",
-        "collapsing",
-        "documentary",
-        "full",
-        "gold",
-        "here",
-        "https",
-        "johannesburg",
-        "sbgm",
-        "sinking",
-        "watch",
-        "youtube",
-        "zoyk"
-      ]
-    },
-    {
-      "title": "Human trafficking victims stranded in Guinea-Bissau | Defense Military Explained",
-      "tokens": [
-        "bissau",
-        "case",
-        "chapter",
-        "deep",
-        "defense",
-        "dive",
-        "guinea",
-        "human",
-        "military",
-        "original",
-        "presents",
-        "stranded",
-        "study",
-        "talk",
-        "timestamps",
-        "trafficking",
-        "victims"
-      ]
-    },
     {
       "title": "Xi Jinping's Secret Move: Why Loyalty Beats Growth",
       "tokens": [
@@ -8475,10 +8437,50 @@
         "turn",
         "wall"
       ]
+    },
+    {
+      "title": "Brazil risks missing rare earths boom without industrial reforms",
+      "tokens": [
+        "atop",
+        "boom",
+        "brazil",
+        "earths",
+        "greatest",
+        "industrial",
+        "international",
+        "mineral",
+        "missing",
+        "rare",
+        "reforms",
+        "resources",
+        "risks",
+        "sits",
+        "technol",
+        "valor",
+        "watching",
+        "without"
+      ]
+    },
+    {
+      "title": "Brazil's Rare Earth Gamble: Will It Miss the Global Boom?",
+      "tokens": [
+        "boom",
+        "brazil",
+        "earth",
+        "earths",
+        "gamble",
+        "industrial",
+        "miss",
+        "missing",
+        "rare",
+        "reforms",
+        "risks",
+        "will",
+        "without"
+      ]
     }
   ],
   "last_categories": [
-    "ENTERTAINMENT",
     "MIND_BLOWING_FACTS",
     "TECHNOLOGY",
     "GEOPOLITICS",
@@ -8517,10 +8519,10 @@
     "GEOPOLITICS",
     "HEALTH",
     "GLOBAL_POWERS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "UNDERRATED_GEOPOLITICS"
   ],
   "last_sources": [
-    "Hollywood Reporter",
     "Global Country Wire [MOROCCO \u2022 MIND_BLOWING_FACTS]",
     "Global Country Wire [IRELAND \u2022 TECHNOLOGY]",
     "The Guardian International",
@@ -8559,10 +8561,10 @@
     "The Guardian International",
     "Global Country Wire [MOROCCO \u2022 HEALTH]",
     "Google Trends Viral [NORWAY]",
-    "High-Shareability National Sports Heroes (Indonesia, India, Philippines, Brazil, Turkey)"
+    "High-Shareability National Sports Heroes (Indonesia, India, Philippines, Brazil, Turkey)",
+    "Underrated Chokepoints & Trade Corridors"
   ],
   "last_countries": [
-    "GLOBAL BRIEFING",
     "UNITED KINGDOM",
     "CHINA",
     "TURKEY",
@@ -8611,6 +8613,7 @@
     "ARGENTINA",
     "UNITED STATES",
     "INTERNATIONAL",
-    "INDIA"
+    "INDIA",
+    "BRAZIL"
   ]
 }
