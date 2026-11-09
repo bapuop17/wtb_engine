@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-09T03:53:02.909433",
-  "last_upload_epoch": 1794196382,
-  "round_robin_idx": 10,
-  "country_rot_idx": 35,
-  "bgm_track_counter": 3065856640,
+  "updated_at": "2026-11-09T07:43:53.372824",
+  "last_upload_epoch": 1794210233,
+  "round_robin_idx": 11,
+  "country_rot_idx": 41,
+  "bgm_track_counter": 3077674431,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -650,69 +650,11 @@
     "parents_sister_of_far_right_krakw",
     "why_parents_sister_of_far_right",
     "egypt_unearths_2_600_year_old",
-    "hidden_2_600_year_old_city"
+    "hidden_2_600_year_old_city",
+    "pope_leo_delivers_stinging_rebuke_of",
+    "pope_leo_vs_milei_the_austerity"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why A 17-Year-Old Indonesian Rider Is Breaking Honda's Grip",
-      "tokens": [
-        "breaking",
-        "discover",
-        "documentary",
-        "facbivg",
-        "full",
-        "grip",
-        "here",
-        "honda",
-        "https",
-        "indonesian",
-        "rider",
-        "veda",
-        "watch",
-        "year",
-        "youtube"
-      ]
-    },
-    {
-      "title": "Why Greece's Floods Are Exposing a Military Blind Spot",
-      "tokens": [
-        "blind",
-        "central",
-        "documentary",
-        "exposing",
-        "floods",
-        "full",
-        "greece",
-        "here",
-        "https",
-        "military",
-        "spot",
-        "turkey",
-        "watch",
-        "western",
-        "youtube"
-      ]
-    },
-    {
-      "title": "How North Korea's Hackers Fund Nuclear War",
-      "tokens": [
-        "documentary",
-        "full",
-        "fund",
-        "hackers",
-        "here",
-        "https",
-        "korea",
-        "north",
-        "nuclear",
-        "regime",
-        "secretive",
-        "sophist",
-        "turned",
-        "watch",
-        "youtube"
-      ]
-    },
     {
       "title": "Libya's Smuggling Empire: The EU's Dirty Secret",
       "tokens": [
@@ -8485,10 +8427,71 @@
         "unearths",
         "year"
       ]
+    },
+    {
+      "title": "Hidden 2,600\u2011Year\u2011Old City Unearthed Beneath the Nile Delta \u2013 Satellite Spy Reveals Egyp #Short",
+      "tokens": [
+        "beneath",
+        "city",
+        "delta",
+        "egyp",
+        "hidden",
+        "nile",
+        "reveals",
+        "satellite",
+        "short",
+        "unearthed",
+        "year"
+      ]
+    },
+    {
+      "title": "Pope Leo delivers stinging rebuke of Milei's austerity measures during Argentina visit",
+      "tokens": [
+        "appl",
+        "argentina",
+        "argentine",
+        "austerity",
+        "benefit",
+        "critique",
+        "delivered",
+        "delivers",
+        "during",
+        "growth",
+        "harsh",
+        "insisting",
+        "javier",
+        "measures",
+        "milei",
+        "must",
+        "pope",
+        "president",
+        "rapturous",
+        "rebuke",
+        "speech",
+        "stinging",
+        "visit"
+      ]
+    },
+    {
+      "title": "Pope Leo vs Milei: The Austerity Showdown Shaking Argentina's Soul",
+      "tokens": [
+        "argentina",
+        "austerity",
+        "delivers",
+        "during",
+        "measures",
+        "milei",
+        "pope",
+        "rebuke",
+        "shaking",
+        "showdown",
+        "soul",
+        "stinging",
+        "visit"
+      ]
     }
   ],
   "last_categories": [
-    "HEALTH",
     "SCIENCE",
     "ENTERTAINMENT",
     "DEFENSE_MILITARY",
@@ -8527,10 +8530,10 @@
     "GEOPOLITICS",
     "TECHNOLOGY",
     "DEFENSE_MILITARY",
-    "MIND_BLOWING_FACTS"
+    "MIND_BLOWING_FACTS",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "Global Country Wire [MALAYSIA \u2022 HEALTH]",
     "Space.com Breaking",
     "Global Country Wire [EGYPT \u2022 ENTERTAINMENT]",
     "Global Country Wire [VIETNAM \u2022 DEFENSE_MILITARY]",
@@ -8569,10 +8572,10 @@
     "France24 Global Affairs",
     "Global Country Wire [BANGLADESH \u2022 TECHNOLOGY]",
     "Google World Top Headlines (US/Global)",
-    "Global Country Wire [EGYPT \u2022 MIND_BLOWING_FACTS]"
+    "Global Country Wire [EGYPT \u2022 MIND_BLOWING_FACTS]",
+    "The Guardian International"
   ],
   "last_countries": [
-    "INTERNATIONAL",
     "GLOBAL MARKETS",
     "AUSTRIA",
     "GLOBAL TECH & AI",
@@ -8621,6 +8624,7 @@
     "FRANCE",
     "BANGLADESH",
     "POLAND",
-    "EGYPT"
+    "EGYPT",
+    "ARGENTINA"
   ]
 }
