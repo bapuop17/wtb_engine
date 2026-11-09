@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-09T07:43:53.372824",
-  "last_upload_epoch": 1794210233,
+  "updated_at": "2026-11-09T08:32:09.004659",
+  "last_upload_epoch": 1794213129,
   "round_robin_idx": 11,
   "country_rot_idx": 41,
-  "bgm_track_counter": 3077674431,
+  "bgm_track_counter": 3098994741,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -651,29 +651,11 @@
     "why_parents_sister_of_far_right",
     "egypt_unearths_2_600_year_old",
     "hidden_2_600_year_old_city",
-    "pope_leo_delivers_stinging_rebuke_of",
-    "pope_leo_vs_milei_the_austerity"
+    "pope_leo_vs_milei_the_austerity",
+    "bennedict_mathurin_welcome_back_to_la",
+    "bennedict_mathurin_s_la_return_how"
   ],
   "event_fingerprints": [
-    {
-      "title": "Libya's Smuggling Empire: The EU's Dirty Secret",
-      "tokens": [
-        "battlegro",
-        "become",
-        "coast",
-        "documentary",
-        "eastern",
-        "full",
-        "here",
-        "https",
-        "libya",
-        "libyan",
-        "smuggling",
-        "watch",
-        "youtube",
-        "zrmkjem"
-      ]
-    },
     {
       "title": "Why The Belarusian Power Couple Just Broke Apart",
       "tokens": [
@@ -8429,6 +8411,18 @@
       ]
     },
     {
+      "title": "Pope Leo vs Milei: The Austerity Showdown Shaking Argentina's Soul",
+      "tokens": [
+        "argentina",
+        "austerity",
+        "milei",
+        "pope",
+        "shaking",
+        "showdown",
+        "soul"
+      ]
+    },
+    {
       "title": "Hidden 2,600\u2011Year\u2011Old City Unearthed Beneath the Nile Delta \u2013 Satellite Spy Reveals Egyp #Short",
       "tokens": [
         "beneath",
@@ -8445,49 +8439,37 @@
       ]
     },
     {
-      "title": "Pope Leo delivers stinging rebuke of Milei's austerity measures during Argentina visit",
+      "title": "Bennedict Mathurin, welcome back to LA!",
       "tokens": [
-        "appl",
-        "argentina",
-        "argentine",
-        "austerity",
-        "benefit",
-        "critique",
-        "delivered",
-        "delivers",
-        "during",
-        "growth",
-        "harsh",
-        "insisting",
-        "javier",
-        "measures",
-        "milei",
-        "must",
-        "pope",
-        "president",
-        "rapturous",
-        "rebuke",
-        "speech",
-        "stinging",
-        "visit"
+        "almost",
+        "back",
+        "bennedict",
+        "clippers",
+        "demands",
+        "entire",
+        "guard",
+        "hint",
+        "mathurin",
+        "missing",
+        "season",
+        "shooting",
+        "surgery",
+        "undergoing",
+        "welcome",
+        "year"
       ]
     },
     {
-      "title": "Pope Leo vs Milei: The Austerity Showdown Shaking Argentina's Soul",
+      "title": "Bennedict Mathurin's LA Return: How One Player Could Shift NBA Power & Global Money",
       "tokens": [
-        "argentina",
-        "austerity",
-        "delivers",
-        "during",
-        "measures",
-        "milei",
-        "pope",
-        "rebuke",
-        "shaking",
-        "showdown",
-        "soul",
-        "stinging",
-        "visit"
+        "back",
+        "bennedict",
+        "could",
+        "mathurin",
+        "money",
+        "player",
+        "return",
+        "welcome"
       ]
     }
   ],
@@ -8573,7 +8555,7 @@
     "Global Country Wire [BANGLADESH \u2022 TECHNOLOGY]",
     "Google World Top Headlines (US/Global)",
     "Global Country Wire [EGYPT \u2022 MIND_BLOWING_FACTS]",
-    "The Guardian International"
+    "Google Trends Viral [COLOMBIA]"
   ],
   "last_countries": [
     "GLOBAL MARKETS",
@@ -8625,6 +8607,6 @@
     "BANGLADESH",
     "POLAND",
     "EGYPT",
-    "ARGENTINA"
+    "INTERNATIONAL"
   ]
 }
