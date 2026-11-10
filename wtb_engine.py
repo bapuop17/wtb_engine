@@ -68,26 +68,26 @@ HISTORY_FILE = "published_history.json"
 # - 5 UNDERRATED / UNDER-THE-RADAR DEEP-DIVE NEWS (25%): `UNDERRATED_GEOPOLITICS`
 # - 5 CORE CATEGORIES (25%): `STOCK_MARKETS`, `AI_ROBOTICS`, `DEFENSE_MILITARY`, `SCIENCE`, `TECHNOLOGY`
 ORDERED_PILLARS = [
-    "GEOPOLITICS",              # 1. Trending #1 (Playlist: Global Geopolitics & World News)
-    "VIRAL_UNDERDOG_SPORTS",    # 2. Viral Underdog Sports #1 (Playlist: Global Sports Arena)
-    "GLOBAL_POWERS",            # 3. Trending #2 (Playlist: Global Geopolitics & World News)
-    "STOCK_MARKETS",            # 4. Category #1 (Playlist: Business, Markets & Global Economy)
-    "UNDERRATED_GEOPOLITICS",   # 5. Underrated #1 (Playlist: Global Geopolitics & World News)
-    "AI_ROBOTICS",              # 6. Category #2 (Playlist: AI, Robotics, Gaming & Future Tech)
-    "GEOPOLITICS",              # 7. Trending #3 (Playlist: Global Geopolitics & World News)
-    "SCIENCE",                  # 8. Category #3 (Playlist: Space, NASA & Future Science)
-    "DEFENSE_MILITARY",         # 9. Trending #4 (Playlist: Global Geopolitics & World News)
-    "MIND_BLOWING_FACTS",       # 10. Underrated #2 (Playlist: Mind-Blowing Facts & World Mysteries)
-    "GEOPOLITICS",              # 11. Trending #5 (Playlist: Global Geopolitics & World News)
-    "HEALTH",                   # 12. Category #4 (Playlist: Health, Biotech & Medical Science)
-    "GLOBAL_POWERS",            # 13. Trending #6 (Playlist: Global Geopolitics & World News)
-    "VIRAL_UNDERDOG_SPORTS",    # 14. Viral Underdog Sports #2 (Playlist: Global Sports Arena)
-    "UNDERRATED_GEOPOLITICS",   # 15. Underrated #3 (Playlist: Global Geopolitics & World News)
-    "ENTERTAINMENT",            # 16. Category #5 (Playlist: Cinema, Gaming & Pop Culture)
-    "GEOPOLITICS",              # 17. Trending #7 (Playlist: Global Geopolitics & World News)
-    "TECHNOLOGY",               # 18. Category #6 (Playlist: AI, Robotics, Gaming & Future Tech)
-    "INDIA_TRENDING",           # 19. Trending #8 (Playlist: Global Geopolitics & World News)
-    "UNDERRATED_GEOPOLITICS"    # 20. Underrated #4 (Playlist: Global Geopolitics & World News)
+    "GEOPOLITICS",              # 1. #1 Global Breaking Geopolitics Surge
+    "INDIA_TRENDING",           # 2. #1 India + Global Superpower Trending Surge
+    "STOCK_MARKETS",            # 3. #1 Wall Street / Dalal Street / Billion-Dollar Market Shock
+    "AI_ROBOTICS",              # 4. #1 AI, Nvidia, OpenAI & Big Tech Breaking Surge
+    "GLOBAL_POWERS",            # 5. #1 USA / China / Russia / Middle East Flashpoint
+    "DEFENSE_MILITARY",         # 6. #1 Defense, Missiles, Naval & Strategic Deterrence Surge
+    "GEOPOLITICS",              # 7. #1 World Breaking News Surge
+    "STOCK_MARKETS",            # 8. #1 Global Trade, Tariffs, Oil & Currency Shock
+    "TECHNOLOGY",               # 9. #1 Semiconductor, Cyber & Big Tech Surge
+    "INDIA_TRENDING",           # 10. #1 India Geopolitics, Economy & Strategic Diplomacy Surge
+    "GLOBAL_POWERS",            # 11. #1 Superpower Summit, Sanctions & Alliance Shift
+    "SCIENCE",                  # 12. #1 ISRO, NASA, SpaceX & Deep-Space Breakthrough
+    "GEOPOLITICS",              # 13. #1 Global Crisis & Maritime Chokepoint Flashpoint
+    "STOCK_MARKETS",            # 14. #1 Corporate Giant, Banking & IPO Market Shock
+    "AI_ROBOTICS",              # 15. #1 Next-Gen AI, Robotics & Quantum Breakthrough
+    "DEFENSE_MILITARY",         # 16. #1 Next-Gen Fighter Jets, Carriers & Air Defense Surge
+    "INDIA_TRENDING",           # 17. #1 India Macro-Economy, Infrastructure & Tech Surge
+    "GLOBAL_POWERS",            # 18. #1 Indo-Pacific, Europe & Middle East Power Shift
+    "VIRAL_UNDERDOG_SPORTS",    # 19. #1 Global Championship Final & Record-Breaking Arena Surge
+    "GEOPOLITICS"               # 20. #1 Global Breaking Headline of the Day
 ]
 
 # Non-Geopolitics Category Rotation Pool (Guarantees Pair #2 in EVERY run fulfills a distinct channel playlist!)
@@ -2729,8 +2729,14 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
 
     base_cat_feeds = list(p_cfg["feeds"])
     country_viral_feeds = build_dynamic_country_viral_feeds(hist_obj, count_countries=6, sub_pillar=sub_pillar)
-    # Interleave category feeds and rotating country feeds so EVERY category covers diverse countries worldwide!
-    feed_list = []
+    # V63 REAL-TIME TRENDING SURGE PRIORITY: Always check live Google Trends (`IN`, `US`, `GB`) + Top 6h Breaking Wires FIRST!
+    priority_trending_feeds = [
+        ("Google Trends India Viral 24h", "https://trends.google.com/trending/rss?geo=IN"),
+        ("Google Trends USA Viral 24h", "https://trends.google.com/trending/rss?geo=US"),
+        ("Google Trends UK Viral 24h", "https://trends.google.com/trending/rss?geo=GB"),
+        ("Global Breaking Surge <6h (Reuters/AP/BBC/CNBC)", "https://news.google.com/rss/search?q=(when:6h)+(source:Reuters+OR+source:Associated_Press+OR+source:BBC+OR+source:CNBC+OR+source:Bloomberg)&hl=en-US&gl=US&ceid=US:en"),
+    ]
+    feed_list = list(priority_trending_feeds)
     max_len_f = max(len(base_cat_feeds), len(country_viral_feeds))
     for f_i in range(max_len_f):
         if f_i < len(base_cat_feeds):
@@ -2757,14 +2763,29 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                 if tr_m:
                     tr_num = int(tr_m.group(1).replace(",", ""))
                     if tr_num >= 100000:
-                        viral_traffic_boost = 95
+                        viral_traffic_boost = 185
                     elif tr_num >= 50000:
-                        viral_traffic_boost = 60
+                        viral_traffic_boost = 135
+                    else:
+                        viral_traffic_boost = 95
+                else:
+                    viral_traffic_boost = 90
                 nt_m = getattr(entry, "ht_news_item_title", "")
                 if nt_m:
                     raw_t = BeautifulSoup(str(nt_m), "html.parser").get_text(" ").rsplit(" - ", 1)[0]
-                elif len(raw_t.split()) < 4:
-                    raw_t = f"Why {raw_t} Is Triggering a Massive National Shockwave Today"
+                elif len(raw_t.split()) < 5:
+                    # Query Bing News RSS live for the short Google Trends keyword (`raw_t`) to get the exact breaking headline!
+                    try:
+                        gt_kw = raw_t.strip()
+                        r_gt_b = requests.get(f"https://www.bing.com/news/search?q={urllib.parse.quote(gt_kw)}&format=rss", headers=HEADERS_WEB, timeout=4.0)
+                        if r_gt_b.status_code == 200:
+                            bf_gt = feedparser.parse(r_gt_b.content)
+                            if bf_gt.entries:
+                                cand_gt_h = clean_fact(getattr(bf_gt.entries[0], "title", "").rsplit(" - ", 1)[0])
+                                if len(cand_gt_h.split()) >= 5:
+                                    raw_t = cand_gt_h
+                    except Exception:
+                        pass
             low_raw_t = raw_t.lower()
             if any(bt in low_raw_t for bt in BANNED_ARTICLE_TITLES) or any(bw in low_raw_t for bw in LOW_INTEREST_BORING_WORDS):
                 continue
@@ -3017,14 +3038,14 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             country_name_upper = c_prof.get("name", "INTERNATIONAL").upper()
             last_countries = hist_obj.get("last_countries", [])
 
-            # 1. Compulsory All-Countries Rotation Audit: NEVER repeat any country from the last 10 videos!
-            country_penalty = 0
-            if country_name_upper in last_countries[-6:]:
-                country_penalty = 650
-            elif country_name_upper in last_countries[-12:]:
-                country_penalty = 350
-            if country_name_upper == "INDIA" and last_countries[-4:].count("INDIA") >= 1:
-                country_penalty += 500
+            # 1. V63 VIRAL TRENDING FIRST PRIORITY (Removed the -650 country blocker that killed US/India/China breaking news!):
+            # Only apply a mild tie-breaker (-35) if the exact same country was in the immediately preceding upload,
+            # AND give a +110 High-Search-Demand Boost to major global power hubs (USA, INDIA, CHINA, RUSSIA, ISRAEL, UK, IRAN, TAIWAN, JAPAN)!
+            country_penalty = 35 if (last_countries and country_name_upper == last_countries[-1] and viral_traffic_boost < 60) else 0
+            major_demand_boost = 110 if country_name_upper in {
+                "UNITED STATES", "INDIA", "CHINA", "RUSSIA", "ISRAEL", "IRAN", "UNITED KINGDOM",
+                "TAIWAN", "JAPAN", "SAUDI ARABIA", "GERMANY", "FRANCE", "SOUTH KOREA", "UKRAINE", "PAKISTAN"
+            } else 25
 
             # 2. Equal Global Country Boost + Massive 100K-200K+ Viral Traffic Boost + V45 44K-View Underdog Prodigy Boost!
             tier_boost = 30 if country_name_upper != "INTERNATIONAL" else 5
@@ -3040,7 +3061,9 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             analytics_boost = sum(10 for w_kw in winning_keywords if re.search(rf"\b{re.escape(w_kw)}\b", comb))
             recency_boost = int(max(0.0, 48.0 - hours_old) * 2.5)
             update_boost = 25 if is_followup else 0
-            trend_score = (len(verified_claims) * 4) + viral_traffic_boost + impact_boost + analytics_boost + recency_boost + update_boost + tier_boost - country_penalty
+            # V63 Ultra-Fresh < 6h Breaking News Surge Bonus (+120 pts for news under 6 hours old!)
+            breaking_6h_bonus = 120 if hours_old <= 6.0 else (65 if hours_old <= 12.0 else 0)
+            trend_score = (len(verified_claims) * 4) + viral_traffic_boost + impact_boost + analytics_boost + recency_boost + breaking_6h_bonus + major_demand_boost + update_boost + tier_boost - country_penalty
 
             candidates.append({
                 "score": trend_score,
@@ -4340,11 +4363,20 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
             break
     used_video_queries.add(query_str.lower())
 
-    # 1. Direct News Article MP4 Streams
+    # 1. Direct News Article MP4 Streams + V62 NASA / Internet Archive / DVIDS Public Domain Video Streams
     for art_v in dossier.get("article_video_urls", []):
         res = download_and_transcode_mp4_url(art_v, used_video_urls, f"{tag_id}_art", query_str)
         if res is not None:
             return res
+    try:
+        if "harvest_v62_internet_archive_and_dvids_video_urls" in globals():
+            for osint_v_url in harvest_v62_internet_archive_and_dvids_video_urls(query_str, dossier, max_clips=3):
+                if osint_v_url.endswith(".mp4"):
+                    res_osv = download_and_transcode_mp4_url(osint_v_url, used_video_urls, f"{tag_id}_osint", query_str)
+                    if res_osv is not None:
+                        return res_osv
+    except Exception:
+        pass
 
     strict_banned_video_words = [
         "zoom", "meetup", "wikimedia", "wikimania", "user group", "hangout", "jitsi", "vlog", "webcam",
@@ -9990,6 +10022,191 @@ def sanitize_visual_search_query(raw_q, dossier):
     master_qs = extract_topic_master_queries(dossier)
     return master_qs[0] if master_qs else str(dossier.get("topic_anchor") or dossier.get("title", ""))[:40]
 
+
+# ==============================================================================
+# V62 BELLINGCAT-INSPIRED OSINT & PUBLIC RAW-FOOTAGE ARCHIVE HARVESTER
+# Integrates 6 Direct Primary-Source Archives & OSINT Verifiers:
+# 1. DVIDS (U.S. Defense Visual Information Distribution Service - Public Domain 1080p Military/Defense)
+# 2. NASA Official Images & Video Library REST API (`images-api.nasa.gov` - Public Domain 1080p/4K Space & Earth Satellite)
+# 3. Internet Archive AdvancedSearch JSON API (`archive.org/advancedsearch.php` - Historical & Documentary Footage)
+# 4. OSINT Geospatial & Satellite Imagery Harvester (Copernicus Sentinel / NASA Earth Observatory / Chokepoints)
+# 5. Wire & Institutional Press Priority (`apnews.com`, `reuters.com`, `dvidshub.net`, `un.org`, `europa.eu`, `esa.int`)
+# 6. Bellingcat-Style OSINT Provenance & Anti-AI-Slop Verification Filter
+# ==============================================================================
+OSINT_TRUSTED_PRIMARY_DOMAINS = (
+    "dvidshub.net", "defense.gov", "army.mil", "navy.mil", "af.mil", "marines.mil", "centcom.mil",
+    "nasa.gov", "earthobservatory.nasa.gov", "esa.int", "eso.org", "nao.ac.jp", "subarutelescope.org",
+    "cern.ch", "iter.org", "isro.gov.in", "jaxa.jp", "noaa.gov", "usgs.gov", "copernicus.eu",
+    "apnews.com", "reuters.com", "bbc.co.uk", "bbc.com", "aljazeera.com", "dw.com", "france24.com",
+    "pbs.org", "npr.org", "un.org", "europa.eu", "nato.int", "imf.org", "worldbank.org", "bis.org",
+    "federalreserve.gov", "rbi.org.in", "ecb.europa.eu", "boj.or.jp", "bankofengland.co.uk",
+    "wikimedia.org", "wikipedia.org", "archive.org"
+)
+
+OSINT_REJECTED_AI_SLOP_DOMAINS = (
+    "freepik.com", "vecteezy.com", "pngtree.com", "cleanpng.com", "lovepik.com",
+    "civitai.com", "lexica.art", "craiyon.com", "nightcafe.studio", "artstation.com",
+    "deviantart.com", "wattpad.com", "redbubble.com", "zazzle.com", "teepublic.com",
+    "knowyourmeme.com", "9gag.com", "imgflip.com", " quickmeme.com", "tenor.com", "giphy.com"
+)
+
+
+def compute_v62_osint_provenance_bonus(img_url, img_caption, dossier=None):
+    """
+    Bellingcat-Style OSINT Source Provenance Verifier:
+    - Grants a +85 to +120 relevance boost when a visual originates from a verified primary archive,
+      defense DVIDS feed, space agency, sovereign institution, or international news wire (`AP`, `Reuters`, `DVIDS`, `NASA`, `UN`, `NATO`).
+    - Immediately penalizes (`-500`) known AI-slop, vector-clipart, meme, or print-on-demand domains.
+    """
+    u_low = str(img_url or "").lower()
+    c_low = str(img_caption or "").lower()
+    comb = f"{u_low} {c_low}"
+
+    if any(bad_d in comb for bad_d in OSINT_REJECTED_AI_SLOP_DOMAINS):
+        return -500
+    if any(ai_k in c_low for ai_k in ["ai generated", "midjourney", "stable diffusion", "dall-e", "vector illustration", "clipart", "cartoon"]):
+        return -400
+
+    bonus = 0
+    if any(td in comb for td in OSINT_TRUSTED_PRIMARY_DOMAINS):
+        bonus += 95
+    if any(w_tag in c_low for w_tag in ["reuters", "associated press", "ap photo", "dvidshub", "u.s. navy photo", "u.s. air force photo", "department of defense", "nasa/", "esa/", "official handout"]):
+        bonus += 65
+    if any(sat_k in c_low for sat_k in ["satellite image", "sentinel-2", "landsat", "maxar", "planet labs", "earth observatory", "aerial view"]):
+        bonus += 45
+    return bonus
+
+
+def harvest_v62_nasa_and_earth_satellite_osint_visuals(query_str, dossier, max_items=10):
+    """
+    Queries the Official NASA Images & Video REST API (`https://images-api.nasa.gov/search`)
+    for public-domain 1080p/4K space, astrophysics, telescope, rocket, and Earth Observatory satellite imagery!
+    """
+    results = []
+    if not query_str or len(query_str.strip()) < 3:
+        return results
+    try:
+        api_url = f"https://images-api.nasa.gov/search?q={urllib.parse.quote(query_str)}&media_type=image&page_size={max_items}"
+        r = requests.get(api_url, headers=HEADERS_WEB, timeout=4.5)
+        if r.status_code == 200:
+            items = ((r.json() or {}).get("collection") or {}).get("items") or []
+            for it in items[:max_items]:
+                data_list = it.get("data") or []
+                links_list = it.get("links") or []
+                if not data_list or not links_list:
+                    continue
+                d0 = data_list[0]
+                title_n = str(d0.get("title") or "")
+                desc_n = str(d0.get("description") or "")[:240]
+                img_href = ""
+                for lk in links_list:
+                    if lk.get("render") == "image" and str(lk.get("href", "")).startswith("http"):
+                        img_href = str(lk["href"])
+                        break
+                if img_href:
+                    results.append({
+                        "url": img_href,
+                        "caption": f"NASA Official Archive: {title_n} {desc_n}".strip(),
+                        "source_angle": f"NASA_OSINT:{query_str}"
+                    })
+    except Exception:
+        pass
+    return results
+
+
+def harvest_v62_dvids_and_wire_osint_visuals(query_str, dossier, max_items=14):
+    """
+    Bellingcat-inspired OSINT Harvester targeting:
+    1. DVIDS (`site:dvidshub.net` / `site:defense.gov`) for public-domain 1080p military, naval, aircraft, and defense visuals.
+    2. Reuters & AP News (`site:reuters.com` / `site:apnews.com`) for authentic international press photojournalism.
+    3. NASA Earth Observatory / Copernicus Satellite (`satellite view` / `aerial view`) for chokepoints, ports, canals, and bases.
+    """
+    results = []
+    if not query_str:
+        return results
+    dom = classify_story_true_domain_v60(dossier) if "classify_story_true_domain_v60" in globals() else "GEOPOLITICS"
+    t_anc = str(dossier.get("topic_anchor") or "").strip()
+    osint_queries = []
+
+    if dom == "GEOPOLITICS":
+        osint_queries.append(f"{query_str} (site:dvidshub.net OR site:defense.gov OR site:nato.int OR site:reuters.com OR site:apnews.com)")
+        if any(ck in query_str.lower() for ck in ["strait", "canal", "port", "sea", "corridor", "base", "border", "island", "pipeline", "refinery"]):
+            osint_queries.append(f"{t_anc or query_str} satellite image aerial view NASA Earth Observatory Sentinel")
+    elif dom == "SPACE_ASTROPHYSICS":
+        results.extend(harvest_v62_nasa_and_earth_satellite_osint_visuals(t_anc or query_str, dossier, max_items=8))
+        osint_queries.append(f"{query_str} (site:nasa.gov OR site:esa.int OR site:eso.org OR site:subarutelescope.org)")
+    elif dom in ("FINANCE_BANKING", "TECH_SEMICONDUCTORS"):
+        osint_queries.append(f"{query_str} (site:reuters.com OR site:apnews.com OR site:wikimedia.org)")
+    else:
+        osint_queries.append(f"{query_str} (site:reuters.com OR site:apnews.com)")
+
+    for oq in osint_queries[:2]:
+        try:
+            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(oq)}&first=0&count={max_items}&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
+            r = requests.get(b_url, headers=HEADERS_WEB, timeout=4.5)
+            for mc in re.findall(r'm="(\{.*?\})"', r.text)[:max_items]:
+                mc_u = mc.replace("&quot;", '"').replace("&amp;", "&")
+                um = re.search(r'"murl"\s*:\s*"(https?://[^"]+)"', mc_u)
+                tm = re.search(r'"t"\s*:\s*"([^"]+)"', mc_u)
+                desc_m = re.search(r'"desc"\s*:\s*"([^"]+)"', mc_u)
+                if um:
+                    u_clean = um.group(1).replace("&amp;", "&")
+                    cap_str = f"OSINT Verified Archive: {tm.group(1) if tm else ''} {desc_m.group(1) if desc_m else ''}".strip()
+                    results.append({
+                        "url": u_clean,
+                        "caption": cap_str,
+                        "source_angle": f"OSINT_ARCHIVE:{oq[:48]}"
+                    })
+        except Exception:
+            pass
+    return results
+
+
+def harvest_v62_internet_archive_and_dvids_video_urls(query_str, dossier, max_clips=4):
+    """
+    Queries the Official Internet Archive JSON API (`archive.org/advancedsearch.php`)
+    and NASA Video API (`images-api.nasa.gov`) for public-domain, zero-copyright MP4 footage!
+    """
+    video_urls = []
+    if not query_str:
+        return video_urls
+    dom = classify_story_true_domain_v60(dossier) if "classify_story_true_domain_v60" in globals() else "GEOPOLITICS"
+
+    # 1. If Space/Science/Earth, check NASA Official Video REST API first
+    if dom == "SPACE_ASTROPHYSICS" or any(sk in query_str.lower() for sk in ["nasa", "space", "galaxy", "telescope", "orbit", "satellite", "earth", "rocket"]):
+        try:
+            nasa_v_url = f"https://images-api.nasa.gov/search?q={urllib.parse.quote(query_str)}&media_type=video&page_size=4"
+            rn = requests.get(nasa_v_url, headers=HEADERS_WEB, timeout=4.5)
+            if rn.status_code == 200:
+                for it in (((rn.json() or {}).get("collection") or {}).get("items") or [])[:3]:
+                    coll_href = str(it.get("href") or "")
+                    if coll_href.startswith("http"):
+                        rj = requests.get(coll_href, headers=HEADERS_WEB, timeout=3.5)
+                        if rj.status_code == 200 and isinstance(rj.json(), list):
+                            for asset_u in rj.json():
+                                if str(asset_u).endswith(".mp4") and ("medium" in str(asset_u) or "orig" in str(asset_u) or "large" in str(asset_u)):
+                                    video_urls.append(str(asset_u))
+                                    break
+        except Exception:
+            pass
+
+    # 2. Query Internet Archive (`archive.org/advancedsearch.php`) for public-domain news/defense/historical MP4 items
+    try:
+        ia_q = f'({query_str}) AND mediatype:(movies)'
+        ia_url = f"https://archive.org/advancedsearch.php?q={urllib.parse.quote(ia_q)}&fl[]=identifier,title&rows={max_clips}&page=1&output=json"
+        ria = requests.get(ia_url, headers=HEADERS_WEB, timeout=4.5)
+        if ria.status_code == 200:
+            docs = (((ria.json() or {}).get("response") or {}).get("docs") or [])
+            for d_it in docs[:max_clips]:
+                ident = str(d_it.get("identifier") or "").strip()
+                if ident:
+                    video_urls.append(f"https://archive.org/details/{ident}")
+    except Exception:
+        pass
+
+    return video_urls[:max_clips]
+
+
 def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", sent_ner=None):
     """
     V42 QUANTITATIVE VISUAL RELEVANCE SCORING ENGINE (0 TO 300+ POINTS):
@@ -10062,6 +10279,7 @@ def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", 
     score += len(q_toks.intersection(cap_toks)) * 30
     score += len(geo_tokens.intersection(cap_toks)) * 18
     score += len(ev_tokens.intersection(cap_toks)) * 15
+    score += compute_v62_osint_provenance_bonus(img_url, img_caption, dossier=dossier)
     return score
 
 def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, query_str=""):
@@ -10260,6 +10478,15 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
     search_angles = search_angles[:28]
 
     raw_candidates = []
+    # V62 BELLINGCAT-OSINT & PRIMARY ARCHIVE INJECTION (DVIDS, NASA REST API, Reuters/AP Wire, Satellite Imagery):
+    try:
+        osint_seed_q = str(dossier.get("topic_anchor") or dossier.get("title", ""))[:60]
+        for os_cand in harvest_v62_dvids_and_wire_osint_visuals(osint_seed_q, dossier, max_items=14):
+            if os_cand.get("url") and os_cand["url"] not in seen_urls:
+                seen_urls.add(os_cand["url"])
+                raw_candidates.append(os_cand)
+    except Exception:
+        pass
     seen_cand_urls = set()
 
     for cap_obj in (dossier.get("article_captioned_photos") or []):
@@ -16181,38 +16408,113 @@ GLOBAL_UPLOAD_TOKEN_COUNTER = {"idx": 0, "channel_upload_limit_hit": False}
 
 def build_20_country_youtube_localizations(en_title, en_description):
     """
-    V45 NATIVE MULTI-COUNTRY YOUTUBE LOCALIZATION ENGINE (ZERO EXTRA QUOTA INSIDE `videos.insert`!):
-    - Translates title & description summary into Hindi (`hi` — the ONLY Indian language) + 24 Foreign World Languages
-      (`id` Indonesian, `ms` Malay, `tl` Filipino, `es` Spanish, `pt` Portuguese, `ar` Arabic, `fr` French, `de` German,
-      `ru` Russian, `ja` Japanese, `zh-Hans` Chinese, `ko` Korean, `tr` Turkish, `vi` Vietnamese, `th` Thai, `it`, `nl`, `pl`, `uk`, `fa`, `he`, `sv`, `el`, `ro`).
-    - Passed directly inside `yt.videos().insert(part="snippet,status,localizations")` so it costs 0 extra quota units
-      while showing native titles to viewers on WhatsApp, Google Discover, YouTube Search & Suggested worldwide!
+    V63 ANTI-SPAM HUMAN-CREATOR METADATA SANITIZER:
+    Why V63 removes the 18-language block from `snippet.description`:
+    Stuffing 18 foreign scripts (Cyrillic, Arabic, Hanzi, Thai, Korean, etc.) into an English video's
+    description triggers YouTube's automated 'Metadata / Keyword Stuffing' spam classifier and confuses
+    the English Browse/Suggested audience matcher!
+    V63 keeps 100% clean, natural English human-creator descriptions (max 3 hashtags, zero foreign script spam).
     """
-    clean_en_t = sanitize_youtube_metadata_text(en_title, 92)
-    clean_en_d = sanitize_youtube_metadata_text(en_description, 3400)
-    short_desc_for_tr = clean_en_d[:550]
-    langs_to_build = GLOBAL_20_LANGUAGES_CONFIG[:18]
-    lang_lines = ["", "🌍 GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:"]
-    loc_dict = {}
+    clean_en_t = ascii_transliterate_keep_vowels(sanitize_youtube_metadata_text(en_title, 92))
+    clean_en_d = ascii_transliterate_keep_vowels(sanitize_youtube_metadata_text(en_description, 2600))
+    return {"en": {"title": clean_en_t, "description": clean_en_d}}
 
-    def _tr_entry(lt):
-        yt_c, gtx_c, lbl, _ = lt
-        t_out = sanitize_youtube_metadata_text(translate_text_free_google_gtx(clean_en_t, gtx_c), 90)
-        d_out = sanitize_youtube_metadata_text(translate_text_free_google_gtx(short_desc_for_tr, gtx_c), 900)
-        return (yt_c, lbl, t_out, d_out)
 
+def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per_run=6):
+    """
+    V63 YOUTUBE API CHANNEL ANTI-SPAM HEALER & METADATA REHABILITATOR:
+    Uses the official YouTube Data API v3 (`channels.list`, `playlistItems.list`, `videos.list`, `videos.update`)
+    to automatically inspect recent uploads on `@WorldTalkBrief` and remove spam-classifier triggers:
+    1. Strips the old `'🌍 GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:'` 18-language keyword-stuffing block from
+       existing video descriptions so YouTube's spam classifier clears those videos for Browse/Suggested impressions!
+    2. Fixes any vowel-stripped title typos (`MRQUEZ` -> `MARQUEZ`) on existing uploads.
+    3. Trims over-stuffed tag lists (`>12 tags`) down to 10 high-signal tags including `World Talk Brief` and `@WorldTalkBrief`.
+    4. Records healed `video_id`s in `hist_obj["v63_healed_video_ids"]` so each video is only healed once!
+    """
+    if yt is None:
+        return
     try:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
-            for yt_c, lbl, t_out, d_out in ex.map(_tr_entry, langs_to_build):
-                if t_out and len(t_out) >= 3:
-                    lang_lines.append(f"• {lbl}: {t_out}")
-                    loc_dict[yt_c] = {"title": t_out, "description": d_out or t_out}
-    except Exception:
-        pass
+        healed_set = set((hist_obj or {}).get("v63_healed_video_ids", []))
+        ch_resp = yt.channels().list(part="contentDetails", mine=True).execute()
+        ch_items = ch_resp.get("items") or []
+        if not ch_items:
+            return
+        uploads_pl = (((ch_items[0].get("contentDetails") or {}).get("relatedPlaylists") or {}).get("uploads"))
+        if not uploads_pl:
+            return
 
-    full_d = sanitize_youtube_metadata_text(clean_en_d + chr(10) + chr(10).join(lang_lines), 4750)
-    loc_dict["en"] = {"title": clean_en_t, "description": full_d}
-    return loc_dict
+        pl_resp = yt.playlistItems().list(part="contentDetails", playlistId=uploads_pl, maxResults=18).execute()
+        cand_vids = [
+            it.get("contentDetails", {}).get("videoId")
+            for it in (pl_resp.get("items") or [])
+            if it.get("contentDetails", {}).get("videoId") and it.get("contentDetails", {}).get("videoId") not in healed_set
+        ]
+        if not cand_vids:
+            return
+
+        v_resp = yt.videos().list(part="snippet,status", id=",".join(cand_vids[:12])).execute()
+        fixes_done = 0
+        for v_item in (v_resp.get("items") or []):
+            vid_id = v_item.get("id")
+            snip = v_item.get("snippet") or {}
+            stat = v_item.get("status") or {}
+            orig_t = str(snip.get("title") or "")
+            orig_d = str(snip.get("description") or "")
+            orig_tags = list(snip.get("tags") or [])
+            cat_id = str(snip.get("categoryId") or "25")
+
+            needs_heal = False
+            new_t = orig_t.replace("MRQUEZ", "MARQUEZ").replace("Mrquez", "Marquez")
+            if new_t != orig_t:
+                needs_heal = True
+
+            new_d = orig_d
+            for spam_marker in ["🌍 GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:", "GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:"]:
+                if spam_marker in new_d:
+                    new_d = new_d.split(spam_marker)[0].strip()
+                    needs_heal = True
+
+            if "@WorldTalkBrief" not in new_d:
+                new_d = f"{new_d}\n\nOfficial Channel: World Talk Brief (@WorldTalkBrief) • https://www.youtube.com/@WorldTalkBrief #WorldTalkBrief".strip()
+                needs_heal = True
+
+            if len(orig_tags) > 12 or "World Talk Brief" not in orig_tags:
+                needs_heal = True
+            clean_healed_tags = ["World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"] + [
+                ascii_transliterate_keep_vowels(t)[:28] for t in orig_tags
+                if t not in {"World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"} and len(ascii_transliterate_keep_vowels(t)) >= 3
+            ][:7]
+
+            if needs_heal and fixes_done < max_fixes_per_run:
+                yt.videos().update(
+                    part="snippet,status",
+                    body={
+                        "id": vid_id,
+                        "snippet": {
+                            "title": new_t[:95],
+                            "description": new_d[:3500],
+                            "tags": clean_healed_tags,
+                            "categoryId": cat_id,
+                            "defaultLanguage": "en",
+                            "defaultAudioLanguage": "en"
+                        },
+                        "status": {
+                            "privacyStatus": stat.get("privacyStatus", "public"),
+                            "selfDeclaredMadeForKids": False,
+                            "embeddable": True,
+                            "publicStatsViewable": True
+                        }
+                    }
+                ).execute()
+                fixes_done += 1
+                print(f"🧹 [V63 YouTube API Anti-Spam Healer] Cleaned metadata & removed 18-lang spam block on https://youtu.be/{vid_id} ('{new_t[:48]}')", flush=True)
+            healed_set.add(vid_id)
+
+        if isinstance(hist_obj, dict):
+            hist_obj["v63_healed_video_ids"] = list(healed_set)[-200:]
+            save_published_history(hist_obj)
+    except Exception as heal_e:
+        print("⚠️ [V63 Anti-Spam Healer Note]:", str(heal_e)[:110], flush=True)
 
 def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None):
     """
@@ -16601,8 +16903,8 @@ def try_youtube_auto_upload(
             body_basic = {
                 "snippet": {
                     "title": final_title,
-                    "description": clean_desc,
-                    "tags": clean_tags,
+                    "description": clean_desc[:3500],
+                    "tags": clean_tags[:10],
                     "categoryId": str(category_id),
                     "defaultLanguage": "en",
                     "defaultAudioLanguage": "en"
@@ -16612,11 +16914,10 @@ def try_youtube_auto_upload(
                     "selfDeclaredMadeForKids": False,
                     "embeddable": True,
                     "publicStatsViewable": True
-                },
-                "localizations": loc_map
+                }
             }
             media = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype="video/mp4")
-            req = yt.videos().insert(part="snippet,status,localizations", body=body_basic, media_body=media)
+            req = yt.videos().insert(part="snippet,status", body=body_basic, media_body=media)
             resp = None
             while resp is None:
                 _, resp = req.next_chunk()
@@ -16650,10 +16951,15 @@ def try_youtube_auto_upload(
                     except Exception as te:
                         print(f"⚠️ Thumbnail set attempt #{th_try+1} warning:", str(te)[:110], flush=True)
 
-            # Add video to its matching Category Playlist on @WorldTalkBrief (and post Linked Long URL comment on Shorts!)
+            # V63: Run the YouTube API Anti-Spam Healer once per batch to strip 18-language spam blocks from recent uploads!
+            if not GLOBAL_UPLOAD_TOKEN_COUNTER.get("v63_healer_ran"):
+                GLOBAL_UPLOAD_TOKEN_COUNTER["v63_healer_ran"] = True
+                run_v63_youtube_api_channel_antispam_healer(yt, load_published_history(), max_fixes_per_run=6)
+
+            # Add video to its matching Category Playlist on @WorldTalkBrief (without rapid-fire comment-bot spamming!)
             add_video_to_category_playlist_and_comment(
                 yt, vid_id, pillar, summary_takeaway or title, playlist_map or {},
-                linked_long_url=(linked_long_url if is_short else None), is_short=is_short
+                linked_long_url=None, is_short=is_short
             )
             return vid_id
         except Exception as e:
