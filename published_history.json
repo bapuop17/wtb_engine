@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-10T17:31:13.866867",
-  "last_upload_epoch": 1794331873,
+  "updated_at": "2026-11-10T18:08:17.258761",
+  "last_upload_epoch": 1794334097,
   "round_robin_idx": 18,
   "country_rot_idx": 8,
-  "bgm_track_counter": 3183382766,
+  "bgm_track_counter": 3209653610,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -667,35 +667,11 @@
     "marquez_s_8th_crown_the_qatar",
     "uk_writer_m_john_harrison_wins",
     "the_81_year_old_who_wrote",
-    "bank_holiday_today_are_sbi_hdfc",
-    "why_sbi_hdfc_icici_closed_for"
+    "why_sbi_hdfc_icici_closed_for",
+    "video_fight_between_raiders_49ers_fans",
+    "battle_of_the_bay_11_arrested"
   ],
   "event_fingerprints": [
-    {
-      "title": "Man City lineup vs. Brighton today: Erling Haaland returns after midweek rest",
-      "tokens": [
-        "against",
-        "back",
-        "being",
-        "brighton",
-        "carabao",
-        "city",
-        "erling",
-        "game",
-        "given",
-        "haaland",
-        "lineup",
-        "manchester",
-        "match",
-        "midweek",
-        "norway",
-        "rest",
-        "returns",
-        "star",
-        "tough",
-        "wedn"
-      ]
-    },
     {
       "title": "Isack Hadjar Shoves Fan in Mexico GP Paddock as F1 Fans Debate His Behavior",
       "tokens": [
@@ -8441,56 +8417,50 @@
       ]
     },
     {
-      "title": "Bank holiday today: Are SBI, HDFC, ICICI branches closed on Monday, 9 November for Diwali? Check cities, RBI calendar",
+      "title": "Why SBI, HDFC & ICICI Closed For 3 Days? The Hidden RBI Math",
       "tokens": [
-        "account",
-        "bali",
-        "bank",
-        "banks",
-        "branches",
-        "calendar",
-        "check",
-        "cities",
         "closed",
-        "deepavali",
-        "diwali",
+        "days",
         "hdfc",
-        "holiday",
+        "hidden",
         "icici",
-        "india",
-        "laxmi",
-        "monday",
-        "november",
-        "parts",
-        "pratipada",
-        "puja",
-        "remain",
-        "samvant",
-        "several",
-        "toda",
-        "vikram",
-        "will",
-        "year"
+        "math"
       ]
     },
     {
-      "title": "Why SBI, HDFC & ICICI Closed For 3 Days? The Hidden RBI Math",
+      "title": "Video: Fight between Raiders, 49ers fans at Levi's Stadium",
       "tokens": [
-        "bank",
-        "branches",
-        "calendar",
-        "check",
-        "cities",
-        "closed",
-        "days",
-        "diwali",
-        "hdfc",
-        "hidden",
-        "holiday",
-        "icici",
-        "math",
-        "monday",
-        "november"
+        "between",
+        "brawling",
+        "clara",
+        "department",
+        "fans",
+        "fight",
+        "investigating",
+        "investigation",
+        "involving",
+        "levi",
+        "outside",
+        "police",
+        "prompts",
+        "raiders",
+        "santa",
+        "stadium",
+        "viral"
+      ]
+    },
+    {
+      "title": "Battle of the Bay: 11 Arrested After Stadium Chaos",
+      "tokens": [
+        "arrested",
+        "battle",
+        "between",
+        "chaos",
+        "fans",
+        "fight",
+        "levi",
+        "raiders",
+        "stadium"
       ]
     }
   ],
@@ -8576,7 +8546,7 @@
     "Underrated Chokepoints & Trade Corridors",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "France24 Global Affairs",
-    "Google Trends India Viral 24h"
+    "Google Trends USA Viral 24h"
   ],
   "last_countries": [
     "SOUTH KOREA",
@@ -8628,6 +8598,6 @@
     "BRAZIL",
     "QATAR",
     "UNITED KINGDOM",
-    "INDIA"
+    "UNITED STATES"
   ]
 }
