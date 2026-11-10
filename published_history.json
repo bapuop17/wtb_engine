@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-10T00:46:14.167097",
-  "last_upload_epoch": 1794271574,
+  "updated_at": "2026-11-10T01:28:05.187679",
+  "last_upload_epoch": 1794274085,
   "round_robin_idx": 16,
   "country_rot_idx": 71,
-  "bgm_track_counter": 3159290764,
+  "bgm_track_counter": 3163000830,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -662,31 +662,11 @@
     "hsbc_citi_bet_big_why_india",
     "brazil_risks_missing_rare_earths_boom",
     "brazil_s_rare_earth_gamble_will",
-    "jaguars_land_dt_jordan_davis_in",
-    "jaguars_blockbuster_trade_jordan_davis_super"
+    "jaguars_blockbuster_trade_jordan_davis_super",
+    "mrquez_nears_motogp_crown_as_martn",
+    "marquez_s_8th_crown_the_qatar"
   ],
   "event_fingerprints": [
-    {
-      "title": "Spain Train Crash: Why 'Human Error' Is A Lie",
-      "tokens": [
-        "crash",
-        "derailed",
-        "documentary",
-        "error",
-        "full",
-        "here",
-        "high",
-        "https",
-        "human",
-        "january",
-        "mmqqht",
-        "spain",
-        "speed",
-        "train",
-        "watch",
-        "youtube"
-      ]
-    },
     {
       "title": "ECB President Lagarde steps down in order to speak out | Geopolitics Explained",
       "tokens": [
@@ -8438,45 +8418,59 @@
       ]
     },
     {
-      "title": "Jaguars land DT Jordan Davis in blockbuster deal with Eagles, marking latest trade ahead of deadline",
-      "tokens": [
-        "ahead",
-        "blockbuster",
-        "davis",
-        "deadline",
-        "deal",
-        "eagles",
-        "extension",
-        "jaguars",
-        "jordan",
-        "land",
-        "latest",
-        "marking",
-        "offsea",
-        "signed",
-        "sports",
-        "trade",
-        "yahoo"
-      ]
-    },
-    {
       "title": "Jaguars' Blockbuster Trade: Jordan Davis, Super Bowl Gamble",
       "tokens": [
-        "ahead",
         "blockbuster",
         "bowl",
         "davis",
-        "deadline",
-        "deal",
-        "eagles",
         "gamble",
         "jaguars",
         "jordan",
-        "land",
-        "latest",
-        "marking",
         "super",
         "trade"
+      ]
+    },
+    {
+      "title": "Mrquez nears MotoGP crown as Martn reveals how close he came to missing Qatar",
+      "tokens": [
+        "bezzecchi",
+        "came",
+        "close",
+        "crown",
+        "eighth",
+        "grande",
+        "left",
+        "marquez",
+        "martn",
+        "missing",
+        "motogp",
+        "mrquez",
+        "nears",
+        "prmio",
+        "qatar",
+        "reveals",
+        "wait",
+        "wins"
+      ]
+    },
+    {
+      "title": "Marquez's 8th Crown: The Qatar Near-Miss That Changed Everything",
+      "tokens": [
+        "came",
+        "changed",
+        "close",
+        "crown",
+        "everything",
+        "marquez",
+        "martn",
+        "miss",
+        "missing",
+        "motogp",
+        "mrquez",
+        "near",
+        "nears",
+        "qatar",
+        "reveals"
       ]
     }
   ],
@@ -8562,7 +8556,7 @@
     "Google Trends Viral [NORWAY]",
     "High-Shareability National Sports Heroes (Indonesia, India, Philippines, Brazil, Turkey)",
     "Underrated Chokepoints & Trade Corridors",
-    "Global Country Wire [JORDAN \u2022 VIRAL_UNDERDOG_SPORTS]"
+    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)"
   ],
   "last_countries": [
     "CHINA",
@@ -8614,6 +8608,6 @@
     "INTERNATIONAL",
     "INDIA",
     "BRAZIL",
-    "JORDAN"
+    "QATAR"
   ]
 }
