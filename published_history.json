@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-09T16:23:01.417532",
-  "last_upload_epoch": 1794241381,
-  "round_robin_idx": 15,
-  "country_rot_idx": 65,
-  "bgm_track_counter": 3146144519,
+  "updated_at": "2026-11-10T00:46:14.167097",
+  "last_upload_epoch": 1794271574,
+  "round_robin_idx": 16,
+  "country_rot_idx": 71,
+  "bgm_track_counter": 3159290764,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -661,53 +661,11 @@
     "hsbc_citi_turn_bullish_as_indian",
     "hsbc_citi_bet_big_why_india",
     "brazil_risks_missing_rare_earths_boom",
-    "brazil_s_rare_earth_gamble_will"
+    "brazil_s_rare_earth_gamble_will",
+    "jaguars_land_dt_jordan_davis_in",
+    "jaguars_blockbuster_trade_jordan_davis_super"
   ],
   "event_fingerprints": [
-    {
-      "title": "Xi Jinping's Secret Move: Why Loyalty Beats Growth",
-      "tokens": [
-        "beats",
-        "china",
-        "documentary",
-        "full",
-        "grip",
-        "growth",
-        "here",
-        "https",
-        "jinping",
-        "loyalty",
-        "move",
-        "party",
-        "ruling",
-        "tightening",
-        "watch",
-        "xebh",
-        "youtube",
-        "zpnk"
-      ]
-    },
-    {
-      "title": "Why Xi's Loyalty Crusade Could Redraw Global Power",
-      "tokens": [
-        "absolute",
-        "call",
-        "chinese",
-        "communis",
-        "could",
-        "crusade",
-        "deep",
-        "dive",
-        "documentary",
-        "initiative",
-        "inside",
-        "jinping",
-        "latest",
-        "loyalty",
-        "redraw",
-        "unpack"
-      ]
-    },
     {
       "title": "Spain Train Crash: Why 'Human Error' Is A Lie",
       "tokens": [
@@ -8478,10 +8436,51 @@
         "will",
         "without"
       ]
+    },
+    {
+      "title": "Jaguars land DT Jordan Davis in blockbuster deal with Eagles, marking latest trade ahead of deadline",
+      "tokens": [
+        "ahead",
+        "blockbuster",
+        "davis",
+        "deadline",
+        "deal",
+        "eagles",
+        "extension",
+        "jaguars",
+        "jordan",
+        "land",
+        "latest",
+        "marking",
+        "offsea",
+        "signed",
+        "sports",
+        "trade",
+        "yahoo"
+      ]
+    },
+    {
+      "title": "Jaguars' Blockbuster Trade: Jordan Davis, Super Bowl Gamble",
+      "tokens": [
+        "ahead",
+        "blockbuster",
+        "bowl",
+        "davis",
+        "deadline",
+        "deal",
+        "eagles",
+        "gamble",
+        "jaguars",
+        "jordan",
+        "land",
+        "latest",
+        "marking",
+        "super",
+        "trade"
+      ]
     }
   ],
   "last_categories": [
-    "MIND_BLOWING_FACTS",
     "TECHNOLOGY",
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
@@ -8520,10 +8519,10 @@
     "HEALTH",
     "GLOBAL_POWERS",
     "VIRAL_UNDERDOG_SPORTS",
-    "UNDERRATED_GEOPOLITICS"
+    "UNDERRATED_GEOPOLITICS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "Global Country Wire [MOROCCO \u2022 MIND_BLOWING_FACTS]",
     "Global Country Wire [IRELAND \u2022 TECHNOLOGY]",
     "The Guardian International",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
@@ -8562,10 +8561,10 @@
     "Global Country Wire [MOROCCO \u2022 HEALTH]",
     "Google Trends Viral [NORWAY]",
     "High-Shareability National Sports Heroes (Indonesia, India, Philippines, Brazil, Turkey)",
-    "Underrated Chokepoints & Trade Corridors"
+    "Underrated Chokepoints & Trade Corridors",
+    "Global Country Wire [JORDAN \u2022 VIRAL_UNDERDOG_SPORTS]"
   ],
   "last_countries": [
-    "UNITED KINGDOM",
     "CHINA",
     "TURKEY",
     "SOUTH KOREA",
@@ -8614,6 +8613,7 @@
     "UNITED STATES",
     "INTERNATIONAL",
     "INDIA",
-    "BRAZIL"
+    "BRAZIL",
+    "JORDAN"
   ]
 }
