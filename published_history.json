@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-10T22:53:09.313865",
-  "last_upload_epoch": 1794351189,
+  "updated_at": "2026-11-10T23:33:20.953004",
+  "last_upload_epoch": 1794353600,
   "round_robin_idx": 19,
   "country_rot_idx": 14,
-  "bgm_track_counter": 3212716083,
+  "bgm_track_counter": 3216990953,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -670,8 +670,8 @@
     "why_sbi_hdfc_icici_closed_for",
     "video_fight_between_raiders_49ers_fans",
     "battle_of_the_bay_11_arrested",
-    "us_army_soldier_arrested_in_uk",
-    "us_army_officer_arrested_in_uk"
+    "us_army_officer_arrested_in_uk",
+    "coco_gauff_opens_wta_finals_with"
   ],
   "event_fingerprints": [
     {
@@ -8422,38 +8422,37 @@
       ]
     },
     {
-      "title": "US Army soldier arrested in UK on suspicion of espionage related to Russia",
-      "tokens": [
-        "american",
-        "army",
-        "arrested",
-        "espionage",
-        "kingdom",
-        "metropolitan",
-        "police",
-        "related",
-        "russia",
-        "senior",
-        "soldier",
-        "suspected",
-        "suspicion",
-        "tuesday",
-        "unidentified",
-        "united"
-      ]
-    },
-    {
       "title": "US Army Officer Arrested in UK: The Russia Spy Trap",
       "tokens": [
         "army",
         "arrested",
-        "espionage",
         "officer",
-        "related",
         "russia",
-        "soldier",
-        "suspicion",
         "trap"
+      ]
+    },
+    {
+      "title": "Coco Gauff opens WTA Finals with win over Jessia Pegula at Indian Wells",
+      "tokens": [
+        "american",
+        "coco",
+        "defeated",
+        "defends",
+        "fellow",
+        "finals",
+        "first",
+        "gauff",
+        "indian",
+        "jessia",
+        "jessica",
+        "match",
+        "opens",
+        "pegula",
+        "playing",
+        "smaller",
+        "sunday",
+        "wells",
+        "year"
       ]
     }
   ],
@@ -8539,7 +8538,7 @@
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "France24 Global Affairs",
     "Google Trends USA Viral 24h",
-    "Google Trends UK Viral 24h"
+    "Google Trends Viral [AUSTRALIA]"
   ],
   "last_countries": [
     "MALAYSIA",
@@ -8591,6 +8590,6 @@
     "QATAR",
     "UNITED KINGDOM",
     "UNITED STATES",
-    "UNITED KINGDOM"
+    "INDIA"
   ]
 }
