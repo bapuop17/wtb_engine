@@ -1,4 +1,4 @@
-name: WTB News Engine V61 (15m Unstoppable Cron + 2-Hour Smart Cooldown Gate • 1 Pair/2h • Zero Spam Throttle)
+name: WTB News Engine V63 (15m Unstoppable Cron + 2-Hour Smart Cooldown Gate • 1 Pair/2h • Zero Spam Throttle)
 
 on:
   workflow_dispatch:
@@ -104,7 +104,7 @@ jobs:
           elapsed_mins = (now_epoch - last_epoch) / 60.0 if last_epoch > 0 else 999.0
 
           if elapsed_mins >= cooldown_mins:
-              print(f"✅ [2-Hour Cooldown Complete] {elapsed_mins:.1f} mins elapsed since last upload (>= {cooldown_mins}m). Launching V61 build!")
+              print(f"✅ [2-Hour Cooldown Complete] {elapsed_mins:.1f} mins elapsed since last upload (>= {cooldown_mins}m). Launching V63 build!")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out:
                   out.write("should_run=true\n")
           else:
@@ -135,7 +135,7 @@ jobs:
             fonts-freefont-ttf \
             fonts-noto-core
 
-      - name: Install Python V61 Documentary & Motion-Graphics Libraries
+      - name: Install Python V63 Documentary & Motion-Graphics Libraries
         if: steps.cooldown_gate.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
@@ -162,7 +162,7 @@ jobs:
             google-auth-oauthlib \
             google-auth-httplib2
 
-      - name: Run WTB V61 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
+      - name: Run WTB V63 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
         if: steps.cooldown_gate.outputs.should_run == 'true'
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
@@ -189,7 +189,7 @@ jobs:
           test -f published_history.json && git add published_history.json || true
           test -f data/published_history.json && git add data/published_history.json || true
           test -d docs && git add docs/ || true
-          git diff --staged --quiet || git commit -m "Auto-sync history & SEO Video Portal docs/ [V61] [skip ci]"
+          git diff --staged --quiet || git commit -m "Auto-sync history & SEO Video Portal docs/ [V63] [skip ci]"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main || (sleep 3 && git pull --rebase -X theirs origin main && git push origin HEAD:main) || true
           curl -sS "https://api.indexnow.org/indexnow?url=https://${GITHUB_REPOSITORY%/*}.github.io/${GITHUB_REPOSITORY#*/}/sitemap.xml&key=wtb757dd23b1dd97218indexnow2026" >/dev/null 2>&1 || true
