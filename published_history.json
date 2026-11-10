@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-10T08:25:37.309489",
-  "last_upload_epoch": 1794299137,
-  "round_robin_idx": 17,
-  "country_rot_idx": 2,
-  "bgm_track_counter": 3182010213,
+  "updated_at": "2026-11-10T17:31:13.866867",
+  "last_upload_epoch": 1794331873,
+  "round_robin_idx": 18,
+  "country_rot_idx": 8,
+  "bgm_track_counter": 3183382766,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -666,47 +666,11 @@
     "mrquez_nears_motogp_crown_as_martn",
     "marquez_s_8th_crown_the_qatar",
     "uk_writer_m_john_harrison_wins",
-    "the_81_year_old_who_wrote"
+    "the_81_year_old_who_wrote",
+    "bank_holiday_today_are_sbi_hdfc",
+    "why_sbi_hdfc_icici_closed_for"
   ],
   "event_fingerprints": [
-    {
-      "title": "Flavio Bolsonaro's Shocking 'Leader of Brazil' Claim Exposed",
-      "tokens": [
-        "bolsonaro",
-        "brazil",
-        "breach",
-        "claim",
-        "declared",
-        "exposed",
-        "flavio",
-        "fleeing",
-        "geopolitical",
-        "himself",
-        "leader",
-        "miami",
-        "shocking"
-      ]
-    },
-    {
-      "title": "Is India's Food Poisoning You? The Hidden Crisis",
-      "tokens": [
-        "billion",
-        "daily",
-        "documentary",
-        "ewffpva",
-        "feeds",
-        "food",
-        "full",
-        "here",
-        "hidden",
-        "https",
-        "india",
-        "people",
-        "poisoning",
-        "watch",
-        "youtube"
-      ]
-    },
     {
       "title": "Man City lineup vs. Brighton today: Erling Haaland returns after midweek rest",
       "tokens": [
@@ -8475,10 +8439,62 @@
         "wrote",
         "year"
       ]
+    },
+    {
+      "title": "Bank holiday today: Are SBI, HDFC, ICICI branches closed on Monday, 9 November for Diwali? Check cities, RBI calendar",
+      "tokens": [
+        "account",
+        "bali",
+        "bank",
+        "banks",
+        "branches",
+        "calendar",
+        "check",
+        "cities",
+        "closed",
+        "deepavali",
+        "diwali",
+        "hdfc",
+        "holiday",
+        "icici",
+        "india",
+        "laxmi",
+        "monday",
+        "november",
+        "parts",
+        "pratipada",
+        "puja",
+        "remain",
+        "samvant",
+        "several",
+        "toda",
+        "vikram",
+        "will",
+        "year"
+      ]
+    },
+    {
+      "title": "Why SBI, HDFC & ICICI Closed For 3 Days? The Hidden RBI Math",
+      "tokens": [
+        "bank",
+        "branches",
+        "calendar",
+        "check",
+        "cities",
+        "closed",
+        "days",
+        "diwali",
+        "hdfc",
+        "hidden",
+        "holiday",
+        "icici",
+        "math",
+        "monday",
+        "november"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "HEALTH",
     "GLOBAL_POWERS",
@@ -8517,10 +8533,10 @@
     "VIRAL_UNDERDOG_SPORTS",
     "UNDERRATED_GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "STOCK_MARKETS"
   ],
   "last_sources": [
-    "The Guardian International",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "Global Country Wire [NEW ZEALAND \u2022 HEALTH]",
     "Google Trends Viral [FRANCE]",
@@ -8559,10 +8575,10 @@
     "High-Shareability National Sports Heroes (Indonesia, India, Philippines, Brazil, Turkey)",
     "Underrated Chokepoints & Trade Corridors",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
-    "France24 Global Affairs"
+    "France24 Global Affairs",
+    "Google Trends India Viral 24h"
   ],
   "last_countries": [
-    "TURKEY",
     "SOUTH KOREA",
     "MALAYSIA",
     "SPACE & SCIENCE",
@@ -8611,6 +8627,7 @@
     "INDIA",
     "BRAZIL",
     "QATAR",
-    "UNITED KINGDOM"
+    "UNITED KINGDOM",
+    "INDIA"
   ]
 }
