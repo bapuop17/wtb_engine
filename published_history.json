@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-10T01:28:05.187679",
-  "last_upload_epoch": 1794274085,
-  "round_robin_idx": 16,
-  "country_rot_idx": 71,
-  "bgm_track_counter": 3163000830,
+  "updated_at": "2026-11-10T05:57:09.305231",
+  "last_upload_epoch": 1794290229,
+  "round_robin_idx": 17,
+  "country_rot_idx": 2,
+  "bgm_track_counter": 3182010213,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -664,49 +664,11 @@
     "brazil_s_rare_earth_gamble_will",
     "jaguars_blockbuster_trade_jordan_davis_super",
     "mrquez_nears_motogp_crown_as_martn",
-    "marquez_s_8th_crown_the_qatar"
+    "marquez_s_8th_crown_the_qatar",
+    "uk_writer_m_john_harrison_wins",
+    "the_81_year_old_who_wrote"
   ],
   "event_fingerprints": [
-    {
-      "title": "ECB President Lagarde steps down in order to speak out | Geopolitics Explained",
-      "tokens": [
-        "documentary",
-        "down",
-        "full",
-        "geopolitics",
-        "hanbk",
-        "here",
-        "https",
-        "lagarde",
-        "order",
-        "president",
-        "speak",
-        "steps",
-        "talk",
-        "ulvs",
-        "watch",
-        "youtube"
-      ]
-    },
-    {
-      "title": "Silicone Waste Just Became a $100B Goldmine?",
-      "tokens": [
-        "became",
-        "documentary",
-        "everywhere",
-        "full",
-        "goldmine",
-        "here",
-        "https",
-        "implants",
-        "just",
-        "medical",
-        "silicone",
-        "waste",
-        "watch",
-        "youtube"
-      ]
-    },
     {
       "title": "Flavio Bolsonaro's Shocking 'Leader of Brazil' Claim Exposed",
       "tokens": [
@@ -8472,10 +8434,50 @@
         "qatar",
         "reveals"
       ]
+    },
+    {
+      "title": "UK writer M. John Harrison wins Booker Prize for AI-tinged apocalyptic novel",
+      "tokens": [
+        "apocalyptic",
+        "author",
+        "awards",
+        "booker",
+        "considered",
+        "fiction",
+        "harrison",
+        "john",
+        "literary",
+        "most",
+        "novel",
+        "prestigious",
+        "prize",
+        "tinged",
+        "wins",
+        "work",
+        "writer",
+        "year"
+      ]
+    },
+    {
+      "title": "The 81-Year-Old Who Wrote Britain's End: Booker Prize Shock",
+      "tokens": [
+        "apocalyptic",
+        "booker",
+        "britain",
+        "harrison",
+        "john",
+        "novel",
+        "prize",
+        "shock",
+        "tinged",
+        "wins",
+        "writer",
+        "wrote",
+        "year"
+      ]
     }
   ],
   "last_categories": [
-    "TECHNOLOGY",
     "GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "HEALTH",
@@ -8514,10 +8516,10 @@
     "GLOBAL_POWERS",
     "VIRAL_UNDERDOG_SPORTS",
     "UNDERRATED_GEOPOLITICS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "Global Country Wire [IRELAND \u2022 TECHNOLOGY]",
     "The Guardian International",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "Global Country Wire [NEW ZEALAND \u2022 HEALTH]",
@@ -8556,10 +8558,10 @@
     "Google Trends Viral [NORWAY]",
     "High-Shareability National Sports Heroes (Indonesia, India, Philippines, Brazil, Turkey)",
     "Underrated Chokepoints & Trade Corridors",
-    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)"
+    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
+    "France24 Global Affairs"
   ],
   "last_countries": [
-    "CHINA",
     "TURKEY",
     "SOUTH KOREA",
     "MALAYSIA",
@@ -8608,6 +8610,7 @@
     "INTERNATIONAL",
     "INDIA",
     "BRAZIL",
-    "QATAR"
+    "QATAR",
+    "UNITED KINGDOM"
   ]
 }
