@@ -933,6 +933,30 @@ except Exception:
     FACE_CASCADE = None
     CAT_CASCADE = None
 
+
+import unicodedata
+
+def ascii_transliterate_keep_vowels(text_str):
+    """
+    V61 UNICODE-SAFE ASCII TRANSLITERATOR:
+    Converts accented characters ('Márquez', 'Świątek', 'São Paulo', 'Zürich', 'Erdoğan')
+    into their clean ASCII equivalents ('Marquez', 'Swiatek', 'Sao Paulo', 'Zurich', 'Erdogan')
+    BEFORE stripping non-printable characters—so accented vowels are NEVER deleted ('MRQUEZ')!
+    """
+    if not text_str:
+        return ""
+    s = str(text_str)
+    special_map = {
+        "ł": "l", "Ł": "L", "ø": "o", "Ø": "O", "ß": "ss", "æ": "ae", "Æ": "AE",
+        "œ": "oe", "Œ": "OE", "đ": "d", "Đ": "D", "ğ": "g", "Ğ": "G", "ı": "i", "İ": "I",
+        "’": "'", "‘": "'", "“": '"', "”": '"', "–": "-", "—": "-"
+    }
+    for k_sp, v_sp in special_map.items():
+        if k_sp in s:
+            s = s.replace(k_sp, v_sp)
+    s_norm = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[^\x20-\x7E]", "", s_norm)
+
 def get_font(size):
     if size in FONT_CACHE:
         return FONT_CACHE[size]
@@ -1202,9 +1226,9 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
         words_per_scene = "75 to 90 words (4 full investigative sentences)"
         format_label = "9-to-10 Minute Daily 24-Hour Global News Mega-Documentary (14 Deep-Dive Chapters)"
     elif is_short:
-        num_scenes = 6
-        words_per_scene = "20 to 25 words (2 full crisp sentences in fast-paced Abhi & Niyu / Think School viral hook style)"
-        format_label = "YouTube Short Case Study (48-56 seconds, 6 fast-paced scenes that hook viewers to click the Full Documentary Link)"
+        num_scenes = 5
+        words_per_scene = "16 to 20 words (2 ultra-crisp, high-retention sentences in viral Think School / Abhi & Niyu hook style)"
+        format_label = "YouTube Short Case Study (36-45 seconds, 5 fast-paced scenes engineered for 85%+ viewer retention)"
     else:
         num_scenes = 10
         words_per_scene = "95 to 115 words (5 to 6 full, detailed Think School, Nitish Rajput & Abhi & Niyu style investigative sentences)"
@@ -2144,7 +2168,7 @@ def clean_fact(text):
     text = re.sub(r"(?i)\b(BBC World Service|CNN Live|Al Jazeera Sport)\b", lambda m: m.group(0).split()[0], text)
     text = re.sub(r"(?i)\s*,\s*,", ",", text)
     text = re.sub(r"\[([^\]]+)\]", r"\1", text)
-    text = re.sub(r"[^\x20-\x7E]", "", text)
+    text = ascii_transliterate_keep_vowels(text)
     text = re.sub(r"\s+", " ", text).strip()
 
     low = text.lower()
@@ -2536,18 +2560,35 @@ def resolve_country_or_domain_profile(title, raw_facts_list, pillar_name="WORLD"
     headline_low = title.lower()
     body_low = " ".join(raw_facts_list[:3]).lower()
     comb_us_check = f"{headline_low} {body_low}"
-    # CRITICAL V43 FIX: Disambiguate U.S. State of Georgia from Caucasian Republic of Georgia (`🇬🇪`)!
-    if "georgia" in comb_us_check and any(us_k in comb_us_check for us_k in ["senate", "gop", "republican", "democrat", "democratic", "atlanta", "ossoff", "warnock", "kemp", "collins", "trump", "biden", "congress", "midterm", "governor"]):
+    # CRITICAL V61 FIX 1: Disambiguate U.S. State of Georgia & U.S. Sports Leagues (NFL, NBA, MLB, NHL, NCAA, Super Bowl)
+    # so "Jaguars' Blockbuster Trade: Jordan Davis, Super Bowl Gamble" maps to UNITED STATES (NEVER Jordan/Amman!)
+    if "georgia" in comb_us_check and any(us_k in comb_us_check for us_k in ["senate", "gop", "republican", "democrat", "democratic", "atlanta", "ossoff", "warnock", "kemp", "collins", "trump", "biden", "congress", "midterm", "governor", "bulldogs", "sec "]):
         return build_country_dict_from_db("united states", is_global_topic=False)
+
+    if any(us_sp in comb_us_check for us_sp in [
+        "nfl", "super bowl", "jacksonville jaguars", "philadelphia eagles", "kansas city chiefs", "dallas cowboys",
+        "san francisco 49ers", "baltimore ravens", "buffalo bills", "green bay packers", "detroit lions", "new york jets",
+        "new york giants", "chicago bears", "pittsburgh steelers", "new england patriots", "miami dolphins", "houston texans",
+        "nba", "los angeles lakers", "boston celtics", "golden state warriors", "mlb", "new york yankees", "los angeles dodgers",
+        "nhl", "ncaa", "wall street", "federal reserve", "pentagon", "white house", "capitol hill", "silicon valley"
+    ]):
+        return build_country_dict_from_db("united states", is_global_topic=False)
+
+    # CRITICAL V61 FIX 2: Guard ambiguous country names that are common first/last names ('Jordan Davis', 'Michael Jordan', 'Jordan Love', 'Chad Gable')
+    jordan_is_country = any(jk in comb_us_check for jk in ["amman", "king abdullah", "hashemite", "aqaba", "jordanian", "middle east", "west bank", "israel", "syria", "iraq"])
 
     best_match = None
     best_pos = 9999
     for dem, c_mapped in DEMONYM_TO_COUNTRY.items():
+        if c_mapped == "JORDAN" and not jordan_is_country:
+            continue
         pos = headline_low.find(dem)
         if pos != -1 and pos < best_pos:
             best_pos = pos
             best_match = c_mapped
     for c_name in COUNTRY_GEO_DB.keys():
+        if c_name == "JORDAN" and not jordan_is_country:
+            continue
         m = re.search(rf"\b{re.escape(c_name.lower())}\b", headline_low)
         if m and m.start() < best_pos:
             best_pos = m.start()
@@ -2568,6 +2609,8 @@ def resolve_country_or_domain_profile(title, raw_facts_list, pillar_name="WORLD"
             return build_country_dict_from_db(c_mapped, is_global_topic=False)
     for c_name in COUNTRY_GEO_DB.keys():
         if c_name == "INDIA" and not india_in_headline:
+            continue
+        if c_name == "JORDAN" and not jordan_is_country:
             continue
         if re.search(rf"\b{re.escape(c_name.lower())}\b", body_low):
             return build_country_dict_from_db(c_name, is_global_topic=False)
@@ -3315,14 +3358,14 @@ def detect_person_in_narration_text(text, ai_person="", ai_role="", story_title=
         return ("Rachel Reeves", "Rachel Reeves", "UK CHANCELLOR OF THE EXCHEQUER")
 
     if ai_person:
-        clean_name = re.sub(r"[^\x20-\x7E]", "", ai_person).strip()
+        clean_name = ascii_transliterate_keep_vowels(ai_person).strip()
         # STRICT VERIFICATION: The person's surname or first name MUST actually appear in `text`!
         name_parts = [p.lower() for p in re.findall(r"[A-Za-z]{3,}", clean_name)]
         if name_parts and any( re.search(rf"\b{re.escape(np_w)}\b", low) for np_w in name_parts ):
             if clean_name.lower() in PERSON_WIKI_MAP:
                 return PERSON_WIKI_MAP[clean_name.lower()]
             if clean_name.lower() not in {"none", "null", "n/a", "unknown", "host", "narrator"} and is_valid_human_name_candidate(clean_name):
-                clean_role = re.sub(r"[^\x20-\x7E]", "", ai_role or "KEY SUBJECT IN FOCUS").strip().upper()
+                clean_role = ascii_transliterate_keep_vowels(ai_role or "KEY SUBJECT IN FOCUS").strip().upper()
                 return (clean_name, clean_name, clean_role[:28])
 
     role_patterns = [
@@ -4872,7 +4915,7 @@ def fit_whole_words_limit(text_str, max_chars=26):
     return " ".join(out) if out else s[:max_chars]
 
 def extract_key_point_from_sentence(sentence_text, beat_num=1, fallback_stat=""):
-    clean_s = strip_news_publisher_mentions(re.sub(r"[^\x20-\x7E]", "", str(sentence_text or ""))).strip()
+    clean_s = strip_news_publisher_mentions(ascii_transliterate_keep_vowels(str(sentence_text or ""))).strip()
     words = [re.sub(r"[^a-zA-Z0-9$%\-.:]", "", w).strip(".:") for w in clean_s.split()]
     words = [w for w in words if len(w) >= 2]
 
@@ -5146,6 +5189,13 @@ def restore_exact_fact_proper_nouns(narration_text, dossier=None):
     return out
 
 def normalize_narration_entity_spelling(text_str, dossier=None):
+    if not text_str:
+        return ""
+    text_str = re.sub(r"\b10[-\s]+horsepower\b", "300-horsepower", str(text_str), flags=re.I)
+    text_str = re.sub(r"\bGrande\s+Pre(?:irely)?\b", "Grand Prix", text_str, flags=re.I)
+    text_str = re.sub(r"\bBaya\b", "Bagnaia", text_str)
+    text_str = re.sub(r"\bB(?:i)?zeki\b", "Bezzecchi", text_str)
+    text_str = re.sub(r"\bQar(?:d)?\b", "Qatar", text_str)
     return restore_exact_fact_proper_nouns(text_str, dossier=dossier)
 
 def extract_sentence_ner_and_context(beat_text, bv_dict, dossier):
@@ -12424,17 +12474,18 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         # Right/Bottom 4-Bar Spec Matrix + Summary
         draw_2026_visionos_glass_card(bg, r_card, radius=24, tint=(10, 18, 34, 202), border_col=(0, 235, 255, 155), accent_col=(255, 215, 0), accent_pos="top", blur_px=20)
         draw = ImageDraw.Draw(bg, "RGBA")
+        sa_sp24, sb_sp24 = extract_comparison_sides_v60(b_txt, story_obj)
         specs = [
-            ("SPEED & PACE VELOCITY" if is_sp else "OPERATIONAL RANGE & REACH", 0.92, (0, 235, 255)),
-            ("TECHNICAL PRECISION" if is_sp else "INTERCEPTION & PRECISION", 0.88, (255, 215, 0)),
-            ("PRESSURE RESILIENCE" if is_sp else "STRATEGIC DETERRENCE", 0.95, (45, 245, 165)),
-            ("CHAMPIONSHIP IMPACT" if is_sp else "THEATER READINESS", 0.85, (255, 65, 95)),
+            (f"PRIMARY CONTENDER • {sa_sp24.upper()[:18]}" if is_sp else "OPERATIONAL RANGE & REACH", 0.92, (0, 235, 255), clean_nums[0]),
+            (f"RIVAL CHALLENGER • {sb_sp24.upper()[:18]}" if is_sp else "INTERCEPTION & PRECISION", 0.86, (255, 215, 0), clean_nums[1] if len(clean_nums) > 1 else "CONTENDER"),
+            ("TACTICAL EXECUTION & PACE" if is_sp else "STRATEGIC DETERRENCE", 0.94, (45, 245, 165), point_hl[:14]),
+            ("CHAMPIONSHIP STAKES" if is_sp else "THEATER READINESS", 0.89, (255, 65, 95), c_name[:14]),
         ]
         rx0, ry0, rx1, ry1 = r_card
-        for sp_i, (sp_lbl, sp_val, sp_col) in enumerate(specs):
+        for sp_i, (sp_lbl, sp_val, sp_col, sp_badge) in enumerate(specs):
             by = ry0 + 28 + sp_i * 82
             draw.text((rx0 + 32, by), sp_lbl, fill=(235, 242, 255, 255), font=get_font(19))
-            draw.text((rx1 - 95, by), f"{int(sp_val * 100)}/100", fill=(sp_col[0], sp_col[1], sp_col[2], 255), font=get_font(20))
+            draw.text((rx1 - 155, by), str(sp_badge)[:12], fill=(sp_col[0], sp_col[1], sp_col[2], 255), font=get_font(19))
             draw.rounded_rectangle([(rx0 + 32, by + 30), (rx1 - 32, by + 50)], radius=10, fill=(28, 42, 68, 210))
             fw = max(24, int(((rx1 - rx0) - 64) * sp_val * anim_p))
             draw.rounded_rectangle([(rx0 + 32, by + 30), (rx0 + 32 + fw, by + 50)], radius=10, fill=(sp_col[0], sp_col[1], sp_col[2], 245))
@@ -12598,10 +12649,12 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     elif mode == "SPORT_25_CHAMPIONSHIP_LEADERBOARD_GAP":
         draw_2026_visionos_glass_card(bg, stage_box, radius=26, tint=(10, 18, 34, 205), border_col=(45, 245, 165, 165), accent_col=(45, 245, 165), accent_pos="top", blur_px=20)
         draw = ImageDraw.Draw(bg, "RGBA")
+        sa_lb, sb_lb = extract_comparison_sides_v60(b_txt, story_obj)
+        sc_lb = fit_whole_words_limit(topic_anc, 20) if topic_anc.lower() not in {sa_lb.lower(), sb_lb.lower()} else f"{c_name} CIRCUIT"
         rows_sp = [
-            ("POS 01", fit_whole_words_limit(topic_anc, 22), clean_nums[0], "▲ BREAKTHROUGH LEADER", (45, 245, 165)),
-            ("POS 02", f"{c_name} FACTORY CONTENDER", clean_nums[1] if len(clean_nums) > 1 else "BENCHMARK", "ESTABLISHED GIANT", (0, 235, 255)),
-            ("POS 03", "CHAMPIONSHIP CHALLENGER", clean_nums[2] if len(clean_nums) > 2 else "ACTIVE PACE", "IN CONTENTION", (255, 215, 0)),
+            ("01", sa_lb.upper()[:22], clean_nums[0], "▲ PRIMARY CONTENDER", (45, 245, 165)),
+            ("02", sb_lb.upper()[:22], clean_nums[1] if len(clean_nums) > 1 else "RIVAL", "HEAD-TO-HEAD RIVAL", (0, 235, 255)),
+            ("03", sc_lb.upper()[:22], clean_nums[2] if len(clean_nums) > 2 else point_hl[:12], "KEY TURNING POINT", (255, 215, 0)),
         ]
         rh_s = (sh - 180) // 3
         for idx_r, (p_pos, p_name, p_stat, p_tag, p_col) in enumerate(rows_sp):
@@ -13671,7 +13724,7 @@ def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
 
     point_txt = fit_whole_words_limit(str(beat.get("point_highlight") or "KEY FACT HIGHLIGHTED").upper(), 28)
     # Use the clean spoken sentence `b_txt` (never raw RSS title with publisher suffixes like 'The Diplomat - Asia-Pacific'!)
-    clean_ex = strip_news_publisher_mentions(re.sub(r"[^\x20-\x7E]", "", b_txt)).strip()
+    clean_ex = strip_news_publisher_mentions(ascii_transliterate_keep_vowels(b_txt)).strip()
     clean_ex = re.sub(r"\s+(?:The Diplomat|Asia-Pacific|Reuters|BBC|The Guardian|CNN|DW|France24|Bloomberg|CNBC).*$", "", clean_ex, flags=re.I).strip()
     clean_ex = re.sub(r"^[a-z]+,\s*", "", clean_ex)
     if clean_ex:
@@ -15185,19 +15238,32 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
     used_text_low = " ".join(str(s.get("narration", "")).lower() for s in sections)
     unused_claims = []
     for cl in claims:
-        ct = clean_fact(str(cl.get("text", "")))
-        # Reject short headline-style fragments (< 12 words or missing normal sentence verbs/articles)
+        ct = strip_news_publisher_mentions(clean_fact(str(cl.get("text", ""))))
+        ct_low = ct.lower()
+        if any(bad_frag in ct_low for bad_frag in ["grading the ", "confirmed to the", "according to ", "reported by ", "times union", "associated press", "reuters", "click here", "read more"]):
+            continue
         words_ct = ct.split()
         has_article_or_verb = any(w.lower() in {"the", "a", "an", "is", "are", "was", "were", "has", "have", "had", "will", "would", "could", "after", "while", "during"} for w in words_ct)
-        if len(ct) >= 65 and len(words_ct) >= 12 and has_article_or_verb and ct[:30].lower() not in used_text_low:
-            unused_claims.append(cl)
+        if len(ct) >= 75 and len(words_ct) >= 14 and has_article_or_verb and ct[:30].lower() not in used_text_low:
+            unused_claims.append({"text": ct, "source_name": cl.get("source_name", ""), "published_date": cl.get("published_date", "")})
 
     # V53 HEADLINE-FIRST DOMAIN MATRIX SELECTOR:
     # Checks `pillar` and `headline_only_low` (NEVER paragraph 6 of `raw_facts`) so an election story mentioning
     # 'health budget' or 'stock market' never gets hijacked into a hospital or Wall Street template!
     headline_only_low = f"{dossier.get('title', '')} {t_anc}".lower()
-    is_explicit_geo = pillar in ("WORLD", "GEOPOLITICS", "GLOBAL_POWERS", "UNDERRATED_GEOPOLITICS", "DEFENSE_MILITARY", "INDIA_TRENDING") or any(gk in headline_only_low for gk in ["election", "vote", "parliament", "coalition", "minister", "president", "treaty", "pact", "summit", "war", "military", "nato", "sanctions"])
-    if (not is_explicit_geo) and (pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS") or any(k in headline_only_low for k in ["stock", "market", "nifty", "sensex", "wall street", "tariff", "rbi", "fed", "crude", "oil", "refinery", "trade", "economy", "gdp", "inflation", "bank"])):
+    is_explicit_sport = (
+        pillar in ("SPORTS", "VIRAL_UNDERDOG_SPORTS")
+        or classify_story_true_domain_v60(dossier) == "CHAMPIONSHIP_SPORTS"
+        or any(sk in headline_only_low for sk in [
+            "nfl", "super bowl", "jaguars", "eagles", "quarterback", "touchdown", "draft", "nba", "mlb", "nhl",
+            "moto3", "motogp", "moto2", "f1", "formula 1", "grand prix", "marquez", "bagnaia", "bezzecchi",
+            "tennis", "wta", "atp", "claire liu", "eala", "wimbledon", "us open", "roland garros",
+            "cricket", "ipl", "bcci", "football", "soccer", "premier league", "champions league", "real madrid",
+            "manchester united", "barcelona", "arsenal", "liverpool", "mourinho", "ufc", "boxing", "olympic", "chess"
+        ])
+    )
+    is_explicit_geo = (not is_explicit_sport) and (pillar in ("WORLD", "GEOPOLITICS", "GLOBAL_POWERS", "UNDERRATED_GEOPOLITICS", "DEFENSE_MILITARY", "INDIA_TRENDING") or any(gk in headline_only_low for gk in ["election", "vote", "parliament", "coalition", "minister", "president", "treaty", "pact", "summit", "war", "military", "nato", "sanctions"]))
+    if (not is_explicit_geo) and (not is_explicit_sport) and (pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS") or any(k in headline_only_low for k in ["stock", "market", "nifty", "sensex", "wall street", "tariff", "rbi", "fed", "crude", "oil", "refinery", "trade", "economy", "gdp", "inflation", "bank"])):
         domain_matrix = [
             f"From a Follow-the-Money perspective, the capital flows surrounding {t_anc} reveal how institutional investors and sovereign funds are repricing risk across {c_name}.",
             f"Market analysts tracking {t_anc} point out that supply-chain bottlenecks, energy input costs, and central bank liquidity directly determine which corporations capture the highest margins.",
@@ -15457,9 +15523,9 @@ def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
                 nar = proofread_and_deduplicate_narration(claims[idx % len(claims)]["text"], seen_narration_sentences, dossier, scene_idx=idx)
             if nar[-1] not in ".!?":
                 nar += "."
-            pill = fit_whole_words_limit(re.sub(r"[^\x20-\x7E]", "", str(sc.get("context_pill", dossier["topic_anchor"]))).upper().strip(), 26)
-            htape = fit_whole_words_limit(re.sub(r"[^\x20-\x7E]", "", str(sc.get("hook_tape", pill))).upper().strip(), 34)
-            stat_c = fit_whole_words_limit(re.sub(r"[^\x20-\x7E]", "", str(sc.get("stat_callout", ""))).upper().strip(), 26)
+            pill = fit_whole_words_limit(ascii_transliterate_keep_vowels(str(sc.get("context_pill", dossier["topic_anchor"]))).upper().strip(), 26)
+            htape = fit_whole_words_limit(ascii_transliterate_keep_vowels(str(sc.get("hook_tape", pill))).upper().strip(), 34)
+            stat_c = fit_whole_words_limit(ascii_transliterate_keep_vowels(str(sc.get("stat_callout", ""))).upper().strip(), 26)
             sections.append({
                 "role": pill or "KEY INSIGHT",
                 "headline": pill or make_clean_context_headline(nar, 5),
@@ -15674,7 +15740,7 @@ def build_story_specific_thumbnail_hook(dossier):
 
     sub_p = str(dossier.get("sub_pillar") or dossier.get("pillar", "GEOPOLITICS")).upper()
     arch = CATEGORY_THUMB_ARCHETYPES.get(sub_p, CATEGORY_THUMB_ARCHETYPES["GEOPOLITICS"])
-    title_raw = re.sub(r"[^\x20-\x7E]", "", str(dossier.get("title", ""))).strip()
+    title_raw = ascii_transliterate_keep_vowels(str(dossier.get("title", ""))).strip()
     title_up = title_raw.upper()
     c_name = str(dossier.get("country_profile", {}).get("name", "GLOBAL")).upper()
 
@@ -16158,6 +16224,319 @@ def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_l
     """
     return
 
+
+# ==============================================================================
+# V61 AUTONOMOUS OFF-PLATFORM WEB SYNDICATION, GITHUB PAGES SEO NEWS PORTAL,
+# SCHEMA.ORG VIDEOOBJECT JSON-LD & MULTI-SEARCH-ENGINE PING ENGINE
+# ==============================================================================
+WTB_INDEXNOW_KEY = "wtb757dd23b1dd97218indexnow2026"
+
+def build_v61_youtube_session_watch_next_block(hist_obj):
+    """
+    Creates an internal 'WATCH NEXT ON @WorldTalkBrief' link cluster in every video description
+    so YouTube's recommendation algorithm locks @WorldTalkBrief videos together in the 'Up Next' sidebar!
+    """
+    recent_vids = list(hist_obj.get("published_videos_index", []))[-6:]
+    lines_out = [
+        "🔔 SUBSCRIBE TO WORLD TALK BRIEF (@WorldTalkBrief):",
+        "👉 https://www.youtube.com/@WorldTalkBrief?sub_confirmation=1"
+    ]
+    if recent_vids:
+        lines_out.append("\n📺 WATCH MORE INVESTIGATIVE CASE STUDIES ON @WorldTalkBrief:")
+        for rv in reversed(recent_vids[-4:]):
+            v_title = rv.get("title", "")[:68]
+            v_url = rv.get("url", "")
+            if v_title and v_url:
+                lines_out.append(f"▶️ {v_title}: {v_url}")
+    return "\n".join(lines_out)
+
+
+def publish_v61_github_pages_seo_portal_and_ping_search_engines(
+    video_id, title, description, tags, pillar, country_name, sections_list=None,
+    is_short=False, linked_long_url=None, hist_obj=None
+):
+    """
+    V61 AUTONOMOUS MULTI-PLATFORM DISTRIBUTION & GOOGLE INDEXING ENGINE:
+    1. Builds/updates a Google-indexed static HTML + JSON-LD (`Schema.org/VideoObject` & `NewsArticle`)
+       investigative news portal inside `docs/` (automatically hosted at `https://<owner>.github.io/<repo>/`).
+    2. Generates a dedicated SEO article page `docs/articles/<video_id>.html` embedding the YouTube video,
+       full investigative transcript chapters, OpenGraph/Twitter cards, and canonical backlinks.
+    3. Rebuilds `docs/index.html`, `docs/sitemap.xml`, `docs/rss.xml`, and `docs/robots.txt`.
+    4. Pings IndexNow (`api.indexnow.org`, `bing.com`, `yandex.com`, `seznam.cz`), Google/WebSub (`pubsubhubbub.appspot.com`),
+       Ping-o-Matic (`rpc.pingomatic.com`), and Internet Archive SavePageNow (`web.archive.org/save/`) so external
+       search engines and discovery crawlers index the new YouTube video immediately!
+    """
+    if not video_id:
+        return
+
+    try:
+        os.makedirs("docs/articles", exist_ok=True)
+        repo_slug = os.environ.get("GITHUB_REPOSITORY", "bapuop17/wtb_engine").strip()
+        owner_name, repo_name = (repo_slug.split("/", 1) + ["wtb_engine"])[:2]
+        site_base_url = f"https://{owner_name}.github.io/{repo_name}"
+        yt_watch_url = f"https://www.youtube.com/shorts/{video_id}" if is_short else f"https://www.youtube.com/watch?v={video_id}"
+        yt_embed_url = f"https://www.youtube.com/embed/{video_id}"
+        yt_thumb_url = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
+        article_rel_path = f"articles/{video_id}.html"
+        article_full_url = f"{site_base_url}/{article_rel_path}"
+        pub_iso = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        pub_human = datetime.utcnow().strftime("%B %d, %Y")
+
+        # Record in persistent `published_videos_index` inside `hist_obj`
+        if isinstance(hist_obj, dict):
+            v_idx_list = hist_obj.setdefault("published_videos_index", [])
+            if not any(x.get("video_id") == video_id for x in v_idx_list):
+                v_idx_list.append({
+                    "video_id": video_id,
+                    "title": title,
+                    "url": yt_watch_url,
+                    "article_url": article_full_url,
+                    "thumb_url": yt_thumb_url,
+                    "pillar": pillar,
+                    "country": country_name,
+                    "is_short": bool(is_short),
+                    "published_iso": pub_iso,
+                    "summary": (description or title)[:260]
+                })
+                if len(v_idx_list) > 120:
+                    hist_obj["published_videos_index"] = v_idx_list[-120:]
+
+        # Build chapter HTML + full text body from `sections_list`
+        chapters_html = []
+        for idx_c, sec in enumerate(sections_list or [], 1):
+            c_head = html.escape(str(sec.get("headline") or sec.get("chapter_title") or f"Part {idx_c}"))
+            c_nar = html.escape(str(sec.get("narration") or ""))
+            if c_nar:
+                chapters_html.append(f"<section class='chapter-card'><h2>{idx_c}. {c_head}</h2><p>{c_nar}</p></section>")
+        if not chapters_html:
+            chapters_html.append(f"<section class='chapter-card'><p>{html.escape(description or title)}</p></section>")
+
+        clean_title_esc = html.escape(title)
+        clean_desc_esc = html.escape((description or title)[:300])
+        json_ld_obj = {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "VideoObject",
+                    "name": title,
+                    "description": (description or title)[:500],
+                    "thumbnailUrl": [yt_thumb_url, f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"],
+                    "uploadDate": pub_iso,
+                    "contentUrl": yt_watch_url,
+                    "embedUrl": yt_embed_url,
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "World Talk Brief (@WorldTalkBrief)",
+                        "url": "https://www.youtube.com/@WorldTalkBrief"
+                    }
+                },
+                {
+                    "@type": "NewsArticle",
+                    "headline": title[:110],
+                    "datePublished": pub_iso,
+                    "dateModified": pub_iso,
+                    "image": [yt_thumb_url],
+                    "author": {
+                        "@type": "Organization",
+                        "name": "World Talk Brief",
+                        "url": "https://www.youtube.com/@WorldTalkBrief"
+                    },
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "World Talk Brief",
+                        "url": "https://www.youtube.com/@WorldTalkBrief"
+                    },
+                    "mainEntityOfPage": article_full_url
+                }
+            ]
+        }
+
+        article_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{clean_title_esc} | World Talk Brief (@WorldTalkBrief)</title>
+  <meta name="description" content="{clean_desc_esc}">
+  <meta name="keywords" content="{html.escape(', '.join((tags or [])[:15] + ['World Talk Brief', 'WorldTalkBrief']))}">
+  <link rel="canonical" href="{article_full_url}">
+  <meta property="og:type" content="video.other">
+  <meta property="og:title" content="{clean_title_esc} | World Talk Brief">
+  <meta property="og:description" content="{clean_desc_esc}">
+  <meta property="og:url" content="{yt_watch_url}">
+  <meta property="og:image" content="{yt_thumb_url}">
+  <meta property="og:video" content="{yt_embed_url}">
+  <meta name="twitter:card" content="player">
+  <meta name="twitter:title" content="{clean_title_esc}">
+  <meta name="twitter:description" content="{clean_desc_esc}">
+  <meta name="twitter:image" content="{yt_thumb_url}">
+  <meta name="twitter:player" content="{yt_embed_url}">
+  <script type="application/ld+json">{json.dumps(json_ld_obj)}</script>
+  <style>
+    body {{ background:#070c17; color:#eaf1ff; font-family:system-ui,-apple-system,sans-serif; margin:0; line-height:1.65; }}
+    header {{ background:#0d1629; border-bottom:1px solid #1e2f52; padding:18px 24px; display:flex; justify-content:space-between; align-items:center; }}
+    .brand {{ font-weight:800; font-size:1.25rem; color:#00ebff; text-decoration:none; letter-spacing:0.5px; }}
+    .cta-btn {{ background:#ff2a4b; color:#fff; padding:10px 18px; border-radius:8px; text-decoration:none; font-weight:700; }}
+    main {{ max-width:960px; margin:28px auto; padding:0 20px; }}
+    .video-wrap {{ position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:14px; border:1px solid #243861; box-shadow:0 12px 36px rgba(0,0,0,0.5); }}
+    .video-wrap iframe {{ position:absolute; top:0; left:0; width:100%; height:100%; border:0; }}
+    h1 {{ font-size:1.95rem; margin:22px 0 10px; color:#ffffff; }}
+    .meta {{ color:#8da4cc; font-size:0.92rem; margin-bottom:24px; }}
+    .chapter-card {{ background:#0e182d; border:1px solid #1c2d52; border-radius:12px; padding:18px 22px; margin-bottom:16px; }}
+    .chapter-card h2 {{ color:#ffd700; margin-top:0; font-size:1.2rem; }}
+    footer {{ text-align:center; padding:32px 16px; color:#778db3; border-top:1px solid #172542; margin-top:40px; }}
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="../index.html">WORLD TALK BRIEF • @WorldTalkBrief</a>
+    <a class="cta-btn" href="https://www.youtube.com/@WorldTalkBrief?sub_confirmation=1" target="_blank" rel="noopener">Subscribe on YouTube</a>
+  </header>
+  <main>
+    <div class="video-wrap">
+      <iframe src="{yt_embed_url}" title="{clean_title_esc}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <h1>{clean_title_esc}</h1>
+    <div class="meta">Published {pub_human} • Category: {html.escape(str(pillar))} • Region: {html.escape(str(country_name))} • <a href="{yt_watch_url}" style="color:#00ebff;">Watch Directly on YouTube</a></div>
+    {''.join(chapters_html)}
+  </main>
+  <footer>
+    <p>© {datetime.utcnow().year} <a href="https://www.youtube.com/@WorldTalkBrief" style="color:#00ebff;">World Talk Brief (@WorldTalkBrief)</a> • Global Geopolitics, Macro-Economics, Science &amp; Case Studies</p>
+  </footer>
+</body>
+</html>"""
+        with open(f"docs/{article_rel_path}", "w", encoding="utf-8") as af:
+            af.write(article_html)
+
+        # Write IndexNow key file and robots.txt
+        with open(f"docs/{WTB_INDEXNOW_KEY}.txt", "w", encoding="utf-8") as kf:
+            kf.write(WTB_INDEXNOW_KEY)
+        with open("docs/robots.txt", "w", encoding="utf-8") as rf:
+            rf.write(f"User-agent: *\nAllow: /\nSitemap: {site_base_url}/sitemap.xml\n")
+
+        # Rebuild `docs/index.html`, `docs/sitemap.xml`, and `docs/rss.xml` from `published_videos_index`
+        all_vids = list(reversed((hist_obj or {}).get("published_videos_index", [])))
+        cards_html = []
+        sitemap_urls = [f"  <url><loc>{site_base_url}/index.html</loc><changefreq>hourly</changefreq><priority>1.0</priority></url>"]
+        rss_items = []
+        for v_it in all_vids[:40]:
+            vid_c = v_it.get("video_id", "")
+            t_c = html.escape(v_it.get("title", ""))
+            u_yt = html.escape(v_it.get("url", ""))
+            u_art = f"{site_base_url}/articles/{vid_c}.html"
+            th_c = html.escape(v_it.get("thumb_url", ""))
+            sum_c = html.escape(v_it.get("summary", "")[:180])
+            cards_html.append(
+                f"<article class='card'>"
+                f"<a href='articles/{vid_c}.html'><img src='{th_c}' alt='{t_c}' loading='lazy'></a>"
+                f"<div class='card-body'><h3><a href='articles/{vid_c}.html'>{t_c}</a></h3>"
+                f"<p>{sum_c}</p><a class='yt-link' href='{u_yt}' target='_blank' rel='noopener'>▶ Watch on YouTube</a></div>"
+                f"</article>"
+            )
+            sitemap_urls.append(f"  <url><loc>{u_art}</loc><changefreq>daily</changefreq><priority>0.9</priority></url>")
+            rss_items.append(
+                f"    <item>\n"
+                f"      <title>{t_c}</title>\n"
+                f"      <link>{u_yt}</link>\n"
+                f"      <guid isPermaLink='true'>{u_art}</guid>\n"
+                f"      <description>{sum_c} — Watch on YouTube: {u_yt}</description>\n"
+                f"    </item>"
+            )
+
+        index_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World Talk Brief (@WorldTalkBrief) • Global Investigative Documentaries &amp; Case Studies</title>
+  <meta name="description" content="Official investigative documentary &amp; case-study portal of World Talk Brief (@WorldTalkBrief) covering Geopolitics, Global Markets, AI, Defense &amp; Science.">
+  <link rel="canonical" href="{site_base_url}/">
+  <link rel="alternate" type="application/rss+xml" title="World Talk Brief RSS Feed" href="{site_base_url}/rss.xml">
+  <style>
+    body {{ background:#070c17; color:#eaf1ff; font-family:system-ui,-apple-system,sans-serif; margin:0; }}
+    header {{ background:#0d1629; border-bottom:1px solid #1e2f52; padding:24px; text-align:center; }}
+    header h1 {{ margin:0 0 8px; color:#00ebff; font-size:2rem; }}
+    header p {{ margin:0 0 16px; color:#9fb4d9; }}
+    .cta {{ background:#ff2a4b; color:#fff; padding:11px 22px; border-radius:8px; text-decoration:none; font-weight:700; display:inline-block; }}
+    .grid {{ max-width:1180px; margin:30px auto; padding:0 20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:22px; }}
+    .card {{ background:#0e182d; border:1px solid #1c2d52; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }}
+    .card img {{ width:100%; height:180px; object-fit:cover; }}
+    .card-body {{ padding:16px; flex:1; display:flex; flex-direction:column; }}
+    .card-body h3 {{ margin:0 0 10px; font-size:1.1rem; }}
+    .card-body h3 a {{ color:#fff; text-decoration:none; }}
+    .card-body p {{ color:#8da4cc; font-size:0.9rem; flex:1; }}
+    .yt-link {{ color:#ffd700; font-weight:700; text-decoration:none; margin-top:10px; }}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>WORLD TALK BRIEF (@WorldTalkBrief)</h1>
+    <p>Global Geopolitics, Macro-Economics, Big Tech &amp; Deep-Dive Documentary Case Studies</p>
+    <a class="cta" href="https://www.youtube.com/@WorldTalkBrief?sub_confirmation=1" target="_blank" rel="noopener">Subscribe on YouTube (@WorldTalkBrief)</a>
+  </header>
+  <section class="grid">
+    {''.join(cards_html)}
+  </section>
+</body>
+</html>"""
+        with open("docs/index.html", "w", encoding="utf-8") as idx_f:
+            idx_f.write(index_html)
+
+        sitemap_xml = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            + "\n".join(sitemap_urls) + "\n</urlset>\n"
+        )
+        with open("docs/sitemap.xml", "w", encoding="utf-8") as sm_f:
+            sm_f.write(sitemap_xml)
+
+        rss_xml = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
+            '  <channel>\n'
+            '    <title>World Talk Brief (@WorldTalkBrief)</title>\n'
+            '    <link>https://www.youtube.com/@WorldTalkBrief</link>\n'
+            '    <description>Global Geopolitics, Business, Science &amp; Investigative Case Studies by World Talk Brief</description>\n'
+            f'    <atom:link href="{site_base_url}/rss.xml" rel="self" type="application/rss+xml" />\n'
+            + "\n".join(rss_items) + "\n  </channel>\n</rss>\n"
+        )
+        with open("docs/rss.xml", "w", encoding="utf-8") as rs_f:
+            rs_f.write(rss_xml)
+
+        # Ping Search Engines & Real-Time WebSub Hubs (non-blocking, short timeouts)
+        # 1. IndexNow (Bing, Yandex, Seznam, Naver)
+        for idx_endpoint in ["https://api.indexnow.org/indexnow", "https://www.bing.com/indexnow", "https://yandex.com/indexnow"]:
+            try:
+                requests.get(
+                    f"{idx_endpoint}?url={urllib.parse.quote(article_full_url)}&key={WTB_INDEXNOW_KEY}",
+                    headers=HEADERS_WEB, timeout=3.5
+                )
+            except Exception:
+                pass
+        # 2. Google / Superfeedr WebSub PubSubHubbub Real-Time Feed Push
+        for hub_url in ["https://pubsubhubbub.appspot.com/", "https://pubsubhubbub.superfeedr.com/"]:
+            try:
+                requests.post(
+                    hub_url,
+                    data={"hub.mode": "publish", "hub.url": f"{site_base_url}/rss.xml"},
+                    headers=HEADERS_WEB, timeout=3.5
+                )
+                requests.post(
+                    hub_url,
+                    data={"hub.mode": "publish", "hub.url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCZEIijIclhD5s5ZfTglLKTg"},
+                    headers=HEADERS_WEB, timeout=3.5
+                )
+            except Exception:
+                pass
+        # 3. Internet Archive Wayback SavePageNow backlink ping for the YouTube watch URL
+        try:
+            requests.get(f"https://web.archive.org/save/{yt_watch_url}", headers=HEADERS_WEB, timeout=4.0)
+        except Exception:
+            pass
+        print(f"🌐 [V61 Autonomous Web Syndication & Search Engine Ping] Portal updated (`docs/{article_rel_path}`) + IndexNow/WebSub/Archive pinged for {yt_watch_url}!", flush=True)
+    except Exception as dist_e:
+        print("⚠️ [V61 Web Syndication Notice]:", str(dist_e)[:120], flush=True)
+
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
     is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway="",
@@ -16197,7 +16576,11 @@ def try_youtube_auto_upload(
     from googleapiclient.discovery import build
     from googleapiclient.http import MediaFileUpload
 
-    clean_tags = [sanitize_youtube_metadata_text(t, 28) for t in tags[:20] if sanitize_youtube_metadata_text(t, 28)]
+    brand_anchor_tags = ["World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"]
+    merged_tags = brand_anchor_tags + [t for t in (tags or []) if t not in brand_anchor_tags]
+    clean_tags = [sanitize_youtube_metadata_text(t, 28) for t in merged_tags[:22] if sanitize_youtube_metadata_text(t, 28)]
+    if "@WorldTalkBrief" not in clean_desc:
+        clean_desc = f"{clean_desc}\n\nOfficial Channel: World Talk Brief (@WorldTalkBrief) • https://www.youtube.com/@WorldTalkBrief #WorldTalkBrief"
 
     # Start from the current active token index and failover cleanly across all tokens if any token hits quotaExceeded
     start_tk = GLOBAL_UPLOAD_TOKEN_COUNTER["idx"] % len(candidate_tokens)
@@ -16226,7 +16609,9 @@ def try_youtube_auto_upload(
                 },
                 "status": {
                     "privacyStatus": "public",
-                    "selfDeclaredMadeForKids": False
+                    "selfDeclaredMadeForKids": False,
+                    "embeddable": True,
+                    "publicStatsViewable": True
                 },
                 "localizations": loc_map
             }
@@ -16392,11 +16777,13 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     long_hashtags_str = " ".join(pkg_report["hashtags"] + ["#CaseStudy", "#DeepDive"])
     ai_desc = lead_long_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] presents an original deep-dive case study.")
     clean_ai_desc = strip_news_publisher_mentions(ai_desc)
+    watch_next_block_l = build_v61_youtube_session_watch_next_block(hist_obj)
     long_seo_desc = (
-        f"{pkg_report['selected_title']}\n\n"
+        f"{pkg_report['selected_title']} | World Talk Brief (@WorldTalkBrief)\n\n"
         f"{clean_ai_desc}\n\n"
         f"CHAPTER TIMESTAMPS:\n" + "\n".join(chap_lines) + "\n\n"
-        f"{long_hashtags_str}"
+        f"{watch_next_block_l}\n\n"
+        f"{long_hashtags_str} #WorldTalkBrief"
     )
     ai_tags = lead_long_dossier.get("ai_seo_tags", [])
     long_seo_tags = [
@@ -16426,6 +16813,12 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     )
     pkg_report["youtube_video_id"] = long_vid_id
     pkg_report["youtube_url"] = f"https://www.youtube.com/watch?v={long_vid_id}" if long_vid_id else "https://www.youtube.com/@WorldTalkBrief"
+    if long_vid_id:
+        publish_v61_github_pages_seo_portal_and_ping_search_engines(
+            long_vid_id, pkg_report["selected_title"], clean_ai_desc, long_seo_tags,
+            sub_pillar, lead_long_dossier["country_profile"]["name"].title(),
+            sections_list=long_chapters, is_short=False, hist_obj=hist_obj
+        )
     return pkg_report, shared_long_photos
 
 async def render_and_upload_short_unit(
@@ -16518,6 +16911,12 @@ async def render_and_upload_short_unit(
     )
     s_stats["linked_long_url"] = linked_long_url
     s_stats["short_video_id"] = short_vid_id
+    if short_vid_id:
+        publish_v61_github_pages_seo_portal_and_ping_search_engines(
+            short_vid_id, short_dossier["original_yt_title"], clean_short_ai_desc, short_seo_tags,
+            sub_pillar, short_dossier["country_profile"]["name"].title(),
+            sections_list=short_sections, is_short=True, linked_long_url=linked_long_url, hist_obj=hist_obj
+        )
     return s_stats
 
 async def render_and_upload_paired_story(dossier, pair_num, watermark, voice_sub_dir, hist_obj, winning_keywords, viral_yt_tags, playlist_map, top_channel_hits):
