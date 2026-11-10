@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-10T18:08:17.258761",
-  "last_upload_epoch": 1794334097,
-  "round_robin_idx": 18,
-  "country_rot_idx": 8,
-  "bgm_track_counter": 3209653610,
+  "updated_at": "2026-11-10T22:53:09.313865",
+  "last_upload_epoch": 1794351189,
+  "round_robin_idx": 19,
+  "country_rot_idx": 14,
+  "bgm_track_counter": 3212716083,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -669,53 +669,11 @@
     "the_81_year_old_who_wrote",
     "why_sbi_hdfc_icici_closed_for",
     "video_fight_between_raiders_49ers_fans",
-    "battle_of_the_bay_11_arrested"
+    "battle_of_the_bay_11_arrested",
+    "us_army_soldier_arrested_in_uk",
+    "us_army_officer_arrested_in_uk"
   ],
   "event_fingerprints": [
-    {
-      "title": "Isack Hadjar Shoves Fan in Mexico GP Paddock as F1 Fans Debate His Behavior",
-      "tokens": [
-        "annoyed",
-        "behavior",
-        "city",
-        "debate",
-        "fans",
-        "hadjar",
-        "isack",
-        "mexico",
-        "misconduct",
-        "paddock",
-        "seeking",
-        "selfie",
-        "shoves",
-        "stewards",
-        "summoned",
-        "visibly"
-      ]
-    },
-    {
-      "title": "Poland Deploys Riot Police in Standoff Over Country's Top Court",
-      "tokens": [
-        "between",
-        "centrists",
-        "cops",
-        "country",
-        "coup",
-        "court",
-        "deployed",
-        "deploys",
-        "erupt",
-        "judge",
-        "outside",
-        "poland",
-        "police",
-        "protests",
-        "right",
-        "riot",
-        "standoff",
-        "suspended"
-      ]
-    },
     {
       "title": "Haaland's Return: The Math Behind Man City's Rotation",
       "tokens": [
@@ -8462,10 +8420,44 @@
         "raiders",
         "stadium"
       ]
+    },
+    {
+      "title": "US Army soldier arrested in UK on suspicion of espionage related to Russia",
+      "tokens": [
+        "american",
+        "army",
+        "arrested",
+        "espionage",
+        "kingdom",
+        "metropolitan",
+        "police",
+        "related",
+        "russia",
+        "senior",
+        "soldier",
+        "suspected",
+        "suspicion",
+        "tuesday",
+        "unidentified",
+        "united"
+      ]
+    },
+    {
+      "title": "US Army Officer Arrested in UK: The Russia Spy Trap",
+      "tokens": [
+        "army",
+        "arrested",
+        "espionage",
+        "officer",
+        "related",
+        "russia",
+        "soldier",
+        "suspicion",
+        "trap"
+      ]
     }
   ],
   "last_categories": [
-    "VIRAL_UNDERDOG_SPORTS",
     "HEALTH",
     "GLOBAL_POWERS",
     "STOCK_MARKETS",
@@ -8504,10 +8496,10 @@
     "UNDERRATED_GEOPOLITICS",
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
-    "STOCK_MARKETS"
+    "STOCK_MARKETS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "Global Country Wire [NEW ZEALAND \u2022 HEALTH]",
     "Google Trends Viral [FRANCE]",
     "Global Country Wire [PHILIPPINES \u2022 STOCK_MARKETS]",
@@ -8546,10 +8538,10 @@
     "Underrated Chokepoints & Trade Corridors",
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "France24 Global Affairs",
-    "Google Trends USA Viral 24h"
+    "Google Trends USA Viral 24h",
+    "Google Trends UK Viral 24h"
   ],
   "last_countries": [
-    "SOUTH KOREA",
     "MALAYSIA",
     "SPACE & SCIENCE",
     "IRAN",
@@ -8598,6 +8590,7 @@
     "BRAZIL",
     "QATAR",
     "UNITED KINGDOM",
-    "UNITED STATES"
+    "UNITED STATES",
+    "UNITED KINGDOM"
   ]
 }
