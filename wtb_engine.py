@@ -1226,9 +1226,9 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
         words_per_scene = "75 to 90 words (4 full investigative sentences)"
         format_label = "9-to-10 Minute Daily 24-Hour Global News Mega-Documentary (14 Deep-Dive Chapters)"
     elif is_short:
-        num_scenes = 5
-        words_per_scene = "16 to 20 words (2 ultra-crisp, high-retention sentences in viral Think School / Abhi & Niyu hook style)"
-        format_label = "YouTube Short Case Study (36-45 seconds, 5 fast-paced scenes engineered for 85%+ viewer retention)"
+        num_scenes = 4
+        words_per_scene = "15 to 18 words (2 ultra-crisp, fast-paced sentences engineered for 95%+ Shorts completion rate)"
+        format_label = "YouTube Short Case Study (28-34 seconds, 4 high-retention scenes modeled on our 187-view 31s viral Short format with a loop hook)"
     else:
         num_scenes = 10
         words_per_scene = "95 to 115 words (5 to 6 full, detailed Think School, Nitish Rajput & Abhi & Niyu style investigative sentences)"
@@ -1965,7 +1965,10 @@ def load_published_history():
                     "round_robin_idx": int(data.get("round_robin_idx", 0)),
                     "country_rot_idx": int(data.get("country_rot_idx", 0)),
                     "bgm_track_counter": int(data.get("bgm_track_counter", 0)),
-                    "last_mega_24h_date": data.get("last_mega_24h_date", "")
+                    "last_mega_24h_date": data.get("last_mega_24h_date", ""),
+                    "v63_healed_video_ids": data.get("v63_healed_video_ids", []),
+                    "v65_rehab_next_page_token": data.get("v65_rehab_next_page_token", ""),
+                    "published_videos_index": data.get("published_videos_index", [])
                 }
         except Exception:
             pass
@@ -2017,7 +2020,10 @@ def save_published_history(hist_obj):
                 "event_fingerprints": hist_obj["event_fingerprints"][-400:],
                 "last_categories": hist_obj["last_categories"][-40:],
                 "last_sources": hist_obj["last_sources"][-40:],
-                "last_countries": hist_obj.get("last_countries", [])[-50:]
+                "last_countries": hist_obj.get("last_countries", [])[-50:],
+                "v63_healed_video_ids": hist_obj.get("v63_healed_video_ids", [])[-600:],
+                "v65_rehab_next_page_token": str(hist_obj.get("v65_rehab_next_page_token", "")),
+                "published_videos_index": hist_obj.get("published_videos_index", [])[-120:]
             }, f, indent=2)
     except Exception:
         pass
@@ -2258,7 +2264,19 @@ def proofread_and_deduplicate_narration(raw_narration, seen_sentences, dossier, 
             seen_sentences.append(c_words)
             return cand
 
-    return f"Researchers and international analysts emphasize that the long-term structural implications of {dossier.get('topic_anchor', 'this shift')} are now unfolding faster than previously projected."
+    t_anc_fb = dossier.get("topic_anchor", "this development")
+    c_name_fb = dossier.get("country_profile", {}).get("name", "the global arena").title()
+    varied_fallbacks = [
+        f"Analysts tracking {t_anc_fb} emphasize that the immediate ripple effects across {c_name_fb} are reshaping strategic priorities for the coming year.",
+        f"Behind the scenes of {t_anc_fb}, decision-makers and industry insiders point out that execution speed and resource allocation will determine the ultimate winner.",
+        f"Looking at the broader trajectory of {t_anc_fb}, every tactical adjustment made now carries high-stakes consequences across {c_name_fb}.",
+        f"Historical benchmarks around {t_anc_fb} show that moments of intense pressure often trigger the most decisive breakthroughs.",
+        f"Independent observers evaluating {t_anc_fb} note that the balance of leverage is shifting rapidly as new evidence emerges.",
+        f"For stakeholders watching {t_anc_fb} closely, the next phase will test whether short-term momentum can translate into lasting dominance.",
+        f"Data compiled around {t_anc_fb} confirms that institutional strategy and frontline execution must align to sustain this pace.",
+        f"Across {c_name_fb}, the debate sparked by {t_anc_fb} underscores how quickly established hierarchies can be challenged."
+    ]
+    return varied_fallbacks[int(scene_idx) % len(varied_fallbacks)]
 
 def split_into_complete_sentences(paragraph_text, split_long_for_visual_pacing=False):
     protected = re.sub(r"\b(U\.S|U\.K|U\.N|E\.U|Oct|Nov|Dec|Jan|Feb|Mar|Apr|Aug|Sept|Mr|Mrs|Ms|Dr|Prof|St|Gen|Col|Sen|Rep|S)\.", r"\1<DOT>", paragraph_text)
@@ -2566,10 +2584,12 @@ def resolve_country_or_domain_profile(title, raw_facts_list, pillar_name="WORLD"
         return build_country_dict_from_db("united states", is_global_topic=False)
 
     if any(us_sp in comb_us_check for us_sp in [
+        "indian wells", "indiana", "indianapolis", "coco gauff", "jessica pegula", "jessia pegula",
+        "celtics", "boston celtics", "jason tatum", "jayson tatum", "milwaukee bucks", "new york knicks",
         "nfl", "super bowl", "jacksonville jaguars", "philadelphia eagles", "kansas city chiefs", "dallas cowboys",
         "san francisco 49ers", "baltimore ravens", "buffalo bills", "green bay packers", "detroit lions", "new york jets",
         "new york giants", "chicago bears", "pittsburgh steelers", "new england patriots", "miami dolphins", "houston texans",
-        "nba", "los angeles lakers", "boston celtics", "golden state warriors", "mlb", "new york yankees", "los angeles dodgers",
+        "nba", "los angeles lakers", "golden state warriors", "mlb", "new york yankees", "los angeles dodgers",
         "nhl", "ncaa", "wall street", "federal reserve", "pentagon", "white house", "capitol hill", "silicon valley"
     ]):
         return build_country_dict_from_db("united states", is_global_topic=False)
@@ -2600,7 +2620,8 @@ def resolve_country_or_domain_profile(title, raw_facts_list, pillar_name="WORLD"
     # CRITICAL V47 ANTI-INDIA-POLLUTION GUARD:
     # If the headline (`headline_low`) did NOT mention India/Indian/Delhi/Mumbai/Modi/ISRO,
     # NEVER allow a secondary mention of India in `body_low` to tag an international story as `INDIA` (`🇮🇳`)!
-    india_in_headline = any(ik in headline_low for ik in ["india", "indian", "new delhi", "delhi", "mumbai", "bengaluru", "modi", "isro", "rbi", "bcci", "sensex", "nifty", "rupee"])
+    clean_hl_no_us_indian = re.sub(r"\b(indian wells|indiana|indianapolis|west indies|american indian)\b", "", headline_low)
+    india_in_headline = any(ik in clean_hl_no_us_indian for ik in ["india", "indian", "new delhi", "delhi", "mumbai", "bengaluru", "modi", "isro", "rbi", "bcci", "sensex", "nifty", "rupee"])
 
     for dem, c_mapped in DEMONYM_TO_COUNTRY.items():
         if c_mapped == "INDIA" and not india_in_headline:
@@ -2716,6 +2737,59 @@ def resolve_google_or_bing_redirect_url(raw_link, headline_title=""):
             except Exception:
                 pass
     return link_s
+
+
+def auto_detect_true_sub_pillar_and_hub_v64(title, summary, requested_sub_pillar):
+    """
+    V64 TRUE DOMAIN & PILLAR LOCK:
+    When a breaking viral story is harvested from Google Trends or Global Breaking Wires,
+    automatically classifies its true `sub_pillar` and `core_hub` from the headline and summary
+    so a Cricket ('Brydon Carse') or NBA ('Celtics') story NEVER gets stamped as 'AI_ROBOTICS'
+    ('AI & SILICON FRONTIER') and NEVER receives semiconductor chapters!
+    """
+    comb_low = f"{title} {summary}".lower()
+    if any(sk in comb_low for sk in [
+        "cricket", "test cricket", "ipl", "bcci", "england lion", "brydon carse", "shoaib bashir", "ben stokes",
+        "kohli", "rohit", "bumrah", "ashes", "wicket", "bowler", "batsman", "inning",
+        "nba", "celtics", "lakers", "warriors", "bucks", "knicks", "tatum", "queta", "lebron", "curry", "basketball",
+        "nfl", "super bowl", "jaguars", "eagles", "chiefs", "cowboys", "quarterback", "touchdown",
+        "tennis", "wta", "atp", "coco gauff", "pegula", "swiatek", "sabalenka", "alcaraz", "sinner", "djokovic",
+        "wimbledon", "indian wells", "us open", "roland garros", "australian open",
+        "premier league", "champions league", "real madrid", "manchester united", "barcelona", "arsenal", "liverpool",
+        "mourinho", "guardiola", "football", "soccer", "fifa", "world cup",
+        "motogp", "moto3", "moto2", "marquez", "bagnaia", "bezzecchi", "formula 1", "f1", "verstappen", "hamilton",
+        "ufc", "boxing", "badminton", "bwf", "chess", "fide", "olympic"
+    ]):
+        return "VIRAL_UNDERDOG_SPORTS", "VIRAL_UNDERDOG_SPORTS"
+
+    if any(tk in comb_low for tk in [
+        "openai", "chatgpt", "nvidia", "tsmc", "asml", "semiconductor", "silicon wafer", "gpu", "artificial intelligence",
+        "deepmind", "gemini", "claude", "anthropic", "quantum computer", "robotics", "humanoid robot", "cyberattack", "ransomware"
+    ]):
+        return "AI_ROBOTICS", "TECHNOLOGY"
+
+    if any(bk in comb_low for bk in [
+        "stock market", "sensex", "nifty", "wall street", "nasdaq", "s&p 500", "dow jones", "ipo ", "rbi ",
+        "federal reserve", "interest rate", "inflation", "gdp", "hsbc", "citigroup", "goldman sachs", "jpmorgan",
+        "morgan stanley", "blackrock", "quarterly earnings", "q1 ", "q2 ", "q3 ", "q4 ", "central bank"
+    ]):
+        return "STOCK_MARKETS", "BUSINESS"
+
+    if any(spk in comb_low for spk in [
+        "nasa", "isro", "spacex", "starship", "james webb", "hubble", "supercluster", "galaxy", "exoplanet",
+        "asteroid", "lunar", "mars rover", "space station", "cern", "nuclear fusion"
+    ]):
+        return "SCIENCE", "SCIENCE"
+
+    if any(gk in comb_low for gk in [
+        "missile", "airstrike", "nato", "pentagon", "sanctions", "ceasefire", "kremlin", "white house",
+        "prime minister", "president", "parliament", "summit", "warship", "aircraft carrier", "fighter jet", "strait"
+    ]):
+        if any(ik in comb_low for ik in ["india", "new delhi", "modi", "jaishankar", "indian"]):
+            return "INDIA_TRENDING", "WORLD"
+        return "GEOPOLITICS", "WORLD"
+
+    return requested_sub_pillar, PILLAR_TO_CORE_HUB.get(requested_sub_pillar, "WORLD")
 
 def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fingerprints):
     """
@@ -3027,12 +3101,14 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                 continue
 
             raw_facts = [c["text"] for c in verified_claims]
-            c_prof = resolve_country_or_domain_profile(title, raw_facts, pillar_name=core_hub)
-            mood_cat = classify_story_mood_and_category(title, " ".join(raw_facts[:4]), pillar_name=core_hub)
+            true_sub_p, true_core_h = auto_detect_true_sub_pillar_and_hub_v64(title, " ".join(raw_facts[:3]), sub_pillar)
+            p_cfg_item = CATEGORY_FEEDS.get(true_core_h, p_cfg)
+            c_prof = resolve_country_or_domain_profile(title, raw_facts, pillar_name=true_core_h)
+            mood_cat = classify_story_mood_and_category(title, " ".join(raw_facts[:4]), pillar_name=true_core_h)
 
-            temp_d = {"title": title, "raw_facts": raw_facts, "country_profile": c_prof, "pillar": core_hub}
+            temp_d = {"title": title, "raw_facts": raw_facts, "country_profile": c_prof, "pillar": true_core_h, "sub_pillar": true_sub_p}
             t_anchor = extract_primary_topic_anchor(temp_d)
-            orig_yt_title = build_100_percent_original_youtube_title(title, sub_pillar, c_prof, t_anchor, is_update=is_followup)
+            orig_yt_title = build_100_percent_original_youtube_title(title, true_sub_p, c_prof, t_anchor, is_update=is_followup)
 
             comb = f"{title} {' '.join(raw_facts[:3])}".lower()
             country_name_upper = c_prof.get("name", "INTERNATIONAL").upper()
@@ -3067,9 +3143,9 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
 
             candidates.append({
                 "score": trend_score,
-                "pillar": core_hub,
-                "sub_pillar": sub_pillar,
-                "yt_category_id": p_cfg["yt_category_id"],
+                "pillar": true_core_h,
+                "sub_pillar": true_sub_p,
+                "yt_category_id": p_cfg_item["yt_category_id"],
                 "story_key": make_story_key(title),
                 "event_tokens": list(cur_fp_set),
                 "is_followup_update": is_followup,
@@ -4877,8 +4953,10 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                         tu_hd = re.sub(r"&w=\d+&h=\d+", "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95", tu)
                         if "w=1920" not in tu_hd and "th?id=" in tu_hd:
                             tu_hd = tu_hd + "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95"
-                        cap_t = f"{ent_title} {clean_q}"
-                        if not passes_audit_gate_1_caption_and_url(tu_hd, cap_t, d_obj, "bing_news_rss"):
+                        cap_t = f"{ent_title}".strip()
+                        if len(cap_t) < 8 or not passes_audit_gate_1_caption_and_url(tu_hd, cap_t, d_obj, clean_q):
+                            continue
+                        if compute_visual_relevance_score(tu_hd, cap_t, d_obj, query_str=clean_q) < 55:
                             continue
                         ir = requests.get(tu_hd, headers=HEADERS_WEB, timeout=4.5)
                         if ir.status_code == 200 and len(ir.content) > 12000:
@@ -4912,6 +4990,8 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
             for u, u_turl, cap_t in blocks[:22]:
                 u_clean = u.replace("&amp;", "&")
                 if not passes_audit_gate_1_caption_and_url(u_clean, cap_t, d_obj, clean_q):
+                    continue
+                if compute_visual_relevance_score(u_clean, cap_t, d_obj, query_str=clean_q) < 60:
                     continue
                 if not ai_audit_caption_and_scene_match(cap_t, u_clean, d_obj.get('title', ''), clean_q, dossier=d_obj):
                     continue
@@ -9699,11 +9779,12 @@ def classify_story_true_domain_v60(dossier):
     pillar = str(dossier.get("sub_pillar") or dossier.get("pillar", "WORLD")).upper()
 
     if any(k in title_low for k in [
-        "tennis", "wta", "atp", "claire liu", "eala", "swiatek", "sabalenka", "alcaraz", "sinner", "djokovic",
-        "wimbledon", "roland garros", "us open", "australian open", "hong kong open", "grand slam",
-        "cricket", "ipl", "bcci", "kohli", "rohit", "bumrah", "world cup", "premier league", "champions league",
-        "real madrid", "manchester united", "barcelona", "arsenal", "liverpool", "mourinho", "guardiola", "amorim",
-        "formula 1", "f1", "verstappen", "hamilton", "ferrari", "motogp", "moto3", "veda ega", "badminton", "chess", "olympic"
+        "tennis", "wta", "atp", "claire liu", "eala", "swiatek", "sabalenka", "gauff", "pegula", "alcaraz", "sinner", "djokovic",
+        "wimbledon", "roland garros", "us open", "australian open", "hong kong open", "indian wells", "grand slam",
+        "cricket", "test cricket", "ipl", "bcci", "brydon carse", "shoaib bashir", "stokes", "kohli", "rohit", "bumrah", "world cup",
+        "nba", "celtics", "lakers", "warriors", "bucks", "knicks", "tatum", "queta", "basketball", "nfl", "super bowl", "jaguars", "eagles",
+        "premier league", "champions league", "real madrid", "manchester united", "barcelona", "arsenal", "liverpool", "mourinho", "guardiola", "amorim",
+        "formula 1", "f1", "verstappen", "hamilton", "ferrari", "motogp", "moto3", "marquez", "bagnaia", "bezzecchi", "veda ega", "badminton", "chess", "olympic", "ufc", "boxing"
     ]) or pillar in ("SPORTS", "VIRAL_UNDERDOG_SPORTS"):
         return "CHAMPIONSHIP_SPORTS"
 
@@ -10994,8 +11075,10 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                     continue
                 tm = re.search(r'"t"\s*:\s*"([^"]+)"', mc_u)
                 desc_m = re.search(r'"desc"\s*:\s*"([^"]+)"', mc_u)
-                cap_full = f"{tm.group(1) if tm else ''} {desc_m.group(1) if desc_m else ''} {deep_q}".strip()
-                if not passes_audit_gate_1_caption_and_url(u_primary, cap_full, dossier, query_str=deep_q):
+                cap_full = f"{tm.group(1) if tm else ''} {desc_m.group(1) if desc_m else ''}".strip()
+                if len(cap_full) < 8 or not passes_audit_gate_1_caption_and_url(u_primary, cap_full, dossier, query_str=deep_q):
+                    continue
+                if compute_visual_relevance_score(u_primary, cap_full, dossier, query_str=deep_q, sent_ner=sent_ner) < 60:
                     continue
                 for try_u in ([u_primary, turl_hd] if turl_hd and turl_hd != u_primary else [u_primary]):
                     try:
@@ -15490,7 +15573,26 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
         ])
     )
     is_explicit_geo = (not is_explicit_sport) and (pillar in ("WORLD", "GEOPOLITICS", "GLOBAL_POWERS", "UNDERRATED_GEOPOLITICS", "DEFENSE_MILITARY", "INDIA_TRENDING") or any(gk in headline_only_low for gk in ["election", "vote", "parliament", "coalition", "minister", "president", "treaty", "pact", "summit", "war", "military", "nato", "sanctions"]))
-    if (not is_explicit_geo) and (not is_explicit_sport) and (pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS") or any(k in headline_only_low for k in ["stock", "market", "nifty", "sensex", "wall street", "tariff", "rbi", "fed", "crude", "oil", "refinery", "trade", "economy", "gdp", "inflation", "bank"])):
+    if is_explicit_sport:
+        domain_matrix = [
+            f"Behind the headlines surrounding {t_anc}, sporting directors and tactical analysts point out how modern elite competition is won through roster depth, conditioning, and split-second execution.",
+            f"Coaches and performance specialists analyzing {t_anc} emphasize that tactical adaptability, composure under stadium pressure, and locker-room leadership separate championship contenders from the rest of the field.",
+            f"From a sports-strategy perspective, the decisions around {t_anc} reveal how squad rotation, contract leverage, and matchup analytics shape modern championship campaigns.",
+            f"Across passionate fan communities and global arenas, the developments around {t_anc} have ignited a fierce debate over long-term roster building versus immediate win-now pressure.",
+            f"Looking closely at the competitive math behind {t_anc}, every selection call and tactical adjustment directly shifts the balance of power across the standings.",
+            f"Sports historians note that when a key rotation shift or comeback in {t_anc} challenges established rivals, it forces every opponent to adjust its game plan.",
+            f"Match telemetry and scouting evaluations confirm that the resilience displayed in {t_anc} is the defining trait of elite competitors.",
+            f"Ultimately, the case study of {t_anc} proves that preparation, tactical discipline, and fearless execution remain the true currency of championship sport."
+        ]
+        extra_roles = [
+            ("THE ARENA FLASHPOINT", "THE BREAKTHROUGH MOMENT"),
+            ("TACTICAL BREAKDOWN", "INSIDE THE MATCHUP"),
+            ("ROSTER & ROTATION MATH", "THE COMPETITIVE EDGE"),
+            ("PRESSURE UNDER FIRE", "CHAMPIONSHIP PSYCHOLOGY"),
+            ("LEAGUE TABLE IMPACT", "HOW THE RACE SHIFTS"),
+            ("FINAL ARENA VERDICT", "WHAT COMES NEXT")
+        ]
+    elif (not is_explicit_geo) and (pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS") or any(k in headline_only_low for k in ["stock", "market", "nifty", "sensex", "wall street", "tariff", "rbi", "fed", "crude", "oil", "refinery", "trade", "economy", "gdp", "inflation", "bank"])):
         domain_matrix = [
             f"From a Follow-the-Money perspective, the capital flows surrounding {t_anc} reveal how institutional investors and sovereign funds are repricing risk across {c_name}.",
             f"Market analysts tracking {t_anc} point out that supply-chain bottlenecks, energy input costs, and central bank liquidity directly determine which corporations capture the highest margins.",
@@ -16420,21 +16522,46 @@ def build_20_country_youtube_localizations(en_title, en_description):
     return {"en": {"title": clean_en_t, "description": clean_en_d}}
 
 
-def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per_run=6):
+def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per_run=12):
     """
-    V63 YOUTUBE API CHANNEL ANTI-SPAM HEALER & METADATA REHABILITATOR:
-    Uses the official YouTube Data API v3 (`channels.list`, `playlistItems.list`, `videos.list`, `videos.update`)
-    to automatically inspect recent uploads on `@WorldTalkBrief` and remove spam-classifier triggers:
-    1. Strips the old `'🌍 GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:'` 18-language keyword-stuffing block from
-       existing video descriptions so YouTube's spam classifier clears those videos for Browse/Suggested impressions!
-    2. Fixes any vowel-stripped title typos (`MRQUEZ` -> `MARQUEZ`) on existing uploads.
-    3. Trims over-stuffed tag lists (`>12 tags`) down to 10 high-signal tags including `World Talk Brief` and `@WorldTalkBrief`.
-    4. Records healed `video_id`s in `hist_obj["v63_healed_video_ids"]` so each video is only healed once!
+    V65 FULL-CHANNEL 815-VIDEO BACKLOG REHABILITATOR & ANTI-SPAM HEALER:
+    Solves the root cause of the 30-minute mass-upload spam throttle across all 815 past uploads:
+    1. Paginates through the channel's `uploads` playlist across runs (saving `v65_rehab_next_page_token`
+       in `published_history.json`) using only 2 quota units for listing (`playlistItems.list` + `videos.list(part="snippet,status,statistics")`).
+    2. Quarantines known broken hybrid uploads (`Et6kEJg7Jeg`, `fTk8TnSvwqU`, `q8D-xyYYpZw`, `9ghWL-PyuuI`, `8XHR31rNuXY`, `k24wgWvpiNA`).
+    3. For OLD uploads (`> 48 hours old`) from the 30-minute mass-upload era that have `0 views` (`viewCount == 0` and `likeCount == 0`):
+       Automatically sets up to `max_fixes_per_run` (12 per run = ~96 per day) of those dead-weight 0-view videos to `unlisted`
+       so YouTube stops penalizing the channel's Public Catalog Engagement Ratio (`Total Views / Total Public Videos`)!
+    4. For ALL videos that DO have views (`viewCount >= 1`) or are `< 48 hours old`:
+       Keeps them `public`, strips the old 18-language keyword-stuffing block (`🌍 GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:`),
+       fixes title typos (`MRQUEZ` -> `MARQUEZ`), and locks clean `@WorldTalkBrief` search tags!
     """
     if yt is None:
         return
     try:
-        healed_set = set((hist_obj or {}).get("v63_healed_video_ids", []))
+        if hist_obj is None:
+            hist_obj = load_published_history()
+        healed_set = set(hist_obj.get("v63_healed_video_ids", []))
+
+        # Step A: Quarantine known broken hybrid videos immediately
+        broken_hybrid_vids = ["Et6kEJg7Jeg", "fTk8TnSvwqU", "q8D-xyYYpZw", "9ghWL-PyuuI", "8XHR31rNuXY", "k24wgWvpiNA"]
+        unhealed_broken = [bv for bv in broken_hybrid_vids if bv not in healed_set]
+        if unhealed_broken:
+            try:
+                bv_r = yt.videos().list(part="snippet,status", id=",".join(unhealed_broken)).execute()
+                for bv_it in (bv_r.get("items") or []):
+                    b_id = bv_it.get("id")
+                    if (bv_it.get("status") or {}).get("privacyStatus") == "public":
+                        yt.videos().update(
+                            part="status",
+                            body={"id": b_id, "status": {"privacyStatus": "unlisted", "selfDeclaredMadeForKids": False}}
+                        ).execute()
+                        print(f"🛡️ [V65 Channel Retention Shield] Unlisted broken hybrid upload https://youtu.be/{b_id} via API!", flush=True)
+                    healed_set.add(b_id)
+            except Exception:
+                pass
+
+        # Step B: Paginate through the channel's `uploads` playlist (walking through all 815 past videos across runs!)
         ch_resp = yt.channels().list(part="contentDetails", mine=True).execute()
         ch_items = ch_resp.get("items") or []
         if not ch_items:
@@ -16443,21 +16570,75 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
         if not uploads_pl:
             return
 
-        pl_resp = yt.playlistItems().list(part="contentDetails", playlistId=uploads_pl, maxResults=18).execute()
+        page_tok = hist_obj.get("v65_rehab_next_page_token") or None
+        pl_kwargs = {"part": "contentDetails", "playlistId": uploads_pl, "maxResults": 35}
+        if page_tok:
+            pl_kwargs["pageToken"] = page_tok
+        pl_resp = yt.playlistItems().list(**pl_kwargs).execute()
+        next_tok = pl_resp.get("nextPageToken")
+        hist_obj["v65_rehab_next_page_token"] = next_tok if next_tok else ""
+
         cand_vids = [
             it.get("contentDetails", {}).get("videoId")
             for it in (pl_resp.get("items") or [])
             if it.get("contentDetails", {}).get("videoId") and it.get("contentDetails", {}).get("videoId") not in healed_set
         ]
         if not cand_vids:
+            save_published_history(hist_obj)
             return
 
-        v_resp = yt.videos().list(part="snippet,status", id=",".join(cand_vids[:12])).execute()
+        v_resp = yt.videos().list(part="snippet,status,statistics", id=",".join(cand_vids[:30])).execute()
         fixes_done = 0
+        now_utc_dt = datetime.utcnow()
+
         for v_item in (v_resp.get("items") or []):
+            if fixes_done >= max_fixes_per_run:
+                break
             vid_id = v_item.get("id")
             snip = v_item.get("snippet") or {}
             stat = v_item.get("status") or {}
+            stats_obj = v_item.get("statistics") or {}
+            priv_status = stat.get("privacyStatus", "public")
+
+            if priv_status != "public":
+                healed_set.add(vid_id)
+                continue
+
+            view_cnt = int(stats_obj.get("viewCount") or 0)
+            like_cnt = int(stats_obj.get("likeCount") or 0)
+            pub_str = str(snip.get("publishedAt") or "")
+            age_hours = 12.0
+            if pub_str:
+                try:
+                    p_dt = datetime.fromisoformat(pub_str.replace("Z", "").split("+")[0])
+                    age_hours = max(0.1, (now_utc_dt - p_dt).total_seconds() / 3600.0)
+                except Exception:
+                    age_hours = 12.0
+
+            # Rule 1: If a video from the old 30-min spam flood is > 48 hours old AND still has 0 views & 0 likes,
+            # set it to `unlisted` so it stops dragging down the channel's Public Catalog CTR & Engagement Ratio!
+            if age_hours >= 48.0 and view_cnt == 0 and like_cnt == 0:
+                try:
+                    yt.videos().update(
+                        part="status",
+                        body={
+                            "id": vid_id,
+                            "status": {
+                                "privacyStatus": "unlisted",
+                                "selfDeclaredMadeForKids": False,
+                                "embeddable": True,
+                                "publicStatsViewable": True
+                            }
+                        }
+                    ).execute()
+                    fixes_done += 1
+                    healed_set.add(vid_id)
+                    print(f"🧹 [V65 Dead-Weight Pruner] Unlisted >48h 0-view video https://youtu.be/{vid_id} ({int(age_hours)}h old, 0 views) to boost Channel Engagement Score!", flush=True)
+                    continue
+                except Exception:
+                    pass
+
+            # Rule 2: If the video HAS views (`view_cnt >= 1`) or is `< 48 hours old`, keep it PUBLIC and strip any 18-language spam block!
             orig_t = str(snip.get("title") or "")
             orig_d = str(snip.get("description") or "")
             orig_tags = list(snip.get("tags") or [])
@@ -16485,36 +16666,39 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
                 if t not in {"World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"} and len(ascii_transliterate_keep_vowels(t)) >= 3
             ][:7]
 
-            if needs_heal and fixes_done < max_fixes_per_run:
-                yt.videos().update(
-                    part="snippet,status",
-                    body={
-                        "id": vid_id,
-                        "snippet": {
-                            "title": new_t[:95],
-                            "description": new_d[:3500],
-                            "tags": clean_healed_tags,
-                            "categoryId": cat_id,
-                            "defaultLanguage": "en",
-                            "defaultAudioLanguage": "en"
-                        },
-                        "status": {
-                            "privacyStatus": stat.get("privacyStatus", "public"),
-                            "selfDeclaredMadeForKids": False,
-                            "embeddable": True,
-                            "publicStatsViewable": True
+            if needs_heal:
+                try:
+                    yt.videos().update(
+                        part="snippet,status",
+                        body={
+                            "id": vid_id,
+                            "snippet": {
+                                "title": new_t[:95],
+                                "description": new_d[:3500],
+                                "tags": clean_healed_tags,
+                                "categoryId": cat_id,
+                                "defaultLanguage": "en",
+                                "defaultAudioLanguage": "en"
+                            },
+                            "status": {
+                                "privacyStatus": "public",
+                                "selfDeclaredMadeForKids": False,
+                                "embeddable": True,
+                                "publicStatsViewable": True
+                            }
                         }
-                    }
-                ).execute()
-                fixes_done += 1
-                print(f"🧹 [V63 YouTube API Anti-Spam Healer] Cleaned metadata & removed 18-lang spam block on https://youtu.be/{vid_id} ('{new_t[:48]}')", flush=True)
+                    ).execute()
+                    fixes_done += 1
+                    print(f"✨ [V65 Active Video Healer] Cleaned description/tags on https://youtu.be/{vid_id} ({view_cnt} views, '{new_t[:44]}')", flush=True)
+                except Exception:
+                    pass
             healed_set.add(vid_id)
 
-        if isinstance(hist_obj, dict):
-            hist_obj["v63_healed_video_ids"] = list(healed_set)[-200:]
-            save_published_history(hist_obj)
+        hist_obj["v63_healed_video_ids"] = list(healed_set)[-600:]
+        save_published_history(hist_obj)
     except Exception as heal_e:
-        print("⚠️ [V63 Anti-Spam Healer Note]:", str(heal_e)[:110], flush=True)
+        print("⚠️ [V65 Channel Rehabilitator Note]:", str(heal_e)[:110], flush=True)
+
 
 def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None):
     """
@@ -16830,12 +17014,101 @@ def publish_v61_github_pages_seo_portal_and_ping_search_engines(
                 )
             except Exception:
                 pass
-        # 3. Internet Archive Wayback SavePageNow backlink ping for the YouTube watch URL
+        # 3. Write Official Google `<video:video>` Video Sitemap (`docs/video-sitemap.xml`) for Google Video Search & Discover!
         try:
-            requests.get(f"https://web.archive.org/save/{yt_watch_url}", headers=HEADERS_WEB, timeout=4.0)
+            vs_items = []
+            for v_it in all_vids[:40]:
+                vid_c = v_it.get("video_id", "")
+                t_c = html.escape(v_it.get("title", ""))
+                sum_c = html.escape(v_it.get("summary", "")[:240] or t_c)
+                th_c = html.escape(v_it.get("thumb_url", ""))
+                u_yt = html.escape(v_it.get("url", ""))
+                u_art = f"{site_base_url}/articles/{vid_c}.html"
+                p_iso = html.escape(v_it.get("published_iso", pub_iso))
+                vs_items.append(
+                    f"  <url>\n"
+                    f"    <loc>{u_art}</loc>\n"
+                    f"    <video:video>\n"
+                    f"      <video:thumbnail_loc>{th_c}</video:thumbnail_loc>\n"
+                    f"      <video:title>{t_c}</video:title>\n"
+                    f"      <video:description>{sum_c}</video:description>\n"
+                    f"      <video:player_loc>{u_yt}</video:player_loc>\n"
+                    f"      <video:publication_date>{p_iso}</video:publication_date>\n"
+                    f"      <video:family_friendly>yes</video:family_friendly>\n"
+                    f"    </video:video>\n"
+                    f"  </url>"
+                )
+            video_sitemap_xml = (
+                '<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">\n'
+                + "\n".join(vs_items) + "\n</urlset>\n"
+            )
+            with open("docs/video-sitemap.xml", "w", encoding="utf-8") as vsf:
+                vsf.write(video_sitemap_xml)
         except Exception:
             pass
-        print(f"🌐 [V61 Autonomous Web Syndication & Search Engine Ping] Portal updated (`docs/{article_rel_path}`) + IndexNow/WebSub/Archive pinged for {yt_watch_url}!", flush=True)
+
+        # 4. V64 TELEGRAPH (`https://telegra.ph`) ZERO-KEY INSTANT PUBLIC ARTICLE SYNDICATION:
+        # Automatically publishes a live, high-DA public article on `https://telegra.ph/...` with embedded YouTube link & chapters!
+        telegraph_live_url = ""
+        try:
+            tg_acc = requests.get(
+                "https://api.telegra.ph/createAccount?short_name=WorldTalkBrief&author_name=World+Talk+Brief&author_url=https://www.youtube.com/@WorldTalkBrief",
+                headers=HEADERS_WEB, timeout=4.0
+            ).json()
+            tg_token = ((tg_acc.get("result") or {}).get("access_token") or "").strip()
+            if tg_token:
+                tg_nodes = [
+                    {"tag": "figure", "children": [
+                        {"tag": "img", "attrs": {"src": yt_thumb_url}},
+                        {"tag": "figcaption", "children": [f"{title} — Watch on World Talk Brief (@WorldTalkBrief)"]}
+                    ]},
+                    {"tag": "p", "children": [
+                        {"tag": "b", "children": ["▶ WATCH FULL VIDEO ON YOUTUBE: "]},
+                        {"tag": "a", "attrs": {"href": yt_watch_url}, "children": [yt_watch_url]}
+                    ]},
+                    {"tag": "p", "children": [(description or title)[:500]]}
+                ]
+                for idx_c, sec in enumerate((sections_list or [])[:8], 1):
+                    c_head = str(sec.get("headline") or sec.get("chapter_title") or f"Part {idx_c}")
+                    c_nar = str(sec.get("narration") or "")
+                    if c_nar:
+                        tg_nodes.append({"tag": "h4", "children": [f"{idx_c}. {c_head}"]})
+                        tg_nodes.append({"tag": "p", "children": [c_nar]})
+                tg_nodes.append({"tag": "p", "children": [
+                    "Subscribe to World Talk Brief on YouTube: ",
+                    {"tag": "a", "attrs": {"href": "https://www.youtube.com/@WorldTalkBrief"}, "children": ["https://www.youtube.com/@WorldTalkBrief"]}
+                ]})
+                tg_page = requests.post(
+                    "https://api.telegra.ph/createPage",
+                    data={
+                        "access_token": tg_token,
+                        "title": f"{title[:85]} | World Talk Brief",
+                        "author_name": "World Talk Brief (@WorldTalkBrief)",
+                        "author_url": "https://www.youtube.com/@WorldTalkBrief",
+                        "content": json.dumps(tg_nodes),
+                        "return_content": "false"
+                    },
+                    headers=HEADERS_WEB, timeout=5.0
+                ).json()
+                telegraph_live_url = str(((tg_page.get("result") or {}).get("url") or "")).strip()
+                if telegraph_live_url:
+                    print(f"📰 [V64 Telegraph Public Article Live] {telegraph_live_url} -> Backlinked to {yt_watch_url}!", flush=True)
+        except Exception:
+            pass
+
+        # 5. Ping IndexNow, WebSub, XML-RPC Pingomatic & Wayback Archive for YouTube URL + GitHub Pages URL + Telegraph URL!
+        for target_ping_u in [u for u in [article_full_url, telegraph_live_url, yt_watch_url] if u]:
+            for idx_endpoint in ["https://api.indexnow.org/indexnow", "https://www.bing.com/indexnow", "https://yandex.com/indexnow", "https://search.seznam.cz/indexnow"]:
+                try:
+                    requests.get(f"{idx_endpoint}?url={urllib.parse.quote(target_ping_u)}&key={WTB_INDEXNOW_KEY}", headers=HEADERS_WEB, timeout=3.0)
+                except Exception:
+                    pass
+            try:
+                requests.get(f"https://web.archive.org/save/{target_ping_u}", headers=HEADERS_WEB, timeout=3.5)
+            except Exception:
+                pass
+        print(f"🌐 [V64 Multi-Platform Syndication Complete] Portal (`docs/{article_rel_path}`) + Video Sitemap + Telegraph (`{telegraph_live_url or 'queued'}`) + IndexNow/WebSub/Archive pinged!", flush=True)
     except Exception as dist_e:
         print("⚠️ [V61 Web Syndication Notice]:", str(dist_e)[:120], flush=True)
 
