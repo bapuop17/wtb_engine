@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-11T03:21:33.406173",
-  "last_upload_epoch": 1794367293,
-  "round_robin_idx": 0,
-  "country_rot_idx": 20,
-  "bgm_track_counter": 3233795264,
+  "updated_at": "2026-11-11T07:58:40.318489",
+  "last_upload_epoch": 1794383920,
+  "round_robin_idx": 1,
+  "country_rot_idx": 26,
+  "bgm_track_counter": 3243994729,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -673,69 +673,11 @@
     "us_army_officer_arrested_in_uk",
     "coco_gauff_opens_wta_finals_with",
     "celtics_center_crisis_the_secret_rotation",
-    "brydon_carse_given_path_to_england"
+    "brydon_carse_given_path_to_england",
+    "pakistan_batter_credits_babar_for_classy",
+    "pakistan_cricket_s_hidden_war_the"
   ],
   "event_fingerprints": [
-    {
-      "title": "#FMTWorld The Houthis have intensified attacks on Saudi Arabia, disrupting major events and threatening the kingdom's economic diversificati",
-      "tokens": [
-        "arabia",
-        "attacks",
-        "disrupting",
-        "diversification",
-        "drone",
-        "economic",
-        "economy",
-        "events",
-        "fmtworld",
-        "fuels",
-        "giving",
-        "have",
-        "houthis",
-        "intelligence",
-        "intensified",
-        "iran",
-        "kingdom",
-        "major",
-        "missile",
-        "plans",
-        "saudi",
-        "self",
-        "stability",
-        "strikes",
-        "sustaining",
-        "target",
-        "threaten",
-        "threatening",
-        "yemen"
-      ]
-    },
-    {
-      "title": "Australian Defence Minister Richard Marles has said that China's military buildup was creating a condition of pressure in Southeast Asia, ur",
-      "tokens": [
-        "allies",
-        "asia",
-        "australian",
-        "build",
-        "buildup",
-        "china",
-        "condition",
-        "cooperation",
-        "creating",
-        "deepen",
-        "defence",
-        "marles",
-        "military",
-        "minister",
-        "partners",
-        "pressure",
-        "richard",
-        "southeast",
-        "thursday",
-        "urged",
-        "urging"
-      ]
-    },
     {
       "title": "The Egyptian House of Representatives' approval on 26 October 2026 of a request to authorise President Abdel-Fattah Al-Sisi to deploy Egypti",
       "tokens": [
@@ -8443,10 +8385,54 @@
         "shoaib",
         "white"
       ]
+    },
+    {
+      "title": "Pakistan batter credits Babar for classy debut half-century",
+      "tokens": [
+        "afridi",
+        "azam",
+        "babar",
+        "basit",
+        "batter",
+        "behind",
+        "between",
+        "bombshell",
+        "century",
+        "claimed",
+        "classy",
+        "credits",
+        "cricket",
+        "debut",
+        "developed",
+        "drops",
+        "former",
+        "half",
+        "pakistan",
+        "rift",
+        "ruining",
+        "shaheen"
+      ]
+    },
+    {
+      "title": "Pakistan Cricket's Hidden War: The Babar-Shaheen Rift Exposed",
+      "tokens": [
+        "babar",
+        "batter",
+        "century",
+        "classy",
+        "credits",
+        "cricket",
+        "debut",
+        "exposed",
+        "half",
+        "hidden",
+        "pakistan",
+        "rift",
+        "shaheen"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
     "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
     "AI_ROBOTICS",
@@ -8485,10 +8471,10 @@
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "VIRAL_UNDERDOG_SPORTS"
   ],
   "last_sources": [
-    "Google Trends Viral [FRANCE]",
     "Global Country Wire [PHILIPPINES \u2022 STOCK_MARKETS]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "Global Country Wire [NIGERIA \u2022 AI_ROBOTICS]",
@@ -8527,10 +8513,10 @@
     "France24 Global Affairs",
     "Google Trends USA Viral 24h",
     "Google Trends Viral [AUSTRALIA]",
-    "Google Trends India Viral 24h"
+    "Google Trends India Viral 24h",
+    "Google Trends Viral [BANGLADESH]"
   ],
   "last_countries": [
-    "SPACE & SCIENCE",
     "IRAN",
     "VIETNAM",
     "GLOBAL CINEMA",
@@ -8579,6 +8565,35 @@
     "UNITED KINGDOM",
     "UNITED STATES",
     "INDIA",
-    "UNITED KINGDOM"
+    "UNITED KINGDOM",
+    "PAKISTAN"
+  ],
+  "v63_healed_video_ids": [],
+  "v65_rehab_next_page_token": "",
+  "published_videos_index": [
+    {
+      "video_id": "zdSiUYwg6eI",
+      "title": "Pakistan Cricket's Hidden War: The Babar-Shaheen Rift Exposed",
+      "url": "https://www.youtube.com/watch?v=zdSiUYwg6eI",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/zdSiUYwg6eI.html",
+      "thumb_url": "https://i.ytimg.com/vi/zdSiUYwg6eI/maxresdefault.jpg",
+      "pillar": "VIRAL_UNDERDOG_SPORTS",
+      "country": "Pakistan",
+      "is_short": false,
+      "published_iso": "2026-11-11T07:51:52Z",
+      "summary": "The Pakistan cricket team is facing a historic low, but the real story isn't just about performance\u2014it's about a bitter internal power struggle. Former batter Basit Ali has dropped a bombshell, claiming that a deep rift between captain Babar Azam and star pace"
+    },
+    {
+      "video_id": "449lfTBs_TY",
+      "title": "Pakistan Cricket's Hidden War: The Babar-Shaheen Rift Exposed",
+      "url": "https://www.youtube.com/shorts/449lfTBs_TY",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/449lfTBs_TY.html",
+      "thumb_url": "https://i.ytimg.com/vi/449lfTBs_TY/maxresdefault.jpg",
+      "pillar": "VIRAL_UNDERDOG_SPORTS",
+      "country": "Pakistan",
+      "is_short": true,
+      "published_iso": "2026-11-11T07:58:39Z",
+      "summary": "In a stunning opening day of the ICC World Test Championship, debutant Mohammad Taha smashed a classy half\u2011century, openly crediting captain Babar Azam\u2019s mentorship. The performance shines a light on a deeper turmoil: a simmering rift between Babar Azam and fa"
+    }
   ]
 }
