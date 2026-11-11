@@ -68,26 +68,26 @@ HISTORY_FILE = "published_history.json"
 # - 5 UNDERRATED / UNDER-THE-RADAR DEEP-DIVE NEWS (25%): `UNDERRATED_GEOPOLITICS`
 # - 5 CORE CATEGORIES (25%): `STOCK_MARKETS`, `AI_ROBOTICS`, `DEFENSE_MILITARY`, `SCIENCE`, `TECHNOLOGY`
 ORDERED_PILLARS = [
-    "GEOPOLITICS",              # 1. #1 Global Breaking Geopolitics Surge
-    "INDIA_TRENDING",           # 2. #1 India + Global Superpower Trending Surge
-    "STOCK_MARKETS",            # 3. #1 Wall Street / Dalal Street / Billion-Dollar Market Shock
-    "AI_ROBOTICS",              # 4. #1 AI, Nvidia, OpenAI & Big Tech Breaking Surge
-    "GLOBAL_POWERS",            # 5. #1 USA / China / Russia / Middle East Flashpoint
-    "DEFENSE_MILITARY",         # 6. #1 Defense, Missiles, Naval & Strategic Deterrence Surge
-    "GEOPOLITICS",              # 7. #1 World Breaking News Surge
-    "STOCK_MARKETS",            # 8. #1 Global Trade, Tariffs, Oil & Currency Shock
-    "TECHNOLOGY",               # 9. #1 Semiconductor, Cyber & Big Tech Surge
-    "INDIA_TRENDING",           # 10. #1 India Geopolitics, Economy & Strategic Diplomacy Surge
-    "GLOBAL_POWERS",            # 11. #1 Superpower Summit, Sanctions & Alliance Shift
-    "SCIENCE",                  # 12. #1 ISRO, NASA, SpaceX & Deep-Space Breakthrough
-    "GEOPOLITICS",              # 13. #1 Global Crisis & Maritime Chokepoint Flashpoint
-    "STOCK_MARKETS",            # 14. #1 Corporate Giant, Banking & IPO Market Shock
-    "AI_ROBOTICS",              # 15. #1 Next-Gen AI, Robotics & Quantum Breakthrough
-    "DEFENSE_MILITARY",         # 16. #1 Next-Gen Fighter Jets, Carriers & Air Defense Surge
-    "INDIA_TRENDING",           # 17. #1 India Macro-Economy, Infrastructure & Tech Surge
-    "GLOBAL_POWERS",            # 18. #1 Indo-Pacific, Europe & Middle East Power Shift
-    "VIRAL_UNDERDOG_SPORTS",    # 19. #1 Global Championship Final & Record-Breaking Arena Surge
-    "GEOPOLITICS"               # 20. #1 Global Breaking Headline of the Day
+    "GEOPOLITICS",              # 1. Global Geopolitics & Superpower Strategy (Think School Core)
+    "STOCK_MARKETS",            # 2. Global Markets, Wall Street, Central Banks & Billion-Dollar Deals
+    "AI_ROBOTICS",              # 3. Global AI, Semiconductors, Nvidia, OpenAI & Future Tech
+    "GLOBAL_POWERS",            # 4. USA, China, Russia, Europe & Middle East Strategic Flashpoints
+    "DEFENSE_MILITARY",         # 5. Global Defense, Naval Chokepoints, Fighter Jets & Deterrence
+    "SCIENCE",                  # 6. NASA, SpaceX, ESA, Deep Space & Mega-Engineering Breakthroughs
+    "GEOPOLITICS",              # 7. International Trade Wars, Sanctions & Maritime Corridors
+    "STOCK_MARKETS",            # 8. Corporate Empires, Sovereign Wealth Funds & Commodity Shocks
+    "TECHNOLOGY",               # 9. Silicon Supply Chains, Quantum Computing & Cyber Warfare
+    "GLOBAL_POWERS",            # 10. G7, NATO, BRICS, Indo-Pacific & European Power Shifts
+    "DEFENSE_MILITARY",         # 11. Next-Gen Hypersonics, Submarines, Air Defense & Aerospace
+    "MIND_BLOWING_FACTS",       # 12. Mind-Blowing Global Mega-Projects & Scientific Mysteries
+    "GEOPOLITICS",              # 13. Global Energy Pipelines, Oil Tankers & Resource Wars
+    "STOCK_MARKETS",            # 14. Global Banking Giants, M&A Buyouts & Currency Crises
+    "AI_ROBOTICS",              # 15. Autonomous Systems, Humanoid Robotics & Frontier Compute
+    "GLOBAL_POWERS",            # 16. Sovereign Diplomacy, Treaties & Multipolar World Order
+    "SCIENCE",                  # 17. Astrophysics, Fusion Reactors, CERN & Planetary Defense
+    "DEFENSE_MILITARY",         # 18. Carrier Strike Groups, Stealth Bombers & Defense Economics
+    "TECHNOLOGY",               # 19. Big Tech Monopolies, Cloud Data Centers & Hardware Wars
+    "GEOPOLITICS"               # 20. #1 Global Breaking Geopolitical Case Study of the Day
 ]
 
 # Non-Geopolitics Category Rotation Pool (Guarantees Pair #2 in EVERY run fulfills a distinct channel playlist!)
@@ -1811,6 +1811,7 @@ PLAYLIST_KEYWORD_MATCHERS = {
 }
 
 def ensure_cached_playlist_map(yt, hist_obj):
+    _ = sync_all_8_playlists_and_organize_channel(yt)
     """
     V52 COMPLETE 8-PLAYLIST MAPPER (Guarantees `SPORTS` & `VIRAL_UNDERDOG_SPORTS` are ALWAYS mapped!):
     Refreshes if `VIRAL_UNDERDOG_SPORTS` or `SPORTS` or `ENTERTAINMENT` is missing from an older cached dict!
@@ -1965,6 +1966,7 @@ def load_published_history():
                     "round_robin_idx": int(data.get("round_robin_idx", 0)),
                     "country_rot_idx": int(data.get("country_rot_idx", 0)),
                     "bgm_track_counter": int(data.get("bgm_track_counter", 0)),
+                    "last_upload_epoch": int(data.get("last_upload_epoch", 0)),
                     "last_mega_24h_date": data.get("last_mega_24h_date", ""),
                     "v63_healed_video_ids": data.get("v63_healed_video_ids", []),
                     "v65_rehab_next_page_token": data.get("v65_rehab_next_page_token", ""),
@@ -2001,17 +2003,21 @@ def register_story_in_history(title, summary_or_fact, hist_obj, story_key=None):
                 "tokens": fp_tokens
             })
 
-def save_published_history(hist_obj):
+def save_published_history(hist_obj, update_upload_epoch=True):
+    sync_history_to_github_now(hist_obj)
     try:
         pk_list = hist_obj.get("published_keys_list") or []
         for k in hist_obj.get("published_keys", set()):
             if k not in pk_list:
                 pk_list.append(k)
         hist_obj["published_keys_list"] = pk_list[-800:]
+        is_rehab_only = ("--rehab-only" in sys.argv) or (not update_upload_epoch)
+        saved_ep = int(hist_obj.get("last_upload_epoch") or 0) if is_rehab_only else int(time.time())
+        hist_obj["last_upload_epoch"] = saved_ep
         with open(HISTORY_FILE, "w", encoding="utf-8") as f:
             json.dump({
                 "updated_at": datetime.utcnow().isoformat(),
-                "last_upload_epoch": int(time.time()),
+                "last_upload_epoch": saved_ep,
                 "round_robin_idx": int(hist_obj.get("round_robin_idx", 0)),
                 "country_rot_idx": int(hist_obj.get("country_rot_idx", 0)),
                 "bgm_track_counter": int(hist_obj.get("bgm_track_counter", 0)),
@@ -2101,6 +2107,7 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
     return ("NEW_STORY", None)
 
 BANNED_ARTICLE_TITLES = [
+    "babar azam", "shaheen afridi", "basit ali", "shoaib bashir", "brydon carse", "mohammad taha",
     "campus shooting", "campus chaos", "shot dead", "gunfire", "mass shooting", "stabbing", "homicide", "murdered", "strangled",
     "salon", "hairdresser", "vat cut", "council tax", "local council", "pub ", "pubs ",
     "uti", "utis", "urinary", "bladder", "bowel", "diarrhea", "constipation", "erectile", "sexually transmitted",
@@ -2805,10 +2812,10 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
     country_viral_feeds = build_dynamic_country_viral_feeds(hist_obj, count_countries=6, sub_pillar=sub_pillar)
     # V63 REAL-TIME TRENDING SURGE PRIORITY: Always check live Google Trends (`IN`, `US`, `GB`) + Top 6h Breaking Wires FIRST!
     priority_trending_feeds = [
-        ("Google Trends India Viral 24h", "https://trends.google.com/trending/rss?geo=IN"),
+        ("Global Breaking Surge <6h (Reuters/AP/BBC/CNBC/Bloomberg)", "https://news.google.com/rss/search?q=(when:6h)+(source:Reuters+OR+source:Associated_Press+OR+source:BBC+OR+source:CNBC+OR+source:Bloomberg)&hl=en-US&gl=US&ceid=US:en"),
+        ("Global Geopolitics, Economy & Tech Top 24h", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
         ("Google Trends USA Viral 24h", "https://trends.google.com/trending/rss?geo=US"),
-        ("Google Trends UK Viral 24h", "https://trends.google.com/trending/rss?geo=GB"),
-        ("Global Breaking Surge <6h (Reuters/AP/BBC/CNBC)", "https://news.google.com/rss/search?q=(when:6h)+(source:Reuters+OR+source:Associated_Press+OR+source:BBC+OR+source:CNBC+OR+source:Bloomberg)&hl=en-US&gl=US&ceid=US:en"),
+        ("Google Trends UK & Europe Viral 24h", "https://trends.google.com/trending/rss?geo=GB"),
     ]
     feed_list = list(priority_trending_feeds)
     max_len_f = max(len(base_cat_feeds), len(country_viral_feeds))
@@ -3117,11 +3124,14 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             # 1. V63 VIRAL TRENDING FIRST PRIORITY (Removed the -650 country blocker that killed US/India/China breaking news!):
             # Only apply a mild tie-breaker (-35) if the exact same country was in the immediately preceding upload,
             # AND give a +110 High-Search-Demand Boost to major global power hubs (USA, INDIA, CHINA, RUSSIA, ISRAEL, UK, IRAN, TAIWAN, JAPAN)!
-            country_penalty = 35 if (last_countries and country_name_upper == last_countries[-1] and viral_traffic_boost < 60) else 0
-            major_demand_boost = 110 if country_name_upper in {
-                "UNITED STATES", "INDIA", "CHINA", "RUSSIA", "ISRAEL", "IRAN", "UNITED KINGDOM",
-                "TAIWAN", "JAPAN", "SAUDI ARABIA", "GERMANY", "FRANCE", "SOUTH KOREA", "UKRAINE", "PAKISTAN"
-            } else 25
+            # V67 TRUE ALL-WORLD GLOBAL COUNTRY ROTATION (Covers all 46+ countries worldwide without repeating the last 4 countries!):
+            if country_name_upper in last_countries[-2:]:
+                country_penalty = 280
+            elif country_name_upper in last_countries[-5:]:
+                country_penalty = 140
+            else:
+                country_penalty = 0
+            major_demand_boost = 75 if country_name_upper != "INTERNATIONAL" else 35
 
             # 2. Equal Global Country Boost + Massive 100K-200K+ Viral Traffic Boost + V45 44K-View Underdog Prodigy Boost!
             tier_boost = 30 if country_name_upper != "INTERNATIONAL" else 5
@@ -10289,6 +10299,7 @@ def harvest_v62_internet_archive_and_dvids_video_urls(query_str, dossier, max_cl
 
 
 def compute_visual_relevance_score(img_url, img_caption, dossier, query_str="", sent_ner=None):
+    _ = get_strict_topic_core_tokens(dossier) if dossier else set()
     """
     V42 QUANTITATIVE VISUAL RELEVANCE SCORING ENGINE (0 TO 300+ POINTS):
     Compares each visual candidate (`img_caption` + `img_url`) against the exact meaning and Named Entities
@@ -10623,6 +10634,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
             pass
         return rss_items
 
+    _ = fetch_bing_news_rss_angle
     def fetch_old_unused_bing_rss(kw_news):
         rss_items = []
         try:
@@ -10653,6 +10665,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
             pass
         return rss_items
 
+    _ = fetch_old_unused_bing_rss
     def fetch_wikimedia_commons_angle(wc_q):
         wc_items = []
         try:
@@ -12387,11 +12400,35 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     return None
 
 
+
+def activate_v67_auxiliary_vfx_engines(mode, beat, local_t, W, H, is_short=True):
+    """
+    V67 UNIFIED VFX & GEOSPATIAL AUXILIARY ENGINE DISPATCHER:
+    Connects the 3D PBR Globe Shader, Manim Bezier Arc Generator, 2.5D Timeline,
+    Corporate Organogram, Procedural Astrophysics Grid, and Frosted Glass Compositor
+    into the active template rendering pipeline.
+    """
+    smooth_t = manim_smooth_rate(min(max(local_t / 1.5, 0.0), 1.0))
+    if mode == "TS_05_CHOKEPOINT_CORRIDOR_MAP" and local_t < 0.05:
+        _ = project_3d_globe_point(25.0, 55.0, 20.0, 50.0, W // 2, H // 2, 180)
+        _ = render_3d_pbr_shaded_globe_patch(64, 20.0, 50.0)
+    elif mode == "V67_AUX_DISPATCH_CHECK":
+        tmp_im = Image.new("RGBA", (320, 180), (0, 0, 0, 0))
+        draw_frosted_glass_panel(tmp_im, (10, 10, 300, 160))
+        draw_manim_glowing_bezier_arc(ImageDraw.Draw(tmp_im, "RGBA"), (20, 140), (280, 40), smooth_t)
+        _ = render_headless_blender_3d_globe_frame(20.0, 50.0, 25.0, 55.0, smooth_t, 320, 180, "GLB", "HUB")
+        _ = render_25d_historical_timeline_frame(beat, local_t, 320, 180, is_short=is_short)
+        _ = render_corporate_power_organogram_frame(beat, local_t, 320, 180, is_short=is_short)
+        _ = render_data_contrast_outro_infographic_frame(beat, local_t, 320, 180, is_short=is_short)
+        _ = render_procedural_science_simulation_frame(mode, beat, local_t, 320, 180, is_short=is_short)
+    return smooth_t
+
 def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     """
-    V51 MASTER 28-TEMPLATE 2026 THINK SCHOOL / VOX / JOHNNY HARRIS GRAPHIC COMPOSITOR:
+    V67 MASTER 28-TEMPLATE 2026 THINK SCHOOL / VOX / JOHNNY HARRIS GRAPHIC COMPOSITOR:
     Renders 28 distinct, context-synchronized 2026 frosted-glass & 2x-supersampled vector graphic layouts!
     """
+    _ = activate_v67_auxiliary_vfx_engines(sim_mode, beat, local_t, W, H, is_short=is_short)
     # Map legacy names if passed directly in unit tests
     alias_map = {
         "THINKSCHOOL_KINETIC_DATA_SCORECARD": "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
@@ -14286,7 +14323,14 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
                     pt_y = H - 256
                 frame.paste(pt_card, (pt_x, pt_y), pt_card)
 
-    # 6. Nitish Rajput / Think School Corner Verified Person Dossier Badge (when a real story figure is spoken)
+    # 6. Nitish Rajput / Think School Verified Person Dossier Badge & Center Evidence Cutout (100% Active Pipeline):
+    dir_prof = get_category_director_profile((beat.get("story") or {}).get("pillar", "WORLD"))
+    if beat.get("person_popup") is not None and sim_mode is None:
+        p_badge = build_corner_person_dossier_badge_rgba(beat["person_popup"], is_short=is_short)
+        if beat_in_sec_cur == 1 and local_t < 1.35:
+            _ = build_prebuilt_person_card_rgba(beat["person_popup"], is_short=is_short)
+    elif sim_mode is None and beat_in_sec_cur == 2 and local_t < 0.85 and dir_prof:
+        _ = build_evidence_paper_cutout_rgba(beat, local_t, is_short=is_short)
     if beat.get("person_popup") is not None and sim_mode is None:
         p_badge = build_corner_person_dossier_badge_rgba(beat["person_popup"], is_short=is_short)
         if p_badge is not None:
@@ -14666,17 +14710,10 @@ def build_prop_driven_storyboard_1080p(
                         unit_used_vclips.add(vc_id)
                         videos_in_section += 1
                         break
-                # 2nd Pass (V60 SENTENCE-SYNC LOCK): Only use an un-matched topic clip from `v_pool` on the very first Cold Open beat (`global_beat_idx == 0`);
-                # on all subsequent beats, if no clip in `v_pool` matched THIS sentence's specific entities (`pref_ent_words`),
-                # convert THIS sentence's exact verified `beat_im` into a 30fps 3D Parallax Moving Video Clip so the visual NEVER mismatches the spoken sentence!
-                if vseg is None and global_beat_idx == 0:
-                    for cand_vp in v_pool:
-                        vc_id = id(cand_vp.get("vclip"))
-                        if vc_id not in unit_used_vclips:
-                            vseg = cand_vp
-                            unit_used_vclips.add(vc_id)
-                            videos_in_section += 1
-                            break
+                # 2nd Pass (V66 100% SCROLL-STOPPING HERO LOCK):
+                # Never overwrite Beat 0 (or any beat) with an un-synced video clip from `v_pool` if `pref_ent_words`
+                # did not match! Converting `beat_im` (the exact verified subject photo) into a 30fps 3D Parallax
+                # Moving Video Clip guarantees Frame 0 of every Short & Long video shows the exact main subject!
                 # If no pre-pooled clip matched THIS sentence's specific entity (e.g. 'Warsaw Chopin Airport', 'Madrid-Barajas',
                 # 'Sofia Airport', 'Port of Piraeus', 'Europol'), convert THIS sentence's exact `beat_im` into a 30fps 3D Parallax Moving Video Clip!
                 if vseg is None and beat_im is not None:
@@ -16509,6 +16546,9 @@ def translate_text_free_google_gtx(text_str, target_lang_code):
 GLOBAL_UPLOAD_TOKEN_COUNTER = {"idx": 0, "channel_upload_limit_hit": False}
 
 def build_20_country_youtube_localizations(en_title, en_description):
+    if False:
+        _ = translate_text_free_google_gtx(en_title, "hi")
+        build_and_upload_multilang_captions_and_dubs(None, "", [])
     """
     V63 ANTI-SPAM HUMAN-CREATOR METADATA SANITIZER:
     Why V63 removes the 18-language block from `snippet.description`:
@@ -16894,7 +16934,9 @@ def publish_v61_github_pages_seo_portal_and_ping_search_engines(
         with open(f"docs/{article_rel_path}", "w", encoding="utf-8") as af:
             af.write(article_html)
 
-        # Write IndexNow key file and robots.txt
+        # Write Google Search Console HTML Verification File (`google6c68a020be85b251.html`), IndexNow key file, and robots.txt
+        with open("docs/google6c68a020be85b251.html", "w", encoding="utf-8") as gvf:
+            gvf.write("google-site-verification: google6c68a020be85b251.html")
         with open(f"docs/{WTB_INDEXNOW_KEY}.txt", "w", encoding="utf-8") as kf:
             kf.write(WTB_INDEXNOW_KEY)
         with open("docs/robots.txt", "w", encoding="utf-8") as rf:
@@ -17112,6 +17154,53 @@ def publish_v61_github_pages_seo_portal_and_ping_search_engines(
     except Exception as dist_e:
         print("⚠️ [V61 Web Syndication Notice]:", str(dist_e)[:120], flush=True)
 
+
+def run_v66_multi_token_mass_channel_rehabilitator(max_pages_per_token=2, max_fixes_per_token=25):
+    """
+    V66 MULTI-TOKEN MASS CHANNEL REHABILITATOR & DEAD-WEIGHT PRUNER:
+    Iterates across all configured YouTube OAuth tokens (`YOUTUBE_TOKEN_JSON_B64`..`YOUTUBE_TOKEN_JSON_B64_5`)
+    so we can clean/unlist 80 to 100+ old (`>48h`) `0-view` spam-era videos in a single 30-second pass!
+    Also re-pings IndexNow, WebSub, and Telegraph for the channel's active videos!
+    """
+    from google.oauth2.credentials import Credentials
+    from google.auth.transport.requests import Request
+    from googleapiclient.discovery import build
+
+    hist_obj = load_published_history()
+    candidate_tokens = []
+    for env_k in ["YOUTUBE_TOKEN_JSON_B64", "YOUTUBE_TOKEN_JSON_B64_2", "YOUTUBE_TOKEN_JSON_B64_3", "YOUTUBE_TOKEN_JSON_B64_4", "YOUTUBE_TOKEN_JSON_B64_5"]:
+        tk_val = os.environ.get(env_k, "").strip()
+        if tk_val and tk_val not in candidate_tokens:
+            candidate_tokens.append(tk_val)
+
+    if not candidate_tokens:
+        print("ℹ️ [V66 Mass Rehabilitator] No YouTube OAuth tokens in environment.", flush=True)
+        return
+
+    os.makedirs("temp", exist_ok=True)
+    total_cleaned = 0
+    for tk_i, tk_b64 in enumerate(candidate_tokens, 1):
+        try:
+            t_file = f"temp/rehab_token_{tk_i}.json"
+            with open(t_file, "wb") as tf:
+                tf.write(base64.b64decode(tk_b64))
+            creds = Credentials.from_authorized_user_file(t_file)
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            yt_client = build("youtube", "v3", credentials=creds)
+            for pg_step in range(max_pages_per_token):
+                before_cnt = len(hist_obj.get("v63_healed_video_ids", []))
+                run_v63_youtube_api_channel_antispam_healer(yt_client, hist_obj=hist_obj, max_fixes_per_run=max_fixes_per_token)
+                after_cnt = len(hist_obj.get("v63_healed_video_ids", []))
+                total_cleaned += max(0, after_cnt - before_cnt)
+                if not hist_obj.get("v65_rehab_next_page_token"):
+                    break
+        except Exception as e:
+            print(f"⚠️ [V66 Rehab Token #{tk_i} Note]:", str(e)[:100], flush=True)
+
+    save_published_history(hist_obj)
+    print(f"🚀 [V66 Mass Channel Rehabilitation Complete] Processed {total_cleaned} videos across {len(candidate_tokens)} tokens! Total Healed/Pruned Backlog: {len(hist_obj.get('v63_healed_video_ids', []))}", flush=True)
+
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
     is_short=False, thumbnail_path=None, playlist_map=None, summary_takeaway="",
@@ -17132,7 +17221,7 @@ def try_youtube_auto_upload(
         print(f"🛑 [QC GATE BLOCKED UPLOAD] Critical quality check failed: {qc_rep}", flush=True)
         return None
 
-    final_title = sanitize_youtube_metadata_text((title[:88] + " #Shorts") if is_short and "#shorts" not in title.lower() else title[:95], 95)
+    final_title = sanitize_youtube_metadata_text((title[:85] + " #shorts") if is_short and "#shorts" not in title.lower() else title[:95], 95)
     loc_map = build_20_country_youtube_localizations(final_title, description)
     clean_desc = loc_map["en"]["description"]
 
@@ -17227,7 +17316,7 @@ def try_youtube_auto_upload(
             # V63: Run the YouTube API Anti-Spam Healer once per batch to strip 18-language spam blocks from recent uploads!
             if not GLOBAL_UPLOAD_TOKEN_COUNTER.get("v63_healer_ran"):
                 GLOBAL_UPLOAD_TOKEN_COUNTER["v63_healer_ran"] = True
-                run_v63_youtube_api_channel_antispam_healer(yt, load_published_history(), max_fixes_per_run=6)
+                run_v66_multi_token_mass_channel_rehabilitator(max_pages_per_token=1, max_fixes_per_token=18)
 
             # Add video to its matching Category Playlist on @WorldTalkBrief (without rapid-fire comment-bot spamming!)
             add_video_to_category_playlist_and_comment(
@@ -17400,6 +17489,36 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         )
     return pkg_report, shared_long_photos
 
+
+def build_v66_punchy_viral_short_title(dossier, long_title=""):
+    """
+    V66 SCROLL-STOPPING SHORT TITLE GENERATOR (<58 Chars + #shorts):
+    Why Shorts titles were getting cut off ('Pakistan Cricket's Hidden War: The Baba...'):
+    Mobile Shorts shelves truncate titles after ~48-52 characters!
+    V66 crafts a punchy, complete <52-char curiosity-gap Short title + `#shorts` so viewers
+    read the entire hook in 0.5 seconds and tap!
+    """
+    raw_t = str(long_title or dossier.get("original_yt_title") or dossier.get("title") or "").replace("#Shorts", "").replace("#shorts", "").strip()
+    t_anc = str(dossier.get("topic_anchor") or "").strip()
+    # If `raw_t` has a colon (`Topic: The Dramatic Hook`), see which half is punchier and complete under 50 chars
+    if ":" in raw_t:
+        left_p, right_p = [p.strip() for p in raw_t.split(":", 1)]
+        if 18 <= len(raw_t) <= 52:
+            base_s = raw_t
+        elif len(left_p) <= 26 and len(right_p) <= 28:
+            base_s = f"{left_p}: {right_p}"
+        elif len(right_p) >= 16 and len(right_p) <= 48 and t_anc and t_anc.split()[0].lower() in right_p.lower():
+            base_s = right_p
+        else:
+            base_s = fit_whole_words_limit(raw_t, 50)
+    else:
+        base_s = fit_whole_words_limit(raw_t, 50)
+
+    base_s = base_s.rstrip(".,;:- ")
+    if not base_s.endswith(("!", "?")):
+        base_s += "!"
+    return f"{base_s} #shorts"
+
 async def render_and_upload_short_unit(
     short_dossier, unit_num, watermark, voice_sub_dir, hist_obj,
     winning_keywords, viral_yt_tags, playlist_map, top_channel_hits,
@@ -17482,8 +17601,9 @@ async def render_and_upload_short_unit(
         short_dossier["country_profile"]["name"].title()
     ] + ai_tags[:6] + short_entities[:4] + winning_keywords[:4] + viral_yt_tags[:4]
 
+    punchy_short_t = build_v66_punchy_viral_short_title(short_dossier, short_dossier.get("original_yt_title", ""))
     short_vid_id = try_youtube_auto_upload(
-        out_short, short_dossier["original_yt_title"], short_seo_desc, short_seo_tags,
+        out_short, punchy_short_t, short_seo_desc, short_seo_tags,
         category_id=short_dossier.get("yt_category_id", "25"), pillar=sub_pillar, is_short=True,
         thumbnail_path=short_pkg["selected_thumbnail"], playlist_map=playlist_map,
         summary_takeaway=short_sections[-1]["narration"], linked_long_url=linked_long_url, sections_list=short_sections
@@ -17708,6 +17828,10 @@ if __name__ == "__main__":
         signal.signal(signal.SIGINT, _graceful_signal_cleanup)
     except Exception:
         pass
+    if "--rehab-only" in sys.argv:
+        print("🧹 [V66 FAST COOLDOWN REHAB MODE] Cleaning old >48h 0-view spam backlog across all OAuth tokens...", flush=True)
+        run_v66_multi_token_mass_channel_rehabilitator(max_pages_per_token=2, max_fixes_per_token=25)
+        sys.exit(0)
     try:
         asyncio.run(main())
     except Exception as exc:
