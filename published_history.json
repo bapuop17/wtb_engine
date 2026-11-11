@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-11T02:52:50.737771",
-  "last_upload_epoch": 1794365570,
+  "updated_at": "2026-11-11T03:21:33.406173",
+  "last_upload_epoch": 1794367293,
   "round_robin_idx": 0,
   "country_rot_idx": 20,
-  "bgm_track_counter": 3218052482,
+  "bgm_track_counter": 3233795264,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -672,47 +672,10 @@
     "battle_of_the_bay_11_arrested",
     "us_army_officer_arrested_in_uk",
     "coco_gauff_opens_wta_finals_with",
-    "the_answer_to_the_boston_celtics",
-    "celtics_center_crisis_the_secret_rotation"
+    "celtics_center_crisis_the_secret_rotation",
+    "brydon_carse_given_path_to_england"
   ],
   "event_fingerprints": [
-    {
-      "title": "We are getting closer to reaching a deal to end the war in Ukraine, - Trump. The US president said he now sees a real possibility of reachin",
-      "tokens": [
-        "agreement",
-        "although",
-        "before",
-        "claimed",
-        "clashreport",
-        "closer",
-        "controversial",
-        "deal",
-        "diesel",
-        "does",
-        "first",
-        "getting",
-        "made",
-        "peace",
-        "possibility",
-        "president",
-        "putin",
-        "reaching",
-        "real",
-        "rule",
-        "russia",
-        "russian",
-        "sail",
-        "sees",
-        "sets",
-        "signing",
-        "statements",
-        "such",
-        "summit",
-        "tanker",
-        "trump",
-        "ukraine"
-      ]
-    },
     {
       "title": "#FMTWorld The Houthis have intensified attacks on Saudi Arabia, disrupting major events and threatening the kingdom's economic diversificati",
       "tokens": [
@@ -8425,38 +8388,60 @@
       ]
     },
     {
-      "title": "The Answer to the Boston Celtics Center Rotation, and Other Thoughts After 9 Games",
+      "title": "Celtics Center Crisis: The Secret Rotation Shakeup",
       "tokens": [
-        "answer",
-        "boston",
-        "bucks",
         "celtics",
         "center",
-        "games",
-        "other",
-        "pairing",
-        "queta",
-        "robinson",
         "rotation",
-        "takeaways",
-        "tatum",
-        "thoughts",
-        "while",
-        "wild"
+        "shakeup"
       ]
     },
     {
-      "title": "Celtics Center Crisis: The Secret Rotation Shakeup",
+      "title": "Brydon Carse given path to England return, Shoaib Bashir dropped and Liam Patterson-White called up",
       "tokens": [
-        "answer",
-        "boston",
-        "celtics",
-        "center",
-        "games",
-        "other",
-        "rotation",
-        "shakeup",
-        "thoughts"
+        "africa",
+        "bashir",
+        "brydon",
+        "called",
+        "carse",
+        "clear",
+        "cricket",
+        "door",
+        "drop",
+        "dropped",
+        "england",
+        "given",
+        "liam",
+        "lions",
+        "naming",
+        "open",
+        "path",
+        "patterson",
+        "return",
+        "shoaib",
+        "south",
+        "squad",
+        "test",
+        "tour",
+        "white"
+      ]
+    },
+    {
+      "title": "Brydon Carse Given Path to England Return, Shoaib Bashir Dropped and Liam",
+      "tokens": [
+        "bashir",
+        "brydon",
+        "called",
+        "carse",
+        "dropped",
+        "england",
+        "given",
+        "liam",
+        "path",
+        "patterson",
+        "return",
+        "shoaib",
+        "white"
       ]
     }
   ],
@@ -8542,7 +8527,7 @@
     "France24 Global Affairs",
     "Google Trends USA Viral 24h",
     "Google Trends Viral [AUSTRALIA]",
-    "Google Trends USA Viral 24h"
+    "Google Trends India Viral 24h"
   ],
   "last_countries": [
     "SPACE & SCIENCE",
@@ -8594,6 +8579,6 @@
     "UNITED KINGDOM",
     "UNITED STATES",
     "INDIA",
-    "UNITED STATES"
+    "UNITED KINGDOM"
   ]
 }
