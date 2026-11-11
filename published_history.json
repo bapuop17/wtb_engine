@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-10T23:33:20.953004",
-  "last_upload_epoch": 1794353600,
-  "round_robin_idx": 19,
-  "country_rot_idx": 14,
-  "bgm_track_counter": 3216990953,
+  "updated_at": "2026-11-11T02:52:50.737771",
+  "last_upload_epoch": 1794365570,
+  "round_robin_idx": 0,
+  "country_rot_idx": 20,
+  "bgm_track_counter": 3218052482,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -671,42 +671,11 @@
     "video_fight_between_raiders_49ers_fans",
     "battle_of_the_bay_11_arrested",
     "us_army_officer_arrested_in_uk",
-    "coco_gauff_opens_wta_finals_with"
+    "coco_gauff_opens_wta_finals_with",
+    "the_answer_to_the_boston_celtics",
+    "celtics_center_crisis_the_secret_rotation"
   ],
   "event_fingerprints": [
-    {
-      "title": "Haaland's Return: The Math Behind Man City's Rotation",
-      "tokens": [
-        "behind",
-        "brighton",
-        "city",
-        "erling",
-        "haaland",
-        "lineup",
-        "math",
-        "midweek",
-        "rest",
-        "return",
-        "returns",
-        "rotation"
-      ]
-    },
-    {
-      "title": "F1 Driver's Paddock Rage: The Mexico Incident Explained",
-      "tokens": [
-        "behavior",
-        "debate",
-        "driver",
-        "fans",
-        "hadjar",
-        "incident",
-        "isack",
-        "mexico",
-        "paddock",
-        "rage",
-        "shoves"
-      ]
-    },
     {
       "title": "We are getting closer to reaching a deal to end the war in Ukraine, - Trump. The US president said he now sees a real possibility of reachin",
       "tokens": [
@@ -8454,10 +8423,44 @@
         "wells",
         "year"
       ]
+    },
+    {
+      "title": "The Answer to the Boston Celtics Center Rotation, and Other Thoughts After 9 Games",
+      "tokens": [
+        "answer",
+        "boston",
+        "bucks",
+        "celtics",
+        "center",
+        "games",
+        "other",
+        "pairing",
+        "queta",
+        "robinson",
+        "rotation",
+        "takeaways",
+        "tatum",
+        "thoughts",
+        "while",
+        "wild"
+      ]
+    },
+    {
+      "title": "Celtics Center Crisis: The Secret Rotation Shakeup",
+      "tokens": [
+        "answer",
+        "boston",
+        "celtics",
+        "center",
+        "games",
+        "other",
+        "rotation",
+        "shakeup",
+        "thoughts"
+      ]
     }
   ],
   "last_categories": [
-    "HEALTH",
     "GLOBAL_POWERS",
     "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
@@ -8496,10 +8499,10 @@
     "VIRAL_UNDERDOG_SPORTS",
     "GEOPOLITICS",
     "STOCK_MARKETS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Global Country Wire [NEW ZEALAND \u2022 HEALTH]",
     "Google Trends Viral [FRANCE]",
     "Global Country Wire [PHILIPPINES \u2022 STOCK_MARKETS]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
@@ -8538,10 +8541,10 @@
     "MotoGP, Moto3 & Motorsport Rising Prodigies (Indonesia, Asia & Global)",
     "France24 Global Affairs",
     "Google Trends USA Viral 24h",
-    "Google Trends Viral [AUSTRALIA]"
+    "Google Trends Viral [AUSTRALIA]",
+    "Google Trends USA Viral 24h"
   ],
   "last_countries": [
-    "MALAYSIA",
     "SPACE & SCIENCE",
     "IRAN",
     "VIETNAM",
@@ -8590,6 +8593,7 @@
     "QATAR",
     "UNITED KINGDOM",
     "UNITED STATES",
-    "INDIA"
+    "INDIA",
+    "UNITED STATES"
   ]
 }
