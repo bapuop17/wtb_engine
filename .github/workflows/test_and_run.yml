@@ -1,4 +1,4 @@
-name: WTB News Engine V68 (Zero-Apt-Timeout Instant Boot • 25s Channel Cleaner • Auto Google Search Console Verify)
+name: WTB News Engine V70 (Zero-Apt-Timeout Instant Boot • 25s Channel Cleaner • Auto Google Search Console Verify)
 
 on:
   workflow_dispatch:
@@ -72,7 +72,7 @@ jobs:
           git config user.email "bot@worldtalkbrief.org"
           git add docs/ || true
           if ! git diff --staged --quiet; then
-            git commit -m "Deploy Google Search Console verification & GitHub Pages portal [V68]" || true
+            git commit -m "Deploy Google Search Console verification & GitHub Pages portal [V70]" || true
             git pull --rebase -X theirs origin main || true
             git push origin HEAD:main || true
           fi
@@ -99,7 +99,7 @@ jobs:
                   pass
 
           if event_name in ("workflow_dispatch", "push") and bypass:
-              print(f"🚀 [{event_name.upper()} TRIGGER] Bypassing 2-hour cooldown — starting V68 build immediately!")
+              print(f"🚀 [{event_name.upper()} TRIGGER] Bypassing 2-hour cooldown — starting V70 build immediately!")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out:
                   out.write("should_run=true\n")
               raise SystemExit(0)
@@ -130,7 +130,7 @@ jobs:
           elapsed_mins = (now_epoch - last_epoch) / 60.0 if last_epoch > 0 else 999.0
 
           if elapsed_mins >= cooldown_mins:
-              print(f"✅ [2-Hour Cooldown Complete] {elapsed_mins:.1f} mins elapsed since last upload (>= {cooldown_mins}m). Launching V68 build!")
+              print(f"✅ [2-Hour Cooldown Complete] {elapsed_mins:.1f} mins elapsed since last upload (>= {cooldown_mins}m). Launching V70 build!")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out:
                   out.write("should_run=true\n")
           else:
@@ -167,13 +167,13 @@ jobs:
             timeout 90s sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-liberation || true
           fi
 
-      - name: Install Python V68 Documentary & Motion-Graphics Libraries (Fast Binary Wheels)
+      - name: Install Python V70 Documentary & Motion-Graphics Libraries (Fast Binary Wheels)
         if: steps.cooldown_gate.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade             edge-tts             gTTS             feedparser             requests             pillow             "moviepy<2.0"             imageio-ffmpeg             numpy             scipy             matplotlib             beautifulsoup4             lxml             opencv-python-headless             ddgs             yt-dlp             googlenewsdecoder             trafilatura             youtube-transcript-api             google-api-python-client             google-auth-oauthlib             google-auth-httplib2
 
-      - name: Run WTB V68 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
+      - name: Run WTB V70 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
         if: steps.cooldown_gate.outputs.should_run == 'true'
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
@@ -203,7 +203,7 @@ jobs:
           test -f published_history.json && git add published_history.json || true
           test -f data/published_history.json && git add data/published_history.json || true
           test -d docs && git add docs/ || true
-          git diff --staged --quiet || git commit -m "Auto-sync history & SEO Video Portal docs/ [V68]"
+          git diff --staged --quiet || git commit -m "Auto-sync history & SEO Video Portal docs/ [V70]"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main || (sleep 3 && git pull --rebase -X theirs origin main && git push origin HEAD:main) || true
           curl -sS "https://api.indexnow.org/indexnow?url=https://${GITHUB_REPOSITORY%/*}.github.io/${GITHUB_REPOSITORY#*/}/sitemap.xml&key=wtb757dd23b1dd97218indexnow2026" >/dev/null 2>&1 || true
