@@ -92,14 +92,13 @@ ORDERED_PILLARS = [
 
 # Non-Geopolitics Category Rotation Pool (Guarantees Pair #2 in EVERY run fulfills a distinct channel playlist!)
 NON_GEO_PLAYLIST_PILLARS = [
-    "VIRAL_UNDERDOG_SPORTS",    # Global Sports Arena
-    "STOCK_MARKETS",            # Business, Markets & Global Economy
-    "AI_ROBOTICS",              # AI, Robotics, Gaming & Future Tech
-    "SCIENCE",                  # Space, NASA & Future Science
-    "MIND_BLOWING_FACTS",       # Mind-Blowing Facts & World Mysteries
-    "HEALTH",                   # Health, Biotech & Medical Science
-    "ENTERTAINMENT",            # Cinema, Gaming & Pop Culture
-    "TECHNOLOGY"                # AI, Robotics, Gaming & Future Tech
+    "GEOPOLITICS",              # Global Geopolitics & World News
+    "GLOBAL_POWERS",            # Superpower Flashpoints (US, China, Russia, EU, Middle East)
+    "DEFENSE_MILITARY",         # Global Military, NATO, Naval Chokepoints & Deterrence
+    "STOCK_MARKETS",            # Global Economy, Wall Street, Tariffs, Oil & Central Banks
+    "AI_ROBOTICS",              # Global AI, Semiconductors & Frontier Tech
+    "SCIENCE",                  # Space, NASA, Geopolitics of Space & Breakthroughs
+    "TECHNOLOGY"                # Cyber Warfare, Silicon Supply Chains & Big Tech
 ]
 
 PILLAR_TO_CORE_HUB = {
@@ -1239,7 +1238,7 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
     sys_prompt = (
         "You are the world's #1 YouTube Case-Study & Documentary Showrunner, modeling your exact script pacing and visual storytelling on THINK SCHOOL (Ganesh Prasad's 1M+ view geopolitical, business, sports, science & tech case studies) combined with NITISH RAJPUT's forensic clarity: "
         "FOLLOW THIS EXACT 6-STAGE THINK SCHOOL NARRATIVE ARCHITECTURE ACROSS THE SCENES: "
-        "- STAGE 1 (Cold Open Flashpoint & Global Stakes): Start directly with the most dramatic action, quote, or flashpoint from the verified facts (no slow greeting), then explain why everyone from global leaders to institutional traders and everyday citizens is watching this story. "
+        "- STAGE 1 (Cold Open Flashpoint & First-3-Second Spoken SEO Lock): In the VERY FIRST SENTENCE, state the exact Country, Leader/Company name, and Breaking News Event clearly (never start with 'Imagine...' or vague metaphors—YouTube's speech-to-text SEO ranks videos by the keywords spoken in the first 5 seconds!), then explain the global stakes. "
         "- STAGE 2 (The Core Rivalry & The 3 Big Questions Roadmap): Frame the central conflict ('On one side... on the other side...') and explicitly pose the 3 critical questions this video will answer ('The question is: Why is this happening now? What is the hidden mechanism behind it? And how will this reshape the world?'). "
         "- STAGE 3 (The Paradox & 'Let's Do The Math' Simple 100-Unit Explainer): Highlight the central irony or paradox of the story, and break down the complex policy, technical mechanism, or financial structure using a crystal-clear simple math analogy ('Think of it like this: out of 100...' or exact comparative numbers) so any viewer understands the system in 30 seconds. "
         "- STAGE 4 (The Domino Chain & Chokepoint / Pipeline Effect): Trace the step-by-step cause-and-effect domino chain ('Because of A, B happened, which caused C to shift by X%, forcing D...') across physical trade corridors, supply chains, arenas, or biological/technical systems. "
@@ -1267,7 +1266,7 @@ OUR CHANNEL'S TOP PERFORMING VIDEO THEMES: {top_hits_str}
 
 Return ONLY valid JSON in this exact structure:
 {{
-  "viral_title": "A 100% original, high-CTR Think School / Nitish Rajput style YouTube title (50-75 chars)",
+  "viral_title": "A high-search-volume YouTube SEO title (52-74 chars) that puts the EXACT Country/Superpower + Named Leader/Company + Breaking Event in the first 45 chars (e.g. 'Rubio\'s Serbia Bet: Why NATO Just Lost', 'US Ukraine & Sudan Deportation Reprieve Explained', 'Why Ethiopia\'s Russian Jets Could Ignite a New War') — NEVER hide names or use vague words like 'Shakeup' or 'Gambit'!",
   "thumb_line_1": "2 TO 3 CAPS NARRATIVE SUBJECT HOOK (max 18 chars, e.g. 'PENTAGON GAMBIT', '17-YR-OLD PRODIGY', 'WALL ST SHOCK', 'PAK MISSILE TEST')",
   "thumb_line_2": "2 TO 3 CAPS DRAMATIC NARRATIVE PAYOFF/QUESTION (max 18 chars, e.g. 'CHINA CORNERED?', 'HONDA STUNNED!', 'AIR POWER SHIFT?', 'WHO WINS BILLIONS?')",
   "core_subject": "2-4 word exact physical subject (e.g. 'Strait of Hormuz Tanker')",
@@ -1970,6 +1969,8 @@ def load_published_history():
                     "last_mega_24h_date": data.get("last_mega_24h_date", ""),
                     "v63_healed_video_ids": data.get("v63_healed_video_ids", []),
                     "v65_rehab_next_page_token": data.get("v65_rehab_next_page_token", ""),
+                    "v69_checked_video_ids": data.get("v69_checked_video_ids", []),
+                    "v69_scan_page_token": data.get("v69_scan_page_token", ""),
                     "published_videos_index": data.get("published_videos_index", [])
                 }
         except Exception:
@@ -2029,6 +2030,8 @@ def save_published_history(hist_obj, update_upload_epoch=True):
                 "last_countries": hist_obj.get("last_countries", [])[-50:],
                 "v63_healed_video_ids": hist_obj.get("v63_healed_video_ids", [])[-600:],
                 "v65_rehab_next_page_token": str(hist_obj.get("v65_rehab_next_page_token", "")),
+                "v69_checked_video_ids": hist_obj.get("v69_checked_video_ids", [])[-900:],
+                "v69_scan_page_token": str(hist_obj.get("v69_scan_page_token", "")),
                 "published_videos_index": hist_obj.get("published_videos_index", [])[-120:]
             }, f, indent=2)
     except Exception:
@@ -2108,6 +2111,11 @@ def check_semantic_duplicate_or_update(title, first_fact, hist_obj):
 
 BANNED_ARTICLE_TITLES = [
     "babar azam", "shaheen afridi", "basit ali", "shoaib bashir", "brydon carse", "mohammad taha",
+    "swimsuit", "bikini", "sizzling", "girlfriend", "boyfriend", "dating", "red carpet", "reality tv",
+    "test cricket", "cricket squad", "wicket", "batsman", "bowler", "ipl ", "bcci", "t20 ", "odi ",
+    "celtics", "lakers", "warriors", "bucks", "knicks", "nba ", "nfl ", "super bowl", "jaguars", "eagles",
+    "touchdown", "quarterback", "wta ", "atp ", "coco gauff", "pegula", "indian wells", "wimbledon",
+
     "campus shooting", "campus chaos", "shot dead", "gunfire", "mass shooting", "stabbing", "homicide", "murdered", "strangled",
     "salon", "hairdresser", "vat cut", "council tax", "local council", "pub ", "pubs ",
     "uti", "utis", "urinary", "bladder", "bowel", "diarrhea", "constipation", "erectile", "sexually transmitted",
@@ -16562,46 +16570,50 @@ def build_20_country_youtube_localizations(en_title, en_description):
     return {"en": {"title": clean_en_t, "description": clean_en_d}}
 
 
-def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per_run=12):
+def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per_run=30):
     """
-    V65 FULL-CHANNEL 815-VIDEO BACKLOG REHABILITATOR & ANTI-SPAM HEALER:
-    Solves the root cause of the 30-minute mass-upload spam throttle across all 815 past uploads:
-    1. Paginates through the channel's `uploads` playlist across runs (saving `v65_rehab_next_page_token`
-       in `published_history.json`) using only 2 quota units for listing (`playlistItems.list` + `videos.list(part="snippet,status,statistics")`).
-    2. Quarantines known broken hybrid uploads (`Et6kEJg7Jeg`, `fTk8TnSvwqU`, `q8D-xyYYpZw`, `9ghWL-PyuuI`, `8XHR31rNuXY`, `k24wgWvpiNA`).
-    3. For OLD uploads (`> 48 hours old`) from the 30-minute mass-upload era that have `0 views` (`viewCount == 0` and `likeCount == 0`):
-       Automatically sets up to `max_fixes_per_run` (12 per run = ~96 per day) of those dead-weight 0-view videos to `unlisted`
-       so YouTube stops penalizing the channel's Public Catalog Engagement Ratio (`Total Views / Total Public Videos`)!
-    4. For ALL videos that DO have views (`viewCount >= 1`) or are `< 48 hours old`:
-       Keeps them `public`, strips the old 18-language keyword-stuffing block (`🌍 GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:`),
-       fixes title typos (`MRQUEZ` -> `MARQUEZ`), and locks clean `@WorldTalkBrief` search tags!
+    V69 STRICT >=10-VIEWS KEEPER & <10-VIEWS CHANNEL-WIDE PRIVATIZER:
+    Per explicit user instruction ('jisme 10-20-30 se jyada view he wah rehne do, baki sab private kardo'):
+    1. Immediately sets known off-brand sports/tabloid uploads (`0sCf4NdEwAI` Swimsuit Photo, `zdSiUYwg6eI` & `449lfTBs_TY`
+       Pakistan Cricket, `Et6kEJg7Jeg` & `fTk8TnSvwqU` Brydon Carse, `q8D-xyYYpZw` & `egOuM0OpM1s` Celtics,
+       `9ghWL-PyuuI` & `8XHR31rNuXY` Coco Gauff, `BuPaDYt50Yg` Claire Liu, `k24wgWvpiNA` WSSU) to `PRIVATE`.
+    2. Scans through the channel's `uploads` playlist (`v69_scan_page_token`, 50 videos per page = 1 quota unit):
+       - Any `public` video older than 6 hours with `viewCount < 10` (or matching sports/tabloid keywords) is
+         automatically set to `PRIVATE` (`privacyStatus: "private"`)!
+       - Any `public` video with `viewCount >= 10` (such as `b_MC7vXf2QM` 187 views, `9gV_eYCLUvY` 46 views,
+         `zTcYNdOkeng` 12 views, `U3lhlTtnMRI` 10 views, `DHG681PDrS8` 10 views) is KEPT PUBLIC and its
+         description is cleaned of any 18-language spam block!
     """
     if yt is None:
         return
     try:
         if hist_obj is None:
             hist_obj = load_published_history()
-        healed_set = set(hist_obj.get("v63_healed_video_ids", []))
+        checked_v69 = set(hist_obj.get("v69_checked_video_ids", []))
 
-        # Step A: Quarantine known broken hybrid videos immediately
-        broken_hybrid_vids = ["Et6kEJg7Jeg", "fTk8TnSvwqU", "q8D-xyYYpZw", "9ghWL-PyuuI", "8XHR31rNuXY", "k24wgWvpiNA"]
-        unhealed_broken = [bv for bv in broken_hybrid_vids if bv not in healed_set]
-        if unhealed_broken:
+        # Step A: Force-Privatize known off-brand sports/tabloid/hybrid videos immediately
+        force_private_ids = [
+            "0sCf4NdEwAI", "zdSiUYwg6eI", "449lfTBs_TY", "Et6kEJg7Jeg", "fTk8TnSvwqU",
+            "q8D-xyYYpZw", "egOuM0OpM1s", "9ghWL-PyuuI", "8XHR31rNuXY", "BuPaDYt50Yg",
+            "k24wgWvpiNA", "p7L3fo-xCks", "aVCPMsgUiYI", "LYw3mW3-6KY", "rXvD0c-cO0c"
+        ]
+        pending_force = [fid for fid in force_private_ids if fid not in checked_v69]
+        if pending_force:
             try:
-                bv_r = yt.videos().list(part="snippet,status", id=",".join(unhealed_broken)).execute()
-                for bv_it in (bv_r.get("items") or []):
-                    b_id = bv_it.get("id")
-                    if (bv_it.get("status") or {}).get("privacyStatus") == "public":
+                fr = yt.videos().list(part="status,snippet", id=",".join(pending_force[:15])).execute()
+                for fit in (fr.get("items") or []):
+                    f_id = fit.get("id")
+                    if (fit.get("status") or {}).get("privacyStatus") != "private":
                         yt.videos().update(
                             part="status",
-                            body={"id": b_id, "status": {"privacyStatus": "unlisted", "selfDeclaredMadeForKids": False}}
+                            body={"id": f_id, "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False}}
                         ).execute()
-                        print(f"🛡️ [V65 Channel Retention Shield] Unlisted broken hybrid upload https://youtu.be/{b_id} via API!", flush=True)
-                    healed_set.add(b_id)
+                        print(f"🔒 [V69 Off-Brand/Low-View Privatizer] Set https://youtu.be/{f_id} ('{(fit.get('snippet') or {}).get('title', '')[:42]}') to PRIVATE!", flush=True)
+                    checked_v69.add(f_id)
             except Exception:
                 pass
 
-        # Step B: Paginate through the channel's `uploads` playlist (walking through all 815 past videos across runs!)
+        # Step B: Paginate through the entire `uploads` playlist (50 videos per page)
         ch_resp = yt.channels().list(part="contentDetails", mine=True).execute()
         ch_items = ch_resp.get("items") or []
         if not ch_items:
@@ -16610,26 +16622,32 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
         if not uploads_pl:
             return
 
-        page_tok = hist_obj.get("v65_rehab_next_page_token") or None
-        pl_kwargs = {"part": "contentDetails", "playlistId": uploads_pl, "maxResults": 35}
+        page_tok = hist_obj.get("v69_scan_page_token") or None
+        pl_kwargs = {"part": "contentDetails", "playlistId": uploads_pl, "maxResults": 50}
         if page_tok:
             pl_kwargs["pageToken"] = page_tok
         pl_resp = yt.playlistItems().list(**pl_kwargs).execute()
         next_tok = pl_resp.get("nextPageToken")
-        hist_obj["v65_rehab_next_page_token"] = next_tok if next_tok else ""
+        hist_obj["v69_scan_page_token"] = next_tok if next_tok else ""
 
         cand_vids = [
             it.get("contentDetails", {}).get("videoId")
             for it in (pl_resp.get("items") or [])
-            if it.get("contentDetails", {}).get("videoId") and it.get("contentDetails", {}).get("videoId") not in healed_set
+            if it.get("contentDetails", {}).get("videoId") and it.get("contentDetails", {}).get("videoId") not in checked_v69
         ]
         if not cand_vids:
-            save_published_history(hist_obj)
+            hist_obj["v69_checked_video_ids"] = list(checked_v69)[-900:]
+            save_published_history(hist_obj, update_upload_epoch=False)
             return
 
-        v_resp = yt.videos().list(part="snippet,status,statistics", id=",".join(cand_vids[:30])).execute()
+        v_resp = yt.videos().list(part="snippet,status,statistics", id=",".join(cand_vids[:50])).execute()
         fixes_done = 0
         now_utc_dt = datetime.utcnow()
+        off_brand_kws = (
+            "swimsuit", "bikini", "girlfriend", "babar azam", "shaheen afridi", "brydon carse",
+            "shoaib bashir", "celtics", "coco gauff", "pegula", "claire liu", "jaguars", "jordan davis",
+            "marquez", "motogp", "wssu", "campus chaos"
+        )
 
         for v_item in (v_resp.get("items") or []):
             if fixes_done >= max_fixes_per_run:
@@ -16640,80 +16658,70 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
             stats_obj = v_item.get("statistics") or {}
             priv_status = stat.get("privacyStatus", "public")
 
-            if priv_status != "public":
-                healed_set.add(vid_id)
+            if priv_status == "private":
+                checked_v69.add(vid_id)
                 continue
 
             view_cnt = int(stats_obj.get("viewCount") or 0)
-            like_cnt = int(stats_obj.get("likeCount") or 0)
+            orig_t = str(snip.get("title") or "")
+            orig_t_low = orig_t.lower()
             pub_str = str(snip.get("publishedAt") or "")
-            age_hours = 12.0
+            age_hours = 24.0
             if pub_str:
                 try:
                     p_dt = datetime.fromisoformat(pub_str.replace("Z", "").split("+")[0])
                     age_hours = max(0.1, (now_utc_dt - p_dt).total_seconds() / 3600.0)
                 except Exception:
-                    age_hours = 12.0
+                    age_hours = 24.0
 
-            # Rule 1: If a video from the old 30-min spam flood is > 48 hours old AND still has 0 views & 0 likes,
-            # set it to `unlisted` so it stops dragging down the channel's Public Catalog CTR & Engagement Ratio!
-            if age_hours >= 48.0 and view_cnt == 0 and like_cnt == 0:
+            is_off_brand = any(obk in orig_t_low for obk in off_brand_kws)
+
+            # RULE 1: If `view_cnt < 10` (and older than 6 hours so today's brand-new Global News video gets time to grow)
+            # OR if it's an off-brand sports/tabloid video -> SET TO PRIVATE!
+            if is_off_brand or (age_hours >= 6.0 and view_cnt < 10):
                 try:
                     yt.videos().update(
                         part="status",
                         body={
                             "id": vid_id,
                             "status": {
-                                "privacyStatus": "unlisted",
-                                "selfDeclaredMadeForKids": False,
-                                "embeddable": True,
-                                "publicStatsViewable": True
+                                "privacyStatus": "private",
+                                "selfDeclaredMadeForKids": False
                             }
                         }
                     ).execute()
                     fixes_done += 1
-                    healed_set.add(vid_id)
-                    print(f"🧹 [V65 Dead-Weight Pruner] Unlisted >48h 0-view video https://youtu.be/{vid_id} ({int(age_hours)}h old, 0 views) to boost Channel Engagement Score!", flush=True)
+                    checked_v69.add(vid_id)
+                    print(f"🔒 [V69 <10-Views Privatizer] Set https://youtu.be/{vid_id} ({view_cnt} views, {int(age_hours)}h old | '{orig_t[:42]}') to PRIVATE!", flush=True)
                     continue
-                except Exception:
-                    pass
+                except Exception as up_e:
+                    if "quotaExceeded" in str(up_e) or "403" in str(up_e):
+                        break
+                    continue
 
-            # Rule 2: If the video HAS views (`view_cnt >= 1`) or is `< 48 hours old`, keep it PUBLIC and strip any 18-language spam block!
-            orig_t = str(snip.get("title") or "")
+            # RULE 2: Video has `>= 10 views` (e.g. 187 views, 46 views, 12 views, 10 views)!
+            # Keep it PUBLIC and strip any 18-language spam block from its description!
             orig_d = str(snip.get("description") or "")
             orig_tags = list(snip.get("tags") or [])
             cat_id = str(snip.get("categoryId") or "25")
-
-            needs_heal = False
-            new_t = orig_t.replace("MRQUEZ", "MARQUEZ").replace("Mrquez", "Marquez")
-            if new_t != orig_t:
-                needs_heal = True
-
             new_d = orig_d
+            needs_clean = False
             for spam_marker in ["🌍 GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:", "GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:"]:
                 if spam_marker in new_d:
                     new_d = new_d.split(spam_marker)[0].strip()
-                    needs_heal = True
-
-            if "@WorldTalkBrief" not in new_d:
-                new_d = f"{new_d}\n\nOfficial Channel: World Talk Brief (@WorldTalkBrief) • https://www.youtube.com/@WorldTalkBrief #WorldTalkBrief".strip()
-                needs_heal = True
-
-            if len(orig_tags) > 12 or "World Talk Brief" not in orig_tags:
-                needs_heal = True
-            clean_healed_tags = ["World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"] + [
-                ascii_transliterate_keep_vowels(t)[:28] for t in orig_tags
-                if t not in {"World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"} and len(ascii_transliterate_keep_vowels(t)) >= 3
-            ][:7]
-
-            if needs_heal:
+                    needs_clean = True
+            if needs_clean:
                 try:
+                    clean_healed_tags = ["World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"] + [
+                        ascii_transliterate_keep_vowels(t)[:28] for t in orig_tags
+                        if t not in {"World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"} and len(ascii_transliterate_keep_vowels(t)) >= 3
+                    ][:7]
                     yt.videos().update(
                         part="snippet,status",
                         body={
                             "id": vid_id,
                             "snippet": {
-                                "title": new_t[:95],
+                                "title": orig_t[:95],
                                 "description": new_d[:3500],
                                 "tags": clean_healed_tags,
                                 "categoryId": cat_id,
@@ -16729,15 +16737,15 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
                         }
                     ).execute()
                     fixes_done += 1
-                    print(f"✨ [V65 Active Video Healer] Cleaned description/tags on https://youtu.be/{vid_id} ({view_cnt} views, '{new_t[:44]}')", flush=True)
+                    print(f"🌟 [V69 Winner Kept PUBLIC & Cleaned] https://youtu.be/{vid_id} ({view_cnt} views | '{orig_t[:44]}')", flush=True)
                 except Exception:
                     pass
-            healed_set.add(vid_id)
+            checked_v69.add(vid_id)
 
-        hist_obj["v63_healed_video_ids"] = list(healed_set)[-600:]
-        save_published_history(hist_obj)
+        hist_obj["v69_checked_video_ids"] = list(checked_v69)[-900:]
+        save_published_history(hist_obj, update_upload_epoch=False)
     except Exception as heal_e:
-        print("⚠️ [V65 Channel Rehabilitator Note]:", str(heal_e)[:110], flush=True)
+        print("⚠️ [V69 Channel Privatizer Note]:", str(heal_e)[:110], flush=True)
 
 
 def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None):
@@ -17191,17 +17199,17 @@ def run_v66_multi_token_mass_channel_rehabilitator(max_pages_per_token=2, max_fi
                 creds.refresh(Request())
             yt_client = build("youtube", "v3", credentials=creds)
             for pg_step in range(max_pages_per_token):
-                before_cnt = len(hist_obj.get("v63_healed_video_ids", []))
+                before_cnt = len(hist_obj.get("v69_checked_video_ids", []))
                 run_v63_youtube_api_channel_antispam_healer(yt_client, hist_obj=hist_obj, max_fixes_per_run=max_fixes_per_token)
-                after_cnt = len(hist_obj.get("v63_healed_video_ids", []))
+                after_cnt = len(hist_obj.get("v69_checked_video_ids", []))
                 total_cleaned += max(0, after_cnt - before_cnt)
-                if not hist_obj.get("v65_rehab_next_page_token"):
+                if not hist_obj.get("v69_scan_page_token"):
                     break
         except Exception as e:
             print(f"⚠️ [V66 Rehab Token #{tk_i} Note]:", str(e)[:100], flush=True)
 
     save_published_history(hist_obj)
-    print(f"🚀 [V66 Mass Channel Rehabilitation Complete] Processed {total_cleaned} videos across {len(candidate_tokens)} tokens! Total Healed/Pruned Backlog: {len(hist_obj.get('v63_healed_video_ids', []))}", flush=True)
+    print(f"🚀 [V66 Mass Channel Rehabilitation Complete] Processed {total_cleaned} videos across {len(candidate_tokens)} tokens! Total Healed/Pruned Backlog: {len(hist_obj.get('v69_checked_video_ids', []))}", flush=True)
 
 def try_youtube_auto_upload(
     video_path, title, description, tags, category_id="25", pillar="WORLD",
@@ -17448,18 +17456,16 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     ai_desc = lead_long_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] presents an original deep-dive case study.")
     clean_ai_desc = strip_news_publisher_mentions(ai_desc)
     watch_next_block_l = build_v61_youtube_session_watch_next_block(hist_obj)
+    seo_lead_l, long_seo_tags = build_v69_search_first_seo_tags_and_lead(
+        lead_long_dossier, pkg_report["selected_title"], lead_long_entities, is_short=False
+    )
     long_seo_desc = (
-        f"{pkg_report['selected_title']} | World Talk Brief (@WorldTalkBrief)\n\n"
+        f"{seo_lead_l}\n\n"
         f"{clean_ai_desc}\n\n"
         f"CHAPTER TIMESTAMPS:\n" + "\n".join(chap_lines) + "\n\n"
         f"{watch_next_block_l}\n\n"
-        f"{long_hashtags_str} #WorldTalkBrief"
+        f"#WorldNews #Geopolitics #WorldTalkBrief"
     )
-    ai_tags = lead_long_dossier.get("ai_seo_tags", [])
-    long_seo_tags = [
-        "World Talk Brief", sub_pillar.replace("_", " ").title(), "Documentary Case Study",
-        lead_long_dossier["country_profile"]["name"].title()
-    ] + ai_tags[:6] + lead_long_entities[:4] + winning_keywords[:4] + viral_yt_tags[:4]
 
     try:
         sync_log = lead_long_dossier.get("_visual_sync_audit_log") or []
@@ -17491,6 +17497,55 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         )
     return pkg_report, shared_long_photos
 
+
+
+def build_v69_search_first_seo_tags_and_lead(dossier, final_title, entities, is_short=False):
+    """
+    V69 YOUTUBE SEARCH & SHORTS TOPIC-MATCHING SEO ENGINE:
+    Fixes why poetic/generic metadata failed to rank in YouTube Search:
+    1. Builds a keyword-dense First-160-Char Search Lead for the top of `description` containing the
+       exact Country, Primary Entity, Original Breaking Headline, and 'World News Explained'.
+    2. Builds 10 multi-word Search-Query Tags (exact phrases people type into YouTube Search, e.g.
+       'Ukraine Russia news', 'NATO Serbia', 'Middle East war news', 'World news today', 'Geopolitics explained')
+       instead of single generic dictionary words!
+    """
+    raw_hl = ascii_transliterate_keep_vowels(str(dossier.get("title") or final_title)).strip()
+    t_anc = ascii_transliterate_keep_vowels(str(dossier.get("topic_anchor") or "")).strip()
+    c_name = ascii_transliterate_keep_vowels(str(dossier.get("country_profile", {}).get("name", "Global"))).title()
+    if c_name.upper() in ("INTERNATIONAL", "GLOBAL BRIEFING", "GLOBAL"):
+        c_name = "World"
+
+    lead_160 = (
+        f"{raw_hl} — Full {c_name} Geopolitics & World News Briefing on {t_anc or final_title} "
+        f"by World Talk Brief (@WorldTalkBrief)."
+    )
+
+    # Extract 2-to-3 word proper search phrases from headline + entities
+    search_tags = []
+    if t_anc and 3 <= len(t_anc) <= 28:
+        search_tags.append(t_anc)
+    if c_name != "World" and len(f"{c_name} news today") <= 28:
+        search_tags.append(f"{c_name} news today")
+    if c_name != "World" and t_anc and len(f"{c_name} {t_anc.split()[0]}") <= 28:
+        search_tags.append(f"{c_name} {t_anc.split()[0]}")
+
+    for ent in (entities or [])[:5]:
+        ce = ascii_transliterate_keep_vowels(str(ent)).strip()
+        if 3 <= len(ce) <= 26 and ce.lower() not in {x.lower() for x in search_tags}:
+            search_tags.append(ce)
+
+    core_seo_phrases = [
+        "World News Today", "Geopolitics Explained", "Breaking World News",
+        "Global News Briefing", "World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"
+    ]
+    if is_short:
+        core_seo_phrases.insert(0, "YouTube Shorts News")
+
+    for ph in core_seo_phrases:
+        if ph.lower() not in {x.lower() for x in search_tags}:
+            search_tags.append(ph)
+
+    return lead_160, search_tags[:10]
 
 def build_v66_punchy_viral_short_title(dossier, long_title=""):
     """
@@ -17591,17 +17646,15 @@ async def render_and_upload_short_unit(
     short_hashtags_str = " ".join(short_pkg["hashtags"] + ["#Shorts", "#Explained"])
     ai_desc = short_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] original #Shorts case study.")
     clean_short_ai_desc = strip_news_publisher_mentions(ai_desc)
-    short_seo_desc = (
-        f"{long_link_block}"
-        f"{short_dossier['original_yt_title']}\n\n"
-        f"{clean_short_ai_desc}\n\n"
-        f"{short_hashtags_str}"
+    seo_lead_s, short_seo_tags = build_v69_search_first_seo_tags_and_lead(
+        short_dossier, short_dossier.get("original_yt_title", ""), short_entities, is_short=True
     )
-    ai_tags = short_dossier.get("ai_seo_tags", [])
-    short_seo_tags = [
-        "World Talk Brief", sub_pillar.replace("_", " ").title(), "Case Study Explained", "YouTube Shorts",
-        short_dossier["country_profile"]["name"].title()
-    ] + ai_tags[:6] + short_entities[:4] + winning_keywords[:4] + viral_yt_tags[:4]
+    short_seo_desc = (
+        f"{seo_lead_s}\n\n"
+        f"{long_link_block}"
+        f"{clean_short_ai_desc}\n\n"
+        f"#shorts #worldnews #WorldTalkBrief"
+    )
 
     punchy_short_t = build_v66_punchy_viral_short_title(short_dossier, short_dossier.get("original_yt_title", ""))
     short_vid_id = try_youtube_auto_upload(
@@ -17744,7 +17797,7 @@ async def main():
                         break
 
         if len(selected_dossiers) < pairs_to_build:
-            for extra_hub in ["WORLD", "SCIENCE", "TECHNOLOGY", "BUSINESS", "HEALTH", "SPORTS", "ENTERTAINMENT", "MIND_BLOWING_FACTS"]:
+            for extra_hub in ["WORLD", "BUSINESS", "TECHNOLOGY", "SCIENCE"]:
                 d = discover_dossier_for_pillar(extra_hub, hist_obj, winning_keywords, batch_fingerprints)
                 if d is not None:
                     selected_dossiers.append(d)
