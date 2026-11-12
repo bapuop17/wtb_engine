@@ -16937,6 +16937,8 @@ def publish_v61_github_pages_seo_portal_and_ping_search_engines(
         # Write Google Search Console HTML Verification File (`google6c68a020be85b251.html`), IndexNow key file, and robots.txt
         with open("docs/google6c68a020be85b251.html", "w", encoding="utf-8") as gvf:
             gvf.write("google-site-verification: google6c68a020be85b251.html")
+        with open("docs/.nojekyll", "w", encoding="utf-8") as njf:
+            njf.write("")
         with open(f"docs/{WTB_INDEXNOW_KEY}.txt", "w", encoding="utf-8") as kf:
             kf.write(WTB_INDEXNOW_KEY)
         with open("docs/robots.txt", "w", encoding="utf-8") as rf:
