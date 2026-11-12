@@ -1,4 +1,4 @@
-name: WTB News Engine V67 (15m Unstoppable Cron + 2-Hour Smart Cooldown Gate • 1 Pair/2h • Zero Spam Throttle)
+name: WTB News Engine V68 (Zero-Apt-Timeout Instant Boot • 25s Channel Cleaner • Auto Google Search Console Verify)
 
 on:
   workflow_dispatch:
@@ -22,9 +22,6 @@ on:
       - 'wtb_engine.py'
       - '.github/workflows/**'
   schedule:
-    # 4 Staggered Cron Triggers Every Hour (Every 15 Minutes = 96 Triggers/Day!)
-    # Guarantees GitHub Actions NEVER stalls for 4-6 hours when individual cron ticks are dropped,
-    # while the 3-second Cooldown Gate below ensures videos only build & upload once every 2 hours!
     - cron: '*/10 * * * *'
     - cron: '7 * * * *'
     - cron: '22 * * * *'
@@ -34,6 +31,8 @@ on:
 permissions:
   contents: write
   actions: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: wtb-production-group
@@ -54,19 +53,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Auto-Remove Broken Schedule Blocker Files & Bootstrap Live GitHub Pages Portal (docs/)
+      - name: Instant 5s Google Search Console & GitHub Pages Live Publisher (docs/)
         run: |
           rm -f workflow_schedule_state.json .github/scripts/claim_schedule_slot.py temp/channel_cap_hit.flag || true
           mkdir -p docs/articles
-          echo 'google-site-verification: google6c68a020be85b251.html' > docs/google6c68a020be85b251.html
+          touch docs/.nojekyll
+          printf 'google-site-verification: google6c68a020be85b251.html' > docs/google6c68a020be85b251.html
           if [ ! -f docs/index.html ]; then
-            echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>World Talk Brief (@WorldTalkBrief) • Global Investigative Documentaries</title><meta name="description" content="Official investigative documentary and case-study portal of World Talk Brief (@WorldTalkBrief)."><link rel="canonical" href="https://bapuop17.github.io/wtb_engine/"></head><body style="background:#070c17;color:#eaf1ff;font-family:sans-serif;text-align:center;padding:40px;"><h1>WORLD TALK BRIEF (@WorldTalkBrief)</h1><p>Global Geopolitics, Macro-Economics, AI and Investigative Case Studies</p><p><a href="https://www.youtube.com/@WorldTalkBrief?sub_confirmation=1" style="background:#ff2a4b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Subscribe on YouTube (@WorldTalkBrief)</a></p></body></html>' > docs/index.html
+            echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="google-site-verification" content="google6c68a020be85b251"><title>World Talk Brief (@WorldTalkBrief) • Global Investigative Documentaries</title><meta name="description" content="Official investigative documentary and case-study portal of World Talk Brief (@WorldTalkBrief)."><link rel="canonical" href="https://bapuop17.github.io/wtb_engine/"></head><body style="background:#070c17;color:#eaf1ff;font-family:sans-serif;text-align:center;padding:40px;"><h1>WORLD TALK BRIEF (@WorldTalkBrief)</h1><p>Global Geopolitics, Macro-Economics, AI and Investigative Case Studies</p><p><a href="https://www.youtube.com/@WorldTalkBrief?sub_confirmation=1" style="background:#ff2a4b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Subscribe on YouTube (@WorldTalkBrief)</a></p></body></html>' > docs/index.html
           fi
           if [ ! -f docs/sitemap.xml ]; then
             echo '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://bapuop17.github.io/wtb_engine/index.html</loc><changefreq>hourly</changefreq><priority>1.0</priority></url></urlset>' > docs/sitemap.xml
           fi
           if [ ! -f docs/video-sitemap.xml ]; then
             echo '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"><url><loc>https://bapuop17.github.io/wtb_engine/index.html</loc></url></urlset>' > docs/video-sitemap.xml
+          fi
+          git config user.name "WorldTalkBrief-Bot"
+          git config user.email "bot@worldtalkbrief.org"
+          git add docs/ || true
+          if ! git diff --staged --quiet; then
+            git commit -m "Deploy Google Search Console verification & GitHub Pages portal [V68]" || true
+            git pull --rebase -X theirs origin main || true
+            git push origin HEAD:main || true
           fi
 
       - name: Smart 2-Hour Algorithm Cooldown Gate (Fast 3s Check on Cron Runs)
@@ -81,10 +89,8 @@ jobs:
 
           event_name = os.environ.get("EVENT_NAME", "schedule")
           bypass = os.environ.get("BYPASS_COOLDOWN", "true").lower() == "true"
-          cooldown_mins = 115  # ~2 Hours between uploads
+          cooldown_mins = 115
 
-          # V67 QUEUED-CRON RACE FIX: Always pull latest `origin/main` BEFORE checking `published_history.json`
-          # so a cron run queued at 8:21 AM while an earlier run finished at 8:22 AM sees the new upload immediately!
           if event_name == "schedule":
               try:
                   subprocess.run(["git", "fetch", "origin", "main"], timeout=15, check=False)
@@ -92,9 +98,8 @@ jobs:
               except Exception:
                   pass
 
-          # Always run immediately on manual button click (`workflow_dispatch`) or code push (`push`)!
           if event_name in ("workflow_dispatch", "push") and bypass:
-              print(f"🚀 [{event_name.upper()} TRIGGER] Bypassing 2-hour cooldown — starting build immediately!")
+              print(f"🚀 [{event_name.upper()} TRIGGER] Bypassing 2-hour cooldown — starting V68 build immediately!")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out:
                   out.write("should_run=true\n")
               raise SystemExit(0)
@@ -125,12 +130,12 @@ jobs:
           elapsed_mins = (now_epoch - last_epoch) / 60.0 if last_epoch > 0 else 999.0
 
           if elapsed_mins >= cooldown_mins:
-              print(f"✅ [2-Hour Cooldown Complete] {elapsed_mins:.1f} mins elapsed since last upload (>= {cooldown_mins}m). Launching V67 build!")
+              print(f"✅ [2-Hour Cooldown Complete] {elapsed_mins:.1f} mins elapsed since last upload (>= {cooldown_mins}m). Launching V68 build!")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out:
                   out.write("should_run=true\n")
           else:
               rem_m = cooldown_mins - elapsed_mins
-              print(f"⏳ [2-Hour Cooldown Active] Only {elapsed_mins:.1f} mins since last upload ({rem_m:.1f}m remaining). Exiting cleanly in 3s so YouTube gives current video full impressions!")
+              print(f"⏳ [2-Hour Cooldown Active] Only {elapsed_mins:.1f} mins since last upload ({rem_m:.1f}m remaining). Running fast 25s Channel Cleaner instead!")
               with open(os.environ["GITHUB_OUTPUT"], "a") as out:
                   out.write("should_run=false\n")
           EOF
@@ -151,49 +156,24 @@ jobs:
           pip install --quiet google-api-python-client google-auth-oauthlib google-auth-httplib2 requests feedparser beautifulsoup4 pillow numpy opencv-python-headless
           python3 -u wtb_engine.py --rehab-only || true
 
-      - name: Install System Multimedia, Cairo & Font Dependencies (Fast IPv4)
+      - name: Verify Pre-Installed FFmpeg & Fonts (Zero Azure Apt Hang!)
         if: steps.cooldown_gate.outputs.should_run == 'true'
-        timeout-minutes: 5
         run: |
-          sudo apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" update -y || true
-          sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout="10" -o Acquire::https::Timeout="10" install -y --no-install-recommends \
-            ffmpeg \
-            libcairo2-dev \
-            pkg-config \
-            python3-dev \
-            fonts-dejavu-core \
-            fonts-liberation \
-            fonts-freefont-ttf \
-            fonts-noto-core
+          if command -v ffmpeg >/dev/null 2>&1; then
+            echo "✅ FFmpeg & Ubuntu system fonts already pre-installed on runner — skipping slow apt-get!"
+          else
+            sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu/|http://archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true
+            timeout 60s sudo apt-get update -y || true
+            timeout 90s sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-liberation || true
+          fi
 
-      - name: Install Python V67 Documentary & Motion-Graphics Libraries
+      - name: Install Python V68 Documentary & Motion-Graphics Libraries (Fast Binary Wheels)
         if: steps.cooldown_gate.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade \
-            edge-tts \
-            gTTS \
-            feedparser \
-            requests \
-            pillow \
-            "moviepy<2.0" \
-            numpy \
-            scipy \
-            matplotlib \
-            pycairo \
-            beautifulsoup4 \
-            lxml \
-            opencv-python-headless \
-            ddgs \
-            yt-dlp \
-            googlenewsdecoder \
-            trafilatura \
-            youtube-transcript-api \
-            google-api-python-client \
-            google-auth-oauthlib \
-            google-auth-httplib2
+          pip install --upgrade             edge-tts             gTTS             feedparser             requests             pillow             "moviepy<2.0"             imageio-ffmpeg             numpy             scipy             matplotlib             beautifulsoup4             lxml             opencv-python-headless             ddgs             yt-dlp             googlenewsdecoder             trafilatura             youtube-transcript-api             google-api-python-client             google-auth-oauthlib             google-auth-httplib2
 
-      - name: Run WTB V67 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
+      - name: Run WTB V68 Documentary News Engine (1 Long + 1 Short Pair Every 2 Hours)
         if: steps.cooldown_gate.outputs.should_run == 'true'
         env:
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
@@ -209,7 +189,7 @@ jobs:
         run: |
           python3 -u wtb_engine.py
 
-      - name: Save Non-Repeating Topic, SEO Portal & Rehab History to GitHub
+      - name: Save Non-Repeating Topic, SEO Portal & Rehab History to GitHub (Triggers GitHub Pages Deploy!)
         if: always()
         shell: bash
         run: |
@@ -217,10 +197,13 @@ jobs:
           git config user.email "bot@worldtalkbrief.org"
           git checkout -- .github/workflows/ || true
           git rm -f --ignore-unmatch workflow_schedule_state.json .github/scripts/claim_schedule_slot.py || true
+          mkdir -p docs/articles
+          touch docs/.nojekyll
+          printf 'google-site-verification: google6c68a020be85b251.html' > docs/google6c68a020be85b251.html
           test -f published_history.json && git add published_history.json || true
           test -f data/published_history.json && git add data/published_history.json || true
           test -d docs && git add docs/ || true
-          git diff --staged --quiet || git commit -m "Auto-sync history & SEO Video Portal docs/ [V67] [skip ci]"
+          git diff --staged --quiet || git commit -m "Auto-sync history & SEO Video Portal docs/ [V68]"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main || (sleep 3 && git pull --rebase -X theirs origin main && git push origin HEAD:main) || true
           curl -sS "https://api.indexnow.org/indexnow?url=https://${GITHUB_REPOSITORY%/*}.github.io/${GITHUB_REPOSITORY#*/}/sitemap.xml&key=wtb757dd23b1dd97218indexnow2026" >/dev/null 2>&1 || true
@@ -238,7 +221,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 3
 
-      - name: Keep Workflow Active for Next 15-Min Cron Heartbeat
+      - name: Keep Workflow Active for Next Cron Heartbeat
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
