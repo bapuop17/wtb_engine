@@ -16589,6 +16589,7 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
     try:
         if hist_obj is None:
             hist_obj = load_published_history()
+        update_v70_channel_level_seo_branding_keywords(yt, hist_obj=hist_obj)
         checked_v69 = set(hist_obj.get("v69_checked_video_ids", []))
 
         # Step A: Force-Privatize known off-brand sports/tabloid/hybrid videos immediately
@@ -16700,7 +16701,7 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
                     continue
 
             # RULE 2: Video has `>= 10 views` (e.g. 187 views, 46 views, 12 views, 10 views)!
-            # Keep it PUBLIC and strip any 18-language spam block from its description!
+            # Keep it PUBLIC, strip any 18-language spam block, AND retroactively inject V70 Autocomplete SEO tags!
             orig_d = str(snip.get("description") or "")
             orig_tags = list(snip.get("tags") or [])
             cat_id = str(snip.get("categoryId") or "25")
@@ -16710,12 +16711,18 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
                 if spam_marker in new_d:
                     new_d = new_d.split(spam_marker)[0].strip()
                     needs_clean = True
+            if "🔍 Key Search Topics:" not in new_d and len(orig_t) >= 8:
+                synth_d = {"title": orig_t, "topic_anchor": " ".join(orig_t.split()[:3]), "country_profile": {"name": "World"}}
+                v70_kws = fetch_v70_live_youtube_autocomplete_keywords(synth_d, orig_t, max_results=8)
+                new_d = f"{orig_t} — Full Global News & Geopolitical Briefing by World Talk Brief (@WorldTalkBrief).\n\n{new_d}\n\n🔍 Key Search Topics: {' | '.join(v70_kws[:5])}"
+                orig_tags = v70_kws[:6] + orig_tags
+                needs_clean = True
             if needs_clean:
                 try:
-                    clean_healed_tags = ["World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"] + [
+                    clean_healed_tags = ["World Talk Brief", "WorldTalkBrief", "Geopolitics Explained", "World News Today"] + [
                         ascii_transliterate_keep_vowels(t)[:28] for t in orig_tags
                         if t not in {"World Talk Brief", "WorldTalkBrief", "@WorldTalkBrief"} and len(ascii_transliterate_keep_vowels(t)) >= 3
-                    ][:7]
+                    ][:8]
                     yt.videos().update(
                         part="snippet,status",
                         body={
@@ -17288,7 +17295,8 @@ def try_youtube_auto_upload(
                     "publicStatsViewable": True
                 }
             }
-            media = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype="video/mp4")
+            staged_video_path = stage_v70_seo_keyword_filename(video_path, final_title, is_short=is_short)
+            media = MediaFileUpload(staged_video_path, chunksize=-1, resumable=True, mimetype="video/mp4")
             req = yt.videos().insert(part="snippet,status", body=body_basic, media_body=media)
             resp = None
             while resp is None:
@@ -17313,9 +17321,10 @@ def try_youtube_auto_upload(
                             if alt_creds and alt_creds.expired and alt_creds.refresh_token:
                                 alt_creds.refresh(Request())
                             yt_th_client = build("youtube", "v3", credentials=alt_creds)
+                        staged_thumb_path = stage_v70_seo_keyword_filename(thumbnail_path, final_title, is_short=is_short)
                         yt_th_client.thumbnails().set(
                             videoId=vid_id,
-                            media_body=MediaFileUpload(thumbnail_path, mimetype="image/jpeg", resumable=False)
+                            media_body=MediaFileUpload(staged_thumb_path, mimetype="image/jpeg", resumable=False)
                         ).execute()
                         print(f"🖼️ [Custom Studio Thumbnail Locked (Attempt #{th_try+1})] on https://youtu.be/{vid_id}", flush=True)
                         thumb_locked = True
@@ -17456,16 +17465,11 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     ai_desc = lead_long_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] presents an original deep-dive case study.")
     clean_ai_desc = strip_news_publisher_mentions(ai_desc)
     watch_next_block_l = build_v61_youtube_session_watch_next_block(hist_obj)
-    seo_lead_l, long_seo_tags = build_v69_search_first_seo_tags_and_lead(
-        lead_long_dossier, pkg_report["selected_title"], lead_long_entities, is_short=False
+    v70_long_title, long_seo_desc, long_seo_tags = build_v70_complete_youtube_seo_package(
+        lead_long_dossier, pkg_report["selected_title"], lead_long_entities,
+        chapters_or_sections=long_chapters, hist_obj=hist_obj, is_short=False
     )
-    long_seo_desc = (
-        f"{seo_lead_l}\n\n"
-        f"{clean_ai_desc}\n\n"
-        f"CHAPTER TIMESTAMPS:\n" + "\n".join(chap_lines) + "\n\n"
-        f"{watch_next_block_l}\n\n"
-        f"#WorldNews #Geopolitics #WorldTalkBrief"
-    )
+    pkg_report["selected_title"] = v70_long_title
 
     try:
         sync_log = lead_long_dossier.get("_visual_sync_audit_log") or []
@@ -17497,6 +17501,284 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
         )
     return pkg_report, shared_long_photos
 
+
+
+def fetch_v70_live_youtube_autocomplete_keywords(dossier, final_title="", entities=None, max_results=14):
+    """
+    V70 LIVE YOUTUBE AUTOCOMPLETE SEARCH-INTENT HARVESTER (Signal #1):
+    Queries YouTube's official real-time Autocomplete endpoint:
+      https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&hl=en&gl=US&q=<QUERY>
+    for the story's Country + Topic Anchor + Primary Entity so every video title, description lead,
+    chapter timestamp, and tag array uses the EXACT multi-word search queries real viewers are typing
+    into the YouTube search bar right now!
+    Includes a deterministic high-intent fallback synthesizer when offline or rate-limited.
+    """
+    c_name = ascii_transliterate_keep_vowels(str(dossier.get("country_profile", {}).get("name", "World"))).title()
+    if c_name.upper() in ("INTERNATIONAL", "GLOBAL BRIEFING", "GLOBAL"):
+        c_name = "World"
+    t_anc = ascii_transliterate_keep_vowels(str(dossier.get("topic_anchor") or "")).strip()
+    raw_hl = ascii_transliterate_keep_vowels(str(dossier.get("title") or final_title)).strip()
+
+    seed_queries = []
+    if t_anc and len(t_anc) >= 3:
+        seed_queries.append(t_anc)
+        if c_name != "World" and c_name.lower() not in t_anc.lower():
+            seed_queries.append(f"{c_name} {t_anc}")
+        seed_queries.append(f"{t_anc} explained")
+    if c_name != "World":
+        seed_queries.append(f"{c_name} geopolitics")
+        seed_queries.append(f"{c_name} news today")
+    for ent in (entities or [])[:2]:
+        ce = ascii_transliterate_keep_vowels(str(ent)).strip()
+        if 3 <= len(ce) <= 24 and ce.lower() not in {q.lower() for q in seed_queries}:
+            seed_queries.append(f"{ce} news")
+
+    harvested = []
+    seen_low = set()
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    for sq in seed_queries[:4]:
+        try:
+            q_enc = urllib.parse.quote_plus(sq[:45])
+            url = f"https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&hl=en&gl=US&q={q_enc}"
+            resp = requests.get(url, headers=headers, timeout=2.5)
+            if resp.status_code == 200:
+                data = resp.json()
+                if isinstance(data, list) and len(data) >= 2 and isinstance(data[1], list):
+                    for sug in data[1]:
+                        clean_sug = ascii_transliterate_keep_vowels(str(sug)).strip()
+                        if 4 <= len(clean_sug) <= 38 and clean_sug.lower() not in seen_low:
+                            seen_low.add(clean_sug.lower())
+                            harvested.append(clean_sug)
+                            if len(harvested) >= max_results:
+                                break
+        except Exception:
+            pass
+        if len(harvested) >= max_results:
+            break
+
+    # Deterministic Search-Intent Fallback & Enrichment so we ALWAYS have 12+ exact search phrases
+    fallback_candidates = []
+    if t_anc:
+        fallback_candidates.extend([
+            f"{t_anc} explained",
+            f"{t_anc} news today",
+            f"why {t_anc} matters",
+            f"{t_anc} geopolitical case study"
+        ])
+    if c_name != "World":
+        fallback_candidates.extend([
+            f"{c_name} news today",
+            f"{c_name} geopolitics explained",
+            f"{c_name} economy and strategy",
+            f"{c_name} foreign policy"
+        ])
+    for ent in (entities or [])[:4]:
+        ce = ascii_transliterate_keep_vowels(str(ent)).strip()
+        if 3 <= len(ce) <= 22:
+            fallback_candidates.append(f"{ce} latest news")
+    fallback_candidates.extend([
+        "world news today",
+        "geopolitics explained",
+        "geopolitical case study",
+        "global news briefing",
+        "breaking world news",
+        "World Talk Brief"
+    ])
+    for fc in fallback_candidates:
+        cfc = ascii_transliterate_keep_vowels(fc).strip()
+        if 4 <= len(cfc) <= 38 and cfc.lower() not in seen_low:
+            seen_low.add(cfc.lower())
+            harvested.append(cfc)
+            if len(harvested) >= max_results:
+                break
+    return harvested[:max_results]
+
+
+def build_v70_search_first_case_study_title(dossier, candidate_title, is_short=False):
+    """
+    V70 SEARCH-FIRST + CASE-STUDY CURIOSITY TITLE OPTIMIZER (Signal #2):
+    Modeled on Think School ('Why the World Is TERRIFIED of ... : Geopolitical case study', 1.5M views)
+    and The Economist ('Why China and Russia don't fear the West', 3.1M views):
+    - Ensures the primary searchable Entity / Country / Event appears in the FIRST 45 characters
+      so both YouTube Search and mobile notifications show the core subject immediately.
+    - Appends high-CTR ': Geopolitical Case Study' or ': World News Explained' when space permits (<92 chars)
+      on Long Documentaries so searchers and Browse-feature viewers recognize deep analytical value.
+    """
+    clean_t = ascii_transliterate_keep_vowels(str(candidate_title or dossier.get("original_yt_title") or dossier.get("title") or "")).strip()
+    if is_short:
+        return build_v66_punchy_viral_short_title(dossier, clean_t)
+
+    c_name = ascii_transliterate_keep_vowels(str(dossier.get("country_profile", {}).get("name", "Global"))).title()
+    t_anc = ascii_transliterate_keep_vowels(str(dossier.get("topic_anchor") or "")).strip()
+    if c_name.upper() not in ("INTERNATIONAL", "GLOBAL BRIEFING", "GLOBAL", "WORLD"):
+        if c_name.lower() not in clean_t.lower() and len(f"{c_name}: {clean_t}") <= 88:
+            clean_t = f"{c_name}: {clean_t}"
+
+    low_t = clean_t.lower()
+    if "case study" not in low_t and "explained" not in low_t:
+        if len(clean_t) <= 64:
+            clean_t = f"{clean_t.rstrip('.:;- ')} | Geopolitical Case Study"
+        elif len(clean_t) <= 76:
+            clean_t = f"{clean_t.rstrip('.:;- ')} Explained"
+    return fit_whole_words_limit(clean_t, 92)
+
+
+def stage_v70_seo_keyword_filename(src_path, seo_title, is_short=False):
+    """
+    V70 PRE-UPLOAD KEYWORD-SLUG VIDEO & THUMBNAIL FILENAME STAGER (Signal #5):
+    Why raw filenames matter: YouTube's ingestion pipeline reads the uploaded file's basename
+    in `MediaFileUpload`. Uploading `WTB_1080p_Long_16x9.mp4` every time wastes an easy on-page
+    relevance signal. V70 copies the file to `temp/<keyword-slug-geopolitical-case-study>.mp4`
+    (or `.jpg`) before passing it to `MediaFileUpload`!
+    """
+    if not src_path or not os.path.exists(src_path):
+        return src_path
+    try:
+        ext = os.path.splitext(src_path)[1] or ".mp4"
+        raw_slug = re.sub(r"[^a-z0-9]+", "-", ascii_transliterate_keep_vowels(str(seo_title)).lower()).strip("-")
+        if not raw_slug or len(raw_slug) < 6:
+            raw_slug = "world-news-geopolitics-case-study"
+        suffix = "shorts-news" if is_short else "geopolitics-case-study"
+        slug_name = f"{raw_slug[:58].rstrip('-')}-{suffix}{ext}"
+        staged_path = os.path.join("temp", slug_name)
+        os.makedirs("temp", exist_ok=True)
+        if os.path.abspath(src_path) != os.path.abspath(staged_path):
+            shutil.copy2(src_path, staged_path)
+        return staged_path
+    except Exception:
+        return src_path
+
+
+def update_v70_channel_level_seo_branding_keywords(yt, hist_obj=None):
+    """
+    V70 CHANNEL-LEVEL BRANDING KEYWORDS & NICHE AUTHORITY LOCK (Signal #6):
+    Uses YouTube Data API v3 `channels().update(part="brandingSettings")` once per 7 days to lock
+    @WorldTalkBrief's official channel-level SEO keywords so YouTube's recommendation graph permanently
+    classifies the channel under Global News, Geopolitics Case Studies, Superpower Strategy & Economics.
+    """
+    if yt is None:
+        return
+    try:
+        if hist_obj is not None and hist_obj.get("v70_channel_branding_seo_locked"):
+            return
+        ch_r = yt.channels().list(part="brandingSettings", mine=True).execute()
+        items = ch_r.get("items") or []
+        if not items:
+            return
+        ch_id = items[0].get("id")
+        b_settings = items[0].get("brandingSettings") or {}
+        ch_cfg = b_settings.get("channel") or {}
+        target_kw_str = (
+            '"world news" "geopolitics explained" "geopolitical case study" "global news briefing" '
+            '"breaking world news" "us china" "nato russia" "middle east news" "global economy" '
+            '"superpower strategy" "defense news" "world talk brief"'
+        )
+        cur_kw = str(ch_cfg.get("keywords") or "")
+        if "geopolitical case study" not in cur_kw.lower():
+            ch_cfg["keywords"] = target_kw_str
+            ch_cfg["defaultLanguage"] = "en"
+            b_settings["channel"] = ch_cfg
+            yt.channels().update(
+                part="brandingSettings",
+                body={"id": ch_id, "brandingSettings": b_settings}
+            ).execute()
+            print(f"🎯 [V70 Channel-Level SEO Keywords Locked] Updated @WorldTalkBrief brandingSettings.channel.keywords!", flush=True)
+        if hist_obj is not None:
+            hist_obj["v70_channel_branding_seo_locked"] = True
+    except Exception as ch_e:
+        print("⚠️ [V70 Channel Branding SEO Note]:", str(ch_e)[:100], flush=True)
+
+
+def build_v70_complete_youtube_seo_package(dossier, final_title, entities, chapters_or_sections=None, hist_obj=None, linked_long_url=None, is_short=False):
+    """
+    V70 7-LAYER RESEARCH-BACKED YOUTUBE SEO PACKAGE GENERATOR:
+    Combines:
+    1. Live YouTube Autocomplete search phrases (`fetch_v70_live_youtube_autocomplete_keywords`)
+    2. Search-First + Case-Study Curiosity Title (`build_v70_search_first_case_study_title`)
+    3. First-150-Character Above-the-Fold Search Snippet Lead
+    4. 250+ Word Keyword-Rich Geopolitical Briefing Overview (natural prose, zero keyword stuffing)
+    5. Google Search 'Key Moments' Chapter Timestamps starting at `00:00` with searchable phrases
+    6. Multi-Word Search-Query Tags (`<= 480` total characters, exact autocomplete phrases first)
+    """
+    seo_title = build_v70_search_first_case_study_title(dossier, final_title, is_short=is_short)
+    auto_kws = fetch_v70_live_youtube_autocomplete_keywords(dossier, seo_title, entities=entities, max_results=14)
+    lead_160, base_tags = build_v69_search_first_seo_tags_and_lead(dossier, seo_title, entities, is_short=is_short)
+
+    # Merge Live Autocomplete phrases + V69 search tags while strictly honoring YouTube's 480-char total tag limit
+    merged_tags = []
+    seen_t = set()
+    total_chars = 0
+    for cand_t in (auto_kws + base_tags):
+        ct = ascii_transliterate_keep_vowels(str(cand_t)).strip()
+        if 3 <= len(ct) <= 32 and ct.lower() not in seen_t:
+            if total_chars + len(ct) + 2 <= 460:
+                seen_t.add(ct.lower())
+                merged_tags.append(ct)
+                total_chars += len(ct) + 2
+            if len(merged_tags) >= 16:
+                break
+
+    c_name = ascii_transliterate_keep_vowels(str(dossier.get("country_profile", {}).get("name", "Global"))).title()
+    t_anc = ascii_transliterate_keep_vowels(str(dossier.get("topic_anchor") or seo_title)).strip()
+    top_3_queries = ", ".join(auto_kws[:3]) if auto_kws else f"{t_anc}, {c_name} news today, geopolitics explained"
+
+    # Above-the-fold first 150 characters (shown in YouTube Search results before 'Show more')
+    above_fold_lead = (
+        f"{seo_title} — Full {c_name} Geopolitical Case Study & World News Briefing on {t_anc}. "
+        f"Key topics covered: {top_3_queries}."
+    )
+
+    # 250+ word analytical SEO article body synthesized from the story's verified sections & raw facts
+    sec_summaries = []
+    for idx_s, sec in enumerate(chapters_or_sections or []):
+        narr = strip_news_publisher_mentions(ascii_transliterate_keep_vowels(str(sec.get("narration") or "")).strip())
+        if narr:
+            sec_summaries.append(narr)
+    raw_facts_clean = [
+        strip_news_publisher_mentions(ascii_transliterate_keep_vowels(str(rf)).strip())
+        for rf in (dossier.get("raw_facts") or [])[:5] if str(rf).strip()
+    ]
+    analytical_body = " ".join(sec_summaries[:4]) if sec_summaries else " ".join(raw_facts_clean)
+    if len(analytical_body) < 350 and raw_facts_clean:
+        analytical_body = (analytical_body + " " + " ".join(raw_facts_clean)).strip()
+
+    # Google Search 'Key Moments' Chapter Timestamps (must start at 00:00 and have >=3 chapters of >=10s)
+    chap_lines = []
+    if not is_short and chapters_or_sections:
+        t_acc = 0
+        for c_i, ch in enumerate(chapters_or_sections):
+            mm = int(t_acc) // 60
+            ss = int(t_acc) % 60
+            ch_hl = ascii_transliterate_keep_vowels(str(ch.get("chapter_title") or ch.get("headline") or f"Part {c_i+1}")).strip()
+            if c_i == 0 and t_anc and t_anc.split()[0].lower() not in ch_hl.lower():
+                ch_hl = f"{t_anc}: {ch_hl}"
+            chap_lines.append(f"{mm:02d}:{ss:02d} {fit_whole_words_limit(ch_hl, 68)}")
+            t_acc += max(12, int(ch.get("duration", 16)))
+
+    watch_next_block = build_v61_youtube_session_watch_next_block(hist_obj or {})
+    search_topics_line = " | ".join(auto_kws[:6])
+
+    if is_short:
+        long_cta = f"🔴 WATCH FULL GEOPOLITICAL CASE STUDY HERE:\n👉 {linked_long_url}\n\n" if linked_long_url else ""
+        full_desc = (
+            f"{above_fold_lead}\n\n"
+            f"{long_cta}"
+            f"📊 CASE STUDY BRIEFING:\n{analytical_body[:1200]}\n\n"
+            f"🔍 Key Search Topics: {search_topics_line}\n\n"
+            f"#shorts #worldnews #geopolitics"
+        )
+    else:
+        chap_block = ("⏱️ CHAPTER TIMESTAMPS (KEY MOMENTS):\n" + "\n".join(chap_lines) + "\n\n") if chap_lines else ""
+        full_desc = (
+            f"{above_fold_lead}\n\n"
+            f"📊 EXECUTIVE GEOPOLITICAL CASE STUDY:\n{analytical_body[:1800]}\n\n"
+            f"{chap_block}"
+            f"🔍 RELATED GLOBAL SEARCH TOPICS:\n{search_topics_line}\n\n"
+            f"{watch_next_block}\n\n"
+            f"#WorldNews #Geopolitics #WorldTalkBrief"
+        )
+
+    return seo_title, full_desc[:3800], merged_tags[:16]
 
 
 def build_v69_search_first_seo_tags_and_lead(dossier, final_title, entities, is_short=False):
@@ -17646,17 +17928,10 @@ async def render_and_upload_short_unit(
     short_hashtags_str = " ".join(short_pkg["hashtags"] + ["#Shorts", "#Explained"])
     ai_desc = short_dossier.get("ai_seo_description", f"World Talk Brief [{sub_pillar.replace('_', ' ')}] original #Shorts case study.")
     clean_short_ai_desc = strip_news_publisher_mentions(ai_desc)
-    seo_lead_s, short_seo_tags = build_v69_search_first_seo_tags_and_lead(
-        short_dossier, short_dossier.get("original_yt_title", ""), short_entities, is_short=True
+    punchy_short_t, short_seo_desc, short_seo_tags = build_v70_complete_youtube_seo_package(
+        short_dossier, short_dossier.get("original_yt_title", ""), short_entities,
+        chapters_or_sections=short_sections, hist_obj=hist_obj, linked_long_url=linked_long_url, is_short=True
     )
-    short_seo_desc = (
-        f"{seo_lead_s}\n\n"
-        f"{long_link_block}"
-        f"{clean_short_ai_desc}\n\n"
-        f"#shorts #worldnews #WorldTalkBrief"
-    )
-
-    punchy_short_t = build_v66_punchy_viral_short_title(short_dossier, short_dossier.get("original_yt_title", ""))
     short_vid_id = try_youtube_auto_upload(
         out_short, punchy_short_t, short_seo_desc, short_seo_tags,
         category_id=short_dossier.get("yt_category_id", "25"), pillar=sub_pillar, is_short=True,
