@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-13T15:02:30.177497",
-  "last_upload_epoch": 1794582150,
-  "round_robin_idx": 1,
-  "country_rot_idx": 26,
-  "bgm_track_counter": 3243994729,
+  "updated_at": "2026-11-13T15:49:23.648779",
+  "last_upload_epoch": 1794584963,
+  "round_robin_idx": 2,
+  "country_rot_idx": 32,
+  "bgm_track_counter": 3266716252,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -677,69 +677,11 @@
     "pakistan_batter_credits_babar_for_classy",
     "pakistan_cricket_s_hidden_war_the",
     "u_s_united_launch_alliance_vulcan",
-    "israel_strikes_gaza_nasser_hospital_6"
+    "israel_strikes_gaza_nasser_hospital_6",
+    "university_of_nigeria_nsukka_four_nigerian",
+    "nigeria_nsukka_tragedy_4_students_die"
   ],
   "event_fingerprints": [
-    {
-      "title": "The moon, Mars, and Jupiter shine in the heart of the Lion overnight on Nov. 1-2",
-      "tokens": [
-        "brilliant",
-        "constellation",
-        "dives",
-        "eastern",
-        "glowing",
-        "heart",
-        "jupiter",
-        "lion",
-        "mars",
-        "moon",
-        "overnight",
-        "regulus",
-        "shine",
-        "shines",
-        "star",
-        "towards",
-        "waning"
-      ]
-    },
-    {
-      "title": "The Egyptian House of Representatives' approval on 26 October 2026 of a request to authorise President Abdel-Fattah Al-Sisi to deploy Egypti",
-      "tokens": [
-        "abdel",
-        "approval",
-        "approves",
-        "arabia",
-        "armed",
-        "asks",
-        "authorise",
-        "cleared",
-        "concrete",
-        "defensive",
-        "deploy",
-        "egypt",
-        "egyptia",
-        "egyptian",
-        "expression",
-        "fattah",
-        "forces",
-        "gave",
-        "house",
-        "military",
-        "missions",
-        "october",
-        "parliament",
-        "president",
-        "principle",
-        "reiterated",
-        "representatives",
-        "request",
-        "riyadh",
-        "saudi",
-        "sisi",
-        "support",
-        "troops"
-      ]
-    },
     {
       "title": "Why Egypt Just Sent Troops to Defend Saudi Arabia",
       "tokens": [
@@ -8388,10 +8330,46 @@
         "strikes",
         "study"
       ]
+    },
+    {
+      "title": "University of Nigeria Nsukka: Four Nigerian students die after sign-out party",
+      "tokens": [
+        "banned",
+        "cause",
+        "deaths",
+        "find",
+        "four",
+        "investigations",
+        "mourning",
+        "nigeria",
+        "nigerian",
+        "nsukka",
+        "parties",
+        "party",
+        "post",
+        "sign",
+        "students",
+        "underway",
+        "university",
+        "while"
+      ]
+    },
+    {
+      "title": "Nigeria Nsukka Tragedy: 4 Students Die After Party",
+      "tokens": [
+        "four",
+        "nigeria",
+        "nigerian",
+        "nsukka",
+        "party",
+        "sign",
+        "students",
+        "tragedy",
+        "university"
+      ]
     }
   ],
   "last_categories": [
-    "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
     "AI_ROBOTICS",
     "UNDERRATED_GEOPOLITICS",
@@ -8430,10 +8408,10 @@
     "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
     "AI_ROBOTICS",
-    "VIRAL_UNDERDOG_SPORTS"
+    "VIRAL_UNDERDOG_SPORTS",
+    "SCIENCE"
   ],
   "last_sources": [
-    "Global Country Wire [PHILIPPINES \u2022 STOCK_MARKETS]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "Global Country Wire [NIGERIA \u2022 AI_ROBOTICS]",
     "Google Trends Viral [ARGENTINA]",
@@ -8472,10 +8450,10 @@
     "Google Trends USA Viral 24h",
     "Google Trends Viral [AUSTRALIA]",
     "Google Trends India Viral 24h",
-    "Google Trends Viral [BANGLADESH]"
+    "Google Trends Viral [BANGLADESH]",
+    "Global Country Wire [NIGERIA \u2022 SCIENCE]"
   ],
   "last_countries": [
-    "IRAN",
     "VIETNAM",
     "GLOBAL CINEMA",
     "UNITED STATES",
@@ -8524,7 +8502,8 @@
     "UNITED STATES",
     "INDIA",
     "UNITED KINGDOM",
-    "PAKISTAN"
+    "PAKISTAN",
+    "NIGERIA"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8554,6 +8533,30 @@
       "is_short": true,
       "published_iso": "2026-11-11T07:58:39Z",
       "summary": "In a stunning opening day of the ICC World Test Championship, debutant Mohammad Taha smashed a classy half\u2011century, openly crediting captain Babar Azam\u2019s mentorship. The performance shines a light on a deeper turmoil: a simmering rift between Babar Azam and fa"
+    },
+    {
+      "video_id": "Mr9GheR_ZmY",
+      "title": "Nigeria Nsukka Tragedy: 4 Students Die After Party | Geopolitical Case Study",
+      "url": "https://www.youtube.com/watch?v=Mr9GheR_ZmY",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/Mr9GheR_ZmY.html",
+      "thumb_url": "https://i.ytimg.com/vi/Mr9GheR_ZmY/maxresdefault.jpg",
+      "pillar": "SCIENCE",
+      "country": "Nigeria",
+      "is_short": false,
+      "published_iso": "2026-11-13T15:41:31Z",
+      "summary": "Four students from the University of Nigeria, Nsukka, died after consuming a mixture of alcohol and suspected hard drugs at an off-campus house party. This case study investigates the failure of campus security protocols and the dark underbelly of student nigh"
+    },
+    {
+      "video_id": "M7qbs0y0kpQ",
+      "title": "Nigeria Nsukka Tragedy: 4 Students Die After Party",
+      "url": "https://www.youtube.com/shorts/M7qbs0y0kpQ",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/M7qbs0y0kpQ.html",
+      "thumb_url": "https://i.ytimg.com/vi/M7qbs0y0kpQ/maxresdefault.jpg",
+      "pillar": "SCIENCE",
+      "country": "Nigeria",
+      "is_short": true,
+      "published_iso": "2026-11-13T15:49:00Z",
+      "summary": "Four students from the University of Nigeria, Nsukka, died after consuming a mixture of alcohol and suspected hard drugs at an off-campus house party. This case study investigates the failure of campus security protocols and the dark underbelly of student nigh"
     }
   ]
 }

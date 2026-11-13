@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bapuop17.github.io/wtb_engine/sitemap.xml
