@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-11T07:58:40.318489",
-  "last_upload_epoch": 1794383920,
+  "updated_at": "2026-11-13T15:02:30.177497",
+  "last_upload_epoch": 1794582150,
   "round_robin_idx": 1,
   "country_rot_idx": 26,
   "bgm_track_counter": 3243994729,
@@ -675,82 +675,11 @@
     "celtics_center_crisis_the_secret_rotation",
     "brydon_carse_given_path_to_england",
     "pakistan_batter_credits_babar_for_classy",
-    "pakistan_cricket_s_hidden_war_the"
+    "pakistan_cricket_s_hidden_war_the",
+    "u_s_united_launch_alliance_vulcan",
+    "israel_strikes_gaza_nasser_hospital_6"
   ],
   "event_fingerprints": [
-    {
-      "title": "The Egyptian House of Representatives' approval on 26 October 2026 of a request to authorise President Abdel-Fattah Al-Sisi to deploy Egypti",
-      "tokens": [
-        "abdel",
-        "approval",
-        "approves",
-        "arabia",
-        "armed",
-        "asks",
-        "authorise",
-        "cleared",
-        "concrete",
-        "defensive",
-        "deploy",
-        "egypt",
-        "egyptia",
-        "egyptian",
-        "expression",
-        "fattah",
-        "forces",
-        "gave",
-        "house",
-        "military",
-        "missions",
-        "october",
-        "parliament",
-        "president",
-        "principle",
-        "reiterated",
-        "representatives",
-        "request",
-        "riyadh",
-        "saudi",
-        "sisi",
-        "support",
-        "troops"
-      ]
-    },
-    {
-      "title": "An American delegation is preparing to join talks with Iranian counterparts in Doha following a reported breakthrough in indirect negotiatio",
-      "tokens": [
-        "american",
-        "araby",
-        "breakthrough",
-        "comment",
-        "counterparts",
-        "delegation",
-        "doha",
-        "fears",
-        "following",
-        "indirect",
-        "information",
-        "iran",
-        "iranian",
-        "jadeed",
-        "join",
-        "mediated",
-        "mediation",
-        "more",
-        "mount",
-        "negotiations",
-        "pakistan",
-        "preparing",
-        "qatar",
-        "qatari",
-        "reported",
-        "section",
-        "strike",
-        "talks",
-        "tehran",
-        "visit"
-      ]
-    },
     {
       "title": "The moon, Mars, and Jupiter shine in the heart of the Lion overnight on Nov. 1-2",
       "tokens": [
@@ -8430,6 +8359,35 @@
         "rift",
         "shaheen"
       ]
+    },
+    {
+      "title": "U.S. United Launch Alliance Vulcan Centaur Launch After 9Month Pause - Live Explained",
+      "tokens": [
+        "alliance",
+        "centaur",
+        "launch",
+        "live",
+        "month",
+        "pause",
+        "united",
+        "vulcan"
+      ]
+    },
+    {
+      "title": "Israel Strikes Gaza Nasser Hospital: 6 Dead, Ceasefire Broken? | Geopolitical Case Study",
+      "tokens": [
+        "broken",
+        "case",
+        "ceasefire",
+        "dead",
+        "gaza",
+        "geopolitical",
+        "hospital",
+        "israel",
+        "nasser",
+        "strikes",
+        "study"
+      ]
     }
   ],
   "last_categories": [
@@ -8570,6 +8528,8 @@
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
+  "v69_checked_video_ids": [],
+  "v69_scan_page_token": "",
   "published_videos_index": [
     {
       "video_id": "zdSiUYwg6eI",
