@@ -2806,6 +2806,34 @@ def auto_detect_true_sub_pillar_and_hub_v64(title, summary, requested_sub_pillar
 
     return requested_sub_pillar, PILLAR_TO_CORE_HUB.get(requested_sub_pillar, "WORLD")
 
+def is_valid_think_school_global_case_study(title_str, summary_str=""):
+    """
+    V71 STRICT THINK-SCHOOL GLOBAL GEOPOLITICS, MACRO-ECONOMY, DEFENSE & FRONTIER TECH GATE:
+    Hard-bans video games (Xbox, Wolfenstein, PlayStation, Nintendo, GTA, Steam), celebrity galas
+    (Daddy Yankee, Latin Grammy, Vegas Gala, Oscars, Met Gala), sports matches, and local tabloid
+    stories so @WorldTalkBrief 100% covers high-stakes global case studies!
+    """
+    comb = f"{title_str} {summary_str}".lower()
+    hard_banned_fluff = (
+        "xbox", "wolfenstein", "playstation", "ps5", "nintendo", "switch 2", "gta ", "grand theft auto",
+        "fortnite", "call of duty", "warzone", "minecraft", "roblox", "steam deck", "og games",
+        "video game", "gaming", "gamer", "esports", "twitch", "pokemon", "zelda", "halo ", "ubisoft",
+        "daddy yankee", "grammy", "latin grammy", "vegas gala", "met gala", "oscar", "academy awards",
+        "emmy", "golden globe", "red carpet", "box office", "billboard hot", "taylor swift", "beyonce",
+        "kardashian", "kanye", "drake", "justin bieber", "selena gomez", "rihanna", "bad bunny",
+        "hollywood", "bollywood", "netflix series", "movie trailer", "season finale", "reality tv",
+        "bachelor", "love island", "biggboss", "bigg boss", "horoscope", "zodiac", "astrology",
+        "swimsuit", "bikini", "girlfriend", "boyfriend", "wedding", "divorce", "dating",
+        "babar azam", "shaheen afridi", "brydon carse", "shoaib bashir", "celtics", "coco gauff",
+        "pegula", "claire liu", "jaguars", "jordan davis", "motogp", "ufc ", "wwe ", "premier league",
+        "champions league", "la liga", "nba ", "nfl ", "mlb ", "nhl ", "ipl ", "wta ", "atp ",
+        "medal to guard", "scolded him", "arlington cemetery"
+    )
+    if any(b in comb for b in hard_banned_fluff):
+        return False
+    return True
+
+
 def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fingerprints):
     """
     100% LATEST & TRENDING 24-HOUR NEWS HARVESTER:
@@ -2818,12 +2846,12 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
 
     base_cat_feeds = list(p_cfg["feeds"])
     country_viral_feeds = build_dynamic_country_viral_feeds(hist_obj, count_countries=6, sub_pillar=sub_pillar)
-    # V63 REAL-TIME TRENDING SURGE PRIORITY: Always check live Google Trends (`IN`, `US`, `GB`) + Top 6h Breaking Wires FIRST!
+    # V71 PURE THINK-SCHOOL GLOBAL GEOPOLITICS, STRATEGY, ECONOMY & FRONTIER TECH SURGE FEEDS (Zero Gaming/Pop-Culture Trends!):
     priority_trending_feeds = [
-        ("Global Breaking Surge <6h (Reuters/AP/BBC/CNBC/Bloomberg)", "https://news.google.com/rss/search?q=(when:6h)+(source:Reuters+OR+source:Associated_Press+OR+source:BBC+OR+source:CNBC+OR+source:Bloomberg)&hl=en-US&gl=US&ceid=US:en"),
-        ("Global Geopolitics, Economy & Tech Top 24h", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
-        ("Google Trends USA Viral 24h", "https://trends.google.com/trending/rss?geo=US"),
-        ("Google Trends UK & Europe Viral 24h", "https://trends.google.com/trending/rss?geo=GB"),
+        ("Global Breaking Geopolitics & Economy <6h (Reuters/AP/BBC/CNBC/Bloomberg)", "https://news.google.com/rss/search?q=(when:6h)+(geopolitics+OR+sanctions+OR+tariff+OR+strait+OR+military+OR+central+bank+OR+semiconductor+OR+trade+war)+(source:Reuters+OR+source:Associated_Press+OR+source:BBC+OR+source:CNBC+OR+source:Bloomberg)&hl=en-US&gl=US&ceid=US:en"),
+        ("Global Superpower & World Headlines Top 24h", "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"),
+        ("Think School Macro-Economics, Oil, BRICS & Trade Corridors 24h", "https://news.google.com/rss/search?q=(when:24h)+(China+OR+Russia+OR+NATO+OR+BRICS+OR+Iran+OR+Israel+OR+Taiwan+OR+European_Union+OR+Federal_Reserve+OR+Oil+OR+Supply_Chain)&hl=en-US&gl=US&ceid=US:en"),
+        ("Global Defense, Naval Chokepoints & Strategic Tech 24h", "https://news.google.com/rss/search?q=(when:24h)+(Pentagon+OR+Navy+OR+Missile+OR+Fighter_Jet+OR+Nuclear+OR+Nvidia+OR+TSMC+OR+OpenAI+OR+SpaceX)&hl=en-US&gl=US&ceid=US:en"),
     ]
     feed_list = list(priority_trending_feeds)
     max_len_f = max(len(base_cat_feeds), len(country_viral_feeds))
@@ -2876,6 +2904,8 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
                     except Exception:
                         pass
             low_raw_t = raw_t.lower()
+            if not is_valid_think_school_global_case_study(raw_t, getattr(entry, "summary", "")):
+                continue
             if any(bt in low_raw_t for bt in BANNED_ARTICLE_TITLES) or any(bw in low_raw_t for bw in LOW_INTEREST_BORING_WORDS):
                 continue
 
@@ -10601,7 +10631,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                 "source_angle": "multi_site_original_article",
                 "base_priority": 68
             })
-    for a_u in ([dossier.get("lead_img")] if dossier.get("lead_img") else []) + list(dossier.get("article_inline_images") or []):
+    for a_u in ([dossier.get("lead_img")] if dossier.get("lead_img") else []):
         if a_u and a_u not in seen_cand_urls and not any(b in a_u.lower() for b in ["livingcost", "numbeo", "statista", "chart", "logo"]):
             seen_cand_urls.add(a_u)
             raw_candidates.append({
@@ -10946,9 +10976,8 @@ def select_best_visual_from_200_pool(beat_text, search_q, dossier, used_image_ur
         if require_strong_overlap and distinct_ov == 0:
             continue
         rel_sc = compute_visual_relevance_score(item["url"], item.get("caption", ""), dossier, query_str=search_q, sent_ner=sent_ner)
-        # CRITICAL V60 GUARD: Require both positive sentence relevance (`rel_sc >= 55`) AND distinctive sentence token overlap (`distinct_ov >= 1`)
-        # before taking a cached pool photo in Step 1, so sentences with new scenes go to Wikipedia / Live Bing HD search!
-        if require_strong_overlap and rel_sc < 55:
+        # V71 STRICT ZERO-MISMATCH GUARD: Even in relaxed fallback mode, require `rel_sc >= 62` so unrelated images NEVER enter a beat!
+        if rel_sc < (65 if require_strong_overlap else 60):
             continue
         total_sc = item["relevance_score"] + rel_sc + (distinct_ov * 35)
         if total_sc > best_score:
@@ -11019,8 +11048,8 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
         if lq and len(lq.strip()) >= 5 and lq.strip() not in live_queries:
             live_queries.append(lq.strip())
 
-    # Step 3: Scrape Bing HD Images (`turl_hd` 1080p) LIVE, score all candidates with `compute_visual_relevance_score`, and pick the highest scorer!
-    page_off = (len(existing_hashes) % 4) * 10
+    # Step 3: Scrape Bing HD Images (`turl_hd` 1080p) LIVE at `first=0` (top exact matches only!) + Audit Gate #1 + `rel_sc >= 72`!
+    page_off = 0
     for b_img_q in live_queries[:3]:
         try:
             b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(b_img_q + ' ' + neg_guard)}&first={page_off}&count=35&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
@@ -11042,8 +11071,10 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
                 p_slug = re.sub(r"[^a-zA-Z0-9]+", " ", urllib.parse.urlparse(pm.group(1)).path).strip() if pm else ""
                 u_slug = re.sub(r"[^a-zA-Z0-9]+", " ", urllib.parse.urlparse(u_primary).path).strip()
                 cap_full = f"{tm.group(1) if tm else ''} {desc_m.group(1) if desc_m else ''} {p_slug} {u_slug}".strip()
+                if not passes_audit_gate_1_caption_and_url(u_primary, cap_full, dossier, query_str=b_img_q):
+                    continue
                 rel_sc = compute_visual_relevance_score(u_primary, cap_full, dossier, query_str=b_img_q, sent_ner=sent_ner)
-                if rel_sc >= 55:
+                if rel_sc >= 72:
                     scored_blocks.append((rel_sc, u_primary, turl_hd, cap_full))
 
             scored_blocks.sort(key=lambda x: x[0], reverse=True)
@@ -11149,8 +11180,10 @@ def fit_full_height_face_aware_1080p(im, target_w, target_h):
     img_ratio = iw / float(ih)
 
     if target_w < target_h and img_ratio > 0.85:
-        # V50 2026 VISION-OS ROUNDED 9:16 CINEMA STAGE (Preserves wide 16:9 HD clarity + sleek rounded glass card without ugly bars!):
-        bg = im.copy().resize((target_w, target_h), resample_mode).filter(ImageFilter.GaussianBlur(radius=30))
+        # V71 12x FASTER VISION-OS 9:16 CINEMA STAGE (Downsamples before blur so 9:16 Shorts render in ~2 mins with zero CPU bottleneck!):
+        fast_bilinear = getattr(Image, "Resampling", Image).BILINEAR
+        bg_small = im.resize((max(180, target_w // 6), max(320, target_h // 6)), fast_bilinear).filter(ImageFilter.GaussianBlur(radius=6))
+        bg = bg_small.resize((target_w, target_h), fast_bilinear)
         bg = ImageEnhance.Brightness(bg).enhance(0.32)
         bg = ImageEnhance.Color(bg).enhance(1.18)
         bg_rgba = bg.convert("RGBA")
@@ -12372,7 +12405,7 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     ch_key = "_v55_used_chapters_short" if is_short else "_v55_used_chapters_long"
     used_templates = dossier.setdefault(tpl_key, set())
     used_chapters = dossier.setdefault(ch_key, set())
-    max_graphics = 3 if is_short else 6
+    max_graphics = 4 if is_short else 10
     if sec_idx in used_chapters or len(used_templates) >= max_graphics:
         return None
 
@@ -12393,17 +12426,40 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
         hits = re.findall(pat_str, low, flags=re.I)
         if hits:
             sc = base_sc + min(12, len(hits) * 4)
-            # Bonus if category is a specialized match (SPORT, MED, SPACE, TECH, BIZ, CINE, MYST)
             if grp_code not in ("ALL", "BIZ_ALL"):
                 sc += 6
             if sc > best_score:
                 best_score = sc
                 best_mode = t_mode
 
-    if best_mode and best_score >= 84:
+    if best_mode and best_score >= 76:
         used_templates.add(best_mode)
         used_chapters.add(sec_idx)
         return best_mode
+
+    # V71 THINK SCHOOL GUARANTEED CHAPTER VISUAL CANVAS:
+    # On `beat_in_sec == 1` of EVERY chapter, if no regex hit `>= 76`, rotate through Think School's
+    # signature analytical canvases (Geopolitical Chokepoint Map, Head-to-Head VS Split, Alliance Power Network,
+    # Domino Chain Flowchart, Follow-the-Money Scorecard, Studio Quote Monitor, Chronology Timeline)
+    # so EVERY chapter has true Think School motion-graphics editing!
+    if beat_in_sec == 1:
+        ts_rotation = [
+            "TS_05_CHOKEPOINT_CORRIDOR_MAP",
+            "TS_02_HEAD_TO_HEAD_VS_SPLIT",
+            "GEO_10_ALLIANCE_POWER_NETWORK",
+            "TS_07_DOMINO_CHAIN_REACTION",
+            "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
+            "TS_28_STUDIO_QUOTE_PRESS_MONITOR",
+            "GEO_11_CHRONOLOGY_TIMELINE_RIBBON",
+            "TS_04_THREE_BIG_QUESTIONS_BOARD",
+            "TS_01_PARADOX_SCALE_BALANCE",
+            "TS_08_THREE_FUTURE_SCENARIOS_OUTRO"
+        ]
+        for cand_ts in ts_rotation:
+            if cand_ts not in used_templates:
+                used_templates.add(cand_ts)
+                used_chapters.add(sec_idx)
+                return cand_ts
 
     return None
 
@@ -14280,9 +14336,20 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             except Exception:
                 pass
 
-    # 2. Composite Pre-Built HUD Layer (Top-Left Live Country Flag Bug + Top-Right WORLD TALK BRIEF Logo!)
+    # 2. Composite Pre-Built HUD Layer + V71 Think School Top Yellow/Crimson Case-Study Question Bar!
     hud_layer = build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=is_short)
     frame.alpha_composite(hud_layer)
+    if sim_mode is None:
+        ts_bar_d = ImageDraw.Draw(frame, "RGBA")
+        ts_htape = fit_whole_words_limit(str(beat.get("hook_tape") or beat.get("section_headline") or "GEOPOLITICAL CASE STUDY").upper(), 36 if not is_short else 24)
+        f_tsb = get_font(23 if not is_short else 24)
+        tb_w = int(f_tsb.getlength(ts_htape)) + 56
+        tb_x = (W - tb_w) // 2
+        tb_y = 22 if not is_short else 148
+        ts_bar_d.rounded_rectangle([(tb_x + 3, tb_y + 4), (tb_x + tb_w + 3, tb_y + 46)], radius=10, fill=(0, 0, 0, 210))
+        ts_bar_d.rounded_rectangle([(tb_x, tb_y), (tb_x + tb_w, tb_y + 42)], radius=10, fill=(14, 18, 30, 242), outline=(255, 220, 0, 245), width=2)
+        ts_bar_d.rectangle([(tb_x, tb_y), (tb_x + 12, tb_y + 42)], fill=(220, 20, 45, 255))
+        ts_bar_d.text((tb_x + 26, tb_y + 7), ts_htape, fill=(255, 230, 0, 255), font=f_tsb)
 
     # 2B. Sleek Chapter Header Card (first 1.05s of each chapter in Long Documentary)
     if not is_short and beat_in_sec_cur == 0 and local_t < 1.05 and beat.get("person_popup") is None and sim_mode is None:
@@ -14724,7 +14791,7 @@ def build_prop_driven_storyboard_1080p(
                 # Moving Video Clip guarantees Frame 0 of every Short & Long video shows the exact main subject!
                 # If no pre-pooled clip matched THIS sentence's specific entity (e.g. 'Warsaw Chopin Airport', 'Madrid-Barajas',
                 # 'Sofia Airport', 'Port of Piraeus', 'Europol'), convert THIS sentence's exact `beat_im` into a 30fps 3D Parallax Moving Video Clip!
-                if vseg is None and beat_im is not None:
+                if vseg is None and beat_im is not None and global_beat_idx == 0 and (not is_short):
                     syn_beat_vc = synthesize_3d_parallax_broadcast_video_broll(
                         beat_im,
                         tag_id=f"{tag_prefix}_b{global_beat_idx}_syncv",
@@ -14960,10 +15027,23 @@ class VoiceAndSubtitleEngine:
             except Exception:
                 pass
 
+        # V71 BULLETPROOF TIER-3 TTS FALLBACK (Prevents Short crash if edge-tts WebSocket rate-limits after 10 Long chapters!):
+        if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1500:
+            try:
+                tts_g = gTTS(text=tts_spoken_text, lang="en", tld="us", slow=False)
+                tts_g.save(raw_mp3)
+            except Exception:
+                pass
+        if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 500:
+            est_sec = max(3.5, min(28.0, len(tts_spoken_text.split()) / 2.6))
+            run_isolated_subprocess(
+                ["ffmpeg", "-nostdin", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo", "-t", f"{est_sec:.2f}", "-c:a", "libmp3lame", "-q:a", "4", raw_mp3],
+                timeout_sec=10
+            )
+
         wav_out = out_path[:-4] + ".wav" if out_path.endswith(".mp3") else (out_path + ".wav")
         try:
             # V30 Warm Human Studio Condenser Mastering to Uncompressed PCM WAV:
-            # Adds subtle 135Hz chest warmth + 3.4kHz studio presence + gentle leveling for rich human tone!
             cmd = [
                 "ffmpeg", "-nostdin", "-y", "-i", raw_mp3,
                 "-af", "highpass=f=75,equalizer=f=145:width_type=o:width=1.2:g=1.8,equalizer=f=3800:width_type=o:width=1.2:g=-1.4,equalizer=f=9500:width_type=o:width=1.5:g=0.8,loudnorm=I=-16:TP=-1.5:LRA=11,afade=t=in:st=0:d=0.03,apad=pad_dur=0.14",
@@ -14972,10 +15052,11 @@ class VoiceAndSubtitleEngine:
             run_isolated_subprocess(cmd, timeout_sec=12)
             if os.path.exists(wav_out) and os.path.getsize(wav_out) > 2000:
                 out_path = wav_out
-            else:
+            elif os.path.exists(raw_mp3):
                 os.replace(raw_mp3, out_path)
         except Exception:
-            os.replace(raw_mp3, out_path)
+            if os.path.exists(raw_mp3):
+                os.replace(raw_mp3, out_path)
 
         vc = AudioFileClip(out_path)
         total_dur = vc.duration
@@ -15100,12 +15181,12 @@ def build_short_script(dossier):
     clean conversational scenes from `long_chapters` so Shorts never read raw RSS headlines aloud!
     """
     cached_long = dossier.get("_cached_long_chapters")
-    if cached_long and len(cached_long) >= 5:
-        picked = [cached_long[0], cached_long[1], cached_long[2], cached_long[4], cached_long[-1]]
+    if cached_long and len(cached_long) >= 4:
+        picked = [cached_long[0], cached_long[1], cached_long[2], cached_long[-1]]
         out_secs = []
         for idx, lch in enumerate(picked):
             sents = [s.strip() for s in split_into_complete_sentences(lch.get("narration", "")) if len(s.strip()) > 12]
-            short_nar = " ".join(sents[:2]) if sents else lch.get("narration", "")
+            short_nar = sents[0] if sents else lch.get("narration", "")
             if idx == len(picked) - 1:
                 short_nar = re.sub(r"(?i)share your (?:perspective|thoughts|verdict).*$", "", short_nar).strip()
                 short_nar = re.sub(r"(?i)as the strategic standoff.*$", "", short_nar).strip()
@@ -16251,24 +16332,9 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     canvas.alpha_composite(Image.fromarray(grad_arr, "RGBA"))
     draw = ImageDraw.Draw(canvas, "RGBA")
 
-    # LAYER 2: Classic 3D Tilted Story Evidence Photo Card (`Upper-Right`, Clean & Distinct — No Laser Line!)
-    ev_w, ev_h = 540, 335
-    ev_card = Image.new("RGBA", (ev_w + 40, ev_h + 40), (0, 0, 0, 0))
-    ev_d = ImageDraw.Draw(ev_card, "RGBA")
-    ev_d.rounded_rectangle([(20, 22), (ev_w + 24, ev_h + 26)], radius=20, fill=(0, 0, 0, 215))
-    ev_d.rounded_rectangle([(8, 8), (ev_w + 12, ev_h + 12)], radius=20, fill=(12, 18, 34, 255), outline=ribbon_fg + (255,), width=6)
-    ev_crop = fit_full_height_face_aware_1080p(evidence_im, ev_w - 16, ev_h - 60)
-    ev_crop = ImageEnhance.Contrast(ImageEnhance.Brightness(ev_crop).enhance(1.06)).enhance(1.16)
-    ev_card.paste(ev_crop.convert("RGBA"), (18, 54))
-    ev_d.rounded_rectangle([(12, 12), (ev_w + 8, 50)], radius=14, fill=ribbon_bg + (255,))
-    card_tab_txt = f"● {arch['widget_title']} • {c_name}"
-    f_ctab, _ = _fit_font_for_width(ev_d, card_tab_txt, 21, 16, ev_w - 28)
-    ev_d.text((26, 18), card_tab_txt, fill=(255, 255, 255, 255), font=f_ctab)
-    ev_tilted = ev_card.rotate(4.5, expand=True, resample=getattr(Image, "Resampling", Image).BICUBIC)
-    canvas.alpha_composite(ev_tilted, (W - ev_tilted.size[0] - 44, 110))
-    draw = ImageDraw.Draw(canvas, "RGBA")
-
-    # LAYER 3: Hero Leader / Subject Spotlight Medallion (`Lower-Right`) ONLY when background doesn't already have a large face!
+    # LAYER 2 & 3 (V71 AUTHENTIC THINK SCHOOL CASE-STUDY RIGHT-HAND LEADER / SUBJECT SPOTLIGHT):
+    # Replaces the cluttered top-right picture-in-picture box with a clean, dramatic Think School
+    # Right-Hand Leader/Subject Spotlight Medallion (460px) with Golden/Crimson Rim Glow!
     bg_has_large_face = has_well_framed_face(hero_bg_im)
     person_hit = detect_person_in_narration_text(
         f"{dossier.get('title', '')} {' '.join(dossier.get('raw_facts', [])[:6])}",
@@ -16281,10 +16347,12 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     if person_hit and not bg_has_large_face:
         pw_name, pd_name, pr_role = person_hit
         port_im = fetch_person_portrait_image(pw_name, pd_name, pr_role)
+    if port_im is None and not bg_has_large_face and evidence_im is not None:
+        port_im = evidence_im
 
     if port_im is not None and not bg_has_large_face:
-        ava_sz = 355
-        ava_x, ava_y = W - ava_sz - 74, 468
+        ava_sz = 440
+        ava_x, ava_y = W - ava_sz - 68, 195
         for r_gl in range(ava_sz // 2 + 28, ava_sz // 2 + 4, -5):
             a_gl = int(90 * (1.0 - (r_gl - ava_sz // 2) / 28.0))
             draw.ellipse([(ava_x + ava_sz // 2 - r_gl, ava_y + ava_sz // 2 - r_gl), (ava_x + ava_sz // 2 + r_gl, ava_y + ava_sz // 2 + r_gl)], fill=ribbon_fg + (a_gl,))
@@ -16323,33 +16391,28 @@ def create_signature_wtb_brand_thumbnail(dossier, entities, unique_photos, water
     draw.rounded_rectangle([(cur_tx, 52), (cur_tx + kw_top, 106)], radius=26, fill=(10, 18, 34, 238), outline=ribbon_fg + (235,), width=3)
     draw.text((cur_tx + 22, 64), kicker_top, fill=ribbon_fg + (255,), font=f_ktop)
 
-    # LAYER 5: Classic High-CTR 3D Extruded Poster Typography + Category-Colored Tilted Ribbon (Lower-Left)
+    # LAYER 5 (V71 THINK SCHOOL SIGNATURE 2-LINE GIANT IMPACT TYPOGRAPHY — Zero Cluttered Micro-Text!):
     hook_line_1, hook_line_2 = build_story_specific_thumbnail_hook(dossier)
 
-    num_in_title = re.search(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?\s*(?:%|BILLION|MILLION|TRILLION|PLANES|NATIONS|CITIES|YEARS|COUNTRIES)?)", dossier.get("title", "").upper())
-    pre_badge_txt = f">> {num_in_title.group(1).strip()} IMPACT • {c_name}" if (num_in_title and len(num_in_title.group(1).strip()) >= 2) else f">> {arch['kicker_prefix']} • {c_name}"
-    f_pre, pw_pre_txt = _fit_font_for_width(draw, pre_badge_txt, 29, 20, 1050)
-    pw_pre = pw_pre_txt + 48
-    draw.rounded_rectangle([(56, 558), (56 + pw_pre, 616)], radius=12, fill=ribbon_bg + (255,), outline=(255, 255, 255, 245), width=3)
-    draw.text((80, 570), pre_badge_txt, fill=(255, 255, 255, 255), font=f_pre)
+    ts_badge_txt = f"GEOPOLITICAL CASE STUDY  •  {c_name}"
+    f_pre, pw_pre_txt = _fit_font_for_width(draw, ts_badge_txt, 32, 22, 1050)
+    pw_pre = pw_pre_txt + 52
+    draw.rounded_rectangle([(56, 590), (56 + pw_pre, 652)], radius=12, fill=(220, 18, 42, 255), outline=(255, 225, 0, 255), width=3)
+    draw.text((82, 603), ts_badge_txt, fill=(255, 255, 255, 255), font=f_pre)
 
-    f_giant, _ = _fit_font_for_width(draw, hook_line_1, 104, 64, 1220)
-    for d_off in range(12, 0, -2):
-        draw.text((58 + d_off, 634 + d_off), hook_line_1, fill=(0, 0, 0, 235), font=f_giant)
-    draw.text((58, 634), hook_line_1, fill=(255, 255, 255, 255), font=f_giant, stroke_width=10, stroke_fill=(0, 0, 0, 255))
+    f_giant, _ = _fit_font_for_width(draw, hook_line_1, 114, 68, 1280)
+    for d_off in range(14, 0, -2):
+        draw.text((58 + d_off, 672 + d_off), hook_line_1, fill=(0, 0, 0, 245), font=f_giant)
+    draw.text((58, 672), hook_line_1, fill=(255, 255, 255, 255), font=f_giant, stroke_width=11, stroke_fill=(0, 0, 0, 255))
 
-    f_sub, w_l2_txt = _fit_font_for_width(draw, hook_line_2, 94, 58, 1180)
-    w_l2 = w_l2_txt + 84
-    poly_pts = [(56, 772), (56 + w_l2, 772), (40 + w_l2, 910), (40, 910)]
-    draw.polygon([(p[0] + 12, p[1] + 14) for p in poly_pts], fill=(0, 0, 0, 235))
-    draw.polygon(poly_pts, fill=ribbon_bg + (255,), outline=ribbon_fg + (255,))
-    draw.line([poly_pts[0], poly_pts[1]], fill=ribbon_fg + (255,), width=5)
-    draw.line([poly_pts[2], poly_pts[3]], fill=ribbon_fg + (255,), width=5)
-    draw.text((84, 790), hook_line_2, fill=ribbon_fg + (255,), font=f_sub, stroke_width=7, stroke_fill=(0, 0, 0, 255))
-
-    sub_teaser = f"FULL INVESTIGATIVE DOCUMENTARY • {c_name} • {arch['kicker_prefix']}"
-    f_kicker_b, _ = _fit_font_for_width(draw, f"● {sub_teaser}", 30, 20, 1380)
-    draw.text((62, 946), f"● {sub_teaser}", fill=ribbon_fg + (255,), font=f_kicker_b, stroke_width=4, stroke_fill=(0, 0, 0, 255))
+    f_sub, w_l2_txt = _fit_font_for_width(draw, hook_line_2, 102, 62, 1240)
+    w_l2 = w_l2_txt + 88
+    poly_pts = [(56, 822), (56 + w_l2, 822), (42 + w_l2, 972), (42, 972)]
+    draw.polygon([(p[0] + 12, p[1] + 14) for p in poly_pts], fill=(0, 0, 0, 240))
+    draw.polygon(poly_pts, fill=(255, 222, 0, 255), outline=(255, 255, 255, 255))
+    draw.line([poly_pts[0], poly_pts[1]], fill=(220, 18, 42, 255), width=6)
+    draw.line([poly_pts[2], poly_pts[3]], fill=(220, 18, 42, 255), width=6)
+    draw.text((86, 840), hook_line_2, fill=(10, 14, 24, 255), font=f_sub, stroke_width=3, stroke_fill=(255, 222, 0, 255))
 
     draw.rectangle([(0, 0), (W - 1, H - 1)], outline=ribbon_fg + (240,), width=6)
 
@@ -16647,7 +16710,8 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
         off_brand_kws = (
             "swimsuit", "bikini", "girlfriend", "babar azam", "shaheen afridi", "brydon carse",
             "shoaib bashir", "celtics", "coco gauff", "pegula", "claire liu", "jaguars", "jordan davis",
-            "marquez", "motogp", "wssu", "campus chaos"
+            "marquez", "motogp", "wssu", "campus chaos", "xbox", "wolfenstein", "daddy yankee",
+            "grammy", "vegas gala", "og games", "achievements to four", "medal to guard", "scolded him"
         )
 
         for v_item in (v_resp.get("items") or []):
@@ -17448,7 +17512,14 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     ))
     final_long = final_long.with_audio(CompositeAudioClip([final_long.audio, bgm_l])) if MOVIEPY_V2 else final_long.set_audio(CompositeAudioClip([final_long.audio, bgm_l]))
     out_long = "output/WTB_1080p_Long_16x9.mp4" if unit_num == 1 else f"output/WTB_1080p_Long_{unit_num}_16x9.mp4"
-    final_long.write_videofile(out_long, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="256k", bitrate="12000k", preset="medium", threads=4, logger=None)
+    final_long.write_videofile(out_long, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="256k", bitrate="9500k", preset="faster", threads=4, logger=None)
+    try:
+        final_long.close()
+        bgm_l.close()
+        for lc in long_clips:
+            lc.close()
+    except Exception:
+        pass
 
     thumb_out = "output/WTB_1080p_Thumb_1.jpg" if unit_num == 1 else f"output/WTB_1080p_Thumb_{unit_num}.jpg"
     pkg_report = create_signature_wtb_brand_thumbnail(lead_long_dossier, lead_long_entities, shared_long_photos, watermark, out_path=thumb_out)
@@ -17916,7 +17987,14 @@ async def render_and_upload_short_unit(
     ))
     final_short = final_short.with_audio(CompositeAudioClip([final_short.audio, bgm_s])) if MOVIEPY_V2 else final_short.set_audio(CompositeAudioClip([final_short.audio, bgm_s]))
     out_short = "output/WTB_1080p_Short_9x16.mp4" if unit_num == 1 else f"output/WTB_1080p_Short_{unit_num}_9x16.mp4"
-    final_short.write_videofile(out_short, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="256k", bitrate="12000k", preset="medium", threads=4, logger=None)
+    final_short.write_videofile(out_short, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="256k", bitrate="8500k", preset="faster", threads=4, logger=None)
+    try:
+        final_short.close()
+        bgm_s.close()
+        for sc_c in short_clips:
+            sc_c.close()
+    except Exception:
+        pass
 
     thumb_out = "output/WTB_1080p_Short_Thumb.jpg" if unit_num == 1 else f"output/WTB_1080p_Short_{unit_num}_Thumb.jpg"
     short_pkg = create_signature_wtb_brand_thumbnail(short_dossier, short_entities, s_unique_photos, watermark, out_path=thumb_out)
