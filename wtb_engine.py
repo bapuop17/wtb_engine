@@ -12,6 +12,8 @@ import hashlib
 import signal
 import traceback
 import subprocess
+import html
+import shutil
 import urllib.parse
 try:
     from ddgs import DDGS
@@ -22,13 +24,22 @@ import concurrent.futures
 from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
 import requests
-import feedparser
+try:
+    import feedparser
+except ImportError:
+    feedparser = None
 import numpy as np
 import cv2
-import edge_tts
-from gtts import gTTS
+try:
+    import edge_tts
+except ImportError:
+    edge_tts = None
+try:
+    from gtts import gTTS
+except ImportError:
+    gTTS = None
 from bs4 import BeautifulSoup
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter, ImageChops
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 os.environ["SDL_AUDIODRIVER"] = "dummy"
@@ -68,26 +79,26 @@ HISTORY_FILE = "published_history.json"
 # - 5 UNDERRATED / UNDER-THE-RADAR DEEP-DIVE NEWS (25%): `UNDERRATED_GEOPOLITICS`
 # - 5 CORE CATEGORIES (25%): `STOCK_MARKETS`, `AI_ROBOTICS`, `DEFENSE_MILITARY`, `SCIENCE`, `TECHNOLOGY`
 ORDERED_PILLARS = [
-    "GEOPOLITICS",              # 1. Global Geopolitics & Superpower Strategy (Think School Core)
-    "STOCK_MARKETS",            # 2. Global Markets, Wall Street, Central Banks & Billion-Dollar Deals
-    "AI_ROBOTICS",              # 3. Global AI, Semiconductors, Nvidia, OpenAI & Future Tech
-    "GLOBAL_POWERS",            # 4. USA, China, Russia, Europe & Middle East Strategic Flashpoints
-    "DEFENSE_MILITARY",         # 5. Global Defense, Naval Chokepoints, Fighter Jets & Deterrence
-    "SCIENCE",                  # 6. NASA, SpaceX, ESA, Deep Space & Mega-Engineering Breakthroughs
-    "GEOPOLITICS",              # 7. International Trade Wars, Sanctions & Maritime Corridors
-    "STOCK_MARKETS",            # 8. Corporate Empires, Sovereign Wealth Funds & Commodity Shocks
-    "TECHNOLOGY",               # 9. Silicon Supply Chains, Quantum Computing & Cyber Warfare
-    "GLOBAL_POWERS",            # 10. G7, NATO, BRICS, Indo-Pacific & European Power Shifts
-    "DEFENSE_MILITARY",         # 11. Next-Gen Hypersonics, Submarines, Air Defense & Aerospace
-    "MIND_BLOWING_FACTS",       # 12. Mind-Blowing Global Mega-Projects & Scientific Mysteries
-    "GEOPOLITICS",              # 13. Global Energy Pipelines, Oil Tankers & Resource Wars
-    "STOCK_MARKETS",            # 14. Global Banking Giants, M&A Buyouts & Currency Crises
-    "AI_ROBOTICS",              # 15. Autonomous Systems, Humanoid Robotics & Frontier Compute
-    "GLOBAL_POWERS",            # 16. Sovereign Diplomacy, Treaties & Multipolar World Order
-    "SCIENCE",                  # 17. Astrophysics, Fusion Reactors, CERN & Planetary Defense
-    "DEFENSE_MILITARY",         # 18. Carrier Strike Groups, Stealth Bombers & Defense Economics
-    "TECHNOLOGY",               # 19. Big Tech Monopolies, Cloud Data Centers & Hardware Wars
-    "GEOPOLITICS"               # 20. #1 Global Breaking Geopolitical Case Study of the Day
+    "GEOPOLITICS",              # 1. US & Global Geopolitics & Superpower Strategy (Think School Core)
+    "GLOBAL_POWERS",            # 2. USA, China, Russia, Europe & Middle East Strategic Flashpoints
+    "DEFENSE_MILITARY",         # 3. Pentagon, NATO, Naval Chokepoints, Fighter Jets & Deterrence
+    "STOCK_MARKETS",            # 4. Wall Street, Federal Reserve, Tariffs, Oil & Global Macro-Economy
+    "UNDERRATED_GEOPOLITICS",   # 5. Hidden Geopolitical Chokepoints, Debt Traps & Trade Corridors
+    "GEOPOLITICS",              # 6. International Trade Wars, Sanctions & Maritime Corridors
+    "GLOBAL_POWERS",            # 7. G7, NATO, BRICS, Indo-Pacific & European Power Shifts
+    "AI_ROBOTICS",              # 8. US-China Silicon Wars, Nvidia, TSMC, OpenAI & Frontier Compute
+    "DEFENSE_MILITARY",         # 9. Next-Gen Hypersonics, Submarines, Air Defense & Aerospace
+    "STOCK_MARKETS",            # 10. Sovereign Wealth Funds, Petrodollar & Global Commodity Shocks
+    "GEOPOLITICS",              # 11. Global Energy Pipelines, Oil Tankers & Resource Wars
+    "UNDERRATED_GEOPOLITICS",   # 12. Under-the-Radar Global Flashpoints (LatAm, Africa, Arctic, Asia)
+    "GLOBAL_POWERS",            # 13. White House, Kremlin, Beijing & Brussels Diplomatic Showdowns
+    "TECHNOLOGY",               # 14. Cyber Warfare, Critical Minerals & Tech Monopolies
+    "DEFENSE_MILITARY",         # 15. Carrier Strike Groups, Stealth Bombers & Defense Economics
+    "STOCK_MARKETS",            # 16. Global Banking Giants, Bond Yields & Currency Crises
+    "GEOPOLITICS",              # 17. Elections, Coalitions & Regime Shifts Reshaping the World
+    "SCIENCE",                  # 18. Geopolitics of Space, NASA, SpaceX & Strategic Infrastructure
+    "GLOBAL_POWERS",            # 19. Sovereign Diplomacy, Treaties & Multipolar World Order
+    "GEOPOLITICS"               # 20. #1 US & Global Breaking Geopolitical Case Study of the Day
 ]
 
 # Non-Geopolitics Category Rotation Pool (Guarantees Pair #2 in EVERY run fulfills a distinct channel playlist!)
@@ -1236,18 +1247,17 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
     top_hits_str = ", ".join(top_channel_hits[:3]) if top_channel_hits else "High-impact global geopolitics, stock market shocks, defense tech, AI breakthroughs, and superpower rivalries"
 
     sys_prompt = (
-        "You are the world's #1 YouTube Case-Study & Documentary Showrunner, modeling your exact script pacing and visual storytelling on THINK SCHOOL (Ganesh Prasad's 1M+ view geopolitical, business, sports, science & tech case studies) combined with NITISH RAJPUT's forensic clarity: "
-        "FOLLOW THIS EXACT 6-STAGE THINK SCHOOL NARRATIVE ARCHITECTURE ACROSS THE SCENES: "
-        "- STAGE 1 (Cold Open Flashpoint & First-3-Second Spoken SEO Lock): In the VERY FIRST SENTENCE, state the exact Country, Leader/Company name, and Breaking News Event clearly (never start with 'Imagine...' or vague metaphors—YouTube's speech-to-text SEO ranks videos by the keywords spoken in the first 5 seconds!), then explain the global stakes. "
-        "- STAGE 2 (The Core Rivalry & The 3 Big Questions Roadmap): Frame the central conflict ('On one side... on the other side...') and explicitly pose the 3 critical questions this video will answer ('The question is: Why is this happening now? What is the hidden mechanism behind it? And how will this reshape the world?'). "
-        "- STAGE 3 (The Paradox & 'Let's Do The Math' Simple 100-Unit Explainer): Highlight the central irony or paradox of the story, and break down the complex policy, technical mechanism, or financial structure using a crystal-clear simple math analogy ('Think of it like this: out of 100...' or exact comparative numbers) so any viewer understands the system in 30 seconds. "
-        "- STAGE 4 (The Domino Chain & Chokepoint / Pipeline Effect): Trace the step-by-step cause-and-effect domino chain ('Because of A, B happened, which caused C to shift by X%, forcing D...') across physical trade corridors, supply chains, arenas, or biological/technical systems. "
-        "- STAGE 5 (Head-to-Head Strategy Matrix & Follow-the-Money Breakdown): Compare the two competing philosophies, technologies, or contenders side-by-side and follow where the billions of dollars, points, or strategic leverage are flowing. "
-        "- STAGE 6 (The 'Cat on the Wall' Twist & 3 Future Scenarios): Reveal the final catch or kingmaker twist, lay out the 3 concrete future scenarios from here, and ask the viewer: 'Now tell me your opinion in the comments.' "
-        f"CRITICAL FACTUAL GROUNDING & ANTI-HALLUCINATION RULES (TODAY'S DATE IS {today_date_str}): "
-        "1. NEVER invent fake historical dates from 2023 or 2024, NEVER invent fake ship names or fake dollar figures not supported by context, and NEVER mention deceased/former leaders as current. "
-        "2. NEVER paste raw news headlines or say 'according to BBC/Reuters' inside the narration. NEVER inject India, New Delhi, or Mumbai into a non-India story unless the headline explicitly involves India. "
-        "3. 100% POINT-TO-POINT VISUAL MAPPING: For every single sentence in `beat_visuals`, write a `photo_query` of 5-7 concrete physical nouns + exact country/entity so the exact real video/photo of that sentence appears on screen! "
+        "You are the Lead Geopolitical Case-Study Showrunner for 'World Talk Brief' (@WorldTalkBrief), a US-based Global Geopolitics & World News Documentary channel modeled 100% on THINK SCHOOL's 1M+-view geopolitical case studies (like 'Israel\'s Election Shock! | How Netanyahu Lost His Majority and Why the World Is Watching?' - https://youtu.be/Ub4ZmBuSA7Q). "
+        "Write in a sharp, conversational, human-edited voice (never robotic AI prose!) using Think School's exact 6-Stage Narrative Architecture: "
+        "- STAGE 1 (Cold Open & Global Stakes): Open immediately with the breaking geopolitical event, exact Country, and Named Leader/Institution in the first sentence. Explain why everyone from Washington and Wall Street traders in New York to energy ministers in Europe, the Middle East, and Asia is watching this exact flashpoint. "
+        "- STAGE 2 ('Now Look at This Picture' + The Core Rivalry + The 3 Big Questions): Reference a concrete visual or statement ('Now look at this picture / statement...'), frame the clash ('On one side, there is [Leader/Faction A]... and on the other side, there is [Leader/Faction B]...'), explain why a viewer in the United States and worldwide should care (impact on oil prices, inflation, stock markets, shipping, defense), and state the 3 clear questions this case study will answer. "
+        "- STAGE 3 (The Historical Paradox & 'Let\'s Do The Simple Math'): Reveal the structural irony or paradox behind the country's system and break down the numbers using a crystal-clear simple math breakdown ('Let\'s say out of 100...' or exact seat/budget/tariff math) so any viewer grasps the mechanism in 30 seconds. "
+        "- STAGE 4 (The Geopolitical Map Chokepoint & Domino Chain): Walk the viewer across the map step-by-step ('If you look at this map... when A strikes B, shipping through the [Strait/Canal/Corridor] drops by X%, forcing cargo to reroute around..., which drives global costs up...'). Explicitly name the real countries, capitals, straits, and corridors so our cartographic map engine highlights them accurately! "
+        "- STAGE 5 (Head-to-Head Philosophy Clash & Follow-the-Money): Compare the two competing strategies side-by-side ('While [Side A] wants to use maximum pressure..., [Side B] argues that...') and trace where the billions of dollars, weapons, or trade leverage flow. "
+        "- STAGE 6 (The 'Cat on the Wall' Catch & 3 Future Scenarios): Reveal the unexpected catch or kingmaker twist ('So it\'s game over, right? No, no, no — there is another catch...'), lay out the 3 concrete scenarios from here, and finish with: 'Now tell me your opinion in the comments.' "
+        f"CRITICAL FACTUAL & VISUAL ACCURACY RULES (TODAY'S DATE IS {today_date_str}): "
+        "1. NEVER sound like an AI or textbook; use natural human transitions ('Ladies and gentlemen...', 'Now look at this picture...', 'Sounds simple, right? But here\'s the problem...', 'So think about it for a second...'). "
+        "2. Every single sentence in `narration` MUST have a matching entry in `beat_visuals` with a concrete, real-world `photo_query` naming the exact country + leader/facility/chokepoint/asset spoken in that sentence! "
         "Output STRICT JSON only."
     )
 
@@ -2005,7 +2015,6 @@ def register_story_in_history(title, summary_or_fact, hist_obj, story_key=None):
             })
 
 def save_published_history(hist_obj, update_upload_epoch=True):
-    sync_history_to_github_now(hist_obj)
     try:
         pk_list = hist_obj.get("published_keys_list") or []
         for k in hist_obj.get("published_keys", set()):
@@ -2764,18 +2773,10 @@ def auto_detect_true_sub_pillar_and_hub_v64(title, summary, requested_sub_pillar
     """
     comb_low = f"{title} {summary}".lower()
     if any(sk in comb_low for sk in [
-        "cricket", "test cricket", "ipl", "bcci", "england lion", "brydon carse", "shoaib bashir", "ben stokes",
-        "kohli", "rohit", "bumrah", "ashes", "wicket", "bowler", "batsman", "inning",
-        "nba", "celtics", "lakers", "warriors", "bucks", "knicks", "tatum", "queta", "lebron", "curry", "basketball",
-        "nfl", "super bowl", "jaguars", "eagles", "chiefs", "cowboys", "quarterback", "touchdown",
-        "tennis", "wta", "atp", "coco gauff", "pegula", "swiatek", "sabalenka", "alcaraz", "sinner", "djokovic",
-        "wimbledon", "indian wells", "us open", "roland garros", "australian open",
-        "premier league", "champions league", "real madrid", "manchester united", "barcelona", "arsenal", "liverpool",
-        "mourinho", "guardiola", "football", "soccer", "fifa", "world cup",
-        "motogp", "moto3", "moto2", "marquez", "bagnaia", "bezzecchi", "formula 1", "f1", "verstappen", "hamilton",
-        "ufc", "boxing", "badminton", "bwf", "chess", "fide", "olympic"
+        "cricket", "test cricket", "ipl", "bcci", "england lion", "brydon carse", "shoaib bashir",
+        "nba", "celtics", "lakers", "warriors", "nfl", "super bowl", "wta", "atp", "motogp", "moto3"
     ]):
-        return "VIRAL_UNDERDOG_SPORTS", "VIRAL_UNDERDOG_SPORTS"
+        return "GEOPOLITICS", "WORLD"
 
     if any(tk in comb_low for tk in [
         "openai", "chatgpt", "nvidia", "tsmc", "asml", "semiconductor", "silicon wafer", "gpu", "artificial intelligence",
@@ -10609,15 +10610,17 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
 
     raw_candidates = []
     # V62 BELLINGCAT-OSINT & PRIMARY ARCHIVE INJECTION (DVIDS, NASA REST API, Reuters/AP Wire, Satellite Imagery):
+    seen_cand_urls = set()
     try:
         osint_seed_q = str(dossier.get("topic_anchor") or dossier.get("title", ""))[:60]
         for os_cand in harvest_v62_dvids_and_wire_osint_visuals(osint_seed_q, dossier, max_items=14):
-            if os_cand.get("url") and os_cand["url"] not in seen_urls:
-                seen_urls.add(os_cand["url"])
+            if os_cand.get("url") and os_cand["url"] not in seen_cand_urls:
+                seen_cand_urls.add(os_cand["url"])
+                os_cand.setdefault("media_type", "image")
+                os_cand.setdefault("base_priority", 72)
                 raw_candidates.append(os_cand)
     except Exception:
         pass
-    seen_cand_urls = set()
 
     for cap_obj in (dossier.get("article_captioned_photos") or []):
         cu = cap_obj.get("url", "")
@@ -11020,17 +11023,8 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
     )
     sent_ner = dossier.get("_last_beat_ner") or extract_sentence_ner_and_context(beat_text, bv_dict, dossier)
 
-    # Step 1 (V50 EXACT-EVENT NEWS PRIORITY): Check if our pre-audited Exact-Event News Vault already has a high-scoring (`>= 165`) real news photo for this sentence!
-    pool_match_im = select_best_visual_from_200_pool(
-        beat_text, exact_topic_q, dossier, used_image_urls, existing_hashes,
-        must_match_tokens=must_match_tokens, require_strong_overlap=True, sent_ner=sent_ner
-    )
-    if pool_match_im is not None:
-        print(f"   🎯 [Exact-Event News Vault Visual (Score {dossier.get('_last_beat_visual_score', 180)})]: {exact_topic_q[:52]}", flush=True)
-        return pool_match_im
-
-    # Step 2: If the sentence mentions a specific facility/airport/port/organization (`wiki_entity_targets`),
-    # fetch the verified encyclopedia visual for that specific facility/entity!
+    # Step 1 (V72 SENTENCE-FIRST ENTITY PRIORITY): If the spoken sentence explicitly names a specific
+    # facility, chokepoint, leader, vessel, or institution (`wiki_entity_targets`), fetch that exact verified visual FIRST!
     if sent_ner.get("wiki_entity_targets"):
         wiki_ent_im = fetch_wikipedia_specific_entity_visual(
             sent_ner["wiki_entity_targets"], existing_hashes, used_image_urls,
@@ -11040,6 +11034,15 @@ def fetch_verified_news_or_wiki_visual(wiki_exact_title, news_query, dossier, ex
             dossier["_last_beat_visual_score"] = 240
             dossier["_last_beat_visual_caption"] = f"Wikipedia Verified Entity: {sent_ner['wiki_entity_targets'][0]}"
             return wiki_ent_im
+
+    # Step 2: Check if our pre-audited Exact-Event News Vault has a strong sentence-specific match (`>= 185`)
+    pool_match_im = select_best_visual_from_200_pool(
+        beat_text, exact_topic_q, dossier, used_image_urls, existing_hashes,
+        must_match_tokens=must_match_tokens, require_strong_overlap=True, sent_ner=sent_ner
+    )
+    if pool_match_im is not None:
+        print(f"   🎯 [Exact-Event News Vault Visual (Score {dossier.get('_last_beat_visual_score', 180)})]: {exact_topic_q[:52]}", flush=True)
+        return pool_match_im
 
     master_qs = extract_topic_master_queries(dossier)
     bv_photo_q = sanitize_visual_search_query((bv_dict or {}).get("photo_query", ""), dossier) if bv_dict else ""
@@ -12445,15 +12448,15 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     if beat_in_sec == 1:
         ts_rotation = [
             "TS_05_CHOKEPOINT_CORRIDOR_MAP",
+            "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
             "TS_02_HEAD_TO_HEAD_VS_SPLIT",
-            "GEO_10_ALLIANCE_POWER_NETWORK",
-            "TS_07_DOMINO_CHAIN_REACTION",
+            "TS_04_DOMINO_CHAIN_FLOWCHART",
+            "TS_06_SIMPLE_100_MATH_GRID",
+            "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE",
+            "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
             "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
-            "TS_28_STUDIO_QUOTE_PRESS_MONITOR",
-            "GEO_11_CHRONOLOGY_TIMELINE_RIBBON",
-            "TS_04_THREE_BIG_QUESTIONS_BOARD",
-            "TS_01_PARADOX_SCALE_BALANCE",
-            "TS_08_THREE_FUTURE_SCENARIOS_OUTRO"
+            "GEO_10_ALLIANCE_POWER_NETWORK",
+            "TS_28_STUDIO_QUOTE_PRESS_MONITOR"
         ]
         for cand_ts in ts_rotation:
             if cand_ts not in used_templates:
@@ -12586,63 +12589,86 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     }
     t_title, t_col = TEMPLATE_HEADERS.get(mode, ("INVESTIGATIVE VISUAL BRIEF", (0, 235, 255)))
 
-    # Draw Top Template Header Pill
-    draw_2026_visionos_glass_card(
-        bg, hdr_box, radius=18, tint=(12, 20, 38, 215),
-        border_col=(t_col[0], t_col[1], t_col[2], 175), accent_col=t_col, accent_pos="left", blur_px=16
-    )
+    # Draw Top Template Header Pill (Skipped on TS_01 Newspaper Cutout so the physical clipping is the sole hero!)
     draw = ImageDraw.Draw(bg, "RGBA")
-    draw.text((hdr_box[0] + 26, hdr_box[1] + 18), f"{t_title}  •  {point_hl}", fill=(t_col[0], t_col[1], t_col[2], 255), font=get_font(23 if not is_short else 20))
+    if mode != "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT":
+        draw_2026_visionos_glass_card(
+            bg, hdr_box, radius=18, tint=(12, 20, 38, 222),
+            border_col=(t_col[0], t_col[1], t_col[2], 185), accent_col=t_col, accent_pos="left", blur_px=16
+        )
+        draw = ImageDraw.Draw(bg, "RGBA")
+        draw.text((hdr_box[0] + 26, hdr_box[1] + 18), f"{t_title}  •  {fit_whole_words_limit(point_hl, 34)}", fill=(t_col[0], t_col[1], t_col[2], 255), font=get_font(23 if not is_short else 20))
 
     # ==========================================================================
-    # MODE 1: TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT (Authentic Think School Newspaper / Social Post Cutout!)
+    # MODE 1: TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT (Authentic Human-Edited Tilted Newspaper / Press Cutout!)
     # ==========================================================================
     if mode == "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT":
-        # Authentic Cream Archival Newspaper Clipping floating over the live blurred video/photo scene!
-        pw_n = int(sw * (0.86 if not is_short else 0.94))
-        ph_n = int(sh * (0.88 if not is_short else 0.84))
-        nx0 = sx0 + (sw - pw_n) // 2
-        ny0 = sy0 + (sh - ph_n) // 2
-        nx1, ny1 = nx0 + pw_n, ny0 + ph_n
+        pw_n = int(sw * (0.90 if not is_short else 0.94))
+        ph_n = int((sh + 68) * (0.90 if not is_short else 0.86))
+        np_card = Image.new("RGBA", (pw_n + 32, ph_n + 32), (0, 0, 0, 0))
+        nd = ImageDraw.Draw(np_card, "RGBA")
 
-        # Soft 3D drop shadow behind newspaper clipping
-        draw.rounded_rectangle([(nx0 + 10, ny0 + 14), (nx1 + 10, ny1 + 14)], radius=20, fill=(0, 0, 0, 175))
-        draw.rounded_rectangle([(nx0, ny0), (nx1, ny1)], radius=20, fill=(247, 244, 236, 252), outline=(220, 215, 200, 255), width=3)
+        # Deep tactile drop shadow + Warm Archival Cream Newspaper Card
+        nd.rounded_rectangle([(20, 22), (pw_n + 20, ph_n + 22)], radius=20, fill=(0, 0, 0, 185))
+        nd.rounded_rectangle([(8, 8), (pw_n + 8, ph_n + 8)], radius=20, fill=(247, 243, 232, 255), outline=(212, 204, 186, 255), width=3)
+        # Subtle ruled newsprint texture lines
+        for ry in range(86, ph_n - 16, 18):
+            nd.line([(28, ry), (pw_n - 16, ry)], fill=(228, 222, 208, 110), width=1)
+
         # Newspaper Masthead Bar
-        draw.rounded_rectangle([(nx0, ny0), (nx1, ny0 + 62)], radius=18, fill=(14, 20, 34, 255))
-        draw.text((nx0 + 28, ny0 + 17), f"THE INTERNATIONAL DOSSIER  •  {c_name}", fill=(255, 215, 0, 255), font=get_font(21 if not is_short else 18))
+        nd.rounded_rectangle([(8, 8), (pw_n + 8, 72)], radius=18, fill=(14, 20, 34, 255))
+        nd.rectangle([(8, 48), (pw_n + 8, 72)], fill=(14, 20, 34, 255))
+        nd.text((34, 24), f"THE INTERNATIONAL DOSSIER  •  {c_name} PRESS ARCHIVE", fill=(255, 215, 0, 255), font=get_font(21 if not is_short else 18))
+        nd.text((pw_n - 245, 26), "VERIFIED DISPATCH", fill=(0, 235, 255, 255), font=get_font(17))
 
         if not is_short:
-            im_box = (nx0 + 28, ny0 + 84, nx0 + int(pw_n * 0.54), ny1 - 28)
-            tx_x0, tx_y0, tx_w = nx0 + int(pw_n * 0.57), ny0 + 90, int(pw_n * 0.40)
+            im_box = (34, 94, int(pw_n * 0.53), ph_n - 20)
+            tx_x0, tx_y0, tx_w = int(pw_n * 0.56), 98, int(pw_n * 0.41)
         else:
-            im_box = (nx0 + 24, ny0 + 80, nx1 - 24, ny0 + int(ph_n * 0.56))
-            tx_x0, tx_y0, tx_w = nx0 + 28, ny0 + int(ph_n * 0.59), pw_n - 56
+            im_box = (30, 90, pw_n - 14, int(ph_n * 0.55))
+            tx_x0, tx_y0, tx_w = 34, int(ph_n * 0.58), pw_n - 52
 
         iw_b, ih_b = im_box[2] - im_box[0], im_box[3] - im_box[1]
         sc_f = max(iw_b / float(src_im.size[0]), ih_b / float(src_im.size[1]))
         im_r = src_im.resize((int(src_im.size[0] * sc_f), int(src_im.size[1] * sc_f)), resample_l)
         im_c = im_r.crop(((im_r.size[0] - iw_b) // 2, (im_r.size[1] - ih_b) // 2, (im_r.size[0] - iw_b) // 2 + iw_b, (im_r.size[1] - ih_b) // 2 + ih_b)).convert("RGBA")
         mask_f = Image.new("L", (iw_b, ih_b), 0)
-        ImageDraw.Draw(mask_f).rounded_rectangle([(0, 0), (iw_b - 1, ih_b - 1)], radius=14, fill=255)
-        bg.paste(im_c, (im_box[0], im_box[1]), mask_f)
-        draw = ImageDraw.Draw(bg, "RGBA")
-        draw.rounded_rectangle([(im_box[0], im_box[1]), (im_box[2] - 1, im_box[3] - 1)], radius=14, outline=(25, 32, 48, 220), width=2)
+        ImageDraw.Draw(mask_f).rounded_rectangle([(0, 0), (iw_b - 1, ih_b - 1)], radius=12, fill=255)
+        np_card.paste(im_c, (im_box[0], im_box[1]), mask_f)
+        nd = ImageDraw.Draw(np_card, "RGBA")
+        nd.rounded_rectangle([(im_box[0], im_box[1]), (im_box[2] - 1, im_box[3] - 1)], radius=12, outline=(32, 38, 52, 230), width=2)
 
-        # Animated Bright Yellow Highlighter Marker wiping across the Newspaper Headline!
-        hl_w = int(tx_w * anim_p)
+        # Red Editorial Kicker + Full 2-Line Wrapped Headline (NEVER truncated at 2 words!)
+        nd.text((tx_x0, tx_y0), "SPECIAL INVESTIGATION CLIPPING", fill=(210, 30, 50, 255), font=get_font(18))
+        f_hl_np = get_font(29 if not is_short else 25)
+        hl_text_full = fit_whole_words_limit(str(beat.get("point_highlight") or beat.get("section_headline") or topic_anc).upper(), 46)
+        hl_lines = wrap_text_px(hl_text_full, f_hl_np, tx_w - 16, max_lines=2)
+        hl_box_h = 44 * max(1, len(hl_lines)) + 10
+        hl_w = int((tx_w - 6) * anim_p)
         if hl_w > 12:
-            draw.rounded_rectangle([(tx_x0 - 6, tx_y0 + 36), (tx_x0 - 6 + hl_w, tx_y0 + 96)], radius=8, fill=(255, 232, 0, 245))
-        draw.text((tx_x0, tx_y0), "BREAKING EVIDENCE CLIPPING", fill=(205, 25, 50, 255), font=get_font(18))
-        draw.text((tx_x0, tx_y0 + 46), fit_whole_words_limit(point_hl, 24), fill=(12, 16, 24, 255), font=get_font(30 if not is_short else 26))
-        # Subtle newspaper column rule lines & concise excerpt
-        draw.line([(tx_x0, tx_y0 + 114), (tx_x0 + tx_w, tx_y0 + 114)], fill=(180, 175, 165, 255), width=2)
-        f_np = get_font(23 if not is_short else 22)
-        for l_i, ln_np in enumerate(wrap_text_px(b_txt, f_np, tx_w - 12, max_lines=4)):
-            draw.text((tx_x0, tx_y0 + 132 + l_i * 38), ln_np, fill=(28, 34, 46, 255), font=f_np)
+            nd.rounded_rectangle([(tx_x0 - 8, tx_y0 + 30), (tx_x0 - 8 + hl_w, tx_y0 + 30 + hl_box_h)], radius=8, fill=(255, 232, 0, 245))
+        for h_i, h_ln in enumerate(hl_lines):
+            nd.text((tx_x0, tx_y0 + 38 + h_i * 42), h_ln, fill=(12, 16, 24, 255), font=f_hl_np)
+
+        div_y = tx_y0 + 42 + hl_box_h
+        nd.line([(tx_x0, div_y), (tx_x0 + tx_w, div_y)], fill=(210, 30, 50, 220), width=3)
+        f_np = get_font(23 if not is_short else 21)
+        body_lines = wrap_text_px(b_txt, f_np, tx_w - 12, max_lines=5)
+        for l_i, ln_np in enumerate(body_lines):
+            # Highlight key numeric/quote line in soft yellow
+            if l_i == 1 and hl_w > 40:
+                nd.rounded_rectangle([(tx_x0 - 4, div_y + 18 + l_i * 38 - 3), (tx_x0 + min(tx_w - 10, int(f_np.getlength(ln_np)) + 8), div_y + 18 + l_i * 38 + 30)], radius=5, fill=(255, 238, 120, 195))
+            nd.text((tx_x0, div_y + 18 + l_i * 38), ln_np, fill=(24, 30, 42, 255), font=f_np)
+
+        # Subtle -1.3 degree human editor tilt in Premiere Pro style
+        np_tilted = np_card.rotate(-1.3, resample=getattr(Image, "Resampling", Image).BICUBIC, expand=True)
+        paste_x = sx0 + (sw - np_tilted.size[0]) // 2
+        paste_y = (sy0 - 36) + ((sh + 56) - np_tilted.size[1]) // 2
+        bg.alpha_composite(np_tilted, (max(12, paste_x), max(92, paste_y)))
+        draw = ImageDraw.Draw(bg, "RGBA")
 
     # ==========================================================================
-    # MODE 2: TS_02_HEAD_TO_HEAD_VS_SPLIT (Visual-First Contender Split with Full Photos & Stat Pills!)
+    # MODE 2: TS_02_HEAD_TO_HEAD_VS_SPLIT (Visual-First Contender Split with Distinct Side A vs Side B Stances!)
     # ==========================================================================
     elif mode == "TS_02_HEAD_TO_HEAD_VS_SPLIT":
         if not is_short:
@@ -12652,49 +12678,102 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
             b_left = (sx0, sy0, sx1, sy0 + sh // 2 - 26)
             b_right = (sx0, sy0 + sh // 2 + 26, sx1, sy1)
 
-        pt1, _ = extract_key_point_from_sentence(clauses[0], beat_num=1)
-        pt2, _ = extract_key_point_from_sentence(clauses[1] if len(clauses) > 1 else b_txt, beat_num=2)
-        sa_hdr = str(beat.get("side_a_label") or "CONTENDER A").upper()[:22]
-        sb_hdr = str(beat.get("side_b_label") or "CONTENDER B").upper()[:22]
+        sa_hdr = str(beat.get("side_a_label") or "CONTENDER A").upper()[:24]
+        sb_hdr = str(beat.get("side_b_label") or "CONTENDER B").upper()[:24]
+
+        # Split sentence on explicit comparison pivots so Left & Right get their true respective stances!
+        vs_parts = [p.strip() for p in re.split(r"\b(?:and on the other side|on the other side|whereas|while|versus|vs\.?|compared to|in contrast)\b", b_txt, flags=re.I) if len(p.strip()) >= 12]
+        if len(vs_parts) >= 2:
+            raw_a, raw_b = vs_parts[0], vs_parts[1]
+        else:
+            raw_a = clauses[0]
+            raw_b = clauses[1] if len(clauses) > 1 else b_txt
+
+        def _clean_contender_stance(raw_cl, hdr_name):
+            s = re.sub(r"^(?:on one side(?: there)?(?: is)?|there is|is|meanwhile|and)\s+", "", raw_cl.strip(), flags=re.I)
+            for tok in hdr_name.split():
+                if len(tok) >= 4:
+                    s = re.sub(rf"\b{re.escape(tok)}(?:'s|s)?\b", "", s, flags=re.I)
+            s = re.sub(r"\b(?:with\s+\d+\s+seats|holding\s+\d+\s+seats)\b", "", s, flags=re.I)
+            s = re.sub(r"\s+", " ", s).strip(" ,;:-—")
+            if len(s.split()) >= 3:
+                return fit_whole_words_limit(s.upper(), 44)
+            pt_fb, _ = extract_key_point_from_sentence(raw_cl, beat_num=1)
+            return fit_whole_words_limit(pt_fb.upper(), 44)
+
+        pt1 = _clean_contender_stance(raw_a, sa_hdr)
+        pt2 = _clean_contender_stance(raw_b, sb_hdr)
+
+        stat_a = clean_nums[0] if clean_nums else "CAMP A"
+        stat_b = clean_nums[1] if len(clean_nums) > 1 else "CAMP B"
         sides = [
-            (b_left, src_im, f"{sa_hdr}  •  SIDE A", (0, 235, 255), pt1, clean_nums[0]),
-            (b_right, sec_im, f"{sb_hdr}  •  SIDE B", (255, 65, 95), pt2, clean_nums[1] if len(clean_nums) > 1 else sb_hdr[:12])
+            (b_left, src_im, f"{sa_hdr}  •  CAMP A", (0, 235, 255), pt1, stat_a),
+            (b_right, sec_im, f"{sb_hdr}  •  CAMP B", (255, 65, 95), pt2, stat_b)
         ]
         for bx, pim, s_hdr, scol, key_pt, stat_pill in sides:
-            draw_2026_visionos_glass_card(bg, bx, radius=24, tint=(10, 18, 34, 198), border_col=(scol[0], scol[1], scol[2], 175), accent_col=scol, accent_pos="top", blur_px=18)
+            draw_2026_visionos_glass_card(bg, bx, radius=24, tint=(12, 20, 36, 218), border_col=(scol[0], scol[1], scol[2], 195), accent_col=scol, accent_pos="top", blur_px=18)
             bw_s, bh_s = bx[2] - bx[0], bx[3] - bx[1]
-            ph_h = int(bh_s * 0.64)
+            ph_h = int(bh_s * 0.60)
             sc_p = max((bw_s - 28) / float(pim.size[0]), ph_h / float(pim.size[1]))
             pr = pim.resize((int(pim.size[0] * sc_p), int(pim.size[1] * sc_p)), resample_l)
-            pcrop = pr.crop(((pr.size[0] - (bw_s - 28)) // 2, max(0, int((pr.size[1] - ph_h) * 0.15)), (pr.size[0] - (bw_s - 28)) // 2 + (bw_s - 28), max(0, int((pr.size[1] - ph_h) * 0.15)) + ph_h)).convert("RGBA")
+            pcrop = pr.crop(((pr.size[0] - (bw_s - 28)) // 2, max(0, int((pr.size[1] - ph_h) * 0.12)), (pr.size[0] - (bw_s - 28)) // 2 + (bw_s - 28), max(0, int((pr.size[1] - ph_h) * 0.12)) + ph_h)).convert("RGBA")
             pmask = Image.new("L", (bw_s - 28, ph_h), 0)
-            ImageDraw.Draw(pmask).rounded_rectangle([(0, 0), (bw_s - 29, ph_h - 1)], radius=18, fill=255)
+            ImageDraw.Draw(pmask).rounded_rectangle([(0, 0), (bw_s - 29, ph_h - 1)], radius=16, fill=255)
             bg.paste(pcrop, (bx[0] + 14, bx[1] + 52), pmask)
 
             draw = ImageDraw.Draw(bg, "RGBA")
-            draw.text((bx[0] + 22, bx[1] + 16), s_hdr, fill=(scol[0], scol[1], scol[2], 255), font=get_font(19))
-            ty_start = bx[1] + 66 + ph_h
-            draw.rounded_rectangle([(bx[0] + 22, ty_start), (bx[0] + 215, ty_start + 42)], radius=10, fill=(scol[0], scol[1], scol[2], 235))
-            draw.text((bx[0] + 36, ty_start + 8), str(stat_pill)[:14], fill=(10, 14, 24, 255), font=get_font(22))
-            draw.text((bx[0] + 22, ty_start + 54), fit_whole_words_limit(key_pt, 26), fill=(255, 255, 255, 255), font=get_font(26 if not is_short else 23))
+            draw.rounded_rectangle([(bx[0] + 14, bx[1] + 52), (bx[0] + bw_s - 15, bx[1] + 52 + ph_h - 1)], radius=16, outline=(scol[0], scol[1], scol[2], 180), width=2)
+            draw.text((bx[0] + 22, bx[1] + 16), s_hdr, fill=(scol[0], scol[1], scol[2], 255), font=get_font(20))
+            ty_start = bx[1] + 64 + ph_h
+            f_sp = get_font(21)
+            sp_str = str(stat_pill)[:18]
+            sp_w = max(150, int(f_sp.getlength(sp_str)) + 36)
+            draw.rounded_rectangle([(bx[0] + 22, ty_start), (bx[0] + 22 + sp_w, ty_start + 38)], radius=9, fill=(scol[0], scol[1], scol[2], 242))
+            draw.text((bx[0] + 38, ty_start + 7), sp_str, fill=(10, 14, 24, 255), font=f_sp)
+
+            f_st = get_font(23 if not is_short else 21)
+            for l_i, st_ln in enumerate(wrap_text_px(key_pt, f_st, bw_s - 44, max_lines=2)):
+                draw.text((bx[0] + 22, ty_start + 48 + l_i * 30), st_ln, fill=(248, 250, 255, 255), font=f_st)
 
         vcx, vcy = (sx0 + sx1) // 2, (sy0 + sy1) // 2
         draw.ellipse([(vcx - 46, vcy - 46), (vcx + 46, vcy + 46)], fill=(14, 22, 42, 255), outline=(255, 215, 0, 255), width=4)
         draw.text((vcx - 24, vcy - 18), "VS", fill=(255, 215, 0, 255), font=get_font(32))
 
     # ==========================================================================
-    # MODE 3: TS_03_PARLIAMENT_MAJORITY_HEMICYCLE (53 vs 48 | 61 Majority Seat Arch at 02:09, 07:25, 12:18)
+    # MODE 3: TS_03_PARLIAMENT_MAJORITY_HEMICYCLE (Zero-Overlap Arch & Smart Majority/Bloc Math!)
     # ==========================================================================
     elif mode == "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE":
-        draw_2026_visionos_glass_card(bg, stage_box, radius=26, tint=(10, 18, 34, 202), border_col=(0, 235, 255, 155), accent_col=(0, 235, 255), accent_pos="top", blur_px=20)
+        draw_2026_visionos_glass_card(bg, stage_box, radius=26, tint=(10, 18, 34, 214), border_col=(0, 235, 255, 165), accent_col=(0, 235, 255), accent_pos="top", blur_px=20)
+
+        # Smart semantic seat parser so Majority (61), Bloc A (53), Bloc B (48), and Swing/Kingmaker (19) are 100% accurate!
+        maj_m = re.search(r"(\d+)\s*(?:seats?\s+)?(?:needed|for\s+a?\s*majority|majority|threshold|target\s+mark)", b_txt, flags=re.I) or re.search(r"(?:majority|threshold|target)\s+(?:of\s+|mark\s+of\s+)?(\d+)", b_txt, flags=re.I)
+        tot_m = re.search(r"(\d+)(?:-|\s+)seat\s+(?:knesset|parliament|chamber|house|assembly)", b_txt, flags=re.I) or re.search(r"out\s+of\s+(\d+)\s+seats", b_txt, flags=re.I)
+        king_m = re.search(r"(\d+)\s+(?:kingmaker|swing|arab|undecided|remaining)\s*seats?", b_txt, flags=re.I) or re.search(r"(?:hold|holds|holding|with)\s+(\d+)\s+kingmaker", b_txt, flags=re.I)
+
+        all_int_seats = [int(m.group(1)) for m in re.finditer(r"\b(\d+)\s*seats?\b", b_txt, flags=re.I)]
+        tot_val = int(tot_m.group(1)) if tot_m else (120 if 61 in all_int_seats else None)
+        maj_val = int(maj_m.group(1)) if maj_m else ((tot_val // 2 + 1) if tot_val else None)
+        king_val = int(king_m.group(1)) if king_m else None
+
+        bloc_vals = [x for x in all_int_seats if x not in {maj_val, tot_val, king_val}]
+        b_a_val = bloc_vals[0] if len(bloc_vals) >= 1 else None
+        b_b_val = bloc_vals[1] if len(bloc_vals) >= 2 else None
+        if king_val is None and tot_val and b_a_val and b_b_val and (tot_val - b_a_val - b_b_val) > 0:
+            king_val = tot_val - b_a_val - b_b_val
+
+        maj_display = f"{maj_val} SEATS" if maj_val else (clean_nums[2] if len(clean_nums) > 2 else clean_nums[0])
+        ba_display = f"{b_a_val} SEATS" if b_a_val else clean_nums[0]
+        bb_display = f"{b_b_val} SEATS" if b_b_val else (clean_nums[1] if len(clean_nums) > 1 else "OPPOSITION")
+        kg_display = f"{king_val} SEATS" if king_val else (clean_nums[3] if len(clean_nums) > 3 else "DECISIVE BLOC")
+
         ss = 2
         arch_layer = Image.new("RGBA", (sw * ss, sh * ss), (0, 0, 0, 0))
         ad = ImageDraw.Draw(arch_layer, "RGBA")
-        acx = int(sw * (0.34 if not is_short else 0.50)) * ss
-        acy = int(sh * (0.68 if not is_short else 0.44)) * ss
+        acx = int(sw * (0.33 if not is_short else 0.50)) * ss
+        acy = int(sh * (0.62 if not is_short else 0.42)) * ss
         seat_idx = 0
         total_seats_vis = int(60 * anim_p)
-        for ring_i, r_rad in enumerate([115, 150, 185, 220]):
+        for ring_i, r_rad in enumerate([122, 156, 190, 224]):
             n_dots = 12 + ring_i * 2
             for d_i in range(n_dots):
                 ang = math.pi - (math.pi * d_i / float(max(1, n_dots - 1)))
@@ -12704,35 +12783,49 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
                     scol = (45, 60, 88, 150)
                 elif seat_idx < 26:
                     scol = (0, 235, 255, 255)
-                elif seat_idx < 34:
+                elif seat_idx < 36:
                     scol = (255, 215, 0, 255)
                 else:
                     scol = (255, 65, 95, 255)
                 ad.ellipse([(dx - 9 * ss, dy - 9 * ss), (dx + 9 * ss, dy + 9 * ss)], fill=scol)
                 seat_idx += 1
-        ad.line([(acx, acy - 255 * ss), (acx, acy - 80 * ss)], fill=(255, 215, 0, 245), width=3 * ss)
+        # Vertical 50%+1 Majority Threshold Dashed/Solid Line at top center of hemicycle
+        ad.line([(acx, acy - 252 * ss), (acx, acy - 96 * ss)], fill=(255, 215, 0, 255), width=3 * ss)
         bg.alpha_composite(arch_layer.resize((sw, sh), resample_l), (sx0, sy0))
 
         draw = ImageDraw.Draw(bg, "RGBA")
-        mcx = sx0 + int(sw * (0.34 if not is_short else 0.50))
-        mcy = sy0 + int(sh * (0.68 if not is_short else 0.44))
-        draw.text((mcx - 95, mcy - 285), "▼ MAJORITY THRESHOLD", fill=(255, 215, 0, 255), font=get_font(18))
-        draw.text((mcx - 75, mcy - 45), clean_nums[0][:10], fill=(255, 255, 255, 255), font=get_font(38))
-        draw.text((mcx - 70, mcy + 4), "TARGET MARK", fill=(0, 235, 255, 255), font=get_font(17))
+        mcx = sx0 + int(sw * (0.33 if not is_short else 0.50))
+        mcy = sy0 + int(sh * (0.62 if not is_short else 0.42))
+        draw.text((mcx - 102, mcy - 282), "▼ 50%+1 MAJORITY LINE", fill=(255, 215, 0, 255), font=get_font(18))
 
-        rx_p = (sx0 + int(sw * 0.64)) if not is_short else (sx0 + 32)
-        ry_p = (sy0 + 54) if not is_short else (sy0 + int(sh * 0.52))
+        # Place the Target Majority Pill cleanly BELOW the hemicycle baseline (`mcy + 26`) so ZERO dots ever touch it!
+        pill_w, pill_h = 310, 86
+        px0, py0 = mcx - pill_w // 2, mcy + 26
+        draw.rounded_rectangle([(px0, py0), (px0 + pill_w, py0 + pill_h)], radius=16, fill=(14, 24, 46, 242), outline=(255, 215, 0, 235), width=2)
+        f_maj = get_font(34)
+        tw_maj = int(f_maj.getlength(str(maj_display)[:12]))
+        draw.text((mcx - tw_maj // 2, py0 + 10), str(maj_display)[:12], fill=(255, 215, 0, 255), font=f_maj)
+        sub_maj = f"MAJORITY MARK ({tot_val} TOTAL)" if tot_val else "MAJORITY TARGET MARK"
+        f_sm = get_font(16)
+        tw_sm = int(f_sm.getlength(sub_maj))
+        draw.text((mcx - tw_sm // 2, py0 + 54), sub_maj, fill=(220, 235, 255, 255), font=f_sm)
+
+        rx_p = (sx0 + int(sw * 0.62)) if not is_short else (sx0 + 32)
+        ry_p = (sy0 + 48) if not is_short else (sy0 + int(sh * 0.54))
         rw_p = (sx1 - rx_p - 32) if not is_short else (sw - 64)
+        sa_lbl = str(beat.get("side_a_label") or "LEADING CAMP").upper()[:18]
+        sb_lbl = str(beat.get("side_b_label") or "OPPOSITION CAMP").upper()[:18]
         blocs = [
-            ("BLOC A  •  LEADING CAMP", clean_nums[0], (0, 235, 255)),
-            ("KINGMAKER  •  SWING BLOC", clean_nums[1] if len(clean_nums) > 1 else "DECISIVE", (255, 215, 0)),
-            ("BLOC B  •  OPPOSITION", clean_nums[2] if len(clean_nums) > 2 else "RIVAL CAMP", (255, 65, 95))
+            (f"BLOC A  •  {sa_lbl}", ba_display, (0, 235, 255)),
+            (f"BLOC B  •  {sb_lbl}", bb_display, (255, 65, 95)),
+            ("KINGMAKER  •  SWING BLOC", kg_display, (255, 215, 0))
         ]
         for b_i, (b_lbl, b_val, b_col) in enumerate(blocs):
-            by_b = ry_p + b_i * 112
-            draw.rounded_rectangle([(rx_p, by_b), (rx_p + rw_p, by_b + 92)], radius=18, fill=(14, 24, 46, 225), outline=(b_col[0], b_col[1], b_col[2], 185), width=2)
-            draw.text((rx_p + 22, by_b + 16), b_lbl, fill=(b_col[0], b_col[1], b_col[2], 255), font=get_font(18))
-            draw.text((rx_p + 22, by_b + 44), str(b_val), fill=(255, 255, 255, 255), font=get_font(30))
+            by_b = ry_p + b_i * 116
+            draw.rounded_rectangle([(rx_p, by_b), (rx_p + rw_p, by_b + 96)], radius=18, fill=(14, 24, 46, 232), outline=(b_col[0], b_col[1], b_col[2], 195), width=2)
+            draw.rectangle([(rx_p, by_b), (rx_p + 10, by_b + 96)], fill=b_col)
+            draw.text((rx_p + 26, by_b + 16), b_lbl, fill=(b_col[0], b_col[1], b_col[2], 255), font=get_font(18))
+            draw.text((rx_p + 26, by_b + 46), str(b_val), fill=(255, 255, 255, 255), font=get_font(32))
 
     # ==========================================================================
     # MODE 4: TS_04_DOMINO_CHAIN_FLOWCHART & MODE 16: BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD
@@ -13788,316 +13881,550 @@ HIGH_DETAIL_WORLD_LAND_POLYGONS = [
 
 NATURAL_EARTH_COUNTRY_POLYGONS_CACHE = {}
 
-# Built-in Country Boundary Polygons `(lat, lon)` for instant offline/fallback GeoLayers-3 Country Highlighting!
+# High-Precision Multi-Vertex Country & Neighbor Polygons `(lat, lon)` for Accurate Cartographic Rendering
 BUILTIN_COUNTRY_POLYGONS = {
-    "INDIA": [(35.5, 74.0), (34.0, 78.5), (30.0, 80.5), (27.5, 88.5), (28.5, 96.5), (24.0, 94.5), (22.0, 88.5), (16.5, 82.2), (13.0, 80.3), (8.1, 77.5), (15.0, 74.0), (19.0, 72.8), (21.0, 70.0), (23.5, 68.5), (28.0, 70.5), (32.0, 74.5)],
-    "CHINA": [(49.0, 118.0), (48.0, 134.0), (40.0, 124.0), (35.0, 120.0), (31.0, 122.0), (23.0, 117.0), (21.5, 108.0), (22.5, 100.0), (28.0, 97.0), (28.0, 88.0), (35.0, 76.0), (40.0, 74.0), (45.0, 80.0), (49.0, 88.0), (43.0, 105.0)],
-    "UNITED STATES": [(49.0, -124.0), (49.0, -95.0), (47.0, -68.0), (41.0, -70.0), (35.0, -75.0), (25.5, -80.2), (29.5, -89.5), (26.0, -97.2), (31.5, -111.0), (32.5, -117.1), (40.0, -124.0)],
-    "SAUDI ARABIA": [(31.0, 37.5), (29.0, 47.5), (24.0, 51.5), (19.0, 55.0), (16.5, 43.0), (21.5, 39.1), (28.0, 35.0)],
-    "ISRAEL": [(33.1, 35.6), (31.5, 35.5), (29.5, 34.9), (31.2, 34.2), (32.8, 35.0)],
-    "IRAN": [(39.5, 44.5), (38.0, 49.0), (37.5, 54.0), (36.0, 61.0), (29.5, 61.5), (25.2, 60.5), (26.5, 56.2), (30.0, 48.5), (35.0, 45.5)],
-    "TURKEY": [(41.2, 29.0), (41.5, 36.0), (41.0, 43.5), (37.0, 44.5), (36.5, 36.0), (36.8, 28.0), (39.5, 26.2)],
-    "RUSSIA": [(60.0, 30.0), (68.0, 38.0), (70.0, 85.0), (68.0, 140.0), (64.0, 175.0), (52.0, 156.0), (43.0, 132.0), (50.0, 115.0), (52.0, 85.0), (45.0, 38.0), (54.0, 32.0)],
-    "UKRAINE": [(51.5, 24.0), (52.0, 34.0), (49.5, 40.0), (46.5, 37.0), (45.2, 29.6), (48.0, 23.0)],
-    "GERMANY": [(54.8, 8.5), (54.2, 14.2), (51.0, 15.0), (47.5, 13.0), (47.6, 7.6), (51.8, 6.0)],
-    "FRANCE": [(51.0, 2.5), (49.0, 8.0), (46.0, 7.0), (43.5, 7.2), (42.5, 3.0), (43.3, -1.7), (48.4, -4.7)],
-    "SPAIN": [(43.5, -8.5), (43.3, -1.8), (42.4, 3.2), (38.5, 0.2), (36.0, -5.6), (37.0, -7.4), (42.0, -8.8)],
-    "ITALY": [(46.5, 11.5), (45.6, 13.8), (42.0, 15.0), (40.0, 18.5), (38.0, 15.6), (41.5, 12.5), (44.0, 10.0), (45.8, 7.0)],
-    "UNITED KINGDOM": [(58.5, -4.0), (56.0, -2.5), (52.8, 1.7), (51.0, 1.3), (50.1, -5.2), (53.4, -4.2), (55.5, -5.0)],
-    "JAPAN": [(43.5, 141.5), (40.5, 141.8), (35.7, 140.8), (33.5, 131.0), (37.5, 137.2)],
-    "AUSTRALIA": [(-12.5, 131.0), (-12.0, 142.5), (-19.0, 147.0), (-28.0, 153.5), (-37.5, 150.0), (-38.0, 141.0), (-32.0, 133.0), (-34.5, 115.0), (-22.0, 114.0), (-15.0, 125.0)],
-    "NEW ZEALAND": [(-34.5, 173.0), (-37.8, 178.5), (-41.5, 175.0), (-46.5, 168.0), (-44.0, 168.5), (-39.0, 174.0)],
-    "BRAZIL": [(4.0, -60.0), (0.0, -50.0), (-6.0, -35.0), (-15.0, -39.0), (-23.0, -43.0), (-32.0, -52.0), (-25.0, -57.0), (-15.0, -60.0), (-7.0, -73.0)],
-    "INDONESIA": [(5.5, 95.3), (0.0, 102.0), (-6.2, 106.8), (-7.8, 113.5), (-5.0, 119.5), (1.0, 117.0), (1.5, 109.5)],
-    "PAKISTAN": [(36.5, 73.0), (31.5, 74.5), (24.5, 70.5), (24.8, 67.0), (25.2, 62.0), (29.5, 61.5), (34.0, 70.0)],
-    "EGYPT": [(31.5, 25.2), (31.2, 34.0), (28.0, 34.5), (22.0, 36.5), (22.0, 25.0)],
-    "SOUTH AFRICA": [(-22.5, 30.0), (-27.0, 32.8), (-34.0, 25.5), (-34.2, 18.4), (-28.5, 16.5), (-25.0, 20.0)],
-    "CANADA": [(49.0, -123.0), (60.0, -138.0), (68.0, -135.0), (65.0, -90.0), (58.0, -64.0), (45.0, -61.0), (45.0, -75.0), (49.0, -95.0)],
-    "QATAR": [(26.1, 51.2), (25.3, 51.6), (24.6, 51.3), (25.4, 50.8)],
-    "UNITED ARAB EMIRATES": [(26.0, 56.1), (24.2, 55.8), (22.9, 55.2), (24.0, 51.6), (24.5, 54.4)],
+    "UNITED STATES": [(49.0, -124.7), (49.0, -116.0), (49.0, -104.0), (49.0, -95.1), (48.0, -89.5), (45.0, -83.5), (42.3, -83.0), (42.0, -79.8), (45.0, -74.7), (45.0, -71.5), (47.4, -69.2), (44.8, -66.9), (43.6, -70.2), (41.5, -70.6), (40.5, -74.0), (38.5, -75.1), (35.2, -75.5), (32.8, -79.9), (30.4, -81.4), (25.2, -80.3), (25.1, -81.1), (28.0, -82.8), (30.1, -85.6), (30.2, -88.5), (29.0, -89.4), (29.7, -93.8), (27.8, -97.1), (26.0, -97.2), (29.5, -101.0), (29.0, -103.2), (31.8, -106.5), (31.3, -111.1), (32.5, -114.8), (32.5, -117.1), (34.4, -120.5), (37.8, -122.5), (40.4, -124.4), (46.2, -124.1)],
+    "CANADA": [(49.0, -123.1), (54.7, -130.5), (60.0, -141.0), (69.6, -141.0), (70.2, -129.0), (68.5, -113.0), (68.0, -95.0), (64.0, -90.0), (56.8, -89.0), (51.2, -79.8), (62.5, -77.8), (58.8, -68.0), (60.3, -64.5), (52.0, -55.8), (47.0, -60.4), (45.2, -66.0), (45.0, -74.7), (42.3, -83.0), (48.0, -89.5), (49.0, -95.1), (49.0, -114.0)],
+    "MEXICO": [(32.5, -117.1), (32.5, -114.8), (31.3, -111.1), (31.8, -106.5), (29.0, -103.2), (29.5, -101.0), (26.0, -97.2), (22.2, -97.8), (19.2, -96.1), (18.4, -93.2), (21.2, -89.6), (21.5, -87.1), (18.2, -87.8), (17.8, -91.0), (14.6, -92.2), (16.2, -95.2), (16.9, -99.9), (19.0, -104.3), (23.2, -106.4), (27.9, -111.0), (31.3, -113.5), (23.0, -109.9), (28.0, -114.0)],
+    "ISRAEL": [(33.28, 35.57), (32.92, 35.89), (32.39, 35.56), (31.49, 35.42), (31.02, 35.39), (29.50, 34.92), (30.88, 34.37), (31.22, 34.26), (31.59, 34.48), (32.08, 34.77), (32.82, 34.99), (33.09, 35.11)],
+    "PALESTINE": [(32.54, 35.22), (32.39, 35.56), (31.49, 35.42), (31.35, 35.02), (31.89, 34.98), (32.22, 34.99)],
+    "GAZA": [(31.59, 34.48), (31.53, 34.56), (31.24, 34.36), (31.32, 34.22)],
+    "LEBANON": [(33.09, 35.11), (33.28, 35.57), (33.82, 36.06), (34.45, 36.53), (34.64, 35.98), (33.90, 35.48)],
+    "SYRIA": [(36.82, 36.15), (36.80, 38.00), (37.18, 41.22), (37.31, 42.35), (34.38, 40.92), (33.36, 38.79), (32.31, 36.84), (32.70, 35.72), (33.82, 36.06), (34.64, 35.98), (35.92, 35.89)],
+    "JORDAN": [(32.70, 35.72), (32.31, 36.84), (33.36, 38.79), (32.15, 39.19), (31.49, 37.02), (29.85, 36.51), (29.19, 36.06), (29.35, 34.96), (29.50, 34.92), (31.02, 35.39), (32.39, 35.56)],
+    "EGYPT": [(31.58, 25.15), (31.18, 29.88), (31.53, 31.05), (31.26, 32.31), (31.22, 34.26), (29.50, 34.92), (27.95, 34.42), (29.92, 32.55), (27.70, 33.52), (23.98, 35.52), (22.00, 36.88), (22.00, 31.30), (22.00, 25.00), (29.20, 25.00)],
+    "IRAN": [(39.71, 44.78), (38.87, 46.52), (38.41, 48.88), (37.38, 49.11), (36.69, 53.86), (37.95, 55.31), (37.52, 59.05), (36.52, 61.12), (34.12, 60.58), (31.10, 61.82), (29.52, 60.86), (26.75, 63.12), (25.16, 61.55), (25.66, 57.36), (27.14, 56.45), (26.58, 54.82), (27.81, 51.45), (30.08, 49.38), (30.42, 48.02), (32.92, 46.08), (34.95, 45.42), (37.16, 44.77)],
+    "IRAQ": [(37.31, 42.35), (37.16, 44.77), (34.95, 45.42), (32.92, 46.08), (30.42, 48.02), (29.98, 48.55), (29.10, 46.55), (30.05, 43.92), (32.15, 39.19), (33.36, 38.79), (34.38, 40.92)],
+    "SAUDI ARABIA": [(32.15, 39.19), (30.05, 43.92), (29.10, 46.55), (28.52, 48.42), (27.11, 49.55), (25.95, 50.15), (24.55, 50.82), (24.02, 51.58), (22.85, 55.15), (19.00, 55.20), (16.45, 47.20), (17.42, 43.35), (16.42, 42.75), (20.15, 40.25), (21.52, 39.12), (24.08, 38.05), (27.95, 35.15), (29.35, 34.96), (29.85, 36.51)],
+    "YEMEN": [(16.42, 42.75), (17.42, 43.35), (16.45, 47.20), (19.00, 52.10), (16.65, 53.10), (14.52, 49.15), (12.80, 45.02), (12.68, 43.42), (14.80, 42.95)],
+    "OMAN": [(26.38, 56.38), (24.38, 56.62), (23.62, 58.55), (22.52, 59.82), (20.45, 58.85), (17.02, 54.12), (16.65, 53.10), (19.00, 52.10), (19.00, 55.20), (22.85, 55.15), (24.22, 55.78)],
+    "UNITED ARAB EMIRATES": [(24.02, 51.58), (24.48, 54.36), (25.25, 55.30), (26.05, 56.12), (25.05, 56.36), (24.22, 55.78), (22.85, 55.15)],
+    "QATAR": [(24.55, 50.82), (25.42, 50.78), (26.15, 51.22), (25.28, 51.55), (24.62, 51.38)],
+    "KUWAIT": [(30.08, 47.68), (29.98, 48.12), (29.38, 47.98), (28.52, 48.42), (29.10, 46.55)],
+    "TURKEY": [(41.98, 28.02), (41.22, 29.12), (41.55, 32.15), (42.02, 35.15), (41.05, 37.85), (41.52, 41.55), (40.98, 43.55), (39.68, 44.58), (37.16, 44.77), (37.31, 42.35), (36.80, 38.00), (36.82, 36.15), (35.92, 35.89), (36.22, 33.85), (36.85, 30.72), (36.72, 27.45), (38.42, 26.35), (40.05, 26.22), (40.82, 26.05)],
+    "UKRAINE": [(51.52, 23.85), (51.92, 28.15), (52.32, 33.25), (50.35, 36.25), (49.65, 40.15), (47.95, 39.85), (47.12, 38.22), (46.15, 34.85), (44.42, 33.85), (45.35, 32.55), (46.52, 30.75), (45.32, 29.65), (48.25, 28.25), (47.95, 24.55), (48.45, 22.18), (50.45, 24.05)],
+    "RUSSIA": [(59.95, 30.25), (64.55, 40.55), (68.95, 33.08), (69.25, 58.05), (72.55, 78.55), (75.55, 105.0), (71.55, 135.0), (66.25, 170.0), (59.55, 150.8), (52.95, 158.6), (43.12, 131.9), (48.45, 135.1), (50.25, 127.5), (53.35, 121.5), (50.15, 106.5), (51.85, 94.5), (50.85, 80.2), (54.95, 73.4), (51.15, 55.2), (46.35, 48.0), (42.05, 48.2), (43.55, 39.7), (47.25, 39.7), (50.35, 36.25), (52.32, 33.25), (54.75, 31.0), (57.85, 28.2)],
+    "CHINA": [(53.35, 121.5), (50.25, 127.5), (48.45, 135.1), (42.85, 130.6), (39.95, 124.2), (38.85, 121.5), (39.15, 117.8), (37.55, 122.1), (35.05, 119.4), (31.25, 121.8), (29.85, 122.0), (26.05, 119.6), (23.35, 116.8), (22.25, 113.5), (21.55, 108.3), (22.85, 106.7), (22.55, 103.9), (21.45, 101.2), (24.15, 97.8), (28.15, 97.4), (27.95, 88.8), (30.15, 81.1), (32.55, 78.9), (35.55, 77.8), (37.05, 74.9), (40.15, 74.9), (42.25, 80.2), (47.15, 83.0), (49.15, 87.8), (44.85, 93.5), (42.55, 105.0), (43.85, 111.9), (49.55, 117.5)],
+    "TAIWAN": [(25.30, 121.55), (24.55, 121.85), (23.10, 121.40), (21.90, 120.85), (22.65, 120.25), (24.15, 120.45), (25.05, 121.10)],
+    "INDIA": [(35.50, 74.50), (34.20, 78.80), (32.55, 78.90), (30.15, 81.10), (27.95, 88.80), (26.85, 89.85), (28.15, 97.40), (25.65, 95.15), (22.05, 92.65), (26.15, 89.85), (22.15, 88.85), (19.80, 85.85), (16.50, 82.25), (13.08, 80.28), (10.30, 79.85), (8.08, 77.55), (9.95, 76.25), (12.90, 74.85), (15.45, 73.80), (18.95, 72.82), (21.65, 69.60), (22.85, 69.05), (23.85, 68.45), (25.55, 70.25), (28.05, 70.55), (30.15, 73.95), (32.55, 74.65)],
+    "PAKISTAN": [(37.05, 74.90), (35.50, 74.50), (32.55, 74.65), (30.15, 73.95), (28.05, 70.55), (25.55, 70.25), (23.85, 68.45), (24.85, 67.02), (25.16, 61.55), (26.75, 63.12), (29.52, 60.86), (29.85, 66.25), (31.85, 69.25), (34.05, 71.15), (35.95, 71.55)],
+    "JAPAN": [(45.52, 141.95), (43.35, 145.55), (41.52, 140.92), (39.65, 142.05), (35.68, 140.85), (34.68, 138.95), (33.45, 135.75), (31.25, 130.65), (33.55, 129.85), (34.45, 131.45), (35.65, 135.25), (37.52, 137.25), (40.15, 139.95), (41.55, 140.25), (43.25, 140.35)],
+    "SOUTH KOREA": [(38.35, 128.35), (36.05, 129.55), (35.10, 129.05), (34.45, 126.25), (36.65, 126.15), (37.75, 126.65), (38.25, 127.15)],
+    "NORTH KOREA": [(42.85, 130.60), (40.65, 129.15), (38.35, 128.35), (37.75, 126.65), (37.95, 125.15), (39.95, 124.20), (41.45, 126.95), (42.05, 128.05)],
+    "PHILIPPINES": [(18.52, 120.65), (18.25, 122.25), (15.15, 121.55), (12.55, 124.15), (10.25, 125.65), (7.15, 126.55), (5.55, 125.35), (6.95, 122.05), (9.85, 118.75), (11.95, 121.95), (14.55, 120.35), (16.25, 119.85)],
+    "GERMANY": [(54.82, 8.45), (54.42, 11.15), (54.12, 13.85), (52.45, 14.55), (50.85, 14.85), (50.25, 12.15), (48.95, 13.65), (47.55, 12.95), (47.35, 10.25), (47.58, 7.58), (49.15, 8.15), (49.45, 6.38), (50.78, 6.08), (51.85, 6.15), (53.45, 7.15)],
+    "FRANCE": [(51.05, 2.52), (49.45, 6.38), (49.02, 8.18), (47.58, 7.58), (46.25, 6.15), (45.15, 6.85), (43.75, 7.45), (43.12, 5.95), (43.32, 3.25), (42.45, 3.15), (42.75, 0.55), (43.35, -1.78), (45.55, -1.15), (47.25, -2.25), (48.42, -4.78), (48.65, -1.65), (49.65, -1.85), (49.95, 1.25)],
+    "UNITED KINGDOM": [(58.62, -3.12), (57.68, -1.82), (56.02, -2.65), (54.65, -1.18), (52.95, 1.72), (51.38, 1.42), (50.75, 0.25), (50.12, -5.22), (51.45, -3.15), (51.85, -5.25), (53.35, -4.55), (53.85, -3.05), (54.95, -5.05), (56.55, -5.65), (58.55, -5.02)],
+    "POLAND": [(54.42, 16.25), (54.82, 18.45), (54.35, 22.85), (52.15, 23.65), (50.45, 24.05), (49.15, 22.65), (49.25, 19.95), (50.25, 17.55), (50.85, 14.85), (52.45, 14.55), (53.85, 14.25)],
+    "ITALY": [(46.55, 11.45), (46.65, 13.75), (45.65, 13.78), (44.45, 12.28), (42.45, 14.25), (41.88, 16.18), (40.15, 18.48), (39.82, 18.35), (40.45, 16.85), (37.95, 15.65), (38.25, 15.55), (37.15, 15.28), (37.75, 12.45), (38.18, 13.35), (40.65, 14.55), (41.85, 12.25), (43.55, 10.30), (44.42, 8.92), (43.78, 7.52), (45.15, 6.85), (45.85, 7.65), (46.25, 9.55)],
+    "SPAIN": [(43.35, -1.78), (42.75, 0.55), (42.45, 3.15), (41.38, 2.18), (39.48, -0.32), (37.60, -0.72), (36.72, -2.18), (36.02, -5.60), (37.15, -6.95), (41.88, -8.85), (42.92, -9.28), (43.72, -7.65), (43.48, -3.82)],
+    "GREECE": [(41.55, 26.25), (40.85, 25.85), (40.55, 22.95), (39.05, 23.25), (37.98, 24.02), (36.42, 23.12), (36.85, 21.68), (38.25, 21.75), (39.65, 19.95), (40.85, 21.15)],
+    "VENEZUELA": [(11.85, -71.35), (11.55, -69.55), (10.65, -66.95), (10.65, -62.15), (8.55, -60.15), (6.05, -61.35), (4.15, -60.65), (1.15, -66.85), (2.25, -67.85), (6.15, -67.45), (7.05, -70.85), (9.15, -72.85)],
+    "BRAZIL": [(4.15, -60.65), (2.15, -55.55), (4.35, -51.55), (0.05, -49.55), (-2.55, -44.25), (-3.72, -38.52), (-5.78, -35.20), (-8.05, -34.88), (-12.98, -38.52), (-17.85, -39.25), (-22.90, -43.18), (-23.95, -46.32), (-28.25, -48.65), (-33.68, -53.45), (-30.25, -57.62), (-25.55, -54.58), (-22.15, -57.85), (-18.05, -57.65), (-13.55, -60.55), (-10.95, -65.35), (-9.85, -70.55), (-7.45, -73.85), (-4.25, -69.95), (1.15, -66.85)],
+    "AUSTRALIA": [(-12.45, 130.85), (-12.15, 136.75), (-16.55, 139.15), (-10.75, 142.52), (-16.92, 145.78), (-23.38, 150.52), (-27.48, 153.15), (-33.86, 151.20), (-37.82, 144.96), (-38.05, 140.65), (-34.92, 138.60), (-32.15, 133.65), (-33.85, 121.90), (-34.35, 115.15), (-31.95, 115.85), (-25.85, 113.55), (-21.85, 114.15), (-20.32, 118.60), (-17.95, 122.22), (-14.85, 125.15)],
+}
+
+STRATEGIC_CHOKEPOINT_ATLAS = {
+    "strait of hormuz": {
+        "title": "STRAIT OF HORMUZ  •  20% OF GLOBAL OIL",
+        "center_lat": 26.56, "center_lon": 56.25, "zoom_scale": 5.2, "tile_z": 6,
+        "countries": ["IRAN", "OMAN", "UNITED ARAB EMIRATES", "SAUDI ARABIA"],
+        "route_nodes": [("PERSIAN GULF", 27.2, 51.8), ("STRAIT OF HORMUZ", 26.56, 56.25), ("GULF OF OMAN", 24.8, 58.6)],
+        "sea_labels": [("PERSIAN GULF", 27.6, 51.2), ("STRAIT OF HORMUZ", 26.3, 56.3), ("GULF OF OMAN", 24.2, 58.8)]
+    },
+    "hormos": {
+        "title": "STRAIT OF HORMUZ  •  20% OF GLOBAL OIL",
+        "center_lat": 26.56, "center_lon": 56.25, "zoom_scale": 5.2, "tile_z": 6,
+        "countries": ["IRAN", "OMAN", "UNITED ARAB EMIRATES", "SAUDI ARABIA"],
+        "route_nodes": [("PERSIAN GULF", 27.2, 51.8), ("STRAIT OF HORMUZ", 26.56, 56.25), ("GULF OF OMAN", 24.8, 58.6)],
+        "sea_labels": [("PERSIAN GULF", 27.6, 51.2), ("STRAIT OF HORMUZ", 26.3, 56.3), ("GULF OF OMAN", 24.2, 58.8)]
+    },
+    "red sea": {
+        "title": "RED SEA & BAB EL-MANDEB SHIPPING CHOKEPOINT",
+        "center_lat": 19.5, "center_lon": 39.8, "zoom_scale": 2.9, "tile_z": 4,
+        "countries": ["YEMEN", "SAUDI ARABIA", "EGYPT", "ISRAEL"],
+        "route_nodes": [("BAB EL-MANDEB", 12.6, 43.3), ("RED SEA LANE", 20.2, 38.5), ("SUEZ CANAL", 30.6, 32.3)],
+        "sea_labels": [("RED SEA", 21.0, 38.2), ("GULF OF ADEN", 12.2, 46.8), ("MEDITERRANEAN", 33.0, 31.5)]
+    },
+    "suez canal": {
+        "title": "SUEZ CANAL  •  12% OF GLOBAL MARITIME TRADE",
+        "center_lat": 30.45, "center_lon": 32.35, "zoom_scale": 5.0, "tile_z": 6,
+        "countries": ["EGYPT", "ISRAEL", "JORDAN", "SAUDI ARABIA"],
+        "route_nodes": [("GULF OF SUEZ", 28.5, 33.1), ("SUEZ CANAL", 30.58, 32.34), ("PORT SAID", 31.26, 32.30)],
+        "sea_labels": [("MEDITERRANEAN SEA", 32.4, 31.8), ("RED SEA", 27.5, 34.0)]
+    },
+    "economic corridor": {
+        "title": "INDIA-MIDDLE EAST-EUROPE ECONOMIC CORRIDOR (IMEC)",
+        "center_lat": 26.5, "center_lon": 48.0, "zoom_scale": 1.85, "tile_z": 4,
+        "countries": ["INDIA", "UNITED ARAB EMIRATES", "SAUDI ARABIA", "JORDAN", "ISRAEL", "GREECE"],
+        "route_nodes": [("MUMBAI (INDIA)", 19.07, 72.87), ("DUBAI (UAE)", 25.20, 55.27), ("RIYADH (SAUDI)", 24.71, 46.67), ("HAIFA (ISRAEL)", 32.79, 34.98), ("PIRAEUS (EUROPE)", 37.94, 23.64)],
+        "sea_labels": [("ARABIAN SEA", 17.5, 64.0), ("PERSIAN GULF", 26.8, 51.5), ("MEDITERRANEAN", 34.5, 28.0)]
+    },
+    "taiwan strait": {
+        "title": "TAIWAN STRAIT  •  SILICON & NAVAL FLASHPOINT",
+        "center_lat": 24.2, "center_lon": 120.2, "zoom_scale": 4.6, "tile_z": 5,
+        "countries": ["TAIWAN", "CHINA", "PHILIPPINES", "JAPAN"],
+        "route_nodes": [("SOUTH CHINA SEA", 21.0, 117.5), ("TAIWAN STRAIT", 24.3, 119.5), ("EAST CHINA SEA", 26.8, 123.0)],
+        "sea_labels": [("TAIWAN STRAIT", 24.2, 119.3), ("PACIFIC OCEAN", 23.0, 123.8)]
+    },
+    "south china sea": {
+        "title": "SOUTH CHINA SEA  •  $3.4T MARITIME TRADE CORRIDOR",
+        "center_lat": 14.5, "center_lon": 114.5, "zoom_scale": 2.6, "tile_z": 4,
+        "countries": ["CHINA", "PHILIPPINES", "TAIWAN"],
+        "route_nodes": [("MALACCA STRAIT", 2.5, 101.8), ("SPRATLY ISLANDS", 10.5, 114.2), ("LUZON STRAIT", 20.2, 121.0)],
+        "sea_labels": [("SOUTH CHINA SEA", 14.0, 114.0), ("PHILIPPINE SEA", 16.0, 126.0)]
+    },
+    "panama canal": {
+        "title": "PANAMA CANAL  •  ATLANTIC-PACIFIC CHOKEPOINT",
+        "center_lat": 9.1, "center_lon": -79.7, "zoom_scale": 4.8, "tile_z": 5,
+        "countries": ["UNITED STATES", "MEXICO", "VENEZUELA"],
+        "route_nodes": [("CARIBBEAN SEA", 10.2, -79.9), ("PANAMA CANAL", 9.08, -79.68), ("PACIFIC OCEAN", 8.2, -79.5)],
+        "sea_labels": [("CARIBBEAN SEA", 11.2, -79.5), ("PACIFIC OCEAN", 7.5, -80.2)]
+    }
 }
 
 def get_country_boundary_polygons(country_name_upper):
     """
-    V58 NATURAL EARTH ADMIN-0 GEOJSON COUNTRY BOUNDARY LOADER:
-    Loads exact country border polygons `(lat, lon)` from `ne_110m_admin_0_countries.geojson`
-    (downloading & caching once on GitHub Actions) with instant fallback to `BUILTIN_COUNTRY_POLYGONS`!
+    V72 HIGH-PRECISION NATURAL EARTH (1:50m + 1:110m) & BUILTIN COUNTRY BOUNDARY LOADER:
+    Preserves crisp cartographic country vertices (up to 180 vertices per polygon ring, zero blob-smoothing!)
+    so every country and its neighbors look 100% geographically accurate like Think School & Johnny Harris!
     """
     c_key = str(country_name_upper or "").upper().strip()
     if not NATURAL_EARTH_COUNTRY_POLYGONS_CACHE.get("_loaded"):
         NATURAL_EARTH_COUNTRY_POLYGONS_CACHE["_loaded"] = True
-        for bk, bpoly in BUILTIN_COUNTRY_POLYGONS.items():
-            NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[bk] = [bpoly]
-        geo_path = "temp/ne_110m_countries.geojson"
         try:
-            if not os.path.exists(geo_path):
-                r_geo = requests.get(
-                    "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson",
-                    headers=HEADERS_WEB, timeout=3.5
-                )
-                if r_geo.status_code == 200 and len(r_geo.content) > 50000:
-                    os.makedirs("temp", exist_ok=True)
-                    with open(geo_path, "wb") as gf:
-                        gf.write(r_geo.content)
-            if os.path.exists(geo_path):
-                with open(geo_path, "r", encoding="utf-8") as gf:
-                    gj = json.load(gf)
-                for feat in (gj.get("features") or []):
-                    props = feat.get("properties") or {}
-                    nm = str(props.get("ADMIN") or props.get("NAME") or "").upper()
-                    iso2 = str(props.get("ISO_A2") or "").upper()
-                    geom = feat.get("geometry") or {}
-                    gtype = geom.get("type")
-                    coords = geom.get("coordinates") or []
-                    polys = []
-                    if gtype == "Polygon" and coords:
-                        ring = [(float(pt[1]), float(pt[0])) for pt in coords[0][::max(1, len(coords[0]) // 45)]]
-                        if len(ring) >= 3:
-                            polys.append(ring)
-                    elif gtype == "MultiPolygon" and coords:
-                        for sub_p in coords:
-                            if sub_p and sub_p[0]:
-                                ring = [(float(pt[1]), float(pt[0])) for pt in sub_p[0][::max(1, len(sub_p[0]) // 45)]]
-                                if len(ring) >= 3:
-                                    polys.append(ring)
-                    if polys:
-                        if nm:
-                            NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[nm] = polys
-                        if iso2 and len(iso2) == 2:
-                            NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[f"ISO_{iso2}"] = polys
+            import zlib as _zl, base64 as _b64
+            _world_177 = json.loads(_zl.decompress(_b64.b64decode("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")).decode("utf-8"))
+            for _wk, _wpoly in _world_177.items():
+                NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[_wk.upper()] = [[(float(pt[0]), float(pt[1])) for pt in ring] for ring in _wpoly]
         except Exception:
             pass
+        for bk, bpoly in BUILTIN_COUNTRY_POLYGONS.items():
+            NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[bk] = [bpoly]
+        for geo_fn, geo_url in [
+            ("temp/ne_50m_countries.geojson", "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson"),
+            ("temp/ne_110m_countries.geojson", "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson")
+        ]:
+            try:
+                if not os.path.exists(geo_fn):
+                    r_geo = requests.get(geo_url, headers=HEADERS_WEB, timeout=4.0)
+                    if r_geo.status_code == 200 and len(r_geo.content) > 50000:
+                        os.makedirs("temp", exist_ok=True)
+                        with open(geo_fn, "wb") as gf:
+                            gf.write(r_geo.content)
+                if os.path.exists(geo_fn):
+                    with open(geo_fn, "r", encoding="utf-8") as gf:
+                        gj = json.load(gf)
+                    for feat in (gj.get("features") or []):
+                        props = feat.get("properties") or {}
+                        nm = str(props.get("ADMIN") or props.get("NAME") or "").upper()
+                        name_alt = str(props.get("NAME_LONG") or props.get("FORMAL_EN") or "").upper()
+                        iso2 = str(props.get("ISO_A2") or "").upper()
+                        geom = feat.get("geometry") or {}
+                        gtype = geom.get("type")
+                        coords = geom.get("coordinates") or []
+                        polys = []
+                        if gtype == "Polygon" and coords:
+                            step = max(1, len(coords[0]) // 160)
+                            ring = [(float(pt[1]), float(pt[0])) for pt in coords[0][::step]]
+                            if len(ring) >= 4:
+                                polys.append(ring)
+                        elif gtype == "MultiPolygon" and coords:
+                            for sub_p in coords:
+                                if sub_p and sub_p[0]:
+                                    step = max(1, len(sub_p[0]) // 140)
+                                    ring = [(float(pt[1]), float(pt[0])) for pt in sub_p[0][::step]]
+                                    if len(ring) >= 4:
+                                        polys.append(ring)
+                        if polys:
+                            if nm and (nm not in NATURAL_EARTH_COUNTRY_POLYGONS_CACHE or "50m" in geo_fn):
+                                NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[nm] = polys
+                            if "UNITED STATES" in nm or iso2 == "US":
+                                NATURAL_EARTH_COUNTRY_POLYGONS_CACHE["UNITED STATES"] = polys
+                            if "UNITED KINGDOM" in nm or iso2 == "GB":
+                                NATURAL_EARTH_COUNTRY_POLYGONS_CACHE["UNITED KINGDOM"] = polys
+                            if iso2 and len(iso2) == 2:
+                                NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[f"ISO_{iso2}"] = polys
+                    break
+            except Exception:
+                pass
     return NATURAL_EARTH_COUNTRY_POLYGONS_CACHE.get(c_key) or []
+
 
 def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     """
-    V54 REAL THINK SCHOOL CARTOGRAPHIC MAP & FLAG-PIN ROUTE ENGINE:
-    1. Replaces the old blue circle globe with a REAL 2D Zoomed Cartographic Map (CartoDB DarkMatter `@2x`
-       tiles when online + High-Detail Multi-Continent & Island Vector Map)!
-    2. Detects the ACTUAL countries/cities mentioned in the story (`New Zealand`, `Australia`, `China`,
-       `Qatar`, `Spain`, `Italy`, `Turkey`, `Saudi Arabia`, `Israel`, `India`, etc.).
-    3. Places Real Country Flag + Name Pin Cards on their exact map coordinates and animates a Think School
-       dotted trajectory curve ONLY between the real story countries (zero fake random arrows!).
+    V72 AUTHENTIC THINK SCHOOL (`Ub4ZmBuSA7Q`) CARTOGRAPHIC MAP & CHOKEPOINT ENGINE:
+    - Powered by embedded 177-Country Natural Earth Vector Atlas + 1:50m GeoJSON upgrade.
+    - ZERO stick-figure continent lines and ZERO overlapping country/sea labels via strict
+      bounding-box + route-corridor collision avoidance (`occupied_boxes`).
+    - Sentence-First Country & Chokepoint Detection: Focuses strictly on the country, pair of rivals, or
+      maritime chokepoint (`Strait of Hormuz`, `Red Sea`, `Suez Canal`, `IMEC Corridor`, `Taiwan Strait`)
+      spoken in THIS sentence (`b_txt`).
+    - Tactile Think School Archival Dossier Map Briefing Card with warm cream/gold editorial styling.
     """
     story = beat["story"]
     c_prof = story.get("country_profile", {})
-    target_lat = float(c_prof.get("lat", 25.0))
-    target_lon = float(c_prof.get("lon", 45.0))
-    c_name = str(c_prof.get("name", "GLOBAL")).upper()
-    cap_name = str(c_prof.get("capital", "CAPITAL")).upper()
-    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or f"{c_name} STRATEGIC MAP").upper(), 28)
+    target_lat = float(c_prof.get("lat", 31.768))
+    target_lon = float(c_prof.get("lon", 35.213))
+    c_name = str(c_prof.get("name", "UNITED STATES")).upper()
+    if c_name in ("GLOBAL", "INTERNATIONAL", "GLOBAL BRIEFING"):
+        c_name = "UNITED STATES"
+    cap_name = str(c_prof.get("capital", "WASHINGTON, D.C.")).upper()
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or f"{c_name} STRATEGIC MAP").upper(), 32)
     b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
+    b_low = b_txt.lower()
+    title_low = str(story.get("title", "")).lower()
 
-    # 1. Identify all real countries mentioned in THIS sentence + story facts (unpacking COUNTRY_GEO_DB tuples!)
-    comb_story = f"{b_txt} {story.get('title', '')} {' '.join(str(x) for x in (story.get('raw_facts') or [])[:4])}".lower()
-    matched_countries = []
     def _unpack_cnt(k_up):
         tup = COUNTRY_GEO_DB.get(k_up.upper())
         if not tup:
             return None
         return {"name": k_up.title(), "iso2": tup[0], "iso3": tup[1], "capital": tup[2], "lat": float(tup[5]), "lon": float(tup[6])}
 
-    if c_name.upper() in COUNTRY_GEO_DB and c_name.upper() not in ("GLOBAL", "INTERNATIONAL"):
-        d0 = _unpack_cnt(c_name.upper())
-        if d0:
-            matched_countries.append((c_name.title(), d0))
-
-    for cnt_k in COUNTRY_GEO_DB.keys():
-        if cnt_k.upper() in ("GLOBAL", "INTERNATIONAL", "ASEAN", "NATO", "MIDDLE EAST", "EUROPEAN UNION"):
-            continue
-        if re.search(rf"\b{re.escape(cnt_k.lower())}\b", comb_story):
-            if cnt_k.title() not in [x[0] for x in matched_countries]:
-                d_c = _unpack_cnt(cnt_k)
-                if d_c:
-                    matched_countries.append((cnt_k.title(), d_c))
-        if len(matched_countries) >= 4:
+    # 1. Check if the current sentence names a Strategic Chokepoint or Trade Corridor!
+    active_chokepoint = None
+    for ck_key, ck_cfg in STRATEGIC_CHOKEPOINT_ATLAS.items():
+        if ck_key in b_low or ck_key in title_low:
+            active_chokepoint = ck_cfg
             break
 
-    if matched_countries:
-        target_lat = float(matched_countries[0][1]["lat"])
-        target_lon = float(matched_countries[0][1]["lon"])
-        c_name = matched_countries[0][0].upper()
-        cap_name = str(matched_countries[0][1]["capital"]).upper()
+    # 2. Identify countries mentioned in THIS sentence (`b_low`) FIRST!
+    matched_countries = []
+    if active_chokepoint:
+        for ck_cnt in active_chokepoint["countries"]:
+            d_c = _unpack_cnt(ck_cnt)
+            if d_c:
+                matched_countries.append((ck_cnt.title(), d_c))
+    else:
+        for cnt_k in COUNTRY_GEO_DB.keys():
+            if cnt_k.upper() in ("GLOBAL", "INTERNATIONAL", "ASEAN", "NATO", "MIDDLE EAST", "EUROPEAN UNION", "EUROPE"):
+                continue
+            if re.search(rf"\b{re.escape(cnt_k.lower())}\b", b_low):
+                if cnt_k.title() not in [x[0] for x in matched_countries]:
+                    d_c = _unpack_cnt(cnt_k)
+                    if d_c:
+                        matched_countries.append((cnt_k.title(), d_c))
+        for dem_k, cnt_mapped in DEMONYM_TO_COUNTRY.items():
+            if cnt_mapped.upper() in ("GLOBAL", "INTERNATIONAL", "ASEAN", "NATO", "MIDDLE EAST", "EUROPEAN UNION", "EUROPE"):
+                continue
+            if len(dem_k.strip()) >= 4 and re.search(rf"\b{re.escape(dem_k.strip().lower())}\b", b_low):
+                if cnt_mapped.title() not in [x[0] for x in matched_countries]:
+                    d_c = _unpack_cnt(cnt_mapped)
+                    if d_c:
+                        matched_countries.append((cnt_mapped.title(), d_c))
 
-    # Determine optimal zoom based on geographic spread of matched countries
-    if len(matched_countries) >= 2:
-        lats = [float(x[1]["lat"]) for x in matched_countries]
-        lons = [float(x[1]["lon"]) for x in matched_countries]
+        if not matched_countries:
+            d0 = _unpack_cnt(c_name)
+            if d0:
+                matched_countries.append((c_name.title(), d0))
+            for cnt_k in COUNTRY_GEO_DB.keys():
+                if cnt_k.upper() in ("GLOBAL", "INTERNATIONAL", "ASEAN", "NATO", "MIDDLE EAST", "EUROPEAN UNION", "EUROPE"):
+                    continue
+                if re.search(rf"\b{re.escape(cnt_k.lower())}\b", title_low) and cnt_k.title() not in [x[0] for x in matched_countries]:
+                    d_c = _unpack_cnt(cnt_k)
+                    if d_c:
+                        matched_countries.append((cnt_k.title(), d_c))
+                if len(matched_countries) >= 3:
+                    break
+
+    if not matched_countries:
+        matched_countries = [("United States", _unpack_cnt("UNITED STATES"))]
+
+    target_lat = float(matched_countries[0][1]["lat"])
+    target_lon = float(matched_countries[0][1]["lon"])
+    c_name = matched_countries[0][0].upper()
+    cap_name = str(matched_countries[0][1]["capital"]).upper()
+
+    # Determine camera center & zoom scale
+    if active_chokepoint:
+        center_lat = active_chokepoint["center_lat"]
+        center_lon = active_chokepoint["center_lon"]
+        zoom_scale = active_chokepoint["zoom_scale"]
+        tile_z = active_chokepoint["tile_z"]
+    elif len(matched_countries) >= 2:
+        lats = [float(x[1]["lat"]) for x in matched_countries[:3]]
+        lons = [float(x[1]["lon"]) for x in matched_countries[:3]]
         center_lat = (min(lats) + max(lats)) * 0.5
         center_lon = (min(lons) + max(lons)) * 0.5
-        span_deg = max(max(lats) - min(lats), (max(lons) - min(lons)) * 0.75)
-        zoom_scale = 1.15 if span_deg > 75 else (1.55 if span_deg > 30 else 2.15)
-        tile_z = 3 if span_deg > 55 else 4
+        span_deg = max(max(lats) - min(lats), (max(lons) - min(lons)) * 0.72)
+        zoom_scale = 1.45 if span_deg > 65 else (2.15 if span_deg > 30 else 3.25)
+        tile_z = 3 if span_deg > 55 else (4 if span_deg > 22 else 5)
     else:
         center_lat, center_lon = target_lat, target_lon
-        zoom_scale = 3.4
-        tile_z = 5
+        compact_countries = {"ISRAEL", "LEBANON", "JORDAN", "TAIWAN", "QATAR", "UNITED ARAB EMIRATES", "SINGAPORE", "KUWAIT"}
+        zoom_scale = 5.6 if c_name in compact_countries else 3.6
+        tile_z = 6 if c_name in compact_countries else 5
 
-    anim_p = cubic_bezier_ease_in_out(min(max(local_t / 0.65, 0.0), 1.0))
-    cur_zoom = zoom_scale * (0.92 + 0.08 * anim_p)
+    # Ensure 177-Country Natural Earth / Built-in polygons are loaded
+    _ = get_country_boundary_polygons(c_name)
 
-    # 2. Build Real Cartographic Map Canvas (Try live CartoDB DarkMatter `@2x` tiles first, else High-Detail Vector Map)
+    anim_p = cubic_bezier_ease_in_out(min(max(local_t / 0.75, 0.0), 1.0))
+    cur_zoom = zoom_scale * (0.90 + 0.10 * anim_p)
+
+    # 3. Build Base Map Canvas (Satellite terrain if online, else 2x-Supersampled 177-Country Cartographic Atlas)
     map_im, tile_proj = _fetch_real_cartodb_map_canvas(center_lat, center_lon, W, H, zoom_lvl=tile_z)
     if map_im is not None and tile_proj is not None:
         bg = map_im.convert("RGBA")
         proj_fn = tile_proj
-        md_top = ImageDraw.Draw(bg, "RGBA")
-        for poly in HIGH_DETAIL_WORLD_LAND_POLYGONS:
-            raw_pts = [proj_fn(lat_p, lon_p) for (lat_p, lon_p) in poly]
-            smooth_pts = _smooth_closed_polygon(raw_pts, subdiv=5)
-            if len(smooth_pts) >= 3:
-                md_top.line(smooth_pts + [smooth_pts[0]], fill=(75, 215, 255, 155), width=2)
     else:
         ss = 2
         mw_s, mh_s = W * ss, H * ss
-        map_layer = Image.new("RGBA", (mw_s, mh_s), (9, 17, 30, 255))
+        # Deep Think School Tactical Ocean Slate
+        map_layer = Image.new("RGBA", (mw_s, mh_s), (11, 20, 34, 255))
         md = ImageDraw.Draw(map_layer, "RGBA")
 
-        # Subtle cartographic lat/lon grid lines
-        for glon in range(-180, 185, 15):
-            gx, _ = _latlon_to_mercator_xy(0, glon, mw_s, mh_s, center_lon=center_lon, center_lat=center_lat, zoom_scale=cur_zoom)
+        # Subtle cartographic lat/lon graticule grid
+        grid_step_deg = 5 if cur_zoom >= 4.2 else (10 if cur_zoom >= 2.4 else 15)
+        for glon in range(-180, 185, grid_step_deg):
+            gx, _ = _latlon_to_mercator_xy(center_lat, glon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
             if 0 <= gx <= mw_s:
-                md.line([(gx, 0), (gx, mh_s)], fill=(26, 46, 74, 120), width=2)
-        for glat in range(-60, 75, 15):
-            _, gy = _latlon_to_mercator_xy(glat, 0, mw_s, mh_s, center_lon=center_lon, center_lat=center_lat, zoom_scale=cur_zoom)
+                md.line([(gx, 0), (gx, mh_s)], fill=(22, 38, 62, 110), width=2)
+        for glat in range(-65, 75, grid_step_deg):
+            _, gy = _latlon_to_mercator_xy(glat, center_lon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
             if 0 <= gy <= mh_s:
-                md.line([(0, gy), (mw_s, gy)], fill=(26, 46, 74, 120), width=2)
+                md.line([(0, gy), (mw_s, gy)], fill=(22, 38, 62, 110), width=2)
 
-        # Render Smooth Catmull-Rom Continental & Island Landmasses with Anti-Wrap Guard & Coastal Glow
-        for poly in HIGH_DETAIL_WORLD_LAND_POLYGONS:
-            raw_pts = []
-            wrap_jump = False
-            for (plat, plon) in poly:
-                px_m, py_m = _latlon_to_mercator_xy(plat, plon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
-                if raw_pts and abs(px_m - raw_pts[-1][0]) > mw_s * 0.48:
-                    wrap_jump = True
-                    break
-                raw_pts.append((px_m, py_m))
-            if wrap_jump or len(raw_pts) < 3 or abs(raw_pts[0][0] - raw_pts[-1][0]) > mw_s * 0.48:
+        # Draw ALL 177 real countries from `NATURAL_EARTH_COUNTRY_POLYGONS_CACHE` with crisp sovereign borders!
+        drawn_ring_sigs = set()
+        for k_poly, poly_rings in list(NATURAL_EARTH_COUNTRY_POLYGONS_CACHE.items()):
+            if k_poly.startswith("_") or k_poly.startswith("ISO_") or not isinstance(poly_rings, list):
                 continue
-            pts = _smooth_closed_polygon(raw_pts, subdiv=5)
-            if len(pts) >= 3:
-                md.line(pts + [pts[0]], fill=(0, 185, 255, 55), width=14)
-                md.polygon(pts, fill=(24, 48, 74, 255))
-                md.line(pts + [pts[0]], fill=(75, 215, 255, 225), width=3)
+            for c_ring in poly_rings:
+                if not c_ring:
+                    continue
+                sig = (round(c_ring[0][0], 1), round(c_ring[0][1], 1), len(c_ring))
+                if sig in drawn_ring_sigs:
+                    continue
+                drawn_ring_sigs.add(sig)
+                pts_r = []
+                wrap_r = False
+                for (plat, plon) in c_ring:
+                    px_m, py_m = _latlon_to_mercator_xy(plat, plon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
+                    if pts_r and abs(px_m - pts_r[-1][0]) > mw_s * 0.45:
+                        wrap_r = True
+                        break
+                    pts_r.append((px_m, py_m))
+                if not wrap_r and len(pts_r) >= 3:
+                    xs = [p[0] for p in pts_r]
+                    ys = [p[1] for p in pts_r]
+                    if max(xs) < -200 or min(xs) > mw_s + 200 or max(ys) < -200 or min(ys) > mh_s + 200:
+                        continue
+                    md.polygon(pts_r, fill=(28, 44, 68, 255))
+                    md.line(pts_r + [pts_r[0]], fill=(64, 92, 130, 215), width=3)
 
         bg = map_layer.resize((W, H), getattr(Image, "Resampling", Image).LANCZOS)
         def proj_fn(lat_p, lon_p):
             return _latlon_to_mercator_xy(lat_p, lon_p, W, H, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
 
-    draw = ImageDraw.Draw(bg, "RGBA")
-
-    # 2B. V58 GEOLAYERS-3 STYLE ACTIVE COUNTRY POLYGON HIGHLIGHT (Glow-fills the exact story countries!)
+    # 4. Highlight Active Story Countries with Crisp Think School Crimson & Gold Borders
     highlight_palette = [
-        ((255, 215, 0, 88), (255, 225, 0, 245)),
-        ((0, 235, 255, 82), (0, 240, 255, 245)),
-        ((255, 65, 95, 82), (255, 75, 105, 245)),
-        ((45, 245, 165, 82), (45, 245, 165, 245))
+        ((230, 57, 70, 128), (255, 95, 108, 255)),   # Primary Country: Think School Crimson
+        ((255, 183, 3, 118), (255, 215, 0, 255)),    # Secondary Country / Rival: Think School Gold
+        ((0, 215, 255, 104), (0, 240, 255, 255)),    # 3rd Corridor Node: Tactical Cyan
+        ((45, 225, 155, 104), (65, 245, 175, 255))   # 4th Corridor Node: Emerald
     ]
     poly_ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     pd_ov = ImageDraw.Draw(poly_ov, "RGBA")
-    for idx_hc, (hc_title, hc_d) in enumerate(matched_countries[:4]):
+    for idx_hc, (hc_title, hc_d) in enumerate(matched_countries[:6]):
         c_polys = get_country_boundary_polygons(hc_title.upper()) or get_country_boundary_polygons(f"ISO_{hc_d.get('iso2', '')}")
         fill_c, rim_c = highlight_palette[idx_hc % len(highlight_palette)]
         for c_ring in c_polys:
             ring_xy = [proj_fn(plat, plon) for (plat, plon) in c_ring]
             if len(ring_xy) >= 3:
-                sm_ring = _smooth_closed_polygon(ring_xy, subdiv=4)
-                pd_ov.polygon(sm_ring, fill=fill_c)
-                pd_ov.line(sm_ring + [sm_ring[0]], fill=rim_c, width=3)
+                pd_ov.polygon(ring_xy, fill=fill_c)
+                pd_ov.line(ring_xy + [ring_xy[0]], fill=(rim_c[0], rim_c[1], rim_c[2], 95), width=8)
+                pd_ov.line(ring_xy + [ring_xy[0]], fill=rim_c, width=3)
     bg.alpha_composite(poly_ov)
     draw = ImageDraw.Draw(bg, "RGBA")
 
-    # 3. Plot Real Story Countries, Meaningful Dotted Route Curves & Flag Pin Cards!
-    pin_coords = []
-    for idx_c, (cnt_title, cnt_d) in enumerate(matched_countries[:4]):
-        px_c, py_c = proj_fn(cnt_d.get("lat", target_lat), cnt_d.get("lon", target_lon))
-        px_c = max(90, min(W - 140, px_c))
-        py_c = max(160, min(H - (460 if is_short else 260), py_c))
-        pin_coords.append((px_c, py_c, cnt_title.upper(), cnt_d))
+    # 5. Reserve Occupied UI Zones FIRST so zero pins or labels ever collide!
+    if not is_short:
+        c_box = (W - 638, 112, W - 46, 396)
+    else:
+        c_box = (44, 1055, W - 44, 1375)
 
-    # Draw animated Think School dotted route arcs ONLY between real story countries (`len(pin_coords) >= 2`)
+    occupied_boxes = [
+        (0, 0, W, 102),                          # Top header safe zone
+        (0, H - 195, W, H),                      # Bottom subtitle safe zone
+        (c_box[0] - 18, c_box[1] - 14, c_box[2] + 18, c_box[3] + 14)  # Map Briefing Card safe zone
+    ]
+
+    def _box_collides(b_test, pad_x=0, pad_y=0):
+        tx0, ty0, tx1, ty1 = b_test[0] - pad_x, b_test[1] - pad_y, b_test[2] + pad_x, b_test[3] + pad_y
+        for ox0, oy0, ox1, oy1 in occupied_boxes:
+            if not (tx1 < ox0 or tx0 > ox1 or ty1 < oy0 or ty0 > oy1):
+                return True
+        return False
+
+    # 6. Compute Active Country Flag Pins & Step-by-Step Animated Corridor Curve Points
+    pin_coords = []
+    if active_chokepoint and active_chokepoint.get("route_nodes"):
+        for idx_rn, (rn_lbl, rlat, rlon) in enumerate(active_chokepoint["route_nodes"]):
+            px_c, py_c = proj_fn(rlat, rlon)
+            px_c = max(90, min(W - 140, px_c))
+            py_c = max(140, min(H - (440 if is_short else 230), py_c))
+            cnt_d = matched_countries[min(idx_rn, len(matched_countries) - 1)][1]
+            pin_coords.append((px_c, py_c, rn_lbl, cnt_d))
+    else:
+        for idx_c, (cnt_title, cnt_d) in enumerate(matched_countries[:4]):
+            px_c, py_c = proj_fn(cnt_d.get("lat", target_lat), cnt_d.get("lon", target_lon))
+            px_c = max(90, min(W - 140, px_c))
+            py_c = max(140, min(H - (440 if is_short else 230), py_c))
+            pin_coords.append((px_c, py_c, cnt_title.upper(), cnt_d))
+
+    # Reserve pin target circles in `occupied_boxes`
+    for px_c, py_c, _, _ in pin_coords:
+        occupied_boxes.append((px_c - 24, py_c - 24, px_c + 24, py_c + 24))
+
+    # Draw sequential chain route (p0 -> p1 -> p2 -> p3) like Think School's IMEC / Red Sea corridor!
     if len(pin_coords) >= 2:
-        p0_x, p0_y, _, _ = pin_coords[0]
-        for idx_dest in range(1, len(pin_coords)):
-            p1_x, p1_y, _, _ = pin_coords[idx_dest]
+        for idx_seg in range(len(pin_coords) - 1):
+            p0_x, p0_y, _, _ = pin_coords[idx_seg]
+            p1_x, p1_y, _, _ = pin_coords[idx_seg + 1]
             mid_x = (p0_x + p1_x) * 0.5
-            mid_y = min(p0_y, p1_y) - max(45, int(math.hypot(p1_x - p0_x, p1_y - p0_y) * 0.22))
-            arc_p = min(max((local_t - (idx_dest - 1) * 0.20) / 0.85, 0.0), 1.0)
-            r_col = (255, 215, 0, 255) if idx_dest == 1 else (0, 235, 255, 255)
-            # Animated dotted trajectory curve
-            n_dots = int(28 * arc_p)
+            mid_y = min(p0_y, p1_y) - max(38, int(math.hypot(p1_x - p0_x, p1_y - p0_y) * 0.18))
+            seg_p = min(max((local_t - idx_seg * 0.22) / 0.65, 0.0), 1.0)
+            if seg_p <= 0.02:
+                continue
+            r_col = (255, 215, 0, 255) if idx_seg % 2 == 0 else (0, 235, 255, 255)
+            n_dots = int(28 * seg_p)
+            pts_line = []
             for d_i in range(n_dots + 1):
                 u = d_i / 28.0
                 dx = ((1 - u) ** 2) * p0_x + 2 * (1 - u) * u * mid_x + (u ** 2) * p1_x
                 dy = ((1 - u) ** 2) * p0_y + 2 * (1 - u) * u * mid_y + (u ** 2) * p1_y
+                pts_line.append((dx, dy))
+                if d_i % 4 == 0:
+                    occupied_boxes.append((int(dx) - 12, int(dy) - 12, int(dx) + 12, int(dy) + 12))
                 if d_i % 2 == 0:
                     draw.ellipse([(dx - 4, dy - 4), (dx + 4, dy + 4)], fill=r_col)
                 if d_i == n_dots:
                     draw.ellipse([(dx - 9, dy - 9), (dx + 9, dy + 9)], fill=(255, 255, 255, 255), outline=r_col, width=3)
+            if len(pts_line) >= 2:
+                draw.line(pts_line, fill=(r_col[0], r_col[1], r_col[2], 95), width=6)
 
-    # Draw Pulsing Radar Rings & Real Country Flag Pin Cards with Automatic Collision Avoidance!
-    placed_pill_boxes = []
+    # Place Active Country Flag Pills with collision-free leader lines
     for idx_p, (px_c, py_c, cnt_up, cnt_d) in enumerate(pin_coords):
         is_primary = (idx_p == 0)
-        p_col = (255, 55, 75, 255) if is_primary else (0, 235, 255, 255)
-        if is_primary:
-            for r_i in range(2):
-                pr = int(18 + ((local_t * 42.0 + r_i * 28.0) % 64.0))
-                pa = int(210 * (1.0 - pr / 84.0))
-                draw.ellipse([(px_c - pr, py_c - pr), (px_c + pr, py_c + pr)], outline=(255, 65, 85, pa), width=3)
+        p_col = (230, 57, 70, 255) if is_primary else (255, 195, 0, 255)
+        for r_i in range(2 if is_primary else 1):
+            pr = int(16 + ((local_t * 38.0 + r_i * 24.0) % 52.0))
+            pa = int(195 * (1.0 - pr / 70.0))
+            draw.ellipse([(px_c - pr, py_c - pr), (px_c + pr, py_c + pr)], outline=(p_col[0], p_col[1], p_col[2], pa), width=3)
         draw.ellipse([(px_c - 8, py_c - 8), (px_c + 8, py_c + 8)], fill=p_col, outline=(255, 255, 255, 255), width=3)
 
-        # Country Flag + Name Pin Pill with Automatic Collision Avoidance so nearby countries never overlap!
         f_pin = get_font(18 if not is_short else 17)
         tw_p = int(f_pin.getlength(cnt_up))
         pw_pin, ph_pin = tw_p + 66, 38
-        cand_offsets = [(-pw_pin // 2, -56), (-pw_pin // 2, 20), (-pw_pin - 18, -18), (18, -18), (-pw_pin // 2, -104), (-pw_pin // 2, 68)]
+        if idx_p == 0:
+            pill_only_boxes = [
+                (0, 0, W, 102),
+                (0, H - 195, W, H),
+                (c_box[0] - 14, c_box[1] - 12, c_box[2] + 14, c_box[3] + 12)
+            ] + [(px_i - 10, py_i - 10, px_i + 10, py_i + 10) for (px_i, py_i, _, _) in pin_coords]
+        cand_offsets = [
+            (-pw_pin // 2, -64), (-pw_pin // 2, 26), (-pw_pin - 26, -19), (26, -19),
+            (-pw_pin - 22, -60), (22, -60), (-pw_pin - 22, 26), (22, 26),
+            (-pw_pin - 36, -92), (36, -92), (-pw_pin - 36, 62), (36, 62),
+            (-pw_pin // 2, -112), (-pw_pin // 2, 74), (-pw_pin - 80, -19), (80, -19)
+        ]
         bx_p = max(24, min(W - pw_pin - 24, px_c - pw_pin // 2))
-        by_p = max(120, py_c - 54 if idx_p % 2 == 0 else py_c + 16)
+        by_p = max(112, py_c - 64 if idx_p % 2 == 0 else py_c + 26)
+        found_clean = False
         for dx_o, dy_o in cand_offsets:
             cx_try = max(24, min(W - pw_pin - 24, px_c + dx_o))
-            cy_try = max(120, min(H - 210, py_c + dy_o))
-            box_try = (cx_try - 8, cy_try - 6, cx_try + pw_pin + 8, cy_try + ph_pin + 6)
-            if not any(not (box_try[2] < ob[0] or box_try[0] > ob[2] or box_try[3] < ob[1] or box_try[1] > ob[3]) for ob in placed_pill_boxes):
+            cy_try = max(112, min(H - 220, py_c + dy_o))
+            box_try = (cx_try, cy_try, cx_try + pw_pin, cy_try + ph_pin)
+            if not _box_collides(box_try, pad_x=8, pad_y=6):
                 bx_p, by_p = cx_try, cy_try
+                found_clean = True
                 break
-        placed_pill_boxes.append((bx_p, by_p, bx_p + pw_pin, by_p + ph_pin))
+        if not found_clean:
+            for dx_o, dy_o in cand_offsets:
+                cx_try = max(24, min(W - pw_pin - 24, px_c + dx_o))
+                cy_try = max(112, min(H - 220, py_c + dy_o))
+                tx0, ty0, tx1, ty1 = cx_try - 8, cy_try - 6, cx_try + pw_pin + 8, cy_try + ph_pin + 6
+                if not any(not (tx1 < ox0 or tx0 > ox1 or ty1 < oy0 or ty0 > oy1) for (ox0, oy0, ox1, oy1) in pill_only_boxes):
+                    bx_p, by_p = cx_try, cy_try
+                    break
+        pill_only_boxes.append((bx_p - 8, by_p - 6, bx_p + pw_pin + 8, by_p + ph_pin + 6))
+        occupied_boxes.append((bx_p - 10, by_p - 8, bx_p + pw_pin + 10, by_p + ph_pin + 8))
         draw.line([(px_c, py_c), (bx_p + pw_pin // 2, by_p + ph_pin // 2)], fill=(p_col[0], p_col[1], p_col[2], 195), width=2)
-        draw.rounded_rectangle([(bx_p + 2, by_p + 3), (bx_p + pw_pin + 2, by_p + ph_pin + 3)], radius=12, fill=(0, 0, 0, 160))
-        draw.rounded_rectangle([(bx_p, by_p), (bx_p + pw_pin, by_p + ph_pin)], radius=12, fill=(12, 20, 38, 235), outline=p_col, width=2)
+        draw.rounded_rectangle([(bx_p + 2, by_p + 4), (bx_p + pw_pin + 2, by_p + ph_pin + 4)], radius=10, fill=(0, 0, 0, 175))
+        draw.rounded_rectangle([(bx_p, by_p), (bx_p + pw_pin, by_p + ph_pin)], radius=10, fill=(14, 22, 38, 244), outline=p_col, width=2)
         try:
-            fl_im = get_or_build_flag_icon(cnt_d.get('iso2', 'US'), 32, 22)
+            fl_im = get_or_build_flag_icon(cnt_d.get("iso2", "US"), 32, 22)
             bg.paste(fl_im, (bx_p + 10, by_p + 8))
         except Exception:
             pass
         draw = ImageDraw.Draw(bg, "RGBA")
         draw.text((bx_p + 50, by_p + 8), cnt_up, fill=(255, 255, 255, 255), font=f_pin)
 
-    # 4. Clean Editorial Bottom/Side Map Summary Card (Zero `>> // :: COORDS` AI Jargon!)
-    kp_map, _ = extract_key_point_from_sentence(b_txt, beat_num=1)
-    if not is_short:
-        c_box = (W - 640, 140, W - 64, 430)
-    else:
-        c_box = (48, 1060, W - 48, 1380)
+    # 7. Place Sea Labels & Neighboring Country Labels with ZERO Overlap!
+    if active_chokepoint and active_chokepoint.get("sea_labels"):
+        f_sea = get_font(16)
+        for s_lbl, slat, slon in active_chokepoint["sea_labels"]:
+            sx_l, sy_l = proj_fn(slat, slon)
+            s_full = f"~ {s_lbl} ~"
+            sw_l = int(f_sea.getlength(s_full))
+            s_box = (sx_l - sw_l // 2, sy_l - 10, sx_l + sw_l // 2, sy_l + 18)
+            if 60 <= s_box[0] and s_box[2] <= W - 60 and 115 <= s_box[1] and s_box[3] <= H - 210:
+                if not _box_collides(s_box, pad_x=14, pad_y=8):
+                    occupied_boxes.append(s_box)
+                    draw.text((s_box[0] + 1, s_box[1] + 1), s_full, fill=(0, 0, 0, 215), font=f_sea)
+                    draw.text((s_box[0], s_box[1]), s_full, fill=(0, 225, 255, 225), font=f_sea)
 
-    draw_2026_visionos_glass_card(
-        bg, c_box, radius=24, tint=(10, 18, 34, 212),
-        border_col=(255, 215, 0, 185), accent_col=(255, 215, 0), accent_pos="left", blur_px=18
-    )
-    draw = ImageDraw.Draw(bg, "RGBA")
+    active_names_up = {x[0].upper() for x in matched_countries[:6]} | {x[2].upper() for x in pin_coords}
+    if "UAE" in active_names_up:
+        active_names_up.add("UNITED ARAB EMIRATES")
+    f_neigh = get_font(15 if not is_short else 14)
+    MAJOR_NEIGHBORS_PRIORITY = [
+        "UNITED STATES", "CHINA", "RUSSIA", "INDIA", "IRAN", "SAUDI ARABIA", "EGYPT", "TURKEY",
+        "ISRAEL", "IRAQ", "SYRIA", "JORDAN", "YEMEN", "OMAN", "PAKISTAN", "FRANCE", "GERMANY",
+        "UNITED KINGDOM", "ITALY", "SPAIN", "POLAND", "UKRAINE", "GREECE", "JAPAN", "SOUTH KOREA",
+        "AUSTRALIA", "BRAZIL", "CANADA", "MEXICO", "INDONESIA", "VIETNAM", "THAILAND", "ETHIOPIA",
+        "SUDAN", "LIBYA", "ALGERIA", "MOROCCO", "KAZAKHSTAN", "AFGHANISTAN"
+    ]
+    ordered_nb = [k for k in MAJOR_NEIGHBORS_PRIORITY if k in COUNTRY_GEO_DB] + [k for k in COUNTRY_GEO_DB.keys() if k not in MAJOR_NEIGHBORS_PRIORITY]
+    placed_nb_count = 0
+    for nb_name in ordered_nb:
+        if placed_nb_count >= 11:
+            break
+        if nb_name in active_names_up or nb_name in ("GLOBAL", "INTERNATIONAL", "EUROPE", "EUROPEAN UNION", "NATO", "ASEAN", "MIDDLE EAST", "PALESTINE"):
+            continue
+        nb_tup = COUNTRY_GEO_DB[nb_name]
+        nx, ny = proj_fn(nb_tup[5], nb_tup[6])
+        tw_n = int(f_neigh.getlength(nb_name))
+        nb_box = (nx - tw_n // 2, ny - 9, nx + tw_n // 2, ny + 15)
+        if 80 <= nb_box[0] and nb_box[2] <= W - 80 and 125 <= nb_box[1] and nb_box[3] <= H - 220:
+            if not _box_collides(nb_box, pad_x=28, pad_y=16):
+                occupied_boxes.append(nb_box)
+                placed_nb_count += 1
+                draw.text((nb_box[0] + 1, nb_box[1] + 1), nb_name, fill=(0, 0, 0, 195), font=f_neigh)
+                draw.text((nb_box[0], nb_box[1]), nb_name, fill=(165, 190, 220, 195), font=f_neigh)
+
+    # 8. Tactile Think School Archival Dossier Map Briefing Card (Warm Cream/Slate Human-Edited Card!)
     cx0, cy0, cx1, cy1 = c_box
-    route_str = " ➔ ".join(x[2] for x in pin_coords[:3]) if len(pin_coords) >= 2 else f"{c_name} • {cap_name}"
-    draw.text((cx0 + 28, cy0 + 22), "GEOPOLITICAL ROUTE & IMPACT", fill=(255, 215, 0, 255), font=get_font(18))
-    draw.text((cx0 + 28, cy0 + 52), fit_whole_words_limit(route_str, 32), fill=(0, 235, 255, 255), font=get_font(22))
-    draw.rounded_rectangle([(cx0 + 28, cy0 + 92), (cx1 - 28, cy0 + 142)], radius=10, fill=(255, 215, 0, 238))
-    draw.text((cx0 + 42, cy0 + 103), fit_whole_words_limit(point_hl, 26), fill=(10, 14, 24, 255), font=get_font(24 if not is_short else 22))
-    f_mc = get_font(22)
-    for l_i, ln_m in enumerate(wrap_text_px(b_txt, f_mc, (cx1 - cx0) - 56, max_lines=3)):
-        draw.text((cx0 + 28, cy0 + 160 + l_i * 36), ln_m, fill=(242, 247, 255, 255), font=f_mc)
+    draw.rounded_rectangle([(cx0 + 8, cy0 + 10), (cx1 + 8, cy1 + 10)], radius=18, fill=(0, 0, 0, 185))
+    draw.rounded_rectangle([(cx0, cy0), (cx1, cy1)], radius=18, fill=(247, 243, 232, 248), outline=(215, 205, 185, 255), width=3)
+    draw.rounded_rectangle([(cx0, cy0), (cx1, cy0 + 50)], radius=16, fill=(16, 24, 40, 255))
+    draw.rectangle([(cx0, cy0 + 36), (cx1, cy0 + 50)], fill=(16, 24, 40, 255))
+    draw.rectangle([(cx0, cy0), (cx0 + 12, cy1)], fill=(230, 57, 70, 255))
+
+    map_hdr_str = active_chokepoint["title"] if active_chokepoint else (" ➔ ".join(x[2] for x in pin_coords[:3]) if len(pin_coords) >= 2 else f"{c_name} • {cap_name}")
+    draw.text((cx0 + 26, cy0 + 15), f"MAP BRIEFING  •  {fit_whole_words_limit(map_hdr_str, 22)}", fill=(255, 215, 0, 255), font=get_font(17))
+
+    # Yellow Highlighter bar behind key takeaway inside the Map Briefing Card
+    draw.rounded_rectangle([(cx0 + 24, cy0 + 64), (cx1 - 22, cy0 + 108)], radius=8, fill=(255, 230, 0, 245))
+    draw.text((cx0 + 34, cy0 + 73), fit_whole_words_limit(point_hl, 30), fill=(12, 16, 24, 255), font=get_font(22 if not is_short else 20))
+
+    f_mc = get_font(20)
+    for l_i, ln_m in enumerate(wrap_text_px(b_txt, f_mc, (cx1 - cx0) - 48, max_lines=4)):
+        draw.text((cx0 + 26, cy0 + 122 + l_i * 34), ln_m, fill=(24, 30, 42, 255), font=f_mc)
 
     bg.alpha_composite(get_prebuilt_vignette_overlay(W, H))
     return bg
+
 
 def build_evidence_paper_cutout_rgba(beat, local_t, is_short=True):
     """
@@ -14336,37 +14663,27 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
             except Exception:
                 pass
 
-    # 2. Composite Pre-Built HUD Layer + V71 Think School Top Yellow/Crimson Case-Study Question Bar!
+    # 2. Clean Human-Edited Top Branding & Chapter Indicator (No Robotic Multi-Box Clutter!)
     hud_layer = build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=is_short)
     frame.alpha_composite(hud_layer)
-    if sim_mode is None:
-        ts_bar_d = ImageDraw.Draw(frame, "RGBA")
-        ts_htape = fit_whole_words_limit(str(beat.get("hook_tape") or beat.get("section_headline") or "GEOPOLITICAL CASE STUDY").upper(), 36 if not is_short else 24)
-        f_tsb = get_font(23 if not is_short else 24)
-        tb_w = int(f_tsb.getlength(ts_htape)) + 56
-        tb_x = (W - tb_w) // 2
-        tb_y = 22 if not is_short else 148
-        ts_bar_d.rounded_rectangle([(tb_x + 3, tb_y + 4), (tb_x + tb_w + 3, tb_y + 46)], radius=10, fill=(0, 0, 0, 210))
-        ts_bar_d.rounded_rectangle([(tb_x, tb_y), (tb_x + tb_w, tb_y + 42)], radius=10, fill=(14, 18, 30, 242), outline=(255, 220, 0, 245), width=2)
-        ts_bar_d.rectangle([(tb_x, tb_y), (tb_x + 12, tb_y + 42)], fill=(220, 20, 45, 255))
-        ts_bar_d.text((tb_x + 26, tb_y + 7), ts_htape, fill=(255, 230, 0, 255), font=f_tsb)
 
-    # 2B. Sleek Chapter Header Card (first 1.05s of each chapter in Long Documentary)
-    if not is_short and beat_in_sec_cur == 0 and local_t < 1.05 and beat.get("person_popup") is None and sim_mode is None:
-        ch_alpha = int(225 * (1.0 - max(0.0, (local_t - 0.68) / 0.37))) if local_t > 0.68 else 225
+    # 2B. Think School Minimal Chapter Title Card (first 1.15s of a new chapter on Long Documentaries)
+    if not is_short and beat_in_sec_cur == 0 and local_t < 1.15 and sim_mode is None:
+        ch_alpha = int(235 * (1.0 - max(0.0, (local_t - 0.78) / 0.37))) if local_t > 0.78 else 235
         ch_ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         ch_d = ImageDraw.Draw(ch_ov, "RGBA")
         ch_num = sec_idx_cur + 1
-        ch_title = fit_whole_words_limit(str(beat.get("section_headline") or "KEY INVESTIGATION").upper(), 28)
-        cw_b, ch_b = 760, 114
-        cx_b, cy_b = (W - cw_b) // 2, (H - ch_b) // 2 - 30
-        ch_d.rounded_rectangle([(cx_b, cy_b), (cx_b + cw_b, cy_b + ch_b)], radius=18, fill=(8, 14, 28, ch_alpha), outline=(255, 215, 0, ch_alpha), width=3)
-        ch_d.rectangle([(cx_b, cy_b), (cx_b + 12, cy_b + ch_b)], fill=(225, 25, 50, ch_alpha))
-        ch_d.text((cx_b + 34, cy_b + 16), f"CHAPTER {ch_num:02d}  •  INVESTIGATIVE DOSSIER", fill=(0, 240, 255, ch_alpha), font=get_font(20))
-        ch_d.text((cx_b + 34, cy_b + 50), ch_title, fill=(255, 255, 255, ch_alpha), font=get_font(35))
+        ch_title = fit_whole_words_limit(str(beat.get("section_headline") or "GEOPOLITICAL CASE STUDY").upper(), 30)
+        cw_b, ch_b = 780, 112
+        cx_b, cy_b = (W - cw_b) // 2, (H - ch_b) // 2 - 36
+        ch_d.rounded_rectangle([(cx_b + 6, cy_b + 8), (cx_b + cw_b + 6, cy_b + ch_b + 8)], radius=16, fill=(0, 0, 0, int(ch_alpha * 0.75)))
+        ch_d.rounded_rectangle([(cx_b, cy_b), (cx_b + cw_b, cy_b + ch_b)], radius=16, fill=(12, 18, 32, ch_alpha), outline=(255, 215, 0, ch_alpha), width=3)
+        ch_d.rectangle([(cx_b, cy_b), (cx_b + 12, cy_b + ch_b)], fill=(230, 57, 70, ch_alpha))
+        ch_d.text((cx_b + 34, cy_b + 16), f"PART {ch_num:02d}  •  WORLD TALK BRIEF CASE STUDY", fill=(255, 215, 0, ch_alpha), font=get_font(19))
+        ch_d.text((cx_b + 34, cy_b + 48), ch_title, fill=(255, 255, 255, ch_alpha), font=get_font(34))
         frame.alpha_composite(ch_ov)
 
-    # Apply smooth 0.20s optical cross-dissolve transition across ALL beat types (Video, Photo, and VFX)!
+    # Apply smooth 0.20s optical cross-dissolve transition across ALL beat types
     if local_t < 0.20 and beat.get("prev_stage") is not None:
         try:
             prev_f = extract_diverse_camera_frame_from_stage(beat["prev_stage"], W, H, 1.0, camera_mode=(cam_mode - 1) % 3, local_t=local_t)
@@ -14374,50 +14691,52 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
         except Exception:
             pass
 
-    # 3. V53 THINK SCHOOL SINGLE-FOCUS CORNER CALLOUT (Zero Multi-Box Clutter!):
-    #    On normal video/photo beats (`sim_mode is None`), show EITHER the Kinetic Number Callout (when a big figure is spoken)
-    #    OR the Think School Floating Evidence Strip — NEVER both at the same time!
+    # 3. V72 HUMAN-EDITED SINGLE-ELEMENT VISUAL FOCUS (Never stack multiple competing boxes on screen!):
+    #    Priority A: If a verified Person is introduced on this beat, slide in their Tactile Dossier Card.
+    #    Priority B: If a key number/statistic/year appears in this sentence, pop in the Kinetic Number Badge.
+    #    Priority C: On Beat 2 of a chapter (when no template or person card is active), animate the Think School
+    #                Cream Archival Newspaper Evidence Cutout with yellow highlighter stroke!
+    #    Priority D: Otherwise, keep 88%+ of the 1080p frame completely clean with only a subtle lower-left yellow highlight tag.
     if sim_mode is None:
-        num_card = build_kinetic_number_callout_rgba(beat, local_t, is_short=is_short)
-        if num_card is not None and (beat_in_sec_cur % 2 == 1):
-            nw_c, nh_c = num_card.size
-            nx_c = 42 if not is_short else (W - nw_c) // 2
-            ny_c = (H - 256) if not is_short else 110
-            frame.paste(num_card, (nx_c, ny_c), num_card)
-        else:
-            pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short)
-            if pt_card is not None:
-                pt_w, pt_h = pt_card.size
-                pt_anim = min(max(local_t / 0.28, 0.0), 1.0)
-                pt_ease = 1.0 - ((1.0 - pt_anim) ** 3)
+        if beat.get("person_popup") is not None:
+            p_badge = build_corner_person_dossier_badge_rgba(beat["person_popup"], is_short=is_short)
+            if p_badge is not None:
+                pw_b, ph_b = p_badge.size
+                p_anim = cubic_bezier_ease_in_out(min(max(local_t / 0.32, 0.0), 1.0))
                 if is_short:
-                    pt_x = (W - pt_w) // 2
-                    pt_y = int(110 - (1.0 - pt_ease) * 20)
+                    px_b = (W - pw_b) // 2
+                    py_b = int(1290 + (1.0 - p_anim) * 40)
                 else:
-                    pt_x = int(42 - (1.0 - pt_ease) * 260)
-                    pt_y = H - 256
-                frame.paste(pt_card, (pt_x, pt_y), pt_card)
-
-    # 6. Nitish Rajput / Think School Verified Person Dossier Badge & Center Evidence Cutout (100% Active Pipeline):
-    dir_prof = get_category_director_profile((beat.get("story") or {}).get("pillar", "WORLD"))
-    if beat.get("person_popup") is not None and sim_mode is None:
-        p_badge = build_corner_person_dossier_badge_rgba(beat["person_popup"], is_short=is_short)
-        if beat_in_sec_cur == 1 and local_t < 1.35:
-            _ = build_prebuilt_person_card_rgba(beat["person_popup"], is_short=is_short)
-    elif sim_mode is None and beat_in_sec_cur == 2 and local_t < 0.85 and dir_prof:
-        _ = build_evidence_paper_cutout_rgba(beat, local_t, is_short=is_short)
-    if beat.get("person_popup") is not None and sim_mode is None:
-        p_badge = build_corner_person_dossier_badge_rgba(beat["person_popup"], is_short=is_short)
-        if p_badge is not None:
-            pw_b, ph_b = p_badge.size
-            p_anim = cubic_bezier_ease_in_out(min(max(local_t / 0.32, 0.0), 1.0))
-            if is_short:
-                px_b = (W - pw_b) // 2
-                py_b = int(1290 + (1.0 - p_anim) * 40)
-            else:
-                px_b = int((W - pw_b - 42) + (1.0 - p_anim) * 180)
-                py_b = H - 275
-            frame.paste(p_badge, (px_b, py_b), p_badge)
+                    px_b = int((W - pw_b - 42) + (1.0 - p_anim) * 180)
+                    py_b = H - 275
+                frame.paste(p_badge, (px_b, py_b), p_badge)
+        else:
+            num_card = build_kinetic_number_callout_rgba(beat, local_t, is_short=is_short)
+            if num_card is not None:
+                nw_c, nh_c = num_card.size
+                nx_c = 42 if not is_short else (W - nw_c) // 2
+                ny_c = (H - 256) if not is_short else 110
+                frame.paste(num_card, (nx_c, ny_c), num_card)
+            elif beat_in_sec_cur == 2 and (not is_short):
+                ev_cutout = build_evidence_paper_cutout_rgba(beat, local_t, is_short=is_short)
+                if ev_cutout is not None:
+                    ew, eh = ev_cutout.size
+                    ex = (W - ew) // 2
+                    ey = int(H * 0.56) - eh // 2
+                    frame.paste(ev_cutout, (ex, ey), ev_cutout)
+            elif local_t > 0.15:
+                pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short)
+                if pt_card is not None:
+                    pt_w, pt_h = pt_card.size
+                    pt_anim = min(max((local_t - 0.15) / 0.28, 0.0), 1.0)
+                    pt_ease = 1.0 - ((1.0 - pt_anim) ** 3)
+                    if is_short:
+                        pt_x = (W - pt_w) // 2
+                        pt_y = int(110 - (1.0 - pt_ease) * 20)
+                    else:
+                        pt_x = int(42 - (1.0 - pt_ease) * 260)
+                        pt_y = H - 256
+                    frame.paste(pt_card, (pt_x, pt_y), pt_card)
 
     # 7. Composite Cached Synced Subtitles (with Key Point Keyword Highlighting!)
     sub_strip = voice_sub_dir.render_exact_synced_subtitles(
@@ -15046,7 +15365,7 @@ class VoiceAndSubtitleEngine:
             # V30 Warm Human Studio Condenser Mastering to Uncompressed PCM WAV:
             cmd = [
                 "ffmpeg", "-nostdin", "-y", "-i", raw_mp3,
-                "-af", "highpass=f=75,equalizer=f=145:width_type=o:width=1.2:g=1.8,equalizer=f=3800:width_type=o:width=1.2:g=-1.4,equalizer=f=9500:width_type=o:width=1.5:g=0.8,loudnorm=I=-16:TP=-1.5:LRA=11,afade=t=in:st=0:d=0.03,apad=pad_dur=0.14",
+                "-af", "highpass=f=65,equalizer=f=130:width_type=o:width=1.4:g=1.4,equalizer=f=3200:width_type=o:width=1.2:g=0.8,acompressor=threshold=-19dB:ratio=1.8:attack=18:release=220,loudnorm=I=-15:TP=-1.2:LRA=9,afade=t=in:st=0:d=0.03,apad=pad_dur=0.18",
                 "-ar", "44100", "-ac", "2", "-c:a", "pcm_s16le", wav_out
             ]
             run_isolated_subprocess(cmd, timeout_sec=12)
@@ -15863,14 +16182,14 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
         ]
     else:
         domain_matrix = [
-            f"To understand the strategic calculus behind {t_anc}, diplomatic historians and defense analysts point to the shifting balance of power centered around {c_name}.",
-            f"Behind the official communiques from {cap_city}, intelligence assessments and bilateral trade data reveal a calculated effort to secure long-term geopolitical leverage.",
-            f"From a Follow-the-Money and strategic deterrence perspective, the commitments surrounding {t_anc} directly reshape defense budgets, energy corridors, and regional alliances.",
-            f"International observers tracking {t_anc} note that every diplomatic concession or security pact in {c_name} triggers immediate counter-moves across Washington, Brussels, Beijing, and allied capitals.",
-            f"When we examine the hard numbers behind {t_anc}, it becomes clear that modern geopolitics is fought as much through supply chains, sanctions, and sovereign finance as through military hardware.",
-            f"For strategic planners in {cap_city} and across the Indo-Pacific, {t_anc} serves as a live test of how nations protect their national interest in a multipolar world.",
-            f"Defense and foreign-policy experts emphasize that the agreements forged around {t_anc} will define regional security architecture and trade routes for the next decade.",
-            f"Ultimately, the unfolding case study of {t_anc} in {c_name} demonstrates how rapidly a targeted diplomatic or defense shift can redraw the global power map."
+            f"Now look at the strategic map around {c_name}, because what is happening with {t_anc} is not an isolated headline—it is a high-stakes chess move being watched closely in Washington, Beijing, and Brussels.",
+            f"If we follow the money behind {t_anc}, the real battle in {cap_city} comes down to who controls critical maritime chokepoints, energy pipelines, and sovereign debt leverage.",
+            f"On one side, leaders in {cap_city} are pushing for immediate strategic deterrence around {t_anc}, while on the other side, global markets are pricing in the risk of a wider supply-chain shock.",
+            f"Let us do the simple math on why {t_anc} matters to everyday citizens: whenever a flashpoint hits {c_name}, shipping insurance, crude oil benchmarks, and import prices react within hours.",
+            f"Behind closed doors in Washington and {cap_city}, defense planners warn that {t_anc} is testing the limits of existing military alliances and sanctions enforcement.",
+            f"This creates a classic geopolitical paradox in {c_name}, where every diplomatic concession or military deployment around {t_anc} triggers an immediate counter-move from rival superpowers.",
+            f"Looking ahead, there are three realistic scenarios for {t_anc}, and each one will directly reshape trade corridors, defense budgets, and the global balance of power.",
+            f"Ultimately, the case study of {t_anc} in {c_name} proves that in 2026, what starts as a regional flashpoint quickly lands on Wall Street trading desks and household budgets worldwide."
         ]
         extra_roles = [
             ("THE STRATEGIC TRIGGER", "THE DIPLOMATIC CALCULUS"),
