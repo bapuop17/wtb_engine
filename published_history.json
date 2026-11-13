@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-13T15:49:23.648779",
-  "last_upload_epoch": 1794584963,
-  "round_robin_idx": 2,
-  "country_rot_idx": 32,
-  "bgm_track_counter": 3266716252,
+  "updated_at": "2026-11-13T22:08:27.002153",
+  "last_upload_epoch": 1794607707,
+  "round_robin_idx": 3,
+  "country_rot_idx": 38,
+  "bgm_track_counter": 3267281605,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -679,116 +679,11 @@
     "u_s_united_launch_alliance_vulcan",
     "israel_strikes_gaza_nasser_hospital_6",
     "university_of_nigeria_nsukka_four_nigerian",
-    "nigeria_nsukka_tragedy_4_students_die"
+    "nigeria_nsukka_tragedy_4_students_die",
+    "turkey_and_qatar_pledge_unified_stance",
+    "turkey_qatar_defence_pact_erdogan_al"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why Egypt Just Sent Troops to Defend Saudi Arabia",
-      "tokens": [
-        "abdel",
-        "approval",
-        "arabia",
-        "armed",
-        "authorise",
-        "defend",
-        "defensive",
-        "deploy",
-        "egypt",
-        "egyptian",
-        "fattah",
-        "forces",
-        "house",
-        "just",
-        "missions",
-        "october",
-        "president",
-        "representatives",
-        "request",
-        "saudi",
-        "sent",
-        "sisi",
-        "troops"
-      ]
-    },
-    {
-      "title": "An American delegation is preparing to join talks with Iranian counterparts in Doha following a reported breakthrough in indirect negotiatio",
-      "tokens": [
-        "american",
-        "araby",
-        "breakthrough",
-        "comment",
-        "counterparts",
-        "delegation",
-        "doha",
-        "fears",
-        "following",
-        "indirect",
-        "information",
-        "iran",
-        "iranian",
-        "jadeed",
-        "join",
-        "mediated",
-        "mediation",
-        "more",
-        "mount",
-        "negotiations",
-        "pakistan",
-        "preparing",
-        "qatar",
-        "qatari",
-        "reported",
-        "section",
-        "strike",
-        "talks",
-        "tehran",
-        "visit"
-      ]
-    },
-    {
-      "title": "US Iran Doha Talks: The $150B Nuclear Bet Explained",
-      "tokens": [
-        "american",
-        "breakthrough",
-        "counterparts",
-        "delegation",
-        "doha",
-        "following",
-        "indirect",
-        "iran",
-        "iranian",
-        "join",
-        "mediated",
-        "negotiations",
-        "nuclear",
-        "pakistan",
-        "preparing",
-        "qatar",
-        "reported",
-        "talks"
-      ]
-    },
-    {
-      "title": "UK's Burnham says he is 'open' to formal apology for slavery, but rules out reparations",
-      "tokens": [
-        "apology",
-        "britain",
-        "burnham",
-        "face",
-        "formal",
-        "jerusalem",
-        "minister",
-        "must",
-        "open",
-        "past",
-        "post",
-        "prime",
-        "reparations",
-        "role",
-        "rules",
-        "slavery"
-      ]
-    },
     {
       "title": "Iran's Khamenei Orders Military to Expand US Retaliation Plans",
       "tokens": [
@@ -8367,10 +8262,77 @@
         "tragedy",
         "university"
       ]
+    },
+    {
+      "title": "Nigeria Nsukka Tragedy: 4 Students Die After Party | Geopolitical Case Study",
+      "tokens": [
+        "case",
+        "geopolitical",
+        "nigeria",
+        "nsukka",
+        "party",
+        "students",
+        "study",
+        "tragedy"
+      ]
+    },
+    {
+      "title": "Nigeria Nsukka Tragedy: 4 Students Die After Party! #shorts",
+      "tokens": [
+        "nigeria",
+        "nsukka",
+        "party",
+        "shorts",
+        "students",
+        "tragedy"
+      ]
+    },
+    {
+      "title": "Turkey and Qatar pledge unified stance against attacks in mutual defence pact",
+      "tokens": [
+        "against",
+        "agreement",
+        "attack",
+        "attacks",
+        "country",
+        "defence",
+        "either",
+        "friday",
+        "joint",
+        "leaders",
+        "mutual",
+        "pact",
+        "pledge",
+        "pledging",
+        "qatar",
+        "response",
+        "signed",
+        "stance",
+        "statement",
+        "turkey",
+        "unified"
+      ]
+    },
+    {
+      "title": "Turkey-Qatar Defence Pact: Erdogan & Al Thani's New Shield",
+      "tokens": [
+        "against",
+        "attacks",
+        "defence",
+        "erdogan",
+        "mutual",
+        "pact",
+        "pledge",
+        "qatar",
+        "shield",
+        "stance",
+        "thani",
+        "turkey",
+        "unified"
+      ]
     }
   ],
   "last_categories": [
-    "VIRAL_UNDERDOG_SPORTS",
     "AI_ROBOTICS",
     "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS",
@@ -8409,10 +8371,10 @@
     "VIRAL_UNDERDOG_SPORTS",
     "AI_ROBOTICS",
     "VIRAL_UNDERDOG_SPORTS",
-    "SCIENCE"
+    "SCIENCE",
+    "DEFENSE_MILITARY"
   ],
   "last_sources": [
-    "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "Global Country Wire [NIGERIA \u2022 AI_ROBOTICS]",
     "Google Trends Viral [ARGENTINA]",
     "Ars Technica",
@@ -8451,10 +8413,10 @@
     "Google Trends Viral [AUSTRALIA]",
     "Google Trends India Viral 24h",
     "Google Trends Viral [BANGLADESH]",
-    "Global Country Wire [NIGERIA \u2022 SCIENCE]"
+    "Global Country Wire [NIGERIA \u2022 SCIENCE]",
+    "France24 Global Affairs"
   ],
   "last_countries": [
-    "VIETNAM",
     "GLOBAL CINEMA",
     "UNITED STATES",
     "EUROPE",
@@ -8503,7 +8465,8 @@
     "INDIA",
     "UNITED KINGDOM",
     "PAKISTAN",
-    "NIGERIA"
+    "NIGERIA",
+    "TURKEY"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8557,6 +8520,30 @@
       "is_short": true,
       "published_iso": "2026-11-13T15:49:00Z",
       "summary": "Four students from the University of Nigeria, Nsukka, died after consuming a mixture of alcohol and suspected hard drugs at an off-campus house party. This case study investigates the failure of campus security protocols and the dark underbelly of student nigh"
+    },
+    {
+      "video_id": "f02LWHlCqYg",
+      "title": "Turkey-Qatar Defence Pact: Erdogan & Al Thani's New Shield | Geopolitical Case Study",
+      "url": "https://www.youtube.com/watch?v=f02LWHlCqYg",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/f02LWHlCqYg.html",
+      "thumb_url": "https://i.ytimg.com/vi/f02LWHlCqYg/maxresdefault.jpg",
+      "pillar": "DEFENSE_MILITARY",
+      "country": "Turkey",
+      "is_short": false,
+      "published_iso": "2026-11-13T22:02:21Z",
+      "summary": "In a shocking geopolitical shift, Turkey and Qatar have signed a mutual defence agreement, pledging a unified response to any attack on either nation. This move, following the recent Mecca Joint Defence Agreement with Saudi Arabia and Pakistan, signals a deepe"
+    },
+    {
+      "video_id": "QWmfByP0_AU",
+      "title": "Turkey-Qatar Defence Pact: Erdogan & Al Thani's New Shield",
+      "url": "https://www.youtube.com/shorts/QWmfByP0_AU",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/QWmfByP0_AU.html",
+      "thumb_url": "https://i.ytimg.com/vi/QWmfByP0_AU/maxresdefault.jpg",
+      "pillar": "DEFENSE_MILITARY",
+      "country": "Turkey",
+      "is_short": true,
+      "published_iso": "2026-11-13T22:08:05Z",
+      "summary": "In a shocking geopolitical shift, Turkey and Qatar have signed a mutual defence agreement, pledging a unified response to any attack on either nation. This move, following the recent Mecca Joint Defence Agreement with Saudi Arabia and Pakistan, signals a deepe"
     }
   ]
 }
