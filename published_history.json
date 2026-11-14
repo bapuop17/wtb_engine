@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-14T05:33:49.834652",
-  "last_upload_epoch": 1794634429,
-  "round_robin_idx": 6,
-  "country_rot_idx": 56,
-  "bgm_track_counter": 3344401828,
+  "updated_at": "2026-11-14T12:28:11.120535",
+  "last_upload_epoch": 1794659291,
+  "round_robin_idx": 7,
+  "country_rot_idx": 62,
+  "bgm_track_counter": 3354741359,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -696,60 +696,12 @@
     "the_lowdown_season_2_hidden_conspiracy",
     "nvidia_board_probe_spy_affair_stock",
     "how_philip_k_dick_predicted_the",
-    "philip_k_dick_s_ai_prophecy"
+    "philip_k_dick_s_ai_prophecy",
+    "global_tech_ai_philip_k_dick",
+    "north_carolina_third_congressional_district_election",
+    "why_north_carolina_third_congressional_district"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why Zelda & GTA Reveal the Gaming Industry\u2019s Death Spiral",
-      "tokens": [
-        "death",
-        "gaming",
-        "industry",
-        "reveal",
-        "spiral",
-        "zelda"
-      ]
-    },
-    {
-      "title": "Why Chery\u2019s Claim of \u2018Not Enough EV SUVs\u2019 Could Shift Australia\u2019s Auto Future",
-      "tokens": [
-        "australia",
-        "auto",
-        "chery",
-        "claim",
-        "could",
-        "enough",
-        "future",
-        "suvs"
-      ]
-    },
-    {
-      "title": "Why Japan's Secret Arms Deal Is Triggering a Cyber\u2011Intelligence Arms Race in the Indo\u2011Pacific",
-      "tokens": [
-        "arms",
-        "cyber",
-        "deal",
-        "indo",
-        "intelligence",
-        "japan",
-        "pacific",
-        "race",
-        "triggering"
-      ]
-    },
-    {
-      "title": "German Cost\u2011of\u2011Living Protests Explode: Why Shops Were Looted Overnight",
-      "tokens": [
-        "cost",
-        "explode",
-        "german",
-        "living",
-        "looted",
-        "overnight",
-        "protests",
-        "shops"
-      ]
-    },
     {
       "title": "Japan\u2019s Secret Weapon: Why China Is Terrified of This Tech",
       "tokens": [
@@ -8194,10 +8146,66 @@
         "terrified",
         "valley"
       ]
+    },
+    {
+      "title": "Global Tech & Ai: Philip K. Dick's AI Prophecy: Why Silicon Valley Is Terrified",
+      "tokens": [
+        "dick",
+        "philip",
+        "prophecy",
+        "silicon",
+        "tech",
+        "terrified",
+        "valley"
+      ]
+    },
+    {
+      "title": "Philip K. Dick's AI Prophecy: Why Silicon Valley! #shorts",
+      "tokens": [
+        "dick",
+        "philip",
+        "prophecy",
+        "shorts",
+        "silicon",
+        "valley"
+      ]
+    },
+    {
+      "title": "North Carolina Third Congressional District Election Results",
+      "tokens": [
+        "carolina",
+        "challenge",
+        "conceded",
+        "congress",
+        "congressional",
+        "democrat",
+        "district",
+        "election",
+        "flipped",
+        "formidable",
+        "incumbent",
+        "north",
+        "representative",
+        "republican",
+        "results",
+        "seat",
+        "third"
+      ]
+    },
+    {
+      "title": "Why North Carolina Third Congressional District Election Results",
+      "tokens": [
+        "carolina",
+        "congressional",
+        "district",
+        "election",
+        "north",
+        "results",
+        "third"
+      ]
     }
   ],
   "last_categories": [
-    "ENTERTAINMENT",
     "SCIENCE",
     "GEOPOLITICS",
     "SCIENCE",
@@ -8236,10 +8244,10 @@
     "DEFENSE_MILITARY",
     "SCIENCE",
     "GEOPOLITICS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "BBC Entertainment & Arts",
     "The Guardian Science",
     "Google Trends Viral [IRELAND]",
     "NASA, SpaceX, ESA & Global Space Missions",
@@ -8278,10 +8286,10 @@
     "France24 Global Affairs",
     "Ars Technica",
     "Global Country Wire [MOROCCO \u2022 UNDERRATED_GEOPOLITICS]",
-    "Global AI, Nvidia, OpenAI & Semiconductor Race"
+    "Global AI, Nvidia, OpenAI & Semiconductor Race",
+    "Google Trends USA Viral 24h"
   ],
   "last_countries": [
-    "SOUTH AFRICA",
     "QATAR",
     "NEW ZEALAND",
     "CHINA",
@@ -8330,7 +8338,8 @@
     "TURKEY",
     "SPACE & SCIENCE",
     "MOROCCO",
-    "GLOBAL TECH & AI"
+    "GLOBAL TECH & AI",
+    "UNITED STATES"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8480,6 +8489,30 @@
       "is_short": true,
       "published_iso": "2026-11-14T05:33:28Z",
       "summary": "In 1968, Philip K. Dick wrote about machines that could lie, manipulate, and erase human memory. Today, that fiction is becoming the operational reality of global AI infrastructure. This documentary investigates how the core themes of 'Do Androids Dream of Ele"
+    },
+    {
+      "video_id": "zfp1InN3c8k",
+      "title": "United States: Why North Carolina Third Congressional District Election Results",
+      "url": "https://www.youtube.com/watch?v=zfp1InN3c8k",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/zfp1InN3c8k.html",
+      "thumb_url": "https://i.ytimg.com/vi/zfp1InN3c8k/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "United States",
+      "is_short": false,
+      "published_iso": "2026-11-14T12:17:53Z",
+      "summary": "World Talk Brief [GEOPOLITICS] presents an original deep-dive case study."
+    },
+    {
+      "video_id": "tgTpRZdd23w",
+      "title": "Why North Carolina Third Congressional District Election Results",
+      "url": "https://www.youtube.com/shorts/tgTpRZdd23w",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/tgTpRZdd23w.html",
+      "thumb_url": "https://i.ytimg.com/vi/tgTpRZdd23w/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "United States",
+      "is_short": true,
+      "published_iso": "2026-11-14T12:27:49Z",
+      "summary": "Don Davis' victory in North Carolina's 3rd Congressional District marks a stunning upset, turning a long\u2011held Republican seat blue in the 2026 midterms. The win underscores a broader backlash against GOP\u2011crafted redistricting maps that aimed to lock in conserv"
     }
   ]
 }
