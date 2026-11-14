@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-14T02:14:17.309923",
-  "last_upload_epoch": 1794622457,
-  "round_robin_idx": 4,
-  "country_rot_idx": 44,
-  "bgm_track_counter": 3294645996,
+  "updated_at": "2026-11-14T04:30:00.643691",
+  "last_upload_epoch": 1794630600,
+  "round_robin_idx": 5,
+  "country_rot_idx": 50,
+  "bgm_track_counter": 3323761827,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -683,118 +683,11 @@
     "turkey_and_qatar_pledge_unified_stance",
     "turkey_qatar_defence_pact_erdogan_al",
     "starship_flight_15_powers_to_orbit",
-    "spacex_s_elon_musk_starship_flight"
+    "spacex_s_elon_musk_starship_flight",
+    "morocco_has_quietly_taken_delivery_of",
+    "morocco_s_secret_airbus_c295w_delivery"
   ],
   "event_fingerprints": [
-    {
-      "title": "24 Hours in 10 Minutes: Global Geopolitics & World News Briefing (October 31, 2026)",
-      "tokens": [
-        "back",
-        "briefing",
-        "came",
-        "city",
-        "couple",
-        "crossed",
-        "emotional",
-        "evacuated",
-        "food",
-        "front",
-        "geopolitics",
-        "hell",
-        "hours",
-        "line",
-        "minefields",
-        "minutes",
-        "occupied",
-        "october",
-        "oleshky",
-        "russia",
-        "search",
-        "they",
-        "ukrainians",
-        "years"
-      ]
-    },
-    {
-      "title": "Why Egypt's Sisi Matters to China's Russia-Africa Strategy and the Future of BRICS",
-      "tokens": [
-        "africa",
-        "brics",
-        "china",
-        "diplomacy",
-        "egypt",
-        "future",
-        "joined",
-        "joins",
-        "matters",
-        "modern",
-        "president",
-        "russia",
-        "sisi",
-        "strategy",
-        "summit"
-      ]
-    },
-    {
-      "title": "India's opposition set to hold mega rally seeking election chief's resignation",
-      "tokens": [
-        "bloc",
-        "chief",
-        "comes",
-        "election",
-        "exercise",
-        "feared",
-        "growing",
-        "gyanesh",
-        "hold",
-        "india",
-        "leave",
-        "mega",
-        "million",
-        "opposition",
-        "passed",
-        "protests",
-        "rally",
-        "resignation",
-        "resolution",
-        "revision",
-        "roll",
-        "rolls",
-        "seeking",
-        "symbolic",
-        "voter",
-        "voters"
-      ]
-    },
-    {
-      "title": "This oddball reflective lava world is challenging to understand",
-      "tokens": [
-        "among",
-        "challenging",
-        "complete",
-        "discoveries",
-        "exoplanet",
-        "hours",
-        "kepler",
-        "lava",
-        "less",
-        "many",
-        "move",
-        "oddball",
-        "orbit",
-        "period",
-        "planets",
-        "quickly",
-        "reflective",
-        "short",
-        "surprising",
-        "tess",
-        "than",
-        "ultra",
-        "understand",
-        "very"
-      ]
-    },
     {
       "title": "Why Sisi's Move Just Reshaped the Global Power Map",
       "tokens": [
@@ -8319,10 +8212,92 @@
         "starship",
         "watching"
       ]
+    },
+    {
+      "title": "SpaceX's Elon Musk Starship Flight 15 Orbits - Why the World Is Watching Explained",
+      "tokens": [
+        "elon",
+        "flight",
+        "musk",
+        "orbits",
+        "spacex",
+        "starship",
+        "watching"
+      ]
+    },
+    {
+      "title": "SpaceX's Elon Musk Starship Flight 15 Orbits - Why! #shorts",
+      "tokens": [
+        "elon",
+        "flight",
+        "musk",
+        "orbits",
+        "shorts",
+        "spacex",
+        "starship"
+      ]
+    },
+    {
+      "title": "Morocco has quietly taken delivery of its second Airbus C295W military transport aircraft, completing an order that neither Airbus nor Rabat",
+      "tokens": [
+        "about",
+        "acknowledged",
+        "airbus",
+        "aircraft",
+        "anno",
+        "arrived",
+        "base",
+        "carried",
+        "completing",
+        "country",
+        "days",
+        "delivery",
+        "first",
+        "kenitra",
+        "like",
+        "military",
+        "morocco",
+        "neither",
+        "northwest",
+        "officially",
+        "order",
+        "plane",
+        "quietly",
+        "rabat",
+        "reached",
+        "second",
+        "taken",
+        "transport",
+        "unit",
+        "without"
+      ]
+    },
+    {
+      "title": "Morocco's Secret Airbus C295W Delivery: King Mohammed VI's Quiet Power Play",
+      "tokens": [
+        "acknowledged",
+        "airbus",
+        "aircraft",
+        "completing",
+        "delivery",
+        "king",
+        "military",
+        "mohammed",
+        "morocco",
+        "neither",
+        "officially",
+        "order",
+        "plane",
+        "quiet",
+        "quietly",
+        "rabat",
+        "second",
+        "taken",
+        "transport"
+      ]
     }
   ],
   "last_categories": [
-    "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS",
     "ENTERTAINMENT",
     "SCIENCE",
@@ -8361,10 +8336,10 @@
     "VIRAL_UNDERDOG_SPORTS",
     "SCIENCE",
     "DEFENSE_MILITARY",
-    "SCIENCE"
+    "SCIENCE",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "Google Trends Viral [ARGENTINA]",
     "Ars Technica",
     "BBC Entertainment & Arts",
     "The Guardian Science",
@@ -8403,10 +8378,10 @@
     "Google Trends Viral [BANGLADESH]",
     "Global Country Wire [NIGERIA \u2022 SCIENCE]",
     "France24 Global Affairs",
-    "Ars Technica"
+    "Ars Technica",
+    "Global Country Wire [MOROCCO \u2022 UNDERRATED_GEOPOLITICS]"
   ],
   "last_countries": [
-    "UNITED STATES",
     "EUROPE",
     "SOUTH AFRICA",
     "QATAR",
@@ -8455,7 +8430,8 @@
     "PAKISTAN",
     "NIGERIA",
     "TURKEY",
-    "SPACE & SCIENCE"
+    "SPACE & SCIENCE",
+    "MOROCCO"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8557,6 +8533,30 @@
       "is_short": true,
       "published_iso": "2026-11-14T02:13:57Z",
       "summary": "Starship Flight 15 marks a pivotal moment in SpaceX's quest to make the world's largest rocket fully reusable. After a flawless launch from Starbase, Texas, the vehicle's Raptor engines powered the upper stage into low\u2011Earth orbit, making it the second time St"
+    },
+    {
+      "video_id": "MTORf20pdNA",
+      "title": "Morocco's Secret Airbus C295W Delivery: King Mohammed VI's Quiet Power Play Explained",
+      "url": "https://www.youtube.com/watch?v=MTORf20pdNA",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/MTORf20pdNA.html",
+      "thumb_url": "https://i.ytimg.com/vi/MTORf20pdNA/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Morocco",
+      "is_short": false,
+      "published_iso": "2026-11-14T04:23:50Z",
+      "summary": "Morocco has quietly taken delivery of its second Airbus C295W transport aircraft, completing a stealthy order that escaped official acknowledgment. The aircraft arrived at Kenitra Air Base just an hour after departing Seville, boosting the kingdom's rapid\u2011depl"
+    },
+    {
+      "video_id": "xQLiSlNhKlI",
+      "title": "Morocco's Secret Airbus C295W Delivery: King Mohammed VI's Quiet Power Play",
+      "url": "https://www.youtube.com/shorts/xQLiSlNhKlI",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/xQLiSlNhKlI.html",
+      "thumb_url": "https://i.ytimg.com/vi/xQLiSlNhKlI/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Morocco",
+      "is_short": true,
+      "published_iso": "2026-11-14T04:29:38Z",
+      "summary": "Morocco has quietly completed its delivery of Airbus C295W military transport aircraft at Kenitra Air Base, a move that signals a significant shift in North African air power. Unlike previous high-profile acquisitions, this procurement was conducted with zero "
     }
   ]
 }
