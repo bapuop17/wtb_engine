@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-14T14:39:30.374943",
-  "last_upload_epoch": 1794667170,
-  "round_robin_idx": 7,
-  "country_rot_idx": 62,
-  "bgm_track_counter": 3354741359,
+  "updated_at": "2026-11-14T19:11:19.308757",
+  "last_upload_epoch": 1794683479,
+  "round_robin_idx": 8,
+  "country_rot_idx": 68,
+  "bgm_track_counter": 3387894482,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -700,49 +700,11 @@
     "global_tech_ai_philip_k_dick",
     "north_carolina_third_congressional_district_election",
     "why_north_carolina_third_congressional_district",
-    "united_states_why_north_carolina_third"
+    "united_states_why_north_carolina_third",
+    "quad_summit_likely_to_be_held",
+    "why_quad_summit_likely_to_be"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why Japan's Secret Arms Deal Is Triggering a Cyber\u2011Intelligence Arms Race in the Indo\u2011Pa #Short",
-      "tokens": [
-        "arms",
-        "cyber",
-        "deal",
-        "indo",
-        "intelligence",
-        "japan",
-        "race",
-        "short",
-        "triggering"
-      ]
-    },
-    {
-      "title": "Rubio Defends Russian G20 Presence Despite Criticism From Allies",
-      "tokens": [
-        "allies",
-        "analysis",
-        "casts",
-        "claims",
-        "contacts",
-        "criticism",
-        "cutting",
-        "deal",
-        "defends",
-        "despite",
-        "doubts",
-        "down",
-        "intelligence",
-        "presence",
-        "quick",
-        "rubio",
-        "russian",
-        "slaps",
-        "ukraine",
-        "urges",
-        "zelensky"
-      ]
-    },
     {
       "title": "5 New Foldable Phones To Consider Instead Of The iPhone Duo",
       "tokens": [
@@ -8209,10 +8171,48 @@
         "shorts",
         "third"
       ]
+    },
+    {
+      "title": "Quad Summit likely to be held in Manila on November 17, sources say",
+      "tokens": [
+        "also",
+        "announced",
+        "asked",
+        "briefing",
+        "business",
+        "during",
+        "earlier",
+        "forum",
+        "friday",
+        "government",
+        "held",
+        "indicated",
+        "likely",
+        "manila",
+        "mechanism",
+        "november",
+        "quad",
+        "randhir",
+        "sources",
+        "spokesperson",
+        "summit",
+        "would"
+      ]
+    },
+    {
+      "title": "Why Quad Summit Likely to Be Held in Manila on November 17, Sources Say",
+      "tokens": [
+        "held",
+        "likely",
+        "manila",
+        "november",
+        "quad",
+        "sources",
+        "summit"
+      ]
     }
   ],
   "last_categories": [
-    "SCIENCE",
     "GEOPOLITICS",
     "SCIENCE",
     "TECHNOLOGY",
@@ -8251,10 +8251,10 @@
     "SCIENCE",
     "GEOPOLITICS",
     "AI_ROBOTICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "The Guardian Science",
     "Google Trends Viral [IRELAND]",
     "NASA, SpaceX, ESA & Global Space Missions",
     "Ars Technica",
@@ -8293,10 +8293,10 @@
     "Ars Technica",
     "Global Country Wire [MOROCCO \u2022 UNDERRATED_GEOPOLITICS]",
     "Global AI, Nvidia, OpenAI & Semiconductor Race",
-    "Google Trends USA Viral 24h"
+    "Google Trends USA Viral 24h",
+    "Global Country Wire [OMAN \u2022 GLOBAL_POWERS]"
   ],
   "last_countries": [
-    "QATAR",
     "NEW ZEALAND",
     "CHINA",
     "MEXICO",
@@ -8345,7 +8345,8 @@
     "SPACE & SCIENCE",
     "MOROCCO",
     "GLOBAL TECH & AI",
-    "UNITED STATES"
+    "UNITED STATES",
+    "PHILIPPINES"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8519,6 +8520,30 @@
       "is_short": true,
       "published_iso": "2026-11-14T12:27:49Z",
       "summary": "Don Davis' victory in North Carolina's 3rd Congressional District marks a stunning upset, turning a long\u2011held Republican seat blue in the 2026 midterms. The win underscores a broader backlash against GOP\u2011crafted redistricting maps that aimed to lock in conserv"
+    },
+    {
+      "video_id": "yLNIOctyBmo",
+      "title": "Philippines: Why Quad Summit Likely to Be Held in Manila on November 17, Sources Say",
+      "url": "https://www.youtube.com/watch?v=yLNIOctyBmo",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/yLNIOctyBmo.html",
+      "thumb_url": "https://i.ytimg.com/vi/yLNIOctyBmo/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Philippines",
+      "is_short": false,
+      "published_iso": "2026-11-14T18:58:33Z",
+      "summary": "World Talk Brief [GEOPOLITICS] presents an original deep-dive case study."
+    },
+    {
+      "video_id": "4KoXunRq7r4",
+      "title": "Why Quad Summit Likely to Be Held in Manila on November 17, Sources Say",
+      "url": "https://www.youtube.com/shorts/4KoXunRq7r4",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/4KoXunRq7r4.html",
+      "thumb_url": "https://i.ytimg.com/vi/4KoXunRq7r4/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Philippines",
+      "is_short": true,
+      "published_iso": "2026-11-14T19:10:58Z",
+      "summary": "World Talk Brief [GEOPOLITICS] original #Shorts case study."
     }
   ]
 }
