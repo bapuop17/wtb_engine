@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-13T22:08:27.002153",
-  "last_upload_epoch": 1794607707,
-  "round_robin_idx": 3,
-  "country_rot_idx": 38,
-  "bgm_track_counter": 3267281605,
+  "updated_at": "2026-11-14T02:14:17.309923",
+  "last_upload_epoch": 1794622457,
+  "round_robin_idx": 4,
+  "country_rot_idx": 44,
+  "bgm_track_counter": 3294645996,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -681,95 +681,11 @@
     "university_of_nigeria_nsukka_four_nigerian",
     "nigeria_nsukka_tragedy_4_students_die",
     "turkey_and_qatar_pledge_unified_stance",
-    "turkey_qatar_defence_pact_erdogan_al"
+    "turkey_qatar_defence_pact_erdogan_al",
+    "starship_flight_15_powers_to_orbit",
+    "spacex_s_elon_musk_starship_flight"
   ],
   "event_fingerprints": [
-    {
-      "title": "Iran's Khamenei Orders Military to Expand US Retaliation Plans",
-      "tokens": [
-        "commanders",
-        "confrontation",
-        "expand",
-        "iran",
-        "israel",
-        "khamenei",
-        "leader",
-        "military",
-        "mojtaba",
-        "options",
-        "ordered",
-        "orders",
-        "plans",
-        "prepare",
-        "renewed",
-        "retaliation",
-        "supreme",
-        "tehran"
-      ]
-    },
-    {
-      "title": "Railway engineering work over Christmas will cause 10 days of disruption",
-      "tokens": [
-        "birmingham",
-        "britain",
-        "busiest",
-        "cause",
-        "christmas",
-        "days",
-        "disruption",
-        "engineering",
-        "five",
-        "great",
-        "lines",
-        "london",
-        "most",
-        "open",
-        "paddington",
-        "passengers",
-        "railway",
-        "routes",
-        "shut",
-        "some",
-        "stations",
-        "stay",
-        "street",
-        "travelling",
-        "will",
-        "work"
-      ]
-    },
-    {
-      "title": "UK's Slavery Apology: The $100B Debt Trap You Missed",
-      "tokens": [
-        "apology",
-        "burnham",
-        "debt",
-        "formal",
-        "missed",
-        "open",
-        "reparations",
-        "rules",
-        "slavery",
-        "trap"
-      ]
-    },
-    {
-      "title": "Iran\u2019s Supreme Leader Orders Unlimited Retaliation\u2014What Happens Next?",
-      "tokens": [
-        "expand",
-        "happens",
-        "iran",
-        "khamenei",
-        "leader",
-        "military",
-        "next",
-        "orders",
-        "plans",
-        "retaliation",
-        "supreme",
-        "unlimited"
-      ]
-    },
     {
       "title": "24 Hours in 10 Minutes: Global Geopolitics & World News Briefing (October 31, 2026)",
       "tokens": [
@@ -8330,10 +8246,82 @@
         "turkey",
         "unified"
       ]
+    },
+    {
+      "title": "Turkey-Qatar Defence Pact: Erdogan & Al Thani's New Shield | Geopolitical Case Study",
+      "tokens": [
+        "case",
+        "defence",
+        "erdogan",
+        "geopolitical",
+        "pact",
+        "qatar",
+        "shield",
+        "study",
+        "thani",
+        "turkey"
+      ]
+    },
+    {
+      "title": "Turkey-Qatar Defence Pact: Erdogan & Al Thani's! #shorts",
+      "tokens": [
+        "defence",
+        "erdogan",
+        "pact",
+        "qatar",
+        "shorts",
+        "thani",
+        "turkey"
+      ]
+    },
+    {
+      "title": "Starship flight 15 powers to orbit - setting up a possible catch on Saturday",
+      "tokens": [
+        "another",
+        "catch",
+        "company",
+        "data",
+        "flight",
+        "friday",
+        "lifted",
+        "making",
+        "more",
+        "orbit",
+        "possible",
+        "powers",
+        "right",
+        "saturday",
+        "schedule",
+        "setting",
+        "some",
+        "south",
+        "starbase",
+        "starship",
+        "test",
+        "texas",
+        "will"
+      ]
+    },
+    {
+      "title": "SpaceX's Elon Musk Starship Flight 15 Orbits \u2013 Why the World Is Watching",
+      "tokens": [
+        "catch",
+        "elon",
+        "flight",
+        "musk",
+        "orbit",
+        "orbits",
+        "possible",
+        "powers",
+        "saturday",
+        "setting",
+        "spacex",
+        "starship",
+        "watching"
+      ]
     }
   ],
   "last_categories": [
-    "AI_ROBOTICS",
     "UNDERRATED_GEOPOLITICS",
     "AI_ROBOTICS",
     "ENTERTAINMENT",
@@ -8372,10 +8360,10 @@
     "AI_ROBOTICS",
     "VIRAL_UNDERDOG_SPORTS",
     "SCIENCE",
-    "DEFENSE_MILITARY"
+    "DEFENSE_MILITARY",
+    "SCIENCE"
   ],
   "last_sources": [
-    "Global Country Wire [NIGERIA \u2022 AI_ROBOTICS]",
     "Google Trends Viral [ARGENTINA]",
     "Ars Technica",
     "BBC Entertainment & Arts",
@@ -8414,10 +8402,10 @@
     "Google Trends India Viral 24h",
     "Google Trends Viral [BANGLADESH]",
     "Global Country Wire [NIGERIA \u2022 SCIENCE]",
-    "France24 Global Affairs"
+    "France24 Global Affairs",
+    "Ars Technica"
   ],
   "last_countries": [
-    "GLOBAL CINEMA",
     "UNITED STATES",
     "EUROPE",
     "SOUTH AFRICA",
@@ -8466,7 +8454,8 @@
     "UNITED KINGDOM",
     "PAKISTAN",
     "NIGERIA",
-    "TURKEY"
+    "TURKEY",
+    "SPACE & SCIENCE"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8544,6 +8533,30 @@
       "is_short": true,
       "published_iso": "2026-11-13T22:08:05Z",
       "summary": "In a shocking geopolitical shift, Turkey and Qatar have signed a mutual defence agreement, pledging a unified response to any attack on either nation. This move, following the recent Mecca Joint Defence Agreement with Saudi Arabia and Pakistan, signals a deepe"
+    },
+    {
+      "video_id": "LqOi_0df5OU",
+      "title": "SpaceX's Elon Musk Starship Flight 15 Orbits - Why the World Is Watching Explained",
+      "url": "https://www.youtube.com/watch?v=LqOi_0df5OU",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/LqOi_0df5OU.html",
+      "thumb_url": "https://i.ytimg.com/vi/LqOi_0df5OU/maxresdefault.jpg",
+      "pillar": "SCIENCE",
+      "country": "Space & Science",
+      "is_short": false,
+      "published_iso": "2026-11-14T01:57:24Z",
+      "summary": "SpaceX's Starship Flight 15 just hit a stable low\u2011Earth orbit, marking the rocket's first truly operational orbital flight. In this deep\u2011dive we break down why the launch matters to Wall Street, satellite operators, and governments worldwide. We compare Elon M"
+    },
+    {
+      "video_id": "rt3e1B8G89g",
+      "title": "SpaceX's Elon Musk Starship Flight 15 Orbits \u2013 Why the World Is Watching",
+      "url": "https://www.youtube.com/shorts/rt3e1B8G89g",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/rt3e1B8G89g.html",
+      "thumb_url": "https://i.ytimg.com/vi/rt3e1B8G89g/maxresdefault.jpg",
+      "pillar": "SCIENCE",
+      "country": "Space & Science",
+      "is_short": true,
+      "published_iso": "2026-11-14T02:13:57Z",
+      "summary": "Starship Flight 15 marks a pivotal moment in SpaceX's quest to make the world's largest rocket fully reusable. After a flawless launch from Starbase, Texas, the vehicle's Raptor engines powered the upper stage into low\u2011Earth orbit, making it the second time St"
     }
   ]
 }
