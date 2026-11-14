@@ -11633,7 +11633,7 @@ def build_prebuilt_hud_badge_layer(beat, watermark, W, H, is_short=True):
     story_obj[cache_k] = hud
     return hud
 
-def build_point_highlight_banner_rgba(beat, W, H, is_short=True):
+def build_point_highlight_banner_rgba(beat, W, H, is_short=True, local_t=1.0, beat_dur=5.0):
     """
     V52 THINK SCHOOL FLOATING EVIDENCE & DOCUMENT CALLOUT STRIP (Corner-Anchored — Zero Center Obstruction!):
     Displays the chapter number, source/dossier verification tag, and a crisp Think School yellow-highlighted
@@ -11656,12 +11656,17 @@ def build_point_highlight_banner_rgba(beat, W, H, is_short=True):
     d.rounded_rectangle([(0, 0), (bw - 4, bh - 4)], radius=18, fill=(10, 18, 34, 218), outline=(255, 255, 255, 82), width=2)
     d.rounded_rectangle([(0, 10), (7, bh - 14)], radius=3, fill=(255, 215, 0, 255))
     d.text((20, 10), sub_lbl, fill=(0, 235, 255, 255), font=f_sub)
-    # Think School yellow highlighter strip behind main point
-    hl_w = min(bw - 36, int(f_main.getlength(pt_txt)) + 20)
-    d.rounded_rectangle([(18, 32), (18 + hl_w, 64)], radius=7, fill=(255, 225, 0, 242))
-    d.text((28, 35), pt_txt, fill=(10, 14, 24, 255), font=f_main)
+    # Animated Think School yellow highlighter wipe (0.1s -> 1.3s) + continuous beat progress bar!
+    wipe_p = cubic_bezier_ease_in_out(min(max((local_t - 0.12) / 1.15, 0.08), 1.0))
+    hl_w = int(min(bw - 36, int(f_main.getlength(pt_txt)) + 20) * wipe_p)
+    if hl_w > 8:
+        d.rounded_rectangle([(18, 32), (18 + hl_w, 64)], radius=7, fill=(255, 225, 0, 245))
+    d.text((28, 35), pt_txt, fill=(10, 14, 24, 255) if wipe_p > 0.45 else (255, 255, 255, 255), font=f_main)
     if short_clause:
-        d.text((20, 70), f'"{short_clause}..."', fill=(232, 240, 255, 245), font=f_cl)
+        d.text((20, 68), f'"{short_clause}..."', fill=(232, 240, 255, 245), font=f_cl)
+    prog_b = min(max(local_t / max(beat_dur, 2.5), 0.05), 1.0)
+    d.rounded_rectangle([(20, bh - 10), (bw - 20, bh - 5)], radius=3, fill=(30, 41, 59, 220))
+    d.rounded_rectangle([(20, bh - 10), (20 + int((bw - 40) * prog_b), bh - 5)], radius=3, fill=(245, 158, 11, 255))
     return card
 
 def format_animated_countup_number(raw_num_str, prog):
@@ -12403,32 +12408,39 @@ def _does_category_allow_group(pillar_str, story_low, group_code):
 
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False, sec_idx=0, beat_in_sec=0, is_short=False):
     """
-    V51 SMART CONTEXT-ONLY 28-TEMPLATE THINK SCHOOL ROUTER (`jahan zaroorat pade wahin pe daalna hai`):
-    - Beat 0 of EVERY chapter (`beat_in_sec == 0`) is ALWAYS `None` (100% full-bleed real 1080p event video or
-      exact-sentence HD press photo—so the viewer always sees the real person/event first!).
-    - On `beat_in_sec >= 1`, evaluates the exact spoken sentence (`beat_text`) against all 28 specialized templates.
-    - ONLY activates a graphic template if:
-      1) This chapter doesn't already have a graphic (`used_chapters`),
-      2) Total graphics in this video are below the natural cap (`<= 3` for Shorts, `<= 6` for Longs),
-      3) The spoken sentence matches a genuine contextual trigger (`score >= 84`), and
-      4) That specific template has not been used yet in this video (`used_templates`), guaranteeing 100% variety!
+    V75 HIGH-FREQUENCY CLAUDE UI/UX MOTION-GRAPHICS & THINK SCHOOL ANIMATION ROUTER:
+    Fixes the 'no animation / mostly static frames' problem in `MTORf20pdNA`:
+    - Previously, `if sec_idx in used_chapters: return None` and `sec_idx in (0, 2, 4, 6, 8)` meant 87% of beats
+      had `sim_mode = None`!
+    - Now in V75:
+      * Beat 0 of Chapter 0 (`sec_idx == 0 and beat_in_sec == 0`) shows the full-bleed Hero Video/Scene with an
+        animated Chapter Intro + Live Telemetry Overlay.
+      * In EVERY chapter (`sec_idx = 0..9`), up to 2 beats per chapter (`beat_in_sec in (1, 3)` or any strong regex match)
+        activate full 30fps animated Motion Graphics (`TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`, `TS_05_CHOKEPOINT_CORRIDOR_MAP`,
+        `TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT`, `TS_04_DOMINO_CHAIN_FLOWCHART`, `TS_02_HEAD_TO_HEAD_VS_SPLIT`,
+        `GEO_08_MILITARY_FIREPOWER_RADAR`, `BIZ_14_FOLLOW_THE_MONEY_WATERFALL`, `TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD`)!
+      * And Beat 2 (`beat_in_sec == 2`) activates the 3D-Tilted Animated Newspaper Cutout (`build_evidence_paper_cutout_rgba`)
+        or Animated Kinetic Stat/Dossier Overlay in `render_1080p_beat_frame`!
     """
     low = str(beat_text or "").lower()
     if "subscribe to world talk brief" in low or "watch the full documentary" in low:
         return None
 
-    # Keep opening hook beat (sec_idx == 0 and beat_in_sec == 0) 100% full-bleed real video/photo!
+    # Keep the very first cold-open beat (Chapter 0, Beat 0) full-bleed hero video/scene
     if sec_idx == 0 and beat_in_sec == 0:
         return None
-    if not is_short and beat_in_sec == 0 and not any(k in low for k in ["on one side", "out of 100", "100-unit", "100 unit", "chokepoint", "three questions", "three lessons", "domino"]):
+
+    cnt_key = "_v75_tpl_counts_short" if is_short else "_v75_tpl_counts_long"
+    ch_cnt_key = "_v75_ch_counts_short" if is_short else "_v75_ch_counts_long"
+    tpl_counts = dossier.setdefault(cnt_key, {})
+    ch_counts = dossier.setdefault(ch_cnt_key, {})
+
+    max_per_chapter = 2 if not is_short else 1
+    if ch_counts.get(sec_idx, 0) >= max_per_chapter:
         return None
 
-    tpl_key = "_v55_used_templates_short" if is_short else "_v55_used_templates_long"
-    ch_key = "_v55_used_chapters_short" if is_short else "_v55_used_chapters_long"
-    used_templates = dossier.setdefault(tpl_key, set())
-    used_chapters = dossier.setdefault(ch_key, set())
-    max_graphics = 4 if is_short else 10
-    if sec_idx in used_chapters or len(used_templates) >= max_graphics:
+    # Keep Beat 0 of chapters as full-bleed moving video/parallax scene unless it has a strong map/comparison trigger
+    if beat_in_sec == 0 and not any(k in low for k in ["map", "strait", "corridor", "border", "on one side", "versus", "vs", "out of 100"]):
         return None
 
     pillar = str(dossier.get("sub_pillar") or dossier.get("pillar", "WORLD")).upper()
@@ -12436,10 +12448,12 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
 
     best_mode = None
     best_score = -1
-
     has_digit_in_beat = bool(re.search(r"\d", low))
+
     for t_mode, grp_code, pat_str, base_sc in V51_TEMPLATE_RULES:
-        if t_mode in used_templates:
+        # Allow core motion-graphics modes to appear up to 3 times per long documentary (with different data!)
+        max_uses_for_mode = 3 if t_mode in ("TS_05_CHOKEPOINT_CORRIDOR_MAP", "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD", "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT", "TS_04_DOMINO_CHAIN_FLOWCHART", "GEO_08_MILITARY_FIREPOWER_RADAR") else 1
+        if tpl_counts.get(t_mode, 0) >= max_uses_for_mode:
             continue
         if t_mode in ("BIZ_14_FOLLOW_THE_MONEY_WATERFALL", "TS_06_SIMPLE_100_MATH_GRID", "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE") and not has_digit_in_beat:
             continue
@@ -12447,42 +12461,41 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
             continue
         hits = re.findall(pat_str, low, flags=re.I)
         if hits:
-            sc = base_sc + min(12, len(hits) * 4)
+            sc = base_sc + min(12, len(hits) * 4) - (tpl_counts.get(t_mode, 0) * 8)
             if grp_code not in ("ALL", "BIZ_ALL"):
                 sc += 6
             if sc > best_score:
                 best_score = sc
                 best_mode = t_mode
 
-    if best_mode and best_score >= 76:
-        used_templates.add(best_mode)
-        used_chapters.add(sec_idx)
+    if best_mode and best_score >= 74:
+        tpl_counts[best_mode] = tpl_counts.get(best_mode, 0) + 1
+        ch_counts[sec_idx] = ch_counts.get(sec_idx, 0) + 1
         return best_mode
 
-    # V73 CONTEXT-VERIFIED THINK SCHOOL & CLAUDE UI/UX GRAPHIC ROUTER:
-    # NEVER force an Election Hemicycle (`TS_03`), 100-Math Grid (`TS_06`), or Contender VS Split (`TS_02`)
-    # unless the sentence actually matches those concepts!
-    # On `beat_in_sec == 1` of a chapter, use ONLY universally accurate documentary layouts:
-    # - Chapter 0/1: Cartographic Map (`TS_05_CHOKEPOINT_CORRIDOR_MAP`) to establish exact geography
-    # - Next: Tilted Archival Newspaper Clipping (`TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT`)
-    # - Next: Claude UI/UX Pin-Point Scene & Event Breakdown Card (`TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`)
-    # - Next: 3-Step Cause & Effect Domino Card (`TS_04_DOMINO_CHAIN_FLOWCHART`)
-    if beat_in_sec == 1 and sec_idx in (0, 2, 4, 6, 8):
-        safe_editorial_rotation = [
+    # V75 GUARANTEED EVERY-CHAPTER MOTION GRAPHICS (On Beat 1 and Beat 3 of EVERY chapter!):
+    if beat_in_sec in (1, 3):
+        editorial_cycle = [
+            "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
             "TS_05_CHOKEPOINT_CORRIDOR_MAP",
             "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
-            "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
             "TS_04_DOMINO_CHAIN_FLOWCHART",
-            "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD"
+            "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
+            "GEO_08_MILITARY_FIREPOWER_RADAR",
+            "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
+            "TS_05_CHOKEPOINT_CORRIDOR_MAP",
+            "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
+            "TS_28_STUDIO_QUOTE_PRESS_MONITOR"
         ]
-        for cand_ts in safe_editorial_rotation:
-            if cand_ts not in used_templates:
-                used_templates.add(cand_ts)
-                used_chapters.add(sec_idx)
-                return cand_ts
+        chosen_m = editorial_cycle[(sec_idx * 2 + (0 if beat_in_sec == 1 else 1)) % len(editorial_cycle)]
+        # If `BIZ_14` is chosen on a non-numeric beat, swap to `TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`
+        if chosen_m == "BIZ_14_FOLLOW_THE_MONEY_WATERFALL" and not has_digit_in_beat:
+            chosen_m = "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD"
+        tpl_counts[chosen_m] = tpl_counts.get(chosen_m, 0) + 1
+        ch_counts[sec_idx] = ch_counts.get(sec_idx, 0) + 1
+        return chosen_m
 
     return None
-
 
 
 def activate_v67_auxiliary_vfx_engines(mode, beat, local_t, W, H, is_short=True):
@@ -12543,9 +12556,19 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or topic_anc).upper(), 28)
     b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
     clauses = extract_clean_story_clauses(beat, count=4)
-    anim_p = cubic_bezier_ease_in_out(min(max(local_t / 0.55, 0.0), 1.0))
+    beat_dur_t = max(float(beat.get("duration") or 5.0), 3.0)
+    # V75 Multi-Stage Continuous 30fps Animation Clocks (Animates across the ENTIRE beat instead of freezing at 0.55s!):
+    anim_p = cubic_bezier_ease_in_out(min(max(local_t / 1.65, 0.0), 1.0))
+    step1_p = spring_physics_ease(min(max((local_t - 0.08) / 0.65, 0.0), 1.0))
+    step2_p = spring_physics_ease(min(max((local_t - 0.75) / 0.70, 0.0), 1.0))
+    step3_p = spring_physics_ease(min(max((local_t - 1.45) / 0.75, 0.0), 1.0))
+    cont_ken_burns = 1.0 + 0.14 * min(max(local_t / beat_dur_t, 0.0), 1.0)
     resample_l = getattr(Image, "Resampling", Image).LANCZOS
-    src_im = (beat.get("primary_im") or beat.get("secondary_im") or bg).convert("RGB")
+    raw_src_im = (beat.get("primary_im") or beat.get("secondary_im") or bg).convert("RGB")
+    # Apply continuous 30fps Ken Burns camera zoom to `src_im` so photos inside cards are ALWAYS moving!
+    kw_s, kh_s = raw_src_im.size
+    crop_w_kb, crop_h_kb = int(kw_s / cont_ken_burns), int(kh_s / cont_ken_burns)
+    src_im = raw_src_im.crop(((kw_s - crop_w_kb) // 2, (kh_s - crop_h_kb) // 2, (kw_s - crop_w_kb) // 2 + crop_w_kb, (kh_s - crop_h_kb) // 2 + crop_h_kb))
     vseg_q = beat.get("vseg") or beat.get("bg_support_vseg")
     if vseg_q is not None and vseg_q.get("vclip") is not None:
         try:
@@ -12851,68 +12874,120 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     #          combining a 1080p Pin-Point Scene Frame on the left with a structured Case Evidence & Timeline Card on the right!
     # ==========================================================================
     elif mode == "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD":
+        # V75 CLAUDE CODE UI/UX MOTION GRAPHICS BENTO ENGINE (Inspired by `dKsMC5Bae_w` at 00:00-01:10 & 04:05):
+        # 1. Left Panel: Continuous 30fps Ken-Burns zooming HD Scene inside a sleek Claude Studio UI Window
+        #    with macOS traffic lights, live scanning brackets, and animated waveform bar!
+        # 2. Right Panel: Staggered 3-Card Bento Stack that slides & springs into place sequentially
+        #    (`step1_p` at 0.1s, `step2_p` at 0.75s, `step3_p` at 1.45s) with an animated circular ring gauge,
+        #    live count-up metric, yellow highlighter wipe, and a gliding UI cursor arrow!
         if not is_short:
-            sc_box = (sx0, sy0, sx0 + int(sw * 0.55) - 14, sy1)
-            ui_box = (sx0 + int(sw * 0.55) + 14, sy0, sx1, sy1)
+            sc_box = (sx0, sy0, sx0 + int(sw * 0.53) - 14, sy1)
+            ui_box = (sx0 + int(sw * 0.53) + 14, sy0, sx1, sy1)
         else:
-            sc_box = (sx0, sy0, sx1, sy0 + int(sh * 0.52) - 12)
-            ui_box = (sx0, sy0 + int(sh * 0.52) + 12, sx1, sy1)
+            sc_box = (sx0, sy0, sx1, sy0 + int(sh * 0.48) - 12)
+            ui_box = (sx0, sy0 + int(sh * 0.48) + 12, sx1, sy1)
 
-        # Left Panel: Crisp 1080p Pin-Point Scene Visual with subtle matte border & location/time pill
+        # Left Claude Studio Window Frame
         lw_s, lh_s = sc_box[2] - sc_box[0], sc_box[3] - sc_box[1]
-        sc_f = max(lw_s / float(src_im.size[0]), lh_s / float(src_im.size[1]))
-        im_r = src_im.resize((int(src_im.size[0] * sc_f), int(src_im.size[1] * sc_f)), resample_l)
-        im_c = im_r.crop(((im_r.size[0] - lw_s) // 2, (im_r.size[1] - lh_s) // 2, (im_r.size[0] - lw_s) // 2 + lw_s, (im_r.size[1] - lh_s) // 2 + lh_s)).convert("RGBA")
-        mask_s = Image.new("L", (lw_s, lh_s), 0)
-        ImageDraw.Draw(mask_s).rounded_rectangle([(0, 0), (lw_s - 1, lh_s - 1)], radius=20, fill=255)
-        bg.paste(im_c, (sc_box[0], sc_box[1]), mask_s)
         draw = ImageDraw.Draw(bg, "RGBA")
-        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2] - 1, sc_box[3] - 1)], radius=20, outline=(245, 158, 11, 215), width=2)
+        draw.rounded_rectangle([(sc_box[0] + 6, sc_box[1] + 10), (sc_box[2] + 6, sc_box[3] + 10)], radius=20, fill=(0, 0, 0, 185))
+        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2], sc_box[3])], radius=20, fill=(15, 23, 42, 252), outline=(71, 85, 105, 255), width=2)
+        # Window Top Bar with macOS Traffic Lights (`#FF5F56`, `#FFBD2E`, `#27C93F`)
+        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2], sc_box[1] + 44)], radius=18, fill=(30, 41, 59, 255))
+        draw.rectangle([(sc_box[0], sc_box[1] + 28), (sc_box[2], sc_box[1] + 44)], fill=(30, 41, 59, 255))
+        for dot_i, dot_c in enumerate([(255, 95, 86, 255), (255, 189, 46, 255), (39, 201, 63, 255)]):
+            dx_d = sc_box[0] + 20 + dot_i * 22
+            draw.ellipse([(dx_d, sc_box[1] + 15), (dx_d + 13, sc_box[1] + 28)], fill=dot_c)
+        draw.text((sc_box[0] + 96, sc_box[1] + 12), f"SCENE_INTEL_FEED // {c_name}", fill=(226, 232, 240, 255), font=get_font(16))
 
-        # Top-left scene location/timestamp tag inside the visual frame
-        loc_tag = f"SCENE FOCUS  •  {c_name}"
-        f_lt = get_font(17)
-        lt_w = int(f_lt.getlength(loc_tag)) + 34
-        draw.rounded_rectangle([(sc_box[0] + 18, sc_box[1] + 18), (sc_box[0] + 18 + lt_w, sc_box[1] + 54)], radius=8, fill=(15, 23, 42, 235), outline=(245, 158, 11, 220), width=2)
-        draw.text((sc_box[0] + 35, sc_box[1] + 26), loc_tag, fill=(255, 215, 0, 255), font=f_lt)
+        # Paste continuous-zooming HD scene inside window body
+        im_top = sc_box[1] + 46
+        im_h = lh_s - 48
+        sc_f = max((lw_s - 4) / float(src_im.size[0]), im_h / float(src_im.size[1]))
+        im_r = src_im.resize((int(src_im.size[0] * sc_f), int(src_im.size[1] * sc_f)), resample_l)
+        im_c = im_r.crop(((im_r.size[0] - (lw_s - 4)) // 2, (im_r.size[1] - im_h) // 2, (im_r.size[0] - (lw_s - 4)) // 2 + (lw_s - 4), (im_r.size[1] - im_h) // 2 + im_h)).convert("RGBA")
+        mask_s = Image.new("L", (lw_s - 4, im_h), 0)
+        ImageDraw.Draw(mask_s).rounded_rectangle([(0, 0), (lw_s - 5, im_h - 1)], radius=16, fill=255)
+        bg.paste(im_c, (sc_box[0] + 2, im_top), mask_s)
+        draw = ImageDraw.Draw(bg, "RGBA")
 
-        # Right Panel: Clean Matte UI/UX Designer Card (`#0F172A` Slate + Warm Cream & Amber Accents, Zero Ugly Gradients!)
+        # Animated Telemetry Scan Line & Live Status Pill over Scene
+        scan_y = im_top + int((im_h - 16) * ((local_t * 0.45) % 1.0))
+        draw.line([(sc_box[0] + 12, scan_y), (sc_box[2] - 12, scan_y)], fill=(245, 158, 11, 135), width=2)
+        loc_tag = f"● LIVE SCENE  •  {c_name}"
+        f_lt = get_font(16)
+        lt_w = int(f_lt.getlength(loc_tag)) + 28
+        draw.rounded_rectangle([(sc_box[0] + 18, im_top + 16), (sc_box[0] + 18 + lt_w, im_top + 48)], radius=8, fill=(15, 23, 42, 235), outline=(245, 158, 11, 230), width=2)
+        draw.text((sc_box[0] + 32, im_top + 22), loc_tag, fill=(255, 215, 0, 255), font=f_lt)
+
+        # Right Panel: Staggered 3-Card Bento Motion Stack (`step1_p`, `step2_p`, `step3_p`)
         ux0, uy0, ux1, uy1 = ui_box
         uw, uh = ux1 - ux0, uy1 - uy0
-        draw.rounded_rectangle([(ux0 + 6, uy0 + 8), (ux1 + 6, uy1 + 8)], radius=20, fill=(0, 0, 0, 175))
-        draw.rounded_rectangle([(ux0, uy0), (ux1, uy1)], radius=20, fill=(15, 23, 42, 248), outline=(51, 65, 85, 255), width=2)
-        draw.rectangle([(ux0, uy0 + 20), (ux0 + 8, uy1 - 20)], fill=(230, 57, 70, 255))
-
-        # Kicker + Highlighted Headline Box
-        draw.text((ux0 + 28, uy0 + 22), f"KEY MECHANISM  •  {fit_whole_words_limit(topic_anc.upper(), 22)}", fill=(245, 158, 11, 255), font=get_font(18))
-        draw.rounded_rectangle([(ux0 + 26, uy0 + 54), (ux1 - 24, uy0 + 106)], radius=8, fill=(247, 243, 232, 250))
-        draw.text((ux0 + 38, uy0 + 66), fit_whole_words_limit(point_hl, 28), fill=(15, 23, 42, 255), font=get_font(24 if not is_short else 21))
-
-        # Structured Clause Bullets + Key Stat Pill
-        f_ub = get_font(21 if not is_short else 19)
-        bullet_y = uy0 + 126
-        sub_pts = [x.strip() for x in re.split(r"[,;—–]|\\b(?:causing|forcing|while|which|because|leading to)\\b", b_txt) if len(x.strip()) >= 12]
+        sub_pts = [x.strip() for x in re.split(r"[,;—–]|\b(?:causing|forcing|while|which|because|leading to)\b", b_txt) if len(x.strip()) >= 12]
         uniq_b = []
         for sp in (sub_pts + clauses):
             sp_c = sp.strip(" .,;:-")
             if len(sp_c) >= 12 and sp_c.lower()[:24] not in [u.lower()[:24] for u in uniq_b]:
                 uniq_b.append(sp_c)
-        for c_i, cl_str in enumerate(uniq_b[:3]):
-            cl_lines = wrap_text_px(cl_str.strip(), f_ub, uw - 76, max_lines=2)
-            if not cl_lines:
-                continue
-            draw.ellipse([(ux0 + 30, bullet_y + 8), (ux0 + 42, bullet_y + 20)], fill=(245, 158, 11, 255) if c_i == 0 else (56, 189, 248, 255))
-            for ln_u in cl_lines:
-                draw.text((ux0 + 54, bullet_y), ln_u, fill=(241, 245, 249, 255), font=f_ub)
-                bullet_y += 30
-            bullet_y += 12
-            if bullet_y > uy1 - 95:
-                break
+        while len(uniq_b) < 2:
+            uniq_b.append(b_txt)
 
-        # Bottom Verified Metric Strip inside the UI Card
-        stat_val_u = clean_nums[0] if clean_nums else c_name
-        draw.rounded_rectangle([(ux0 + 26, uy1 - 68), (ux1 - 24, uy1 - 20)], radius=10, fill=(30, 41, 59, 255), outline=(245, 158, 11, 185), width=2)
-        draw.text((ux0 + 42, uy1 - 54), f"VERIFIED FOCUS:  {fit_whole_words_limit(str(stat_val_u), 24)}", fill=(255, 215, 0, 255), font=get_font(20))
+        # BENTO CARD 1 (Top: Animated Slide-In + Yellow Highlighter Wipe)
+        s1_off = int((1.0 - min(step1_p, 1.0)) * 120)
+        b1_y0, b1_y1 = uy0, uy0 + int(uh * 0.34) - 8
+        draw.rounded_rectangle([(ux0 + s1_off + 4, b1_y0 + 6), (ux1 + s1_off + 4, b1_y1 + 6)], radius=18, fill=(0, 0, 0, 165))
+        draw.rounded_rectangle([(ux0 + s1_off, b1_y0), (ux1 + s1_off, b1_y1)], radius=18, fill=(15, 23, 42, 248), outline=(245, 158, 11, 225), width=2)
+        draw.rectangle([(ux0 + s1_off, b1_y0 + 16), (ux0 + s1_off + 8, b1_y1 - 16)], fill=(230, 57, 70, 255))
+        draw.text((ux0 + s1_off + 24, b1_y0 + 14), f"01 // CORE FLASHPOINT  •  {fit_whole_words_limit(topic_anc.upper(), 18)}", fill=(245, 158, 11, 255), font=get_font(17))
+        hl_w_b1 = int((uw - 48) * min(max(local_t / 1.15, 0.08), 1.0))
+        draw.rounded_rectangle([(ux0 + s1_off + 22, b1_y0 + 44), (ux0 + s1_off + 22 + hl_w_b1, b1_y0 + 92)], radius=8, fill=(255, 230, 0, 248))
+        draw.text((ux0 + s1_off + 32, b1_y0 + 54), fit_whole_words_limit(point_hl, 26), fill=(12, 16, 24, 255), font=get_font(23 if not is_short else 20))
+        f_b1 = get_font(19)
+        for l_i, ln_1 in enumerate(wrap_text_px(uniq_b[0], f_b1, uw - 48, max_lines=2)):
+            draw.text((ux0 + s1_off + 24, b1_y0 + 104 + l_i * 26), ln_1, fill=(241, 245, 249, 255), font=f_b1)
+
+        # BENTO CARD 2 (Middle: Staggered Slide-In at `step2_p` + Animated Circular Gauge & Count-Up Metric)
+        if local_t >= 0.35:
+            s2_off = int((1.0 - min(step2_p, 1.0)) * 140)
+            b2_y0, b2_y1 = uy0 + int(uh * 0.35) + 4, uy0 + int(uh * 0.68) - 4
+            draw.rounded_rectangle([(ux0 + s2_off + 4, b2_y0 + 6), (ux1 + s2_off + 4, b2_y1 + 6)], radius=18, fill=(0, 0, 0, 165))
+            draw.rounded_rectangle([(ux0 + s2_off, b2_y0), (ux1 + s2_off, b2_y1)], radius=18, fill=(15, 23, 42, 248), outline=(56, 189, 248, 215), width=2)
+            # Animated Circular Ring Gauge on Left of Bento Card 2
+            gcx, gcy = ux0 + s2_off + 64, (b2_y0 + b2_y1) // 2
+            grad = 42
+            draw.ellipse([(gcx - grad, gcy - grad), (gcx + grad, gcy + grad)], outline=(30, 41, 59, 255), width=8)
+            arc_deg = int(310 * min(max((local_t - 0.35) / 1.5, 0.1), 1.0))
+            draw.arc([(gcx - grad, gcy - grad), (gcx + grad, gcy + grad)], start=-90, end=-90 + arc_deg, fill=(56, 189, 248, 255), width=8)
+            draw.text((gcx - 20, gcy - 11), f"{int(arc_deg * 100 / 310)}%", fill=(255, 255, 255, 255), font=get_font(17))
+
+            stat_raw = clean_nums[0] if clean_nums else "KEY IMPACT"
+            stat_cnt = format_animated_countup_number(str(stat_raw)[:16], min(max((local_t - 0.35) / 1.4, 0.1), 1.0))
+            draw.text((ux0 + s2_off + 126, b2_y0 + 16), "02 // TELEMETRY & IMPACT DATA", fill=(56, 189, 248, 255), font=get_font(17))
+            draw.text((ux0 + s2_off + 126, b2_y0 + 42), stat_cnt, fill=(255, 215, 0, 255), font=get_font(28))
+            for l_i, ln_2 in enumerate(wrap_text_px(uniq_b[1], f_b1, uw - 148, max_lines=2)):
+                draw.text((ux0 + s2_off + 126, b2_y0 + 82 + l_i * 25), ln_2, fill=(226, 232, 240, 255), font=f_b1)
+
+        # BENTO CARD 3 (Bottom: Staggered Slide-In at `step3_p` + Animated Progress Bar & Gliding UI Cursor!)
+        if local_t >= 0.85:
+            s3_off = int((1.0 - min(step3_p, 1.0)) * 150)
+            b3_y0, b3_y1 = uy0 + int(uh * 0.69) + 8, uy1
+            draw.rounded_rectangle([(ux0 + s3_off + 4, b3_y0 + 6), (ux1 + s3_off + 4, b3_y1 + 6)], radius=18, fill=(0, 0, 0, 165))
+            draw.rounded_rectangle([(ux0 + s3_off, b3_y0), (ux1 + s3_off, b3_y1)], radius=18, fill=(15, 23, 42, 248), outline=(39, 201, 63, 215), width=2)
+            draw.text((ux0 + s3_off + 24, b3_y0 + 14), f"03 // STRATEGIC OUTCOME  •  {c_name}", fill=(39, 201, 63, 255), font=get_font(17))
+            third_txt = uniq_b[2] if len(uniq_b) > 2 else b_txt
+            for l_i, ln_3 in enumerate(wrap_text_px(third_txt, f_b1, uw - 48, max_lines=2)):
+                draw.text((ux0 + s3_off + 24, b3_y0 + 42 + l_i * 26), ln_3, fill=(241, 245, 249, 255), font=f_b1)
+            # Animated Progress Bar inside Card 3
+            bar_w_tot = uw - 48
+            bar_fill = max(24, int(bar_w_tot * min(max((local_t - 0.85) / 1.6, 0.12), 1.0)))
+            draw.rounded_rectangle([(ux0 + s3_off + 24, b3_y1 - 28), (ux0 + s3_off + 24 + bar_w_tot, b3_y1 - 14)], radius=7, fill=(30, 41, 59, 255))
+            draw.rounded_rectangle([(ux0 + s3_off + 24, b3_y1 - 28), (ux0 + s3_off + 24 + bar_fill, b3_y1 - 14)], radius=7, fill=(39, 201, 63, 255))
+
+        # Gliding Claude UI Pointer Cursor (moves smoothly from Card 1 -> Card 2 -> Card 3 across `local_t`)
+        cur_p = min(max(local_t / 2.8, 0.0), 1.0)
+        cur_x = ux1 - 68 - int(45 * math.sin(cur_p * math.pi))
+        cur_y = uy0 + 65 + int((uh - 130) * cur_p)
+        draw.polygon([(cur_x, cur_y), (cur_x + 22, cur_y + 10), (cur_x + 12, cur_y + 14), (cur_x + 16, cur_y + 24), (cur_x + 10, cur_y + 26), (cur_x + 6, cur_y + 16), (cur_x, cur_y + 22)], fill=(255, 255, 255, 255), outline=(15, 23, 42, 255))
 
     # ==========================================================================
     # MODE 4: TS_04_DOMINO_CHAIN_FLOWCHART & MODE 16: BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD
@@ -12929,10 +13004,15 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         ]
         if not is_short:
             card_w = (sw - 96) // 3
+            step_ps = [step1_p, step2_p, step3_p]
             for s_i, (s_tag, s_col, s_kp, s_pim, s_rat) in enumerate(steps_meta):
+                sp_cur = step_ps[min(s_i, 2)]
+                if sp_cur <= 0.02:
+                    continue
+                y_slide_d = int((1.0 - min(sp_cur, 1.0)) * 85)
                 cx0 = sx0 + s_i * (card_w + 48)
                 cx1 = cx0 + card_w
-                cy0, cy1 = sy0 + 24, sy1 - 24
+                cy0, cy1 = sy0 + 24 + y_slide_d, sy1 - 24 + y_slide_d
                 draw_2026_visionos_glass_card(bg, (cx0, cy0, cx1, cy1), radius=24, tint=(10, 18, 34, 204), border_col=(s_col[0], s_col[1], s_col[2], 185), accent_col=s_col, accent_pos="top", blur_px=18)
                 # Real Photo Thumbnail at top of each Domino Card!
                 th_w, th_h = card_w - 28, int((cy1 - cy0) * 0.48)
@@ -14245,8 +14325,10 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     # Ensure 177-Country Natural Earth / Built-in polygons are loaded
     _ = get_country_boundary_polygons(c_name)
 
-    anim_p = cubic_bezier_ease_in_out(min(max(local_t / 0.75, 0.0), 1.0))
-    cur_zoom = zoom_scale * (0.90 + 0.10 * anim_p)
+    beat_dur_m = max(float(beat.get("duration") or 5.0), 3.0)
+    anim_p = cubic_bezier_ease_in_out(min(max(local_t / 1.4, 0.0), 1.0))
+    cont_zoom_p = min(max(local_t / beat_dur_m, 0.0), 1.0)
+    cur_zoom = zoom_scale * (0.86 + 0.22 * cont_zoom_p)
 
     # 3. Build Base Map Canvas (Satellite terrain if online, else 2x-Supersampled 177-Country Cartographic Atlas)
     map_im, tile_proj = _fetch_real_cartodb_map_canvas(center_lat, center_lon, W, H, zoom_lvl=tile_z)
@@ -14353,11 +14435,28 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
             cnt_d = matched_countries[min(idx_rn, len(matched_countries) - 1)][1]
             pin_coords.append((px_c, py_c, rn_lbl, cnt_d))
     else:
+        # V75 SMART PARTNER/ORIGIN NODE INJECTION: If only 1 country was in `b_low` (e.g. Morocco in an Airbus C295W story),
+        # check the story's `raw_facts` and `title` for any partner/supplier/neighbor country (e.g. Spain, France, USA, Israel, China, Russia)
+        # or add a strategic regional corridor node so EVERY map frame animates a live flight/maritime route curve!
+        if len(matched_countries) == 1:
+            facts_blob_low = f"{title_low} {' '.join(str(x) for x in (story.get('raw_facts') or [])[:6])}".lower()
+            for extra_cnt in ["SPAIN", "FRANCE", "UNITED STATES", "UNITED KINGDOM", "GERMANY", "RUSSIA", "CHINA", "INDIA", "ISRAEL", "IRAN", "SAUDI ARABIA", "TURKEY", "UAE", "EGYPT", "ALGERIA"]:
+                if extra_cnt != c_name and (re.search(rf"\b{re.escape(extra_cnt.lower())}\b", facts_blob_low) or (extra_cnt == "SPAIN" and "airbus" in facts_blob_low)):
+                    d_ex = _unpack_cnt(extra_cnt)
+                    if d_ex:
+                        matched_countries.append((extra_cnt.title(), d_ex))
+                        break
         for idx_c, (cnt_title, cnt_d) in enumerate(matched_countries[:4]):
             px_c, py_c = proj_fn(cnt_d.get("lat", target_lat), cnt_d.get("lon", target_lon))
             px_c = max(90, min(W - 140, px_c))
             py_c = max(140, min(H - (440 if is_short else 230), py_c))
             pin_coords.append((px_c, py_c, cnt_title.upper(), cnt_d))
+        if len(pin_coords) == 1:
+            # Add a second tactical theater patrol node 5.5 degrees away so the vector arc always animates!
+            p2_x, p2_y = proj_fn(target_lat + 3.8, target_lon - 5.2)
+            p2_x = max(110, min(W - 180, p2_x))
+            p2_y = max(150, min(H - 250, p2_y))
+            pin_coords.append((p2_x, p2_y, f"{cap_name} CORRIDOR", matched_countries[0][1]))
 
     # Reserve pin target circles in `occupied_boxes`
     for px_c, py_c, _, _ in pin_coords:
@@ -14370,7 +14469,7 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
             p1_x, p1_y, _, _ = pin_coords[idx_seg + 1]
             mid_x = (p0_x + p1_x) * 0.5
             mid_y = min(p0_y, p1_y) - max(38, int(math.hypot(p1_x - p0_x, p1_y - p0_y) * 0.18))
-            seg_p = min(max((local_t - idx_seg * 0.22) / 0.65, 0.0), 1.0)
+            seg_p = min(max((local_t - idx_seg * 0.45) / 1.35, 0.0), 1.0)
             if seg_p <= 0.02:
                 continue
             r_col = (255, 215, 0, 255) if idx_seg % 2 == 0 else (0, 235, 255, 255)
@@ -14811,18 +14910,19 @@ def render_1080p_beat_frame(beat, watermark, voice_sub_dir, local_t, W, H, is_sh
                     ex = (W - ew) // 2
                     ey = int(H * 0.56) - eh // 2
                     frame.paste(ev_cutout, (ex, ey), ev_cutout)
-            elif local_t > 0.15:
-                pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short)
+            elif local_t > 0.10:
+                # V75 LIVE ANIMATED LOWER-LEFT EVIDENCE & PROGRESS CARD (Animates yellow highlighter + progress meter across the full beat!):
+                pt_card = build_point_highlight_banner_rgba(beat, W, H, is_short=is_short, local_t=local_t, beat_dur=beat_dur)
                 if pt_card is not None:
                     pt_w, pt_h = pt_card.size
-                    pt_anim = min(max((local_t - 0.15) / 0.28, 0.0), 1.0)
+                    pt_anim = min(max((local_t - 0.10) / 0.42, 0.0), 1.0)
                     pt_ease = 1.0 - ((1.0 - pt_anim) ** 3)
                     if is_short:
                         pt_x = (W - pt_w) // 2
-                        pt_y = int(110 - (1.0 - pt_ease) * 20)
+                        pt_y = int(110 - (1.0 - pt_ease) * 24)
                     else:
-                        pt_x = int(42 - (1.0 - pt_ease) * 260)
-                        pt_y = H - 256
+                        pt_x = int(42 - (1.0 - pt_ease) * 320)
+                        pt_y = H - 262
                     frame.paste(pt_card, (pt_x, pt_y), pt_card)
 
     # 7. Composite Cached Synced Subtitles (with Key Point Keyword Highlighting!)
@@ -15025,6 +15125,8 @@ def build_prop_driven_storyboard_1080p(
     if start_beat_offset == 0:
         dossier["_v55_used_templates_short" if is_short else "_v55_used_templates_long"] = set()
         dossier["_v55_used_chapters_short" if is_short else "_v55_used_chapters_long"] = set()
+        dossier["_v75_tpl_counts_short" if is_short else "_v75_tpl_counts_long"] = {}
+        dossier["_v75_ch_counts_short" if is_short else "_v75_ch_counts_long"] = {}
     if start_beat_offset == 0 and dossier.get("_cached_200_audited_pool") is None:
         harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=sections_list)
     if start_beat_offset == 0 and not dossier.get("_cached_video_broll_pool"):
