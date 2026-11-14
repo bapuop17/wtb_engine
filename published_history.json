@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-14T04:30:00.643691",
-  "last_upload_epoch": 1794630600,
-  "round_robin_idx": 5,
-  "country_rot_idx": 50,
-  "bgm_track_counter": 3323761827,
+  "updated_at": "2026-11-14T05:33:49.834652",
+  "last_upload_epoch": 1794634429,
+  "round_robin_idx": 6,
+  "country_rot_idx": 56,
+  "bgm_track_counter": 3344401828,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -685,289 +685,20 @@
     "starship_flight_15_powers_to_orbit",
     "spacex_s_elon_musk_starship_flight",
     "morocco_has_quietly_taken_delivery_of",
-    "morocco_s_secret_airbus_c295w_delivery"
+    "morocco_s_secret_airbus_c295w_delivery",
+    "china_s_xi_jinping_orders_unannounced",
+    "xbox_ceo_asha_sharma_announces_wolfenstein",
+    "global_markets_cerebras_cloud_boom_why",
+    "russia_witkoff_kushner_in_moscow_putin",
+    "space_science_why_social_security_could",
+    "stephen_curry_injury_warriors_star_exits",
+    "why_82_nations_failed_to_kill",
+    "the_lowdown_season_2_hidden_conspiracy",
+    "nvidia_board_probe_spy_affair_stock",
+    "how_philip_k_dick_predicted_the",
+    "philip_k_dick_s_ai_prophecy"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why Sisi's Move Just Reshaped the Global Power Map",
-      "tokens": [
-        "africa",
-        "brics",
-        "china",
-        "egypt",
-        "future",
-        "just",
-        "matters",
-        "move",
-        "reshaped",
-        "russia",
-        "sisi",
-        "strategy"
-      ]
-    },
-    {
-      "title": "130 Million Votes Vanished? India's Election War Explained",
-      "tokens": [
-        "chief",
-        "election",
-        "hold",
-        "india",
-        "mega",
-        "million",
-        "opposition",
-        "rally",
-        "resignation",
-        "seeking",
-        "vanished",
-        "votes"
-      ]
-    },
-    {
-      "title": "US approves sale of 500 Patriot missiles to Ukraine",
-      "tokens": [
-        "approved",
-        "approves",
-        "billion",
-        "defense",
-        "department",
-        "friday",
-        "interceptor",
-        "missiles",
-        "patriot",
-        "potential",
-        "sale",
-        "scarce",
-        "state",
-        "ukraine"
-      ]
-    },
-    {
-      "title": "EU set to define Canada's associate membership next year, signs agreements at Montreal summit",
-      "tokens": [
-        "agreements",
-        "associate",
-        "canada",
-        "carney",
-        "concept",
-        "define",
-        "first",
-        "jerusalem",
-        "membership",
-        "montreal",
-        "next",
-        "post",
-        "pushed",
-        "sept",
-        "signs",
-        "summit",
-        "year"
-      ]
-    },
-    {
-      "title": "OpenAI reportedly lowers funding target for new round",
-      "tokens": [
-        "billion",
-        "doesn",
-        "expectations",
-        "funding",
-        "latest",
-        "living",
-        "lowers",
-        "openai",
-        "previously",
-        "raising",
-        "reported",
-        "reportedly",
-        "round",
-        "seem",
-        "target",
-        "then",
-        "trillion",
-        "valuation"
-      ]
-    },
-    {
-      "title": "Why Trump Just Sold 500 Missiles to Ukraine",
-      "tokens": [
-        "approves",
-        "just",
-        "missiles",
-        "patriot",
-        "sale",
-        "sold",
-        "trump",
-        "ukraine"
-      ]
-    },
-    {
-      "title": "Canada's Secret EU Deal: The $1.5T Economic Pivot",
-      "tokens": [
-        "agreements",
-        "associate",
-        "canada",
-        "deal",
-        "define",
-        "economic",
-        "membership",
-        "montreal",
-        "next",
-        "pivot",
-        "signs",
-        "summit",
-        "year"
-      ]
-    },
-    {
-      "title": "Secretary of State Marco Rubio at a Press Availability",
-      "tokens": [
-        "asia",
-        "availability",
-        "central",
-        "distance",
-        "ending",
-        "focus",
-        "heads",
-        "keeping",
-        "marco",
-        "matters",
-        "most",
-        "nato",
-        "press",
-        "pressing",
-        "rubio",
-        "secretary",
-        "some",
-        "state",
-        "table",
-        "ukraine",
-        "wonder"
-      ]
-    },
-    {
-      "title": "African Export-Import Bank and the African Petroleum Producers' Organisation have formally announced the establishment of the Africa Energy ",
-      "tokens": [
-        "afreximbank",
-        "africa",
-        "african",
-        "announced",
-        "announcement",
-        "appo",
-        "bank",
-        "billion",
-        "capital",
-        "during",
-        "energy",
-        "establish",
-        "establishment",
-        "export",
-        "formally",
-        "general",
-        "have",
-        "import",
-        "inaugural",
-        "launch",
-        "lenders",
-        "made",
-        "meeting",
-        "officially",
-        "organisation",
-        "petroleum",
-        "producers"
-      ]
-    },
-    {
-      "title": "Here's how the new MacBook Pro and macOS 27 are optimized for touch",
-      "tokens": [
-        "apple",
-        "back",
-        "brings",
-        "enters",
-        "experience",
-        "favorite",
-        "fresh",
-        "here",
-        "laptop",
-        "logo",
-        "macbook",
-        "macos",
-        "optimized",
-        "promises",
-        "take",
-        "touch",
-        "touchscreen"
-      ]
-    },
-    {
-      "title": "Rubio's Serbia Bet: Why NATO Just Lost",
-      "tokens": [
-        "availability",
-        "just",
-        "lost",
-        "marco",
-        "nato",
-        "press",
-        "rubio",
-        "secretary",
-        "serbia",
-        "state"
-      ]
-    },
-    {
-      "title": "African Export-Import Bank and the African Petroleum Producers' Organisation have formally announced the establishment of the Africa Energy ",
-      "tokens": [
-        "afreximbank",
-        "africa",
-        "african",
-        "announced",
-        "announcement",
-        "appo",
-        "bank",
-        "billion",
-        "capital",
-        "during",
-        "energy",
-        "establish",
-        "establishment",
-        "export",
-        "formally",
-        "general",
-        "have",
-        "import",
-        "inaugural",
-        "launch",
-        "lenders",
-        "made",
-        "meeting",
-        "officially",
-        "organisation",
-        "petroleum",
-        "producers"
-      ]
-    },
-    {
-      "title": "Africa's $5B Energy Bank: The West's Silent Threat",
-      "tokens": [
-        "africa",
-        "african",
-        "announced",
-        "announcement",
-        "bank",
-        "during",
-        "energy",
-        "establishment",
-        "export",
-        "formally",
-        "have",
-        "import",
-        "made",
-        "organisation",
-        "petroleum",
-        "producers",
-        "silent",
-        "threat",
-        "west"
-      ]
-    },
     {
       "title": "Why Zelda & GTA Reveal the Gaming Industry\u2019s Death Spiral",
       "tokens": [
@@ -8295,10 +8026,177 @@
         "taken",
         "transport"
       ]
+    },
+    {
+      "title": "Morocco's Secret Airbus C295W Delivery: King Mohammed VI's Quiet Power Play Explained",
+      "tokens": [
+        "airbus",
+        "delivery",
+        "king",
+        "mohammed",
+        "morocco",
+        "quiet"
+      ]
+    },
+    {
+      "title": "China's Xi Jinping Orders Unannounced Pacific Drills to Intimidate Taiwan - Global Stakes",
+      "tokens": [
+        "china",
+        "drills",
+        "intimidate",
+        "jinping",
+        "orders",
+        "pacific",
+        "stakes",
+        "taiwan",
+        "unannounced"
+      ]
+    },
+    {
+      "title": "Xbox CEO Asha Sharma Announces Wolfenstein 3: Global Gaming Shock Explained",
+      "tokens": [
+        "announces",
+        "asha",
+        "gaming",
+        "sharma",
+        "shock",
+        "wolfenstein",
+        "xbox"
+      ]
+    },
+    {
+      "title": "Global Markets: Cerebras Cloud Boom: Why AI Chip Sales Fell But Revenue Soared",
+      "tokens": [
+        "boom",
+        "cerebras",
+        "chip",
+        "cloud",
+        "fell",
+        "markets",
+        "revenue",
+        "sales",
+        "soared"
+      ]
+    },
+    {
+      "title": "Russia: Witkoff & Kushner in Moscow: Putin's Ukraine Deal? | Geopolitical Case Study",
+      "tokens": [
+        "case",
+        "deal",
+        "geopolitical",
+        "kushner",
+        "moscow",
+        "putin",
+        "russia",
+        "study",
+        "ukraine",
+        "witkoff"
+      ]
+    },
+    {
+      "title": "Space & Science: Why Social Security Could Shrink by 2032 - How to Check Your Benefits",
+      "tokens": [
+        "benefits",
+        "check",
+        "could",
+        "science",
+        "security",
+        "shrink",
+        "social",
+        "space",
+        "your"
+      ]
+    },
+    {
+      "title": "Stephen Curry Injury: Warriors Star Exits vs Rockets - Global Impact Explained",
+      "tokens": [
+        "curry",
+        "exits",
+        "impact",
+        "injury",
+        "rockets",
+        "star",
+        "stephen",
+        "warriors"
+      ]
+    },
+    {
+      "title": "Why 82 Nations Failed to Kill Fossil Fuels at COP30",
+      "tokens": [
+        "failed",
+        "fossil",
+        "fuels",
+        "kill",
+        "nations"
+      ]
+    },
+    {
+      "title": "The Lowdown Season 2: Hidden Conspiracy & Star Power Unleashed",
+      "tokens": [
+        "conspiracy",
+        "hidden",
+        "lowdown",
+        "season",
+        "star",
+        "unleashed"
+      ]
+    },
+    {
+      "title": "Nvidia Board Probe: Spy Affair, Stock Crash & AI Power Play",
+      "tokens": [
+        "affair",
+        "board",
+        "crash",
+        "nvidia",
+        "probe",
+        "stock"
+      ]
+    },
+    {
+      "title": "Morocco's Secret Airbus C295W Delivery: King! #shorts",
+      "tokens": [
+        "airbus",
+        "delivery",
+        "king",
+        "morocco",
+        "shorts"
+      ]
+    },
+    {
+      "title": "How Philip K. Dick Predicted the Future of Artificial Intelligence in literature",
+      "tokens": [
+        "artificial",
+        "authors",
+        "dick",
+        "future",
+        "greatest",
+        "guardsman",
+        "intelligence",
+        "literature",
+        "online",
+        "philip",
+        "predicted",
+        "time"
+      ]
+    },
+    {
+      "title": "Philip K. Dick's AI Prophecy: Why Silicon Valley Is Terrified",
+      "tokens": [
+        "artificial",
+        "dick",
+        "future",
+        "intelligence",
+        "literature",
+        "philip",
+        "predicted",
+        "prophecy",
+        "silicon",
+        "terrified",
+        "valley"
+      ]
     }
   ],
   "last_categories": [
-    "AI_ROBOTICS",
     "ENTERTAINMENT",
     "SCIENCE",
     "GEOPOLITICS",
@@ -8337,10 +8235,10 @@
     "SCIENCE",
     "DEFENSE_MILITARY",
     "SCIENCE",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Ars Technica",
     "BBC Entertainment & Arts",
     "The Guardian Science",
     "Google Trends Viral [IRELAND]",
@@ -8379,10 +8277,10 @@
     "Global Country Wire [NIGERIA \u2022 SCIENCE]",
     "France24 Global Affairs",
     "Ars Technica",
-    "Global Country Wire [MOROCCO \u2022 UNDERRATED_GEOPOLITICS]"
+    "Global Country Wire [MOROCCO \u2022 UNDERRATED_GEOPOLITICS]",
+    "Global AI, Nvidia, OpenAI & Semiconductor Race"
   ],
   "last_countries": [
-    "EUROPE",
     "SOUTH AFRICA",
     "QATAR",
     "NEW ZEALAND",
@@ -8431,7 +8329,8 @@
     "NIGERIA",
     "TURKEY",
     "SPACE & SCIENCE",
-    "MOROCCO"
+    "MOROCCO",
+    "GLOBAL TECH & AI"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8557,6 +8456,30 @@
       "is_short": true,
       "published_iso": "2026-11-14T04:29:38Z",
       "summary": "Morocco has quietly completed its delivery of Airbus C295W military transport aircraft at Kenitra Air Base, a move that signals a significant shift in North African air power. Unlike previous high-profile acquisitions, this procurement was conducted with zero "
+    },
+    {
+      "video_id": "0KGyrxrFu6w",
+      "title": "Global Tech & Ai: Philip K. Dick's AI Prophecy: Why Silicon Valley Is Terrified",
+      "url": "https://www.youtube.com/watch?v=0KGyrxrFu6w",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/0KGyrxrFu6w.html",
+      "thumb_url": "https://i.ytimg.com/vi/0KGyrxrFu6w/maxresdefault.jpg",
+      "pillar": "AI_ROBOTICS",
+      "country": "Global Tech & Ai",
+      "is_short": false,
+      "published_iso": "2026-11-14T05:27:09Z",
+      "summary": "In 1968, Philip K. Dick wrote about machines that could lie, manipulate, and erase human memory. Today, that fiction is becoming the operational reality of global AI infrastructure. This documentary investigates how the core themes of 'Do Androids Dream of Ele"
+    },
+    {
+      "video_id": "nXgS0nbGKTE",
+      "title": "Philip K. Dick's AI Prophecy: Why Silicon Valley Is Terrified",
+      "url": "https://www.youtube.com/shorts/nXgS0nbGKTE",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/nXgS0nbGKTE.html",
+      "thumb_url": "https://i.ytimg.com/vi/nXgS0nbGKTE/maxresdefault.jpg",
+      "pillar": "AI_ROBOTICS",
+      "country": "Global Tech & Ai",
+      "is_short": true,
+      "published_iso": "2026-11-14T05:33:28Z",
+      "summary": "In 1968, Philip K. Dick wrote about machines that could lie, manipulate, and erase human memory. Today, that fiction is becoming the operational reality of global AI infrastructure. This documentary investigates how the core themes of 'Do Androids Dream of Ele"
     }
   ]
 }
