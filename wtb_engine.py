@@ -967,20 +967,61 @@ def ascii_transliterate_keep_vowels(text_str):
     s_norm = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
     return re.sub(r"[^\x20-\x7E]", "", s_norm)
 
-def get_font(size):
-    if size in FONT_CACHE:
-        return FONT_CACHE[size]
-    for p in ["/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", "C:/Windows/Fonts/arialbd.ttf"]:
+def get_ui_font(size, role="display_bold"):
+    font_map = {
+        "display_black": [
+            "/usr/share/fonts/opentype/inter/InterDisplay-Black.otf",
+            "/usr/share/fonts/opentype/inter/InterDisplay-ExtraBold.otf",
+            "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf",
+        ],
+        "display_bold": [
+            "/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf",
+            "/usr/share/fonts/opentype/inter/Inter-Bold.otf",
+            "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf",
+        ],
+        "sans_semibold": [
+            "/usr/share/fonts/opentype/inter/InterDisplay-SemiBold.otf",
+            "/usr/share/fonts/opentype/inter/Inter-SemiBold.otf",
+            "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf",
+        ],
+        "sans_medium": [
+            "/usr/share/fonts/opentype/inter/Inter-Medium.otf",
+            "/usr/share/fonts/opentype/inter/Inter-Regular.otf",
+            "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
+        ],
+        "sans_regular": [
+            "/usr/share/fonts/opentype/inter/Inter-Regular.otf",
+            "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
+        ],
+        "serif_bold": [
+            "/usr/share/fonts/truetype/crosextra/Caladea-Bold.ttf",
+            "/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf",
+        ],
+        "serif_regular": [
+            "/usr/share/fonts/truetype/crosextra/Caladea-Regular.ttf",
+            "/usr/share/fonts/opentype/inter/Inter-Regular.otf",
+        ],
+        "mono_bold": [
+            "/usr/share/fonts/truetype/liberation2/LiberationMono-Bold.ttf",
+            "/usr/share/fonts/truetype/noto/NotoSansMono-Bold.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf",
+        ],
+        "mono_regular": [
+            "/usr/share/fonts/truetype/noto/NotoSansMono-Regular.ttf",
+            "/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
+        ],
+    }
+    for p in font_map.get(role, font_map["display_bold"]):
         if os.path.exists(p):
             try:
-                f = ImageFont.truetype(p, size)
-                FONT_CACHE[size] = f
-                return f
+                return ImageFont.truetype(p, max(10, int(size)))
             except Exception:
                 pass
-    f = ImageFont.load_default()
-    FONT_CACHE[size] = f
-    return f
+    return ImageFont.load_default()
+
+def get_font(size, role="display_bold"):
+    return get_ui_font(size, role=role)
 
 def get_prebuilt_vignette_overlay(W, H):
     """
@@ -10156,6 +10197,14 @@ def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
     if len(phys_filtered) < 2 or any(gk in [x.lower() for x in phys_filtered] for gk in ["passengers", "passenger", "survey", "data", "psychologists", "anxiety", "control"]):
         phys_filtered = anchor_nouns[:2] + phys_filtered
     q_built = f"{lead_str} {' '.join(phys_filtered[:4])}".strip()
+    # V76 SUBJECT-LOCKED QUERY GUARANTEE: If `topic_anchor` (e.g. 'Airbus C295W') is not in `q_built`
+    # and the sentence has no specific named person, ALWAYS include the core subject tokens from `topic_anchor`
+    # so a sentence like 'Now Morocco air power just got serious' searches 'Morocco Airbus C295W military aircraft'
+    # instead of bare 'Morocco' (which returned street scooters!)
+    if topic_anchor and not ner.get("persons"):
+        ta_tokens = [w for w in re.findall(r"[A-Za-z0-9\-]{3,}", topic_anchor) if w.lower() not in q_built.lower() and w.lower() not in HEADLINE_STOP_VERBS_ADJS]
+        if ta_tokens:
+            q_built = f"{' '.join(ta_tokens[:3])} {q_built}".strip()
     if len(q_built) < 8:
         q_built = base_topic_q
     return (ner["specific_entities"][0] if ner["specific_entities"] else (ner["locations"][0] if ner["locations"] else topic_anchor)), q_built, must_match
@@ -10276,8 +10325,13 @@ def harvest_v62_dvids_and_wire_osint_visuals(query_str, dossier, max_items=14):
     t_anc = str(dossier.get("topic_anchor") or "").strip()
     osint_queries = []
 
+    c_name_osint = str((dossier.get("country_profile") or {}).get("name") or "").upper()
+    is_us_story = c_name_osint in ("UNITED STATES", "USA", "GLOBAL") or any(uk in f"{query_str} {dossier.get('title', '')}".lower() for uk in ["united states", "pentagon", "u.s.", "us navy", "us air force", "white house", "washington"])
     if dom == "GEOPOLITICS":
-        osint_queries.append(f"{query_str} (site:dvidshub.net OR site:defense.gov OR site:nato.int OR site:reuters.com OR site:apnews.com)")
+        if is_us_story:
+            osint_queries.append(f"{query_str} (site:dvidshub.net OR site:defense.gov OR site:reuters.com OR site:apnews.com)")
+        else:
+            osint_queries.append(f"{query_str} (site:reuters.com OR site:apnews.com OR site:bbc.com OR site:wikimedia.org)")
         if any(ck in query_str.lower() for ck in ["strait", "canal", "port", "sea", "corridor", "base", "border", "island", "pipeline", "refinery"]):
             osint_queries.append(f"{t_anc or query_str} satellite image aerial view NASA Earth Observatory Sentinel")
     elif dom == "SPACE_ASTROPHYSICS":
@@ -10471,10 +10525,35 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         "minangkabau", "changi airport", "kansas city", "brief guide to", "united airlines",
         "jennifer lawrence", "chris pratt", "passengers (2016)", "passengers movie", "passengers film",
         "suno india", "air india express", "kimono", "geisha", "yukata", "great wall of china",
-        "south india", "north india", "question mark", "3d man", "3d character", "stick figure"
+        "south india", "north india", "question mark", "3d man", "3d character", "stick figure",
+        "scooter", "moped", "delivery rider", "food delivery", "pizza", "courier", "vespa",
+        "gas cylinder", "lpg truck", "street vendor", "rickshaw", "tuk tuk", "camel ride"
     ]
     if any(tw in comb_meta for tw in off_topic_ad_and_trap_words):
         return False
+
+    # V76 STRICT FOREIGN-COUNTRY & WRONG-MILITARY REJECTION GATE:
+    # Prevents 'Fuerza Aerea de Angola' (Angola Air Force) or 'U.S. Army American Flag' photos
+    # from appearing in a Morocco / Israel / India / Europe story when that foreign country is NOT in the story!
+    story_context_low = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {dossier.get('country_profile', {}).get('name', '')} {query_str} {' '.join(str(x) for x in (dossier.get('raw_facts') or [])[:6])}".lower()
+    foreign_country_traps = [
+        ("angola", "angola"), ("fuerza aerea de angola", "angola"), ("nigeria", "nigeria"), ("kenya", "kenya"),
+        ("ghana", "ghana"), ("senegal", "senegal"), ("brazil", "brazil"), ("forca aerea brasileira", "brazil"),
+        ("mexico", "mexico"), ("colombia", "colombia"), ("chile", "chile"), ("argentina", "argentina"),
+        ("kazakhstan", "kazakhstan"), ("uzbekistan", "uzbekistan"), ("philippines", "philippines"),
+        ("indonesia", "indonesia"), ("vietnam", "vietnam"), ("malaysia", "malaysia"), ("bangladesh", "bangladesh"),
+        ("sri lanka", "sri lanka"), ("nepal", "nepal"), ("myanmar", "myanmar"), ("czech", "czech"),
+        ("finland", "finland"), ("portugal", "portugal"), ("ireland", "ireland"), ("ecuador", "ecuador"),
+        ("peru", "peru"), ("venezuela", "venezuela")
+    ]
+    for trap_tok, req_cnt in foreign_country_traps:
+        if trap_tok in comb_meta and req_cnt not in story_context_low:
+            return False
+
+    # Block U.S. Flag / U.S. Army / USAF stock photos when the story is NOT about the United States!
+    if not any(us_k in story_context_low for us_k in ["united states", "u.s.", "usa", "pentagon", "white house", "washington", "american", "trump", "biden"]):
+        if any(us_trap in comb_meta for us_trap in ["u.s. army", "us army", "u.s. air force", "usaf", "u.s. marines", "american flag", "stars and stripes", "national guard", "fort bragg"]):
+            return False
 
     title_low = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {dossier.get('country_profile', {}).get('name', '')} {query_str} {' '.join((dossier.get('raw_facts') or [])[:6])}".lower()
     is_cinema_or_pop_story = (
@@ -11643,9 +11722,9 @@ def build_point_highlight_banner_rgba(beat, W, H, is_short=True, local_t=1.0, be
     b_excerpt = strip_news_publisher_mentions(str(beat.get("beat_excerpt") or "")).strip()
     short_clause = fit_whole_words_limit(b_excerpt, 48 if not is_short else 42)
     sec_num = int(beat.get("section_idx", 0)) + 1
-    f_sub = get_font(15)
-    f_main = get_font(22 if not is_short else 21)
-    f_cl = get_font(18 if not is_short else 17)
+    f_sub = get_font(16 if not is_short else 19)
+    f_main = get_font(23 if not is_short else 27)
+    f_cl = get_font(18 if not is_short else 21)
     sub_lbl = f"PART {sec_num:02d}  •  KEY TAKEAWAY"
     tw = max(int(f_main.getlength(pt_txt)), int(f_sub.getlength(sub_lbl)), int(f_cl.getlength(f'"{short_clause}..."')))
     bw = min(W - 84, max(380, tw + 56))
@@ -12320,11 +12399,12 @@ V51_ALL_28_TEMPLATE_MODES = {
 
 V51_TEMPLATE_RULES = [
     # 1-7: Core Think School Narrative Templates (from Ub4ZmBuSA7Q)
-    ("TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT", "ALL", r"\b(look at this|picture|photograph|posted|headline|newspaper|article|viral image|social media|report shows|document reveals)\b", 92),
-    ("TS_02_HEAD_TO_HEAD_VS_SPLIT", "ALL", r"\b(versus|vs\.?|on one side|other side|rivals|contenders|clash between|head to head|both agree|sees it differently|while .+ wants)\b", 95),
+    ("TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT", "ALL", r"\b(look at this|picture|photograph|posted|headline|newspaper|article|viral image|social media|report shows|document reveals|no press release|official statement)\b", 92),
+    ("TS_02_HEAD_TO_HEAD_VS_SPLIT", "ALL", r"\b(versus|vs\.?|on one side|other side|rivals|contenders|clash between|head to head|both agree|sees it differently|while .+ wants|watched this for years|balance of power between)\b", 95),
     ("TS_03_PARLIAMENT_MAJORITY_HEMICYCLE", "ALL", r"\b(majority|coalition|parliament|seats|election|voters|vote share|constituencies|polls|ballot|kingmaker|knesset|congress|lok sabha)\b", 96),
     ("TS_04_DOMINO_CHAIN_FLOWCHART", "ALL", r"\b(because of|led to|as a result|consequently|chain reaction|domino|forced|triggered|which meant|in turn|ripple effect)\b", 88),
-    ("TS_05_CHOKEPOINT_CORRIDOR_MAP", "ALL", r"\b(corridor|strait|red sea|hormuz|suez|canal|malacca|route|shipping|chokepoint|missing link|border|cape of good hope|map)\b", 94),
+    ("TS_05_CHOKEPOINT_CORRIDOR_MAP", "ALL", r"\b(corridor|strait|red sea|hormuz|suez|canal|malacca|route|shipping|chokepoint|missing link|border|cape of good hope|map|flew straight to|built in .+ flew|from .+ to |delivered to|airspace|patrol)\b", 97),
+    ("TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD", "ALL", r"\b(carries|tons|tonnage|payload|more than old|capacity|range|speed|radar|surveillance|operates from|short rough runways|specifications|upgraded)\b", 93),
     ("TS_06_SIMPLE_100_MATH_GRID", "ALL", r"\b(percent|%|out of 100|one lakh|ratio|one third|two thirds|half of|quarter of|let's say|simple math|work out to)\b", 86),
     ("TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD", "ALL", r"\b(question is|questions|scenarios|three ways|two superpowers|number one|firstly|secondly|options|what happens next|cat on the wall)\b", 90),
 
@@ -12408,94 +12488,69 @@ def _does_category_allow_group(pillar_str, story_low, group_code):
 
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False, sec_idx=0, beat_in_sec=0, is_short=False):
     """
-    V75 HIGH-FREQUENCY CLAUDE UI/UX MOTION-GRAPHICS & THINK SCHOOL ANIMATION ROUTER:
-    Fixes the 'no animation / mostly static frames' problem in `MTORf20pdNA`:
-    - Previously, `if sec_idx in used_chapters: return None` and `sec_idx in (0, 2, 4, 6, 8)` meant 87% of beats
-      had `sim_mode = None`!
-    - Now in V75:
-      * Beat 0 of Chapter 0 (`sec_idx == 0 and beat_in_sec == 0`) shows the full-bleed Hero Video/Scene with an
-        animated Chapter Intro + Live Telemetry Overlay.
-      * In EVERY chapter (`sec_idx = 0..9`), up to 2 beats per chapter (`beat_in_sec in (1, 3)` or any strong regex match)
-        activate full 30fps animated Motion Graphics (`TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`, `TS_05_CHOKEPOINT_CORRIDOR_MAP`,
-        `TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT`, `TS_04_DOMINO_CHAIN_FLOWCHART`, `TS_02_HEAD_TO_HEAD_VS_SPLIT`,
-        `GEO_08_MILITARY_FIREPOWER_RADAR`, `BIZ_14_FOLLOW_THE_MONEY_WATERFALL`, `TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD`)!
-      * And Beat 2 (`beat_in_sec == 2`) activates the 3D-Tilted Animated Newspaper Cutout (`build_evidence_paper_cutout_rgba`)
-        or Animated Kinetic Stat/Dossier Overlay in `render_1080p_beat_frame`!
+    V79 100% WORD-SYNCHRONIZED, ZERO-REPETITION 8-ARCHETYPE VISUAL ROUTER:
+    Every single beat is dynamically designed according to the exact words being spoken (`beat_text`),
+    and never repeats the previous beat's design archetype!
     """
     low = str(beat_text or "").lower()
     if "subscribe to world talk brief" in low or "watch the full documentary" in low:
         return None
 
-    # Keep the very first cold-open beat (Chapter 0, Beat 0) full-bleed hero video/scene
-    if sec_idx == 0 and beat_in_sec == 0:
-        return None
+    last_mode_key = "_v79_last_mode_short" if is_short else "_v79_last_mode_long"
+    used_seq_key = "_v79_used_seq_short" if is_short else "_v79_used_seq_long"
+    last_mode = dossier.get(last_mode_key)
+    used_seq = dossier.setdefault(used_seq_key, [])
 
-    cnt_key = "_v75_tpl_counts_short" if is_short else "_v75_tpl_counts_long"
-    ch_cnt_key = "_v75_ch_counts_short" if is_short else "_v75_ch_counts_long"
-    tpl_counts = dossier.setdefault(cnt_key, {})
-    ch_counts = dossier.setdefault(ch_cnt_key, {})
+    # Semantic matching based on the exact words spoken in `beat_text`:
+    candidates = []
+    if re.search(r"\b(on one side|on the other side|versus|vs\.?|while\s+[a-z]+\s+deploys|compared to|rivalry|clash)\b", low):
+        candidates.append("TS_02_HEAD_TO_HEAD_VS_SPLIT")
+    if re.search(r"\b(corridor|imec|port|rail|shipping|trade route|links\s+india|suez|hormuz)\b", low):
+        candidates.append("TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD")
+    if re.search(r"\b(flew|flight|strait|gibraltar|across\s+the|border|map|from\s+[a-z]+\s+to\s+[a-z]+)\b", low):
+        candidates.append("TS_05_CHOKEPOINT_CORRIDOR_MAP")
+    if re.search(r"\b(radar|surveillance|patrol|cockpit|airspace|45%|endurance|reconnaissance|sonar)\b", low):
+        candidates.append("GEO_08_MILITARY_FIREPOWER_RADAR")
+    if re.search(r"\b(tons|payload|cargo|capacity|runway|turboprop|spec|ramp|loading)\b", low):
+        candidates.append("TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD")
+    if re.search(r"\b(dispatch|press release|quietly|secret|confidential|dossier|ceremony|classified)\b", low):
+        candidates.append("TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT")
+    if re.search(r"\b(domino|stage|balance of power|shifting|triggered|command|outcome|pipeline)\b", low):
+        candidates.append("TS_04_DOMINO_CHAIN_FLOWCHART")
+    if re.search(r"\b(built in|assembled|hangar|factory|facility|production|plant|seville)\b", low):
+        candidates.append("DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD")
 
-    max_per_chapter = 2 if not is_short else 1
-    if ch_counts.get(sec_idx, 0) >= max_per_chapter:
-        return None
+    all_8_archetypes = [
+        "DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD",
+        "TS_05_CHOKEPOINT_CORRIDOR_MAP",
+        "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
+        "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
+        "GEO_08_MILITARY_FIREPOWER_RADAR",
+        "TS_02_HEAD_TO_HEAD_VS_SPLIT",
+        "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
+        "TS_04_DOMINO_CHAIN_FLOWCHART",
+    ]
+    for arch in all_8_archetypes:
+        if arch not in candidates:
+            candidates.append(arch)
 
-    # Keep Beat 0 of chapters as full-bleed moving video/parallax scene unless it has a strong map/comparison trigger
-    if beat_in_sec == 0 and not any(k in low for k in ["map", "strait", "corridor", "border", "on one side", "versus", "vs", "out of 100"]):
-        return None
+    # First prefer a semantic match that hasn't been used recently
+    chosen = None
+    for c_mode in candidates:
+        if c_mode != last_mode and c_mode not in used_seq[-4:]:
+            chosen = c_mode
+            break
+    if chosen is None:
+        for c_mode in candidates:
+            if c_mode != last_mode:
+                chosen = c_mode
+                break
+    if chosen is None:
+        chosen = all_8_archetypes[beat_idx % len(all_8_archetypes)]
 
-    pillar = str(dossier.get("sub_pillar") or dossier.get("pillar", "WORLD")).upper()
-    story_low = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')} {' '.join(str(f) for f in (dossier.get('raw_facts') or [])[:4])}".lower()
-
-    best_mode = None
-    best_score = -1
-    has_digit_in_beat = bool(re.search(r"\d", low))
-
-    for t_mode, grp_code, pat_str, base_sc in V51_TEMPLATE_RULES:
-        # Allow core motion-graphics modes to appear up to 3 times per long documentary (with different data!)
-        max_uses_for_mode = 3 if t_mode in ("TS_05_CHOKEPOINT_CORRIDOR_MAP", "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD", "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT", "TS_04_DOMINO_CHAIN_FLOWCHART", "GEO_08_MILITARY_FIREPOWER_RADAR") else 1
-        if tpl_counts.get(t_mode, 0) >= max_uses_for_mode:
-            continue
-        if t_mode in ("BIZ_14_FOLLOW_THE_MONEY_WATERFALL", "TS_06_SIMPLE_100_MATH_GRID", "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE") and not has_digit_in_beat:
-            continue
-        if not _does_category_allow_group(pillar, story_low, grp_code):
-            continue
-        hits = re.findall(pat_str, low, flags=re.I)
-        if hits:
-            sc = base_sc + min(12, len(hits) * 4) - (tpl_counts.get(t_mode, 0) * 8)
-            if grp_code not in ("ALL", "BIZ_ALL"):
-                sc += 6
-            if sc > best_score:
-                best_score = sc
-                best_mode = t_mode
-
-    if best_mode and best_score >= 74:
-        tpl_counts[best_mode] = tpl_counts.get(best_mode, 0) + 1
-        ch_counts[sec_idx] = ch_counts.get(sec_idx, 0) + 1
-        return best_mode
-
-    # V75 GUARANTEED EVERY-CHAPTER MOTION GRAPHICS (On Beat 1 and Beat 3 of EVERY chapter!):
-    if beat_in_sec in (1, 3):
-        editorial_cycle = [
-            "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
-            "TS_05_CHOKEPOINT_CORRIDOR_MAP",
-            "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
-            "TS_04_DOMINO_CHAIN_FLOWCHART",
-            "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
-            "GEO_08_MILITARY_FIREPOWER_RADAR",
-            "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
-            "TS_05_CHOKEPOINT_CORRIDOR_MAP",
-            "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
-            "TS_28_STUDIO_QUOTE_PRESS_MONITOR"
-        ]
-        chosen_m = editorial_cycle[(sec_idx * 2 + (0 if beat_in_sec == 1 else 1)) % len(editorial_cycle)]
-        # If `BIZ_14` is chosen on a non-numeric beat, swap to `TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`
-        if chosen_m == "BIZ_14_FOLLOW_THE_MONEY_WATERFALL" and not has_digit_in_beat:
-            chosen_m = "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD"
-        tpl_counts[chosen_m] = tpl_counts.get(chosen_m, 0) + 1
-        ch_counts[sec_idx] = ch_counts.get(sec_idx, 0) + 1
-        return chosen_m
-
-    return None
+    dossier[last_mode_key] = chosen
+    used_seq.append(chosen)
+    return chosen
 
 
 def activate_v67_auxiliary_vfx_engines(mode, beat, local_t, W, H, is_short=True):
@@ -12539,6 +12594,19 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     # Delegate the 5 existing V50 flagship renderers directly for their mapped modes:
     if mode == "TS_05_CHOKEPOINT_CORRIDOR_MAP":
         return render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=is_short)
+    if HAS_PYCAIRO_V78 and mode in (
+        "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
+        "TS_02_HEAD_TO_HEAD_VS_SPLIT",
+        "TS_04_DOMINO_CHAIN_FLOWCHART",
+        "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
+        "DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD",
+        "TS_28_STUDIO_QUOTE_PRESS_MONITOR",
+        "GEO_08_MILITARY_FIREPOWER_RADAR",
+        "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
+    ):
+        _v78_im = render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_short=is_short)
+        if _v78_im is not None:
+            return _v78_im
     if mode == "GEO_10_ALLIANCE_POWER_NETWORK":
         return render_motion_canvas_power_network_frame(beat, local_t, W, H, is_short=is_short)
     if mode == "TS_28_STUDIO_QUOTE_PRESS_MONITOR":
@@ -12581,7 +12649,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     sec_im = (beat.get("secondary_im") or beat.get("primary_im") or bg).convert("RGB")
 
     # Extract numbers from sentence for data-driven templates
-    num_matches = re.findall(r"((?:\d+:)?(?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|km|miles|seats|years|days|planes|nations|states|seconds))?)", b_txt, flags=re.I)
+    num_matches = re.findall(r"(?<![A-Za-z0-9])((?:\d+:)?(?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*|\-)?(?:%|percent|billion|million|trillion|tons?|kg|km|miles|meters|seats|years|days|hours|planes|ships|nations|states|seconds)?)(?![A-Za-z0-9])", b_txt, flags=re.I)
     clean_nums = [re.sub(r"\s+", " ", n.strip().upper().replace("PERCENT", "%").replace("BILLION", "B").replace("MILLION", "M")) for n in num_matches if n.strip()]
     if not clean_nums:
         story_nums = re.findall(r"((?:\$|£|€|₹)?\d+(?:[.,]\d+)?(?:\s*(?:%|percent|billion|million|trillion|km|miles|seats|years|days))?)", f"{story_obj.get('title', '')} {' '.join(str(x) for x in (story_obj.get('raw_facts') or [])[:3])}", flags=re.I)
@@ -12640,34 +12708,45 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         draw = ImageDraw.Draw(bg, "RGBA")
         draw.text((hdr_box[0] + 26, hdr_box[1] + 18), f"{t_title}  •  {fit_whole_words_limit(point_hl, 34)}", fill=(t_col[0], t_col[1], t_col[2], 255), font=get_font(23 if not is_short else 20))
 
+    # Draw subtle Claude Studio Architectural Micro-Grid & Radial Glow on `bg` before rendering cards!
+    grid_ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(grid_ov, "RGBA")
+    for gx in range(48, W - 24, 48):
+        gd.line([(gx, 96), (gx, H - 150)], fill=(148, 163, 184, 14), width=1)
+    for gy in range(104, H - 150, 48):
+        gd.line([(40, gy), (W - 40, gy)], fill=(148, 163, 184, 14), width=1)
+    bg.alpha_composite(grid_ov)
+    draw = ImageDraw.Draw(bg, "RGBA")
+
     # ==========================================================================
-    # MODE 1: TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT (Authentic Human-Edited Tilted Newspaper / Press Cutout!)
+    # MODE 1: TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT (Ultra-Detailed Newspaper Dossier + Magnifying Loupe + Red Stamp!)
     # ==========================================================================
     if mode == "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT":
-        pw_n = int(sw * (0.90 if not is_short else 0.94))
-        ph_n = int((sh + 68) * (0.90 if not is_short else 0.86))
-        np_card = Image.new("RGBA", (pw_n + 32, ph_n + 32), (0, 0, 0, 0))
+        pw_n = int(sw * (0.92 if not is_short else 0.95))
+        ph_n = int((sh + 68) * (0.91 if not is_short else 0.86))
+        np_card = Image.new("RGBA", (pw_n + 36, ph_n + 36), (0, 0, 0, 0))
         nd = ImageDraw.Draw(np_card, "RGBA")
 
-        # Deep tactile drop shadow + Warm Archival Cream Newspaper Card
-        nd.rounded_rectangle([(20, 22), (pw_n + 20, ph_n + 22)], radius=20, fill=(0, 0, 0, 185))
-        nd.rounded_rectangle([(8, 8), (pw_n + 8, ph_n + 8)], radius=20, fill=(247, 243, 232, 255), outline=(212, 204, 186, 255), width=3)
-        # Subtle ruled newsprint texture lines
-        for ry in range(86, ph_n - 16, 18):
-            nd.line([(28, ry), (pw_n - 16, ry)], fill=(228, 222, 208, 110), width=1)
+        # Multi-layered tactile drop shadow + Warm Archival Cream Newspaper Card
+        nd.rounded_rectangle([(22, 24), (pw_n + 22, ph_n + 24)], radius=20, fill=(0, 0, 0, 195))
+        nd.rounded_rectangle([(14, 16), (pw_n + 14, ph_n + 16)], radius=20, fill=(232, 226, 212, 240), outline=(185, 176, 158, 255), width=2)
+        nd.rounded_rectangle([(8, 8), (pw_n + 8, ph_n + 8)], radius=20, fill=(248, 244, 234, 255), outline=(212, 204, 186, 255), width=3)
+        for ry in range(84, ph_n - 16, 16):
+            nd.line([(28, ry), (pw_n - 16, ry)], fill=(226, 220, 205, 115), width=1)
 
-        # Newspaper Masthead Bar
-        nd.rounded_rectangle([(8, 8), (pw_n + 8, 72)], radius=18, fill=(14, 20, 34, 255))
-        nd.rectangle([(8, 48), (pw_n + 8, 72)], fill=(14, 20, 34, 255))
+        # Newspaper Masthead Bar with Issue/Date Telemetry
+        nd.rounded_rectangle([(8, 8), (pw_n + 8, 74)], radius=18, fill=(14, 20, 34, 255))
+        nd.rectangle([(8, 48), (pw_n + 8, 74)], fill=(14, 20, 34, 255))
+        nd.line([(8, 74), (pw_n + 8, 74)], fill=(230, 57, 70, 255), width=3)
         nd.text((34, 24), f"THE INTERNATIONAL DOSSIER  •  {c_name} PRESS ARCHIVE", fill=(255, 215, 0, 255), font=get_font(21 if not is_short else 18))
-        nd.text((pw_n - 245, 26), "VERIFIED DISPATCH", fill=(0, 235, 255, 255), font=get_font(17))
+        nd.text((pw_n - 295, 26), "VOL. XXIV • VERIFIED DISPATCH", fill=(56, 189, 248, 255), font=get_font(16))
 
         if not is_short:
-            im_box = (34, 94, int(pw_n * 0.53), ph_n - 20)
-            tx_x0, tx_y0, tx_w = int(pw_n * 0.56), 98, int(pw_n * 0.41)
+            im_box = (34, 96, int(pw_n * 0.54), ph_n - 22)
+            tx_x0, tx_y0, tx_w = int(pw_n * 0.57), 98, int(pw_n * 0.40)
         else:
-            im_box = (30, 90, pw_n - 14, int(ph_n * 0.55))
-            tx_x0, tx_y0, tx_w = 34, int(ph_n * 0.58), pw_n - 52
+            im_box = (30, 92, pw_n - 14, int(ph_n * 0.54))
+            tx_x0, tx_y0, tx_w = 34, int(ph_n * 0.57), pw_n - 52
 
         iw_b, ih_b = im_box[2] - im_box[0], im_box[3] - im_box[1]
         sc_f = max(iw_b / float(src_im.size[0]), ih_b / float(src_im.size[1]))
@@ -12677,39 +12756,55 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         ImageDraw.Draw(mask_f).rounded_rectangle([(0, 0), (iw_b - 1, ih_b - 1)], radius=12, fill=255)
         np_card.paste(im_c, (im_box[0], im_box[1]), mask_f)
         nd = ImageDraw.Draw(np_card, "RGBA")
-        nd.rounded_rectangle([(im_box[0], im_box[1]), (im_box[2] - 1, im_box[3] - 1)], radius=12, outline=(32, 38, 52, 230), width=2)
+        nd.rounded_rectangle([(im_box[0], im_box[1]), (im_box[2] - 1, im_box[3] - 1)], radius=12, outline=(32, 38, 52, 235), width=3)
 
-        # Red Editorial Kicker + Full 2-Line Wrapped Headline (NEVER truncated at 2 words!)
+        # Magnifying-Glass Evidence Callout Loupe in lower-right corner of the photograph!
+        loupe_r = 66 if not is_short else 54
+        lx_c = im_box[2] - loupe_r - 22
+        ly_c = im_box[3] - loupe_r - 22
+        zoom_crop = im_c.crop((max(0, iw_b // 2 - loupe_r), max(0, ih_b // 2 - loupe_r), min(iw_b, iw_b // 2 + loupe_r), min(ih_b, ih_b // 2 + loupe_r))).resize((loupe_r * 2, loupe_r * 2), resample_l)
+        l_mask = Image.new("L", (loupe_r * 2, loupe_r * 2), 0)
+        ImageDraw.Draw(l_mask).ellipse([(0, 0), (loupe_r * 2 - 1, loupe_r * 2 - 1)], fill=255)
+        np_card.paste(zoom_crop, (lx_c - loupe_r, ly_c - loupe_r), l_mask)
+        nd = ImageDraw.Draw(np_card, "RGBA")
+        nd.ellipse([(lx_c - loupe_r, ly_c - loupe_r), (lx_c + loupe_r, ly_c + loupe_r)], outline=(255, 215, 0, 255), width=4)
+        nd.rounded_rectangle([(im_box[0] + 16, im_box[3] - 48), (im_box[0] + 245, im_box[3] - 14)], radius=7, fill=(14, 20, 34, 232), outline=(255, 215, 0, 220), width=2)
+        nd.text((im_box[0] + 28, im_box[3] - 40), f"EXHIBIT A • {c_name}", fill=(255, 215, 0, 255), font=get_font(16))
+
+        # Editorial Kicker + Full 2-Line Wrapped Headline + Yellow Marker Wipe
         nd.text((tx_x0, tx_y0), "SPECIAL INVESTIGATION CLIPPING", fill=(210, 30, 50, 255), font=get_font(18))
-        f_hl_np = get_font(29 if not is_short else 25)
+        f_hl_np = get_font(28 if not is_short else 24)
         hl_text_full = fit_whole_words_limit(str(beat.get("point_highlight") or beat.get("section_headline") or topic_anc).upper(), 46)
         hl_lines = wrap_text_px(hl_text_full, f_hl_np, tx_w - 16, max_lines=2)
-        hl_box_h = 44 * max(1, len(hl_lines)) + 10
-        hl_w = int((tx_w - 6) * anim_p)
+        hl_box_h = 42 * max(1, len(hl_lines)) + 10
+        hl_w = int((tx_w - 6) * min(max(local_t / 1.15, 0.12), 1.0))
         if hl_w > 12:
-            nd.rounded_rectangle([(tx_x0 - 8, tx_y0 + 30), (tx_x0 - 8 + hl_w, tx_y0 + 30 + hl_box_h)], radius=8, fill=(255, 232, 0, 245))
+            nd.rounded_rectangle([(tx_x0 - 8, tx_y0 + 30), (tx_x0 - 8 + hl_w, tx_y0 + 30 + hl_box_h)], radius=8, fill=(255, 232, 0, 248))
         for h_i, h_ln in enumerate(hl_lines):
-            nd.text((tx_x0, tx_y0 + 38 + h_i * 42), h_ln, fill=(12, 16, 24, 255), font=f_hl_np)
+            nd.text((tx_x0, tx_y0 + 38 + h_i * 40), h_ln, fill=(12, 16, 24, 255), font=f_hl_np)
 
-        div_y = tx_y0 + 42 + hl_box_h
-        nd.line([(tx_x0, div_y), (tx_x0 + tx_w, div_y)], fill=(210, 30, 50, 220), width=3)
-        f_np = get_font(23 if not is_short else 21)
-        body_lines = wrap_text_px(b_txt, f_np, tx_w - 12, max_lines=5)
+        div_y = tx_y0 + 40 + hl_box_h
+        nd.line([(tx_x0, div_y), (tx_x0 + tx_w, div_y)], fill=(210, 30, 50, 230), width=3)
+        f_np = get_font(22 if not is_short else 20)
+        body_lines = wrap_text_px(b_txt, f_np, tx_w - 12, max_lines=4)
         for l_i, ln_np in enumerate(body_lines):
-            # Highlight key numeric/quote line in soft yellow
             if l_i == 1 and hl_w > 40:
-                nd.rounded_rectangle([(tx_x0 - 4, div_y + 18 + l_i * 38 - 3), (tx_x0 + min(tx_w - 10, int(f_np.getlength(ln_np)) + 8), div_y + 18 + l_i * 38 + 30)], radius=5, fill=(255, 238, 120, 195))
-            nd.text((tx_x0, div_y + 18 + l_i * 38), ln_np, fill=(24, 30, 42, 255), font=f_np)
+                nd.rounded_rectangle([(tx_x0 - 4, div_y + 16 + l_i * 36 - 3), (tx_x0 + min(tx_w - 10, int(f_np.getlength(ln_np)) + 8), div_y + 16 + l_i * 36 + 28)], radius=5, fill=(255, 238, 120, 205))
+            nd.text((tx_x0, div_y + 16 + l_i * 36), ln_np, fill=(24, 30, 42, 255), font=f_np)
 
-        # Subtle -1.3 degree human editor tilt in Premiere Pro style
-        np_tilted = np_card.rotate(-1.3, resample=getattr(Image, "Resampling", Image).BICUBIC, expand=True)
+        # Red Editorial Verification Stamp Box at bottom-right of Newspaper Card
+        st_x0, st_y0 = tx_x0, ph_n - 68
+        nd.rounded_rectangle([(st_x0, st_y0), (st_x0 + 295, st_y0 + 42)], radius=8, outline=(210, 30, 50, 235), width=3)
+        nd.text((st_x0 + 16, st_y0 + 10), "✔ DECLASSIFIED // VERIFIED", fill=(210, 30, 50, 245), font=get_font(17))
+
+        np_tilted = np_card.rotate(-1.2, resample=getattr(Image, "Resampling", Image).BICUBIC, expand=True)
         paste_x = sx0 + (sw - np_tilted.size[0]) // 2
         paste_y = (sy0 - 36) + ((sh + 56) - np_tilted.size[1]) // 2
         bg.alpha_composite(np_tilted, (max(12, paste_x), max(92, paste_y)))
         draw = ImageDraw.Draw(bg, "RGBA")
 
     # ==========================================================================
-    # MODE 2: TS_02_HEAD_TO_HEAD_VS_SPLIT (Visual-First Contender Split with Distinct Side A vs Side B Stances!)
+    # MODE 2: TS_02_HEAD_TO_HEAD_VS_SPLIT (Ultra-Detailed Contender Split + Comparative Telemetry Bars!)
     # ==========================================================================
     elif mode == "TS_02_HEAD_TO_HEAD_VS_SPLIT":
         if not is_short:
@@ -12722,7 +12817,6 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         sa_hdr = str(beat.get("side_a_label") or "CONTENDER A").upper()[:24]
         sb_hdr = str(beat.get("side_b_label") or "CONTENDER B").upper()[:24]
 
-        # Split sentence on explicit comparison pivots so Left & Right get their true respective stances!
         vs_parts = [p.strip() for p in re.split(r"\b(?:and on the other side|on the other side|whereas|while|versus|vs\.?|compared to|in contrast)\b", b_txt, flags=re.I) if len(p.strip()) >= 12]
         if len(vs_parts) >= 2:
             raw_a, raw_b = vs_parts[0], vs_parts[1]
@@ -12745,48 +12839,67 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         pt1 = _clean_contender_stance(raw_a, sa_hdr)
         pt2 = _clean_contender_stance(raw_b, sb_hdr)
 
-        stat_a = clean_nums[0] if clean_nums else "CAMP A"
-        stat_b = clean_nums[1] if len(clean_nums) > 1 else "CAMP B"
+        # Apply continuous Ken Burns zoom to `sec_im` as well so both Side A and Side B photos move at 30fps!
+        sw_k, sh_k = sec_im.size
+        cw_k, ch_k = int(sw_k / cont_ken_burns), int(sh_k / cont_ken_burns)
+        sec_im_zoomed = sec_im.crop(((sw_k - cw_k) // 2, (sh_k - ch_k) // 2, (sw_k - cw_k) // 2 + cw_k, (sh_k - ch_k) // 2 + ch_k))
+
+        stat_a = clean_nums[0] if clean_nums else "STRATEGIC EDGE"
+        stat_b = clean_nums[1] if len(clean_nums) > 1 else "COUNTER-FORCE"
         sides = [
-            (b_left, src_im, f"{sa_hdr}  •  CAMP A", (0, 235, 255), pt1, stat_a),
-            (b_right, sec_im, f"{sb_hdr}  •  CAMP B", (255, 65, 95), pt2, stat_b)
+            (b_left, src_im, f"{sa_hdr}  •  CAMP A", (56, 189, 248), pt1, stat_a, 0.88, step1_p),
+            (b_right, sec_im_zoomed, f"{sb_hdr}  •  CAMP B", (244, 63, 94), pt2, stat_b, 0.79, step2_p)
         ]
-        for bx, pim, s_hdr, scol, key_pt, stat_pill in sides:
-            draw_2026_visionos_glass_card(bg, bx, radius=24, tint=(12, 20, 36, 218), border_col=(scol[0], scol[1], scol[2], 195), accent_col=scol, accent_pos="top", blur_px=18)
-            bw_s, bh_s = bx[2] - bx[0], bx[3] - bx[1]
-            ph_h = int(bh_s * 0.60)
+        for bx, pim, s_hdr, scol, key_pt, stat_pill, meter_ratio, sp_anim in sides:
+            y_off_vs = int((1.0 - min(sp_anim, 1.0)) * 45)
+            bx_a = (bx[0], bx[1] + y_off_vs, bx[2], bx[3] + y_off_vs)
+            draw_2026_visionos_glass_card(bg, bx_a, radius=22, tint=(12, 19, 34, 238), border_col=(scol[0], scol[1], scol[2], 215), accent_col=scol, accent_pos="top", blur_px=18)
+            bw_s, bh_s = bx_a[2] - bx_a[0], bx_a[3] - bx_a[1]
+            ph_h = int(bh_s * 0.56)
             sc_p = max((bw_s - 28) / float(pim.size[0]), ph_h / float(pim.size[1]))
             pr = pim.resize((int(pim.size[0] * sc_p), int(pim.size[1] * sc_p)), resample_l)
             pcrop = pr.crop(((pr.size[0] - (bw_s - 28)) // 2, max(0, int((pr.size[1] - ph_h) * 0.12)), (pr.size[0] - (bw_s - 28)) // 2 + (bw_s - 28), max(0, int((pr.size[1] - ph_h) * 0.12)) + ph_h)).convert("RGBA")
             pmask = Image.new("L", (bw_s - 28, ph_h), 0)
-            ImageDraw.Draw(pmask).rounded_rectangle([(0, 0), (bw_s - 29, ph_h - 1)], radius=16, fill=255)
-            bg.paste(pcrop, (bx[0] + 14, bx[1] + 52), pmask)
+            ImageDraw.Draw(pmask).rounded_rectangle([(0, 0), (bw_s - 29, ph_h - 1)], radius=14, fill=255)
+            bg.paste(pcrop, (bx_a[0] + 14, bx_a[1] + 50), pmask)
 
             draw = ImageDraw.Draw(bg, "RGBA")
-            draw.rounded_rectangle([(bx[0] + 14, bx[1] + 52), (bx[0] + bw_s - 15, bx[1] + 52 + ph_h - 1)], radius=16, outline=(scol[0], scol[1], scol[2], 180), width=2)
-            draw.text((bx[0] + 22, bx[1] + 16), s_hdr, fill=(scol[0], scol[1], scol[2], 255), font=get_font(20))
-            ty_start = bx[1] + 64 + ph_h
-            f_sp = get_font(21)
-            sp_str = str(stat_pill)[:18]
-            sp_w = max(150, int(f_sp.getlength(sp_str)) + 36)
-            draw.rounded_rectangle([(bx[0] + 22, ty_start), (bx[0] + 22 + sp_w, ty_start + 38)], radius=9, fill=(scol[0], scol[1], scol[2], 242))
-            draw.text((bx[0] + 38, ty_start + 7), sp_str, fill=(10, 14, 24, 255), font=f_sp)
+            draw.rounded_rectangle([(bx_a[0] + 14, bx_a[1] + 50), (bx_a[0] + bw_s - 15, bx_a[1] + 50 + ph_h - 1)], radius=14, outline=(scol[0], scol[1], scol[2], 195), width=2)
+            draw.text((bx_a[0] + 22, bx_a[1] + 15), s_hdr, fill=(scol[0], scol[1], scol[2], 255), font=get_font(19))
+            draw.text((bx_a[2] - 155, bx_a[1] + 16), "● ACTIVE DOSSIER", fill=(148, 163, 184, 220), font=get_font(14))
 
-            f_st = get_font(23 if not is_short else 21)
+            ty_start = bx_a[1] + 62 + ph_h
+            f_sp = get_font(20)
+            sp_str = str(stat_pill)[:18]
+            sp_w = max(145, int(f_sp.getlength(sp_str)) + 34)
+            draw.rounded_rectangle([(bx_a[0] + 22, ty_start), (bx_a[0] + 22 + sp_w, ty_start + 36)], radius=8, fill=(scol[0], scol[1], scol[2], 245))
+            draw.text((bx_a[0] + 36, ty_start + 6), sp_str, fill=(10, 14, 24, 255), font=f_sp)
+
+            f_st = get_font(22 if not is_short else 20)
             for l_i, st_ln in enumerate(wrap_text_px(key_pt, f_st, bw_s - 44, max_lines=2)):
-                draw.text((bx[0] + 22, ty_start + 48 + l_i * 30), st_ln, fill=(248, 250, 255, 255), font=f_st)
+                draw.text((bx_a[0] + 22, ty_start + 46 + l_i * 28), st_ln, fill=(248, 250, 255, 255), font=f_st)
+
+            # Bottom 16-Segment LED Capability Meter inside each Contender Card
+            seg_y = bx_a[3] - 32
+            n_segs = 18
+            seg_w = (bw_s - 44 - (n_segs - 1) * 5) // n_segs
+            lit_segs = int(n_segs * meter_ratio * min(max(local_t / 1.4, 0.15), 1.0))
+            for s_idx in range(n_segs):
+                sx_seg = bx_a[0] + 22 + s_idx * (seg_w + 5)
+                sc_fill = (scol[0], scol[1], scol[2], 245) if s_idx < lit_segs else (30, 41, 59, 210)
+                draw.rounded_rectangle([(sx_seg, seg_y), (sx_seg + seg_w, seg_y + 12)], radius=3, fill=sc_fill)
 
         vcx, vcy = (sx0 + sx1) // 2, (sy0 + sy1) // 2
-        draw.ellipse([(vcx - 46, vcy - 46), (vcx + 46, vcy + 46)], fill=(14, 22, 42, 255), outline=(255, 215, 0, 255), width=4)
-        draw.text((vcx - 24, vcy - 18), "VS", fill=(255, 215, 0, 255), font=get_font(32))
+        draw.ellipse([(vcx - 54, vcy - 54), (vcx + 54, vcy + 54)], fill=(15, 23, 42, 240), outline=(245, 158, 11, 130), width=3)
+        draw.ellipse([(vcx - 44, vcy - 44), (vcx + 44, vcy + 44)], fill=(15, 23, 42, 255), outline=(255, 215, 0, 255), width=4)
+        draw.text((vcx - 23, vcy - 18), "VS", fill=(255, 215, 0, 255), font=get_font(31))
 
     # ==========================================================================
     # MODE 3: TS_03_PARLIAMENT_MAJORITY_HEMICYCLE (Zero-Overlap Arch & Smart Majority/Bloc Math!)
     # ==========================================================================
     elif mode == "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE":
-        draw_2026_visionos_glass_card(bg, stage_box, radius=26, tint=(10, 18, 34, 214), border_col=(0, 235, 255, 165), accent_col=(0, 235, 255), accent_pos="top", blur_px=20)
+        draw_2026_visionos_glass_card(bg, stage_box, radius=26, tint=(10, 18, 34, 224), border_col=(56, 189, 248, 185), accent_col=(56, 189, 248), accent_pos="top", blur_px=20)
 
-        # Smart semantic seat parser so Majority (61), Bloc A (53), Bloc B (48), and Swing/Kingmaker (19) are 100% accurate!
         maj_m = re.search(r"(\d+)\s*(?:seats?\s+)?(?:needed|for\s+a?\s*majority|majority|threshold|target\s+mark)", b_txt, flags=re.I) or re.search(r"(?:majority|threshold|target)\s+(?:of\s+|mark\s+of\s+)?(\d+)", b_txt, flags=re.I)
         tot_m = re.search(r"(\d+)(?:-|\s+)seat\s+(?:knesset|parliament|chamber|house|assembly)", b_txt, flags=re.I) or re.search(r"out\s+of\s+(\d+)\s+seats", b_txt, flags=re.I)
         king_m = re.search(r"(\d+)\s+(?:kingmaker|swing|arab|undecided|remaining)\s*seats?", b_txt, flags=re.I) or re.search(r"(?:hold|holds|holding|with)\s+(\d+)\s+kingmaker", b_txt, flags=re.I)
@@ -12823,14 +12936,13 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
                 if seat_idx > total_seats_vis:
                     scol = (45, 60, 88, 150)
                 elif seat_idx < 26:
-                    scol = (0, 235, 255, 255)
+                    scol = (56, 189, 248, 255)
                 elif seat_idx < 36:
                     scol = (255, 215, 0, 255)
                 else:
-                    scol = (255, 65, 95, 255)
+                    scol = (244, 63, 94, 255)
                 ad.ellipse([(dx - 9 * ss, dy - 9 * ss), (dx + 9 * ss, dy + 9 * ss)], fill=scol)
                 seat_idx += 1
-        # Vertical 50%+1 Majority Threshold Dashed/Solid Line at top center of hemicycle
         ad.line([(acx, acy - 252 * ss), (acx, acy - 96 * ss)], fill=(255, 215, 0, 255), width=3 * ss)
         bg.alpha_composite(arch_layer.resize((sw, sh), resample_l), (sx0, sy0))
 
@@ -12839,7 +12951,6 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         mcy = sy0 + int(sh * (0.62 if not is_short else 0.42))
         draw.text((mcx - 102, mcy - 282), "▼ 50%+1 MAJORITY LINE", fill=(255, 215, 0, 255), font=get_font(18))
 
-        # Place the Target Majority Pill cleanly BELOW the hemicycle baseline (`mcy + 26`) so ZERO dots ever touch it!
         pill_w, pill_h = 310, 86
         px0, py0 = mcx - pill_w // 2, mcy + 26
         draw.rounded_rectangle([(px0, py0), (px0 + pill_w, py0 + pill_h)], radius=16, fill=(14, 24, 46, 242), outline=(255, 215, 0, 235), width=2)
@@ -12857,8 +12968,8 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         sa_lbl = str(beat.get("side_a_label") or "LEADING CAMP").upper()[:18]
         sb_lbl = str(beat.get("side_b_label") or "OPPOSITION CAMP").upper()[:18]
         blocs = [
-            (f"BLOC A  •  {sa_lbl}", ba_display, (0, 235, 255)),
-            (f"BLOC B  •  {sb_lbl}", bb_display, (255, 65, 95)),
+            (f"BLOC A  •  {sa_lbl}", ba_display, (56, 189, 248)),
+            (f"BLOC B  •  {sb_lbl}", bb_display, (244, 63, 94)),
             ("KINGMAKER  •  SWING BLOC", kg_display, (255, 215, 0))
         ]
         for b_i, (b_lbl, b_val, b_col) in enumerate(blocs):
@@ -12869,40 +12980,43 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
             draw.text((rx_p + 26, by_b + 46), str(b_val), fill=(255, 255, 255, 255), font=get_font(32))
 
     # ==========================================================================
-    # MODE 3B: TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD (Claude UI/UX Design Skill Pin-Point Scene + Structured Data Card!)
-    #          Inspired by `dKsMC5Bae_w` (04:05 & 13:05): Clean matte UI/UX, zero ugly default gradients,
-    #          combining a 1080p Pin-Point Scene Frame on the left with a structured Case Evidence & Timeline Card on the right!
+    # MODE 3B: TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD (V77 ULTRA-DETAILED CLAUDE CODE UI/UX BENTO DASHBOARD!)
+    #          - Left Panel: Claude Studio Window with Breadcrumb Tabs, Photorealistic 1080p Scene,
+    #            4-Corner Target-Lock Reticles, Laser Scan Trail, and 28-Bar Live Audio/Telemetry Spectrum!
+    #          - Right Panel: Staggered 3-Card Bento Dashboard with:
+    #            * Card 1: Verified Badge Pill + Yellow Marker Wipe + 18-Segment LED Readiness Bar
+    #            * Card 2: Dual-Ring Donut Gauge + Count-Up Metric + Emerald Delta Pill + Live Bezier Area Sparkline!
+    #            * Card 3: 2-Bar Comparative Benchmark Chart (`NEW SPEC 100%` vs `BASELINE 68%`) + Gliding UI Cursor & Click Ripple!
     # ==========================================================================
     elif mode == "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD":
-        # V75 CLAUDE CODE UI/UX MOTION GRAPHICS BENTO ENGINE (Inspired by `dKsMC5Bae_w` at 00:00-01:10 & 04:05):
-        # 1. Left Panel: Continuous 30fps Ken-Burns zooming HD Scene inside a sleek Claude Studio UI Window
-        #    with macOS traffic lights, live scanning brackets, and animated waveform bar!
-        # 2. Right Panel: Staggered 3-Card Bento Stack that slides & springs into place sequentially
-        #    (`step1_p` at 0.1s, `step2_p` at 0.75s, `step3_p` at 1.45s) with an animated circular ring gauge,
-        #    live count-up metric, yellow highlighter wipe, and a gliding UI cursor arrow!
         if not is_short:
-            sc_box = (sx0, sy0, sx0 + int(sw * 0.53) - 14, sy1)
-            ui_box = (sx0 + int(sw * 0.53) + 14, sy0, sx1, sy1)
+            sc_box = (sx0, sy0, sx0 + int(sw * 0.52) - 14, sy1)
+            ui_box = (sx0 + int(sw * 0.52) + 14, sy0, sx1, sy1)
         else:
-            sc_box = (sx0, sy0, sx1, sy0 + int(sh * 0.48) - 12)
-            ui_box = (sx0, sy0 + int(sh * 0.48) + 12, sx1, sy1)
+            sc_box = (sx0, sy0, sx1, sy0 + int(sh * 0.46) - 12)
+            ui_box = (sx0, sy0 + int(sh * 0.46) + 12, sx1, sy1)
 
-        # Left Claude Studio Window Frame
         lw_s, lh_s = sc_box[2] - sc_box[0], sc_box[3] - sc_box[1]
         draw = ImageDraw.Draw(bg, "RGBA")
-        draw.rounded_rectangle([(sc_box[0] + 6, sc_box[1] + 10), (sc_box[2] + 6, sc_box[3] + 10)], radius=20, fill=(0, 0, 0, 185))
-        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2], sc_box[3])], radius=20, fill=(15, 23, 42, 252), outline=(71, 85, 105, 255), width=2)
-        # Window Top Bar with macOS Traffic Lights (`#FF5F56`, `#FFBD2E`, `#27C93F`)
-        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2], sc_box[1] + 44)], radius=18, fill=(30, 41, 59, 255))
-        draw.rectangle([(sc_box[0], sc_box[1] + 28), (sc_box[2], sc_box[1] + 44)], fill=(30, 41, 59, 255))
+        # Outer elevation shadow + Claude Studio Window frame
+        draw.rounded_rectangle([(sc_box[0] + 8, sc_box[1] + 12), (sc_box[2] + 8, sc_box[3] + 12)], radius=20, fill=(0, 0, 0, 195))
+        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2], sc_box[3])], radius=20, fill=(13, 19, 34, 254), outline=(71, 85, 105, 255), width=2)
+
+        # Window Header Bar with Traffic Lights + Active Tab Pill
+        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2], sc_box[1] + 46)], radius=18, fill=(24, 34, 52, 255))
+        draw.rectangle([(sc_box[0], sc_box[1] + 28), (sc_box[2], sc_box[1] + 46)], fill=(24, 34, 52, 255))
         for dot_i, dot_c in enumerate([(255, 95, 86, 255), (255, 189, 46, 255), (39, 201, 63, 255)]):
             dx_d = sc_box[0] + 20 + dot_i * 22
-            draw.ellipse([(dx_d, sc_box[1] + 15), (dx_d + 13, sc_box[1] + 28)], fill=dot_c)
-        draw.text((sc_box[0] + 96, sc_box[1] + 12), f"SCENE_INTEL_FEED // {c_name}", fill=(226, 232, 240, 255), font=get_font(16))
+            draw.ellipse([(dx_d, sc_box[1] + 16), (dx_d + 13, sc_box[1] + 29)], fill=dot_c)
+        # Active File Tab Pill inside Window Header
+        draw.rounded_rectangle([(sc_box[0] + 92, sc_box[1] + 8), (sc_box[0] + 345, sc_box[1] + 38)], radius=8, fill=(13, 19, 34, 255), outline=(56, 189, 248, 175), width=1)
+        draw.text((sc_box[0] + 106, sc_box[1] + 13), f"● SCENE_FEED // {c_name[:12]}", fill=(56, 189, 248, 255), font=get_font(15))
+        if not is_short:
+            draw.text((sc_box[2] - 185, sc_box[1] + 14), "1080P • 30.0 FPS", fill=(148, 163, 184, 230), font=get_font(15))
 
         # Paste continuous-zooming HD scene inside window body
-        im_top = sc_box[1] + 46
-        im_h = lh_s - 48
+        im_top = sc_box[1] + 48
+        im_h = lh_s - 50
         sc_f = max((lw_s - 4) / float(src_im.size[0]), im_h / float(src_im.size[1]))
         im_r = src_im.resize((int(src_im.size[0] * sc_f), int(src_im.size[1] * sc_f)), resample_l)
         im_c = im_r.crop(((im_r.size[0] - (lw_s - 4)) // 2, (im_r.size[1] - im_h) // 2, (im_r.size[0] - (lw_s - 4)) // 2 + (lw_s - 4), (im_r.size[1] - im_h) // 2 + im_h)).convert("RGBA")
@@ -12911,14 +13025,35 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         bg.paste(im_c, (sc_box[0] + 2, im_top), mask_s)
         draw = ImageDraw.Draw(bg, "RGBA")
 
-        # Animated Telemetry Scan Line & Live Status Pill over Scene
-        scan_y = im_top + int((im_h - 16) * ((local_t * 0.45) % 1.0))
-        draw.line([(sc_box[0] + 12, scan_y), (sc_box[2] - 12, scan_y)], fill=(245, 158, 11, 135), width=2)
-        loc_tag = f"● LIVE SCENE  •  {c_name}"
-        f_lt = get_font(16)
+        # 4-Corner Tactical Target-Lock Reticle Brackets over Scene
+        rx0_t, ry0_t, rx1_t, ry1_t = sc_box[0] + 28, im_top + 58, sc_box[2] - 28, sc_box[3] - 58
+        blen = 26
+        rcol_t = (245, 158, 11, 215)
+        for (cx_t, cy_t, sx_d, sy_d) in [(rx0_t, ry0_t, 1, 1), (rx1_t, ry0_t, -1, 1), (rx0_t, ry1_t, 1, -1), (rx1_t, ry1_t, -1, -1)]:
+            draw.line([(cx_t, cy_t), (cx_t + sx_d * blen, cy_t)], fill=rcol_t, width=3)
+            draw.line([(cx_t, cy_t), (cx_t, cy_t + sy_d * blen)], fill=rcol_t, width=3)
+
+        # Animated Laser Scan Line + Top-Left Live Location Badge
+        scan_y = im_top + 16 + int((im_h - 70) * ((local_t * 0.42) % 1.0))
+        draw.line([(sc_box[0] + 14, scan_y), (sc_box[2] - 14, scan_y)], fill=(56, 189, 248, 175), width=2)
+        loc_tag = f"● LIVE TELEMETRY  •  {c_name}"
+        f_lt = get_font(15)
         lt_w = int(f_lt.getlength(loc_tag)) + 28
-        draw.rounded_rectangle([(sc_box[0] + 18, im_top + 16), (sc_box[0] + 18 + lt_w, im_top + 48)], radius=8, fill=(15, 23, 42, 235), outline=(245, 158, 11, 230), width=2)
-        draw.text((sc_box[0] + 32, im_top + 22), loc_tag, fill=(255, 215, 0, 255), font=f_lt)
+        draw.rounded_rectangle([(sc_box[0] + 18, im_top + 14), (sc_box[0] + 18 + lt_w, im_top + 44)], radius=7, fill=(13, 19, 34, 232), outline=(245, 158, 11, 225), width=2)
+        draw.text((sc_box[0] + 32, im_top + 20), loc_tag, fill=(255, 215, 0, 255), font=f_lt)
+
+        # Bottom 26-Bar Live Telemetry Waveform Strip inside Left Scene Window
+        draw.rounded_rectangle([(sc_box[0] + 16, sc_box[3] - 46), (sc_box[2] - 16, sc_box[3] - 12)], radius=8, fill=(13, 19, 34, 228), outline=(51, 65, 85, 200), width=1)
+        n_wbars = 24 if not is_short else 28
+        wb_start_x = sc_box[0] + 28
+        wb_step = max(8, (lw_s - 220) // n_wbars)
+        for wb_i in range(n_wbars):
+            wh = int(6 + 16 * abs(math.sin(local_t * 6.5 + wb_i * 0.55)))
+            wx = wb_start_x + wb_i * wb_step
+            wy_b = sc_box[3] - 18
+            wcol = (56, 189, 248, 235) if wb_i % 3 != 0 else (245, 158, 11, 235)
+            draw.rounded_rectangle([(wx, wy_b - wh), (wx + 4, wy_b)], radius=2, fill=wcol)
+        draw.text((sc_box[2] - 178, sc_box[3] - 37), "SIGNAL LOCK 99.4%", fill=(39, 201, 63, 245), font=get_font(14))
 
         # Right Panel: Staggered 3-Card Bento Motion Stack (`step1_p`, `step2_p`, `step3_p`)
         ux0, uy0, ux1, uy1 = ui_box
@@ -12932,61 +13067,112 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         while len(uniq_b) < 2:
             uniq_b.append(b_txt)
 
-        # BENTO CARD 1 (Top: Animated Slide-In + Yellow Highlighter Wipe)
+        # BENTO CARD 1 (Top: Verified Badge + Yellow Marker Wipe + 18-Segment LED Readiness Bar)
         s1_off = int((1.0 - min(step1_p, 1.0)) * 120)
         b1_y0, b1_y1 = uy0, uy0 + int(uh * 0.34) - 8
-        draw.rounded_rectangle([(ux0 + s1_off + 4, b1_y0 + 6), (ux1 + s1_off + 4, b1_y1 + 6)], radius=18, fill=(0, 0, 0, 165))
-        draw.rounded_rectangle([(ux0 + s1_off, b1_y0), (ux1 + s1_off, b1_y1)], radius=18, fill=(15, 23, 42, 248), outline=(245, 158, 11, 225), width=2)
+        draw.rounded_rectangle([(ux0 + s1_off + 5, b1_y0 + 7), (ux1 + s1_off + 5, b1_y1 + 7)], radius=18, fill=(0, 0, 0, 175))
+        draw.rounded_rectangle([(ux0 + s1_off, b1_y0), (ux1 + s1_off, b1_y1)], radius=18, fill=(15, 23, 42, 250), outline=(245, 158, 11, 225), width=2)
         draw.rectangle([(ux0 + s1_off, b1_y0 + 16), (ux0 + s1_off + 8, b1_y1 - 16)], fill=(230, 57, 70, 255))
-        draw.text((ux0 + s1_off + 24, b1_y0 + 14), f"01 // CORE FLASHPOINT  •  {fit_whole_words_limit(topic_anc.upper(), 18)}", fill=(245, 158, 11, 255), font=get_font(17))
-        hl_w_b1 = int((uw - 48) * min(max(local_t / 1.15, 0.08), 1.0))
-        draw.rounded_rectangle([(ux0 + s1_off + 22, b1_y0 + 44), (ux0 + s1_off + 22 + hl_w_b1, b1_y0 + 92)], radius=8, fill=(255, 230, 0, 248))
-        draw.text((ux0 + s1_off + 32, b1_y0 + 54), fit_whole_words_limit(point_hl, 26), fill=(12, 16, 24, 255), font=get_font(23 if not is_short else 20))
-        f_b1 = get_font(19)
-        for l_i, ln_1 in enumerate(wrap_text_px(uniq_b[0], f_b1, uw - 48, max_lines=2)):
-            draw.text((ux0 + s1_off + 24, b1_y0 + 104 + l_i * 26), ln_1, fill=(241, 245, 249, 255), font=f_b1)
+        draw.text((ux0 + s1_off + 24, b1_y0 + 14), f"01 // CORE FLASHPOINT  •  {fit_whole_words_limit(topic_anc.upper(), 16)}", fill=(245, 158, 11, 255), font=get_font(16))
+        # Emerald 'VERIFIED' badge top-right of Card 1
+        draw.rounded_rectangle([(ux1 + s1_off - 142, b1_y0 + 11), (ux1 + s1_off - 18, b1_y0 + 35)], radius=6, fill=(16, 185, 129, 38), outline=(16, 185, 129, 225), width=1)
+        draw.text((ux1 + s1_off - 128, b1_y0 + 15), "✔ VERIFIED", fill=(52, 211, 153, 255), font=get_font(14))
 
-        # BENTO CARD 2 (Middle: Staggered Slide-In at `step2_p` + Animated Circular Gauge & Count-Up Metric)
-        if local_t >= 0.35:
+        hl_w_b1 = int((uw - 48) * min(max(local_t / 1.15, 0.08), 1.0))
+        draw.rounded_rectangle([(ux0 + s1_off + 22, b1_y0 + 42), (ux0 + s1_off + 22 + hl_w_b1, b1_y0 + 86)], radius=8, fill=(255, 230, 0, 248))
+        draw.text((ux0 + s1_off + 32, b1_y0 + 50), fit_whole_words_limit(point_hl, 26), fill=(12, 16, 24, 255), font=get_font(22 if not is_short else 19))
+        f_b1 = get_font(18 if not is_short else 17)
+        for l_i, ln_1 in enumerate(wrap_text_px(uniq_b[0], f_b1, uw - 48, max_lines=2)):
+            draw.text((ux0 + s1_off + 24, b1_y0 + 96 + l_i * 24), ln_1, fill=(241, 245, 249, 255), font=f_b1)
+
+        # 18-Segment LED Bar at bottom of Bento Card 1
+        n_led = 18
+        led_w = (uw - 48 - (n_led - 1) * 5) // n_led
+        lit_led = int(n_led * min(max(local_t / 1.35, 0.15), 1.0))
+        for l_idx in range(n_led):
+            lx_s = ux0 + s1_off + 24 + l_idx * (led_w + 5)
+            l_col = (245, 158, 11, 245) if l_idx < lit_led else (30, 41, 59, 210)
+            draw.rounded_rectangle([(lx_s, b1_y1 - 20), (lx_s + led_w, b1_y1 - 10)], radius=2, fill=l_col)
+
+        # BENTO CARD 2 (Middle: Dual-Ring Donut Gauge + Count-Up Metric + Delta Pill + Live Bezier Area Sparkline!)
+        if local_t >= 0.30:
             s2_off = int((1.0 - min(step2_p, 1.0)) * 140)
             b2_y0, b2_y1 = uy0 + int(uh * 0.35) + 4, uy0 + int(uh * 0.68) - 4
-            draw.rounded_rectangle([(ux0 + s2_off + 4, b2_y0 + 6), (ux1 + s2_off + 4, b2_y1 + 6)], radius=18, fill=(0, 0, 0, 165))
-            draw.rounded_rectangle([(ux0 + s2_off, b2_y0), (ux1 + s2_off, b2_y1)], radius=18, fill=(15, 23, 42, 248), outline=(56, 189, 248, 215), width=2)
-            # Animated Circular Ring Gauge on Left of Bento Card 2
-            gcx, gcy = ux0 + s2_off + 64, (b2_y0 + b2_y1) // 2
+            draw.rounded_rectangle([(ux0 + s2_off + 5, b2_y0 + 7), (ux1 + s2_off + 5, b2_y1 + 7)], radius=18, fill=(0, 0, 0, 175))
+            draw.rounded_rectangle([(ux0 + s2_off, b2_y0), (ux1 + s2_off, b2_y1)], radius=18, fill=(15, 23, 42, 250), outline=(56, 189, 248, 225), width=2)
+
+            # Dual-Ring Donut Gauge on Left
+            gcx, gcy = ux0 + s2_off + 62, (b2_y0 + b2_y1) // 2 + 4
             grad = 42
-            draw.ellipse([(gcx - grad, gcy - grad), (gcx + grad, gcy + grad)], outline=(30, 41, 59, 255), width=8)
-            arc_deg = int(310 * min(max((local_t - 0.35) / 1.5, 0.1), 1.0))
-            draw.arc([(gcx - grad, gcy - grad), (gcx + grad, gcy + grad)], start=-90, end=-90 + arc_deg, fill=(56, 189, 248, 255), width=8)
-            draw.text((gcx - 20, gcy - 11), f"{int(arc_deg * 100 / 310)}%", fill=(255, 255, 255, 255), font=get_font(17))
+            draw.ellipse([(gcx - grad, gcy - grad), (gcx + grad, gcy + grad)], outline=(30, 41, 59, 255), width=7)
+            draw.ellipse([(gcx - grad + 11, gcy - grad + 11), (gcx + grad - 11, gcy + grad - 11)], outline=(30, 41, 59, 255), width=5)
+            arc_deg = int(315 * min(max((local_t - 0.30) / 1.45, 0.12), 1.0))
+            draw.arc([(gcx - grad, gcy - grad), (gcx + grad, gcy + grad)], start=-90, end=-90 + arc_deg, fill=(56, 189, 248, 255), width=7)
+            draw.arc([(gcx - grad + 11, gcy - grad + 11), (gcx + grad - 11, gcy + grad - 11)], start=-90, end=-90 + int(arc_deg * 0.82), fill=(245, 158, 11, 255), width=5)
+            draw.text((gcx - 19, gcy - 10), f"{int(arc_deg * 100 / 315)}%", fill=(255, 255, 255, 255), font=get_font(16))
 
-            stat_raw = clean_nums[0] if clean_nums else "KEY IMPACT"
-            stat_cnt = format_animated_countup_number(str(stat_raw)[:16], min(max((local_t - 0.35) / 1.4, 0.1), 1.0))
-            draw.text((ux0 + s2_off + 126, b2_y0 + 16), "02 // TELEMETRY & IMPACT DATA", fill=(56, 189, 248, 255), font=get_font(17))
-            draw.text((ux0 + s2_off + 126, b2_y0 + 42), stat_cnt, fill=(255, 215, 0, 255), font=get_font(28))
-            for l_i, ln_2 in enumerate(wrap_text_px(uniq_b[1], f_b1, uw - 148, max_lines=2)):
-                draw.text((ux0 + s2_off + 126, b2_y0 + 82 + l_i * 25), ln_2, fill=(226, 232, 240, 255), font=f_b1)
+            stat_raw = clean_nums[0] if clean_nums else "+45% SHIFT"
+            stat_cnt = format_animated_countup_number(str(stat_raw)[:14], min(max((local_t - 0.30) / 1.35, 0.12), 1.0))
+            draw.text((ux0 + s2_off + 122, b2_y0 + 14), "02 // TELEMETRY & SPARKLINE", fill=(56, 189, 248, 255), font=get_font(16))
+            draw.text((ux0 + s2_off + 122, b2_y0 + 38), stat_cnt, fill=(255, 215, 0, 255), font=get_font(28))
 
-        # BENTO CARD 3 (Bottom: Staggered Slide-In at `step3_p` + Animated Progress Bar & Gliding UI Cursor!)
-        if local_t >= 0.85:
+            # Emerald Delta Badge next to metric
+            sec_num_badge = clean_nums[1] if len(clean_nums) > 1 else "▲ HIGH IMPACT"
+            draw.rounded_rectangle([(ux0 + s2_off + 285, b2_y0 + 42), (ux0 + s2_off + 425, b2_y0 + 70)], radius=7, fill=(16, 185, 129, 45), outline=(16, 185, 129, 235), width=1)
+            draw.text((ux0 + s2_off + 297, b2_y0 + 47), f"▲ {str(sec_num_badge)[:11]}", fill=(52, 211, 153, 255), font=get_font(15))
+
+            # Live Bezier Area Sparkline Chart on right side of Bento Card 2
+            if not is_short:
+                sp_x0, sp_y0, sp_w_c, sp_h_c = ux1 + s2_off - 215, b2_y0 + 22, 190, 62
+                draw.rounded_rectangle([(sp_x0, sp_y0), (sp_x0 + sp_w_c, sp_y0 + sp_h_c)], radius=8, fill=(22, 32, 52, 220), outline=(51, 65, 85, 190), width=1)
+                spark_vals = [0.78, 0.72, 0.75, 0.64, 0.58, 0.62, 0.48, 0.42, 0.35, 0.28, 0.20, 0.16]
+                n_sp = max(2, int(len(spark_vals) * min(max((local_t - 0.30) / 1.4, 0.2), 1.0)))
+                sp_pts = []
+                for idx_sv in range(n_sp):
+                    px_sv = sp_x0 + 10 + int((sp_w_c - 20) * (idx_sv / float(len(spark_vals) - 1)))
+                    py_sv = sp_y0 + 10 + int((sp_h_c - 20) * spark_vals[idx_sv])
+                    sp_pts.append((px_sv, py_sv))
+                if len(sp_pts) >= 2:
+                    poly_sp = sp_pts + [(sp_pts[-1][0], sp_y0 + sp_h_c - 4), (sp_pts[0][0], sp_y0 + sp_h_c - 4)]
+                    draw.polygon(poly_sp, fill=(56, 189, 248, 48))
+                    draw.line(sp_pts, fill=(56, 189, 248, 255), width=3)
+                    draw.ellipse([(sp_pts[-1][0] - 5, sp_pts[-1][1] - 5), (sp_pts[-1][0] + 5, sp_pts[-1][1] + 5)], fill=(255, 215, 0, 255), outline=(255, 255, 255, 255), width=2)
+
+            for l_i, ln_2 in enumerate(wrap_text_px(uniq_b[1], f_b1, uw - 142, max_lines=2)):
+                draw.text((ux0 + s2_off + 122, b2_y0 + 88 + l_i * 24), ln_2, fill=(226, 232, 240, 255), font=f_b1)
+
+        # BENTO CARD 3 (Bottom: 2-Bar Comparative Benchmark Chart + Gliding Claude UI Cursor & Click Ripple!)
+        if local_t >= 0.75:
             s3_off = int((1.0 - min(step3_p, 1.0)) * 150)
             b3_y0, b3_y1 = uy0 + int(uh * 0.69) + 8, uy1
-            draw.rounded_rectangle([(ux0 + s3_off + 4, b3_y0 + 6), (ux1 + s3_off + 4, b3_y1 + 6)], radius=18, fill=(0, 0, 0, 165))
-            draw.rounded_rectangle([(ux0 + s3_off, b3_y0), (ux1 + s3_off, b3_y1)], radius=18, fill=(15, 23, 42, 248), outline=(39, 201, 63, 215), width=2)
-            draw.text((ux0 + s3_off + 24, b3_y0 + 14), f"03 // STRATEGIC OUTCOME  •  {c_name}", fill=(39, 201, 63, 255), font=get_font(17))
-            third_txt = uniq_b[2] if len(uniq_b) > 2 else b_txt
-            for l_i, ln_3 in enumerate(wrap_text_px(third_txt, f_b1, uw - 48, max_lines=2)):
-                draw.text((ux0 + s3_off + 24, b3_y0 + 42 + l_i * 26), ln_3, fill=(241, 245, 249, 255), font=f_b1)
-            # Animated Progress Bar inside Card 3
-            bar_w_tot = uw - 48
-            bar_fill = max(24, int(bar_w_tot * min(max((local_t - 0.85) / 1.6, 0.12), 1.0)))
-            draw.rounded_rectangle([(ux0 + s3_off + 24, b3_y1 - 28), (ux0 + s3_off + 24 + bar_w_tot, b3_y1 - 14)], radius=7, fill=(30, 41, 59, 255))
-            draw.rounded_rectangle([(ux0 + s3_off + 24, b3_y1 - 28), (ux0 + s3_off + 24 + bar_fill, b3_y1 - 14)], radius=7, fill=(39, 201, 63, 255))
+            draw.rounded_rectangle([(ux0 + s3_off + 5, b3_y0 + 7), (ux1 + s3_off + 5, b3_y1 + 7)], radius=18, fill=(0, 0, 0, 175))
+            draw.rounded_rectangle([(ux0 + s3_off, b3_y0), (ux1 + s3_off, b3_y1)], radius=18, fill=(15, 23, 42, 250), outline=(39, 201, 63, 225), width=2)
+            draw.text((ux0 + s3_off + 24, b3_y0 + 13), f"03 // COMPARATIVE BENCHMARK  •  {c_name}", fill=(39, 201, 63, 255), font=get_font(16))
 
-        # Gliding Claude UI Pointer Cursor (moves smoothly from Card 1 -> Card 2 -> Card 3 across `local_t`)
-        cur_p = min(max(local_t / 2.8, 0.0), 1.0)
-        cur_x = ux1 - 68 - int(45 * math.sin(cur_p * math.pi))
-        cur_y = uy0 + 65 + int((uh - 130) * cur_p)
+            third_txt = uniq_b[2] if len(uniq_b) > 2 else b_txt
+            for l_i, ln_3 in enumerate(wrap_text_px(third_txt, f_b1, uw - 48, max_lines=1)):
+                draw.text((ux0 + s3_off + 24, b3_y0 + 38 + l_i * 24), ln_3, fill=(241, 245, 249, 255), font=f_b1)
+
+            # 2-Bar Horizontal Benchmark Comparison (`ACTIVE CAPABILITY` vs `PREVIOUS BASELINE`)
+            bar_p3 = min(max((local_t - 0.75) / 1.45, 0.15), 1.0)
+            b_x0 = ux0 + s3_off + 195
+            b_max_w = uw - 225
+            for b_row, (b_lbl_r, b_rat_r, b_col_r) in enumerate([
+                ("NEW CAPABILITY", 0.94, (39, 201, 63, 255)),
+                ("OLD BASELINE", 0.62, (100, 116, 139, 235))
+            ]):
+                ry_bar = b3_y1 - 66 + b_row * 28
+                draw.text((ux0 + s3_off + 24, ry_bar - 2), b_lbl_r, fill=(203, 213, 225, 245), font=get_font(15))
+                draw.rounded_rectangle([(b_x0, ry_bar), (b_x0 + b_max_w, ry_bar + 14)], radius=6, fill=(30, 41, 59, 240))
+                fill_r_w = max(18, int(b_max_w * b_rat_r * bar_p3))
+                draw.rounded_rectangle([(b_x0, ry_bar), (b_x0 + fill_r_w, ry_bar + 14)], radius=6, fill=b_col_r)
+
+        # Gliding Claude UI Pointer Cursor + Click Ripple Halo
+        cur_p = min(max(local_t / 2.6, 0.0), 1.0)
+        cur_x = ux1 - 74 - int(48 * math.sin(cur_p * math.pi))
+        cur_y = uy0 + 68 + int((uh - 135) * cur_p)
+        rip_r = int(10 + 14 * ((local_t * 2.5) % 1.0))
+        draw.ellipse([(cur_x - rip_r, cur_y - rip_r), (cur_x + rip_r, cur_y + rip_r)], outline=(255, 215, 0, int(190 * (1.0 - (rip_r / 26.0)))), width=2)
         draw.polygon([(cur_x, cur_y), (cur_x + 22, cur_y + 10), (cur_x + 12, cur_y + 14), (cur_x + 16, cur_y + 24), (cur_x + 10, cur_y + 26), (cur_x + 6, cur_y + 16), (cur_x, cur_y + 22)], fill=(255, 255, 255, 255), outline=(15, 23, 42, 255))
 
     # ==========================================================================
@@ -13942,8 +14128,10 @@ def _latlon_to_mercator_xy(lat, lon, map_w, map_h, center_lat, center_lon, zoom_
     clat_c = max(-78.0, min(78.0, float(center_lat)))
     y_merc = math.degrees(math.asinh(math.tan(math.radians(lat_c))))
     cy_merc = math.degrees(math.asinh(math.tan(math.radians(clat_c))))
-    px = (map_w * 0.5) + (lon_diff / 360.0) * map_w * zoom_scale
-    py = (map_h * 0.5) - ((y_merc - cy_merc) / 180.0) * map_h * zoom_scale
+    # V76 TRUE 1:1 ISOTROPIC MERCATOR PROJECTION (Zero vertical stretching on 9:16 Shorts or 16:9 Longs!):
+    iso_span = float(max(map_w, map_h))
+    px = (map_w * 0.5) + (lon_diff / 360.0) * iso_span * zoom_scale
+    py = (map_h * (0.40 if map_w < map_h else 0.50)) - ((y_merc - cy_merc) / 360.0) * iso_span * zoom_scale
     return int(px), int(py)
 
 def _fetch_real_cartodb_map_canvas(center_lat, center_lon, map_w, map_h, zoom_lvl=4):
@@ -14167,7 +14355,29 @@ def get_country_boundary_polygons(country_name_upper):
         except Exception:
             pass
         for bk, bpoly in BUILTIN_COUNTRY_POLYGONS.items():
-            NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[bk] = [bpoly]
+            if bk not in NATURAL_EARTH_COUNTRY_POLYGONS_CACHE or not NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[bk]:
+                NATURAL_EARTH_COUNTRY_POLYGONS_CACHE[bk] = [bpoly]
+        # Cleanly union MOROCCO and W. SAHARA using Shapely so there is no artificial cut line and full Atlantic coast is sharp
+        try:
+            from shapely.geometry import Polygon as _ShpPoly
+            from shapely.ops import unary_union as _shp_union
+            if "MOROCCO" in NATURAL_EARTH_COUNTRY_POLYGONS_CACHE and "W. SAHARA" in NATURAL_EARTH_COUNTRY_POLYGONS_CACHE:
+                _m_polys = []
+                for _r in (NATURAL_EARTH_COUNTRY_POLYGONS_CACHE["MOROCCO"] + NATURAL_EARTH_COUNTRY_POLYGONS_CACHE["W. SAHARA"]):
+                    if len(_r) >= 3:
+                        _p = _ShpPoly([(pt[1], pt[0]) for pt in _r]).buffer(0)
+                        if not _p.is_empty:
+                            _m_polys.append(_p)
+                if _m_polys:
+                    _u = _shp_union(_m_polys).buffer(0)
+                    _geoms = list(_u.geoms) if hasattr(_u, "geoms") else [_u]
+                    NATURAL_EARTH_COUNTRY_POLYGONS_CACHE["MOROCCO"] = [
+                        [(float(lat), float(lon)) for lon, lat in _g.exterior.coords]
+                        for _g in _geoms if not _g.is_empty and len(_g.exterior.coords) >= 3
+                    ]
+                NATURAL_EARTH_COUNTRY_POLYGONS_CACHE.pop("W. SAHARA", None)
+        except Exception:
+            pass
         for geo_fn, geo_url in [
             ("temp/ne_50m_countries.geojson", "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson"),
             ("temp/ne_110m_countries.geojson", "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson")
@@ -14218,7 +14428,1355 @@ def get_country_boundary_polygons(country_name_upper):
     return NATURAL_EARTH_COUNTRY_POLYGONS_CACHE.get(c_key) or []
 
 
+
+# ==============================================================================
+# V80 THINK SCHOOL & 3D DOCUMENTARY FLOW ENGINE (ZERO META-LABELS, MUTED MATTE
+# DOCUMENTARY PALETTE, 3D CAMERA PERSPECTIVE, ZOOM IN/OUT & WORD-SYNCED REVEALS)
+# ==============================================================================
+try:
+    import cairo as _pycairo
+    HAS_PYCAIRO_V78 = True
+except Exception:
+    _pycairo = None
+    HAS_PYCAIRO_V78 = False
+
+
+def _cairo_surface_to_pil_rgba(surface):
+    w = surface.get_width()
+    h = surface.get_height()
+    buf = surface.get_data()
+    arr = np.ndarray(shape=(h, w, 4), dtype=np.uint8, buffer=buf).copy()
+    arr = arr[:, :, [2, 1, 0, 3]]
+    return Image.fromarray(arr, "RGBA")
+
+
+def _cairo_rounded_rect(ctx, x, y, w, h, r):
+    r = max(0.0, min(float(r), float(w) * 0.5, float(h) * 0.5))
+    ctx.new_sub_path()
+    ctx.arc(x + w - r, y + r, r, -math.pi / 2, 0)
+    ctx.arc(x + w - r, y + h - r, r, 0, math.pi / 2)
+    ctx.arc(x + r, y + h - r, r, math.pi / 2, math.pi)
+    ctx.arc(x + r, y + r, r, math.pi, 3 * math.pi / 2)
+    ctx.close_path()
+
+
+def _apply_3d_perspective_tilt_v80(card_rgba, tilt_x_deg=0.0, tilt_y_deg=0.0):
+    """
+    Applies a subtle, realistic 3D camera perspective tilt (homography transform)
+    to floating documentary cards & maps so they sit in real 3D space with depth!
+    """
+    if abs(tilt_x_deg) < 0.05 and abs(tilt_y_deg) < 0.05:
+        return card_rgba
+    w, h = card_rgba.size
+    dx = w * math.sin(math.radians(tilt_y_deg)) * 0.08
+    dy = h * math.sin(math.radians(tilt_x_deg)) * 0.08
+    # Source corners: (0,0), (w,0), (w,h), (0,h)
+    # Destination corners with subtle foreshortening
+    dst = [
+        (max(0.0, dx), max(0.0, dy)),
+        (w - max(0.0, -dx), max(0.0, -dy)),
+        (w - max(0.0, dx * 0.6), h - max(0.0, dy * 0.6)),
+        (max(0.0, -dx * 0.6), h - max(0.0, -dy * 0.6)),
+    ]
+    try:
+        A = []
+        B = []
+        src = [(0, 0), (w, 0), (w, h), (0, h)]
+        for (sx, sy), (tx, ty) in zip(src, dst):
+            A.append([tx, ty, 1, 0, 0, 0, -sx * tx, -sx * ty])
+            A.append([0, 0, 0, tx, ty, 1, -sy * tx, -sy * ty])
+            B.append(sx)
+            B.append(sy)
+        coeffs = np.linalg.solve(np.array(A, dtype=np.float64), np.array(B, dtype=np.float64))
+        resample_bic = getattr(Image, "Resampling", Image).BICUBIC
+        return card_rgba.transform((w, h), Image.PERSPECTIVE, tuple(coeffs), resample=resample_bic)
+    except Exception:
+        return card_rgba
+
+
+def _extract_camera_zoom_pan_frame_v80(pil_im, W, H, local_t, beat_dur, mode_idx=0):
+    """
+    Continuous, silky-smooth documentary camera movement (Zoom-In, Zoom-Out, Pan-Left, Pan-Right)
+    so no background or photograph ever feels frozen!
+    """
+    p = cubic_bezier_ease_in_out(min(max(local_t / max(beat_dur, 2.0), 0.0), 1.0))
+    resample_l = getattr(Image, "Resampling", Image).BILINEAR
+    if pil_im.size != (W, H):
+        base = pil_im.resize((W, H), resample_l)
+    else:
+        base = pil_im
+    bw, bh = base.size
+
+    if mode_idx % 4 == 0:
+        # Smooth camera push-in (zoom in from 1.02x to 1.15x)
+        z = 1.02 + 0.13 * p
+        pan_x, pan_y = 0.5, 0.5 - 0.08 * p
+    elif mode_idx % 4 == 1:
+        # Smooth camera pull-back (zoom out from 1.16x to 1.02x)
+        z = 1.16 - 0.14 * p
+        pan_x, pan_y = 0.5, 0.45 + 0.08 * p
+    elif mode_idx % 4 == 2:
+        # Smooth lateral documentary pan + gentle zoom
+        z = 1.08 + 0.06 * p
+        pan_x, pan_y = 0.25 + 0.50 * p, 0.5
+    else:
+        # Smooth reverse pan + zoom out
+        z = 1.14 - 0.06 * p
+        pan_x, pan_y = 0.75 - 0.50 * p, 0.5
+
+    cw = max(64, int(bw / z))
+    ch = max(64, int(bh / z))
+    x0 = int((bw - cw) * min(max(pan_x, 0.0), 1.0))
+    y0 = int((bh - ch) * min(max(pan_y, 0.0), 1.0))
+    cropped = base.crop((x0, y0, x0 + cw, y0 + ch))
+    return cropped.resize((W, H), resample_l)
+
+
+def _build_accurate_flag_badge_v78(iso2, w=30, h=20):
+    iso = str(iso2 or "US").upper()
+    im = Image.new("RGBA", (w, h), (20, 30, 48, 255))
+    d = ImageDraw.Draw(im, "RGBA")
+    if iso == "MA":
+        d.rectangle([(0, 0), (w, h)], fill=(182, 38, 44, 255))
+        d.ellipse([(w // 2 - 5, h // 2 - 5), (w // 2 + 5, h // 2 + 5)], outline=(0, 135, 68, 255), width=2)
+    elif iso == "ES":
+        d.rectangle([(0, 0), (w, h)], fill=(185, 22, 34, 255))
+        d.rectangle([(0, h // 4), (w, h - h // 4)], fill=(235, 184, 24, 255))
+    elif iso == "DZ":
+        d.rectangle([(0, 0), (w // 2, h)], fill=(0, 102, 51, 255))
+        d.rectangle([(w // 2, 0), (w, h)], fill=(245, 245, 245, 255))
+        d.ellipse([(w // 2 - 4, h // 2 - 4), (w // 2 + 4, h // 2 + 4)], fill=(195, 28, 46, 255))
+    else:
+        try:
+            return get_or_build_flag_icon(iso, w, h)
+        except Exception:
+            pass
+    d.rectangle([(0, 0), (w - 1, h - 1)], outline=(226, 232, 240, 180), width=1)
+    return im
+
+
+def _extract_clean_numbers_v78(text_str):
+    pattern = r"(?<![A-Za-z0-9\-])(?:\$|€|£|₹)?\d+(?:,\d{3})*(?:\.\d+)?(?:%|\s*(?:billion|million|trillion|tons|ton|km|miles|seats|aircraft|ships|vessels|percent|hours|days|years))?(?![A-Za-z0-9])"
+    out = []
+    for m in re.finditer(pattern, text_str, flags=re.I):
+        val = m.group(0).strip().upper()
+        if val and val not in out:
+            out.append(val)
+    return out
+
+
+def _clean_spoken_phrase_tag_v80(s):
+    s = re.sub(
+        r"^(?:inside\\s+the|from\\s+the|on\\s+one\\s+side|on\\s+the\\s+other\\s+side|meanwhile\\s+across\\s+the\\s+wider\\s+region|with|its|built\\s+for|built\\s+in|the|and|while|for)\\s+",
+        "",
+        str(s or "").strip(" .,;:-—"),
+        flags=re.I,
+    )
+    s = re.sub(
+        r"^(?:the|a|an|its|their|his|her)\\s+",
+        "",
+        s.strip(" .,;:-—"),
+        flags=re.I,
+    )
+    return s.strip(" .,;:-—")
+
+
+def _extract_dynamic_phrases_v80(b_txt, fallback_hl=""):
+    raw = [
+        _clean_spoken_phrase_tag_v80(p)
+        for p in re.split(r"[,;—–:]|\\b(?:while|whereas|because|triggering|boosting|increasing|leading to|which|after|before|built for|across|to land in)\\b", b_txt, flags=re.I)
+        if len(_clean_spoken_phrase_tag_v80(p)) >= 5
+    ]
+    uniq = []
+    for p in raw:
+        if p.lower()[:14] not in [u.lower()[:14] for u in uniq]:
+            uniq.append(p)
+    words = _clean_spoken_phrase_tag_v80(b_txt).split()
+    if len(uniq) < 3 and len(words) >= 6:
+        third = max(2, len(words) // 3)
+        for chunk in [" ".join(words[:third]), " ".join(words[third:2*third]), " ".join(words[2*third:])]:
+            c_clean = _clean_spoken_phrase_tag_v80(chunk)
+            if len(c_clean) >= 4 and c_clean.lower()[:14] not in [u.lower()[:14] for u in uniq]:
+                uniq.append(c_clean)
+    while len(uniq) < 3:
+        uniq.append(fallback_hl or b_txt)
+    return uniq[:4]
+
+
+def _refine_coastal_ring_v78(pts, iterations=2):
+    if len(pts) < 4:
+        return pts
+    cur = list(pts)
+    if cur[0] == cur[-1] and len(cur) > 3:
+        cur = cur[:-1]
+    for _ in range(iterations):
+        nxt = []
+        n = len(cur)
+        for i in range(n):
+            p0 = cur[(i - 1) % n]
+            p1 = cur[i]
+            p2 = cur[(i + 1) % n]
+            seg_len = math.hypot(p2[0] - p1[0], p2[1] - p1[1])
+            if seg_len < 6.0:
+                nxt.append(p1)
+                continue
+            v1x, v1y = p0[0] - p1[0], p0[1] - p1[1]
+            v2x, v2y = p2[0] - p1[0], p2[1] - p1[1]
+            n1 = max(1e-5, math.hypot(v1x, v1y))
+            n2 = max(1e-5, math.hypot(v2x, v2y))
+            cos_a = max(-1.0, min(1.0, (v1x * v2x + v1y * v2y) / (n1 * n2)))
+            if cos_a > 0.35:
+                nxt.append(p1)
+            else:
+                q = (0.75 * p1[0] + 0.25 * p2[0], 0.75 * p1[1] + 0.25 * p2[1])
+                r = (0.25 * p1[0] + 0.75 * p2[0], 0.25 * p1[1] + 0.75 * p2[1])
+                nxt.append(q)
+                nxt.append(r)
+        cur = nxt
+    return cur
+
+
+def render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
+    """
+    V80 THINK SCHOOL 3D CARTOGRAPHIC MAP ENGINE:
+    - Deep Matte Documentary Slate & Gold/Crimson palette (zero neon colors, zero meta-labels!).
+    - Continuous smooth camera zoom-in along the flight/corridor route (`cur_zoom`).
+    - Subtle 3D camera pitch on the map + clean documentary briefing card showing ONLY the story facts.
+    """
+    story = beat["story"]
+    c_prof = story.get("country_profile", {})
+    target_lat = float(c_prof.get("lat", 31.768))
+    target_lon = float(c_prof.get("lon", 35.213))
+    c_name = str(c_prof.get("name", "UNITED STATES")).upper()
+    if c_name in ("GLOBAL", "INTERNATIONAL", "GLOBAL BRIEFING"):
+        c_name = "UNITED STATES"
+    cap_name = str(c_prof.get("capital", "WASHINGTON, D.C.")).upper()
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or f"{c_name} STRATEGIC ROUTE").upper(), 34)
+    b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
+    b_low = b_txt.lower()
+    title_low = str(story.get("title", "")).lower()
+
+    def _unpack_cnt(k_up):
+        tup = COUNTRY_GEO_DB.get(k_up.upper())
+        if not tup:
+            return None
+        return {"name": k_up.title(), "iso2": tup[0], "iso3": tup[1], "capital": tup[2], "lat": float(tup[5]), "lon": float(tup[6])}
+
+    active_chokepoint = None
+    for ck_key, ck_cfg in STRATEGIC_CHOKEPOINT_ATLAS.items():
+        if ck_key in b_low or ck_key in title_low:
+            active_chokepoint = ck_cfg
+            break
+
+    STRATEGIC_CITY_ATLAS = {
+        "seville": ("SEVILLE, SPAIN", "SPAIN", "ES", 37.389, -5.984),
+        "madrid": ("MADRID, SPAIN", "SPAIN", "ES", 40.416, -3.703),
+        "rabat": ("RABAT, MOROCCO", "MOROCCO", "MA", 34.020, -6.841),
+        "robot": ("RABAT, MOROCCO", "MOROCCO", "MA", 34.020, -6.841),
+        "kenitra": ("KENITRA BASE", "MOROCCO", "MA", 34.261, -6.580),
+        "casablanca": ("CASABLANCA", "MOROCCO", "MA", 33.573, -7.589),
+        "algiers": ("ALGIERS, ALGERIA", "ALGERIA", "DZ", 36.753, 3.058),
+        "tel aviv": ("TEL AVIV, ISRAEL", "ISRAEL", "IL", 32.085, 34.781),
+        "jerusalem": ("JERUSALEM", "ISRAEL", "IL", 31.768, 35.213),
+        "haifa": ("HAIFA PORT", "ISRAEL", "IL", 32.794, 34.989),
+        "tehran": ("TEHRAN, IRAN", "IRAN", "IR", 35.689, 51.389),
+        "riyadh": ("RIYADH, SAUDI", "SAUDI ARABIA", "SA", 24.713, 46.675),
+        "dubai": ("DUBAI, UAE", "UNITED ARAB EMIRATES", "AE", 25.204, 55.270),
+        "mumbai": ("MUMBAI, INDIA", "INDIA", "IN", 19.076, 72.877),
+        "new delhi": ("NEW DELHI", "INDIA", "IN", 28.613, 77.209),
+        "beijing": ("BEIJING, CHINA", "CHINA", "CN", 39.904, 116.407),
+        "taipei": ("TAIPEI, TAIWAN", "TAIWAN", "TW", 25.033, 121.565),
+        "moscow": ("MOSCOW, RUSSIA", "RUSSIA", "RU", 55.755, 37.617),
+        "kyiv": ("KYIV, UKRAINE", "UKRAINE", "UA", 50.450, 30.523),
+        "washington": ("WASHINGTON D.C.", "UNITED STATES", "US", 38.907, -77.036),
+    }
+    matched_city_pins = []
+    matched_countries = []
+    for city_k, (city_lbl, parent_cnt, c_iso2, clat, clon) in STRATEGIC_CITY_ATLAS.items():
+        if re.search(rf"\b{re.escape(city_k)}", b_low):
+            matched_city_pins.append((city_lbl, {"name": parent_cnt.title(), "iso2": c_iso2, "capital": city_lbl, "lat": clat, "lon": clon}))
+            d_parent = _unpack_cnt(parent_cnt)
+            if d_parent and parent_cnt.title() not in [x[0] for x in matched_countries]:
+                matched_countries.append((parent_cnt.title(), d_parent))
+
+    if active_chokepoint:
+        for ck_cnt in active_chokepoint["countries"]:
+            d_c = _unpack_cnt(ck_cnt)
+            if d_c and ck_cnt.title() not in [x[0] for x in matched_countries]:
+                matched_countries.append((ck_cnt.title(), d_c))
+    else:
+        for cnt_k in COUNTRY_GEO_DB.keys():
+            if cnt_k.upper() in ("GLOBAL", "INTERNATIONAL", "ASEAN", "NATO", "MIDDLE EAST", "EUROPEAN UNION", "EUROPE"):
+                continue
+            if re.search(rf"\b{re.escape(cnt_k.lower())}\b", b_low):
+                if cnt_k.title() not in [x[0] for x in matched_countries]:
+                    d_c = _unpack_cnt(cnt_k)
+                    if d_c:
+                        matched_countries.append((cnt_k.title(), d_c))
+        if not matched_countries:
+            d0 = _unpack_cnt(c_name)
+            if d0:
+                matched_countries.append((c_name.title(), d0))
+
+    if not matched_countries:
+        matched_countries = [("United States", _unpack_cnt("UNITED STATES"))]
+
+    if len(matched_countries) == 1 and not active_chokepoint:
+        facts_blob_low = f"{title_low} {' '.join(str(x) for x in (story.get('raw_facts') or [])[:6])}".lower()
+        for extra_cnt in ["SPAIN", "FRANCE", "ALGERIA", "UNITED STATES", "ISRAEL", "IRAN", "SAUDI ARABIA", "INDIA", "CHINA", "RUSSIA"]:
+            if extra_cnt != matched_countries[0][0].upper() and (re.search(rf"\b{re.escape(extra_cnt.lower())}\b", facts_blob_low) or (extra_cnt == "SPAIN" and "airbus" in facts_blob_low)):
+                d_ex = _unpack_cnt(extra_cnt)
+                if d_ex:
+                    matched_countries.append((extra_cnt.title(), d_ex))
+                    break
+
+    target_lat = float(matched_countries[0][1]["lat"])
+    target_lon = float(matched_countries[0][1]["lon"])
+    c_name = matched_countries[0][0].upper()
+    cap_name = str(matched_countries[0][1]["capital"]).upper()
+
+    if active_chokepoint:
+        center_lat = active_chokepoint["center_lat"]
+        center_lon = active_chokepoint["center_lon"]
+        zoom_scale = active_chokepoint["zoom_scale"]
+    elif len(matched_countries) >= 2:
+        lats = [float(x[1]["lat"]) for x in matched_countries[:3]]
+        lons = [float(x[1]["lon"]) for x in matched_countries[:3]]
+        center_lat = (min(lats) + max(lats)) * 0.5
+        center_lon = (min(lons) + max(lons)) * 0.5
+        span_deg = max(max(lats) - min(lats), (max(lons) - min(lons)) * 0.72)
+        zoom_scale = 1.55 if span_deg > 60 else (2.25 if span_deg > 28 else (3.45 if span_deg > 14 else 4.75))
+    else:
+        center_lat, center_lon = target_lat, target_lon
+        zoom_scale = 3.8
+
+    _ = get_country_boundary_polygons(c_name)
+    beat_dur_m = max(float(beat.get("duration") or 5.0), 3.0)
+    cont_zoom_p = cubic_bezier_ease_in_out(min(max(local_t / beat_dur_m, 0.0), 1.0))
+    # Smooth documentary camera zoom-in + pan from origin country toward destination country!
+    cur_zoom = zoom_scale * (0.88 + 0.24 * cont_zoom_p)
+    view_center_lat = center_lat - (2.2 if is_short else 0.0) + (0.6 * (0.5 - cont_zoom_p))
+    view_center_lon = center_lon + (4.5 if not is_short and zoom_scale >= 2.5 else 0.0)
+
+    def proj_fn(lat_p, lon_p):
+        return _latlon_to_mercator_xy(lat_p, lon_p, W, H, center_lat=view_center_lat, center_lon=view_center_lon, zoom_scale=cur_zoom)
+
+    surf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+    ctx = _pycairo.Context(surf)
+    ctx.set_antialias(_pycairo.ANTIALIAS_BEST)
+    ctx.set_line_join(_pycairo.LINE_JOIN_ROUND)
+    ctx.set_line_cap(_pycairo.LINE_CAP_ROUND)
+
+    # Signature World Talk Brief / Think School Deep Matte Slate Ocean
+    rad_pat = _pycairo.RadialGradient(W * 0.36, H * 0.46, 80, W * 0.45, H * 0.50, max(W, H) * 0.85)
+    rad_pat.add_color_stop_rgba(0.0, 0.055, 0.095, 0.165, 1.0)
+    rad_pat.add_color_stop_rgba(0.55, 0.038, 0.068, 0.125, 1.0)
+    rad_pat.add_color_stop_rgba(1.0, 0.022, 0.038, 0.075, 1.0)
+    ctx.set_source(rad_pat)
+    ctx.paint()
+
+    grid_step_deg = 5 if cur_zoom >= 2.8 else 10
+    ctx.set_line_width(1.0)
+    for glon in range(-180, 185, grid_step_deg):
+        gx, _ = proj_fn(center_lat, glon)
+        if 0 <= gx <= W:
+            ctx.set_source_rgba(0.20, 0.30, 0.44, 0.16)
+            ctx.move_to(gx, 0)
+            ctx.line_to(gx, H)
+            ctx.stroke()
+    for glat in range(-65, 75, grid_step_deg):
+        _, gy = proj_fn(glat, center_lon)
+        if 0 <= gy <= H:
+            ctx.set_source_rgba(0.20, 0.30, 0.44, 0.16)
+            ctx.move_to(0, gy)
+            ctx.line_to(W, gy)
+            ctx.stroke()
+
+    drawn_ring_sigs = set()
+    all_screen_rings = []
+    for k_poly, poly_rings in list(NATURAL_EARTH_COUNTRY_POLYGONS_CACHE.items()):
+        if k_poly.startswith("_") or k_poly.startswith("ISO_") or not isinstance(poly_rings, list):
+            continue
+        for c_ring in poly_rings:
+            if not c_ring or len(c_ring) < 3:
+                continue
+            sig = (round(c_ring[0][0], 2), round(c_ring[0][1], 2), len(c_ring))
+            if sig in drawn_ring_sigs:
+                continue
+            drawn_ring_sigs.add(sig)
+            pts_r = []
+            wrap_r = False
+            for (plat, plon) in c_ring:
+                px_m, py_m = proj_fn(plat, plon)
+                if pts_r and abs(px_m - pts_r[-1][0]) > W * 0.45:
+                    wrap_r = True
+                    break
+                pts_r.append((float(px_m), float(py_m)))
+            if not wrap_r and len(pts_r) >= 3:
+                xs = [p[0] for p in pts_r]
+                ys = [p[1] for p in pts_r]
+                if max(xs) < -180 or min(xs) > W + 180 or max(ys) < -180 or min(ys) > H + 180:
+                    continue
+                sm_pts = _refine_coastal_ring_v78(pts_r, iterations=2)
+                all_screen_rings.append((k_poly, sm_pts))
+
+    for _, sm_pts in all_screen_rings:
+        ctx.new_path()
+        ctx.move_to(sm_pts[0][0], sm_pts[0][1])
+        for pt in sm_pts[1:]:
+            ctx.line_to(pt[0], pt[1])
+        ctx.close_path()
+        ctx.set_source_rgba(0.10, 0.22, 0.38, 0.15)
+        ctx.set_line_width(14.0)
+        ctx.stroke()
+
+    for _, sm_pts in all_screen_rings:
+        ctx.new_path()
+        ctx.move_to(sm_pts[0][0], sm_pts[0][1])
+        for pt in sm_pts[1:]:
+            ctx.line_to(pt[0], pt[1])
+        ctx.close_path()
+        ctx.set_source_rgba(0.125, 0.165, 0.235, 1.0)
+        ctx.fill_preserve()
+        ctx.set_source_rgba(0.32, 0.42, 0.56, 0.80)
+        ctx.set_line_width(1.5)
+        ctx.stroke()
+
+    # Muted Documentary Crimson & Matte Gold Territory Fills (Zero loud neon colors!)
+    highlight_styles = [
+        ((0.78, 0.18, 0.24, 0.44), (0.92, 0.32, 0.36, 1.0)),  # Matte Documentary Crimson
+        ((0.83, 0.65, 0.22, 0.40), (0.92, 0.76, 0.32, 1.0)),  # Matte Documentary Gold
+        ((0.22, 0.56, 0.72, 0.38), (0.38, 0.72, 0.88, 1.0)),  # Muted Steel Blue
+        ((0.18, 0.62, 0.48, 0.38), (0.32, 0.78, 0.62, 1.0)),  # Muted Sage Teal
+    ]
+    for idx_hc, (hc_title, hc_d) in enumerate(matched_countries[:6]):
+        c_polys = get_country_boundary_polygons(hc_title.upper()) or get_country_boundary_polygons(f"ISO_{hc_d.get('iso2', '')}")
+        fill_rgba, rim_rgba = highlight_styles[idx_hc % len(highlight_styles)]
+        for c_ring in c_polys:
+            raw_xy = [proj_fn(plat, plon) for (plat, plon) in c_ring]
+            if len(raw_xy) < 3:
+                continue
+            ring_xy = _refine_coastal_ring_v78(raw_xy, iterations=2)
+            xs = [p[0] for p in ring_xy]
+            ys = [p[1] for p in ring_xy]
+            bx0, by0, bx1, by1 = min(xs), min(ys), max(xs), max(ys)
+
+            ctx.new_path()
+            ctx.move_to(ring_xy[0][0], ring_xy[0][1])
+            for pt in ring_xy[1:]:
+                ctx.line_to(pt[0], pt[1])
+            ctx.close_path()
+
+            grad_c = _pycairo.LinearGradient(bx0, by0, bx1, by1)
+            grad_c.add_color_stop_rgba(0.0, fill_rgba[0], fill_rgba[1], fill_rgba[2], fill_rgba[3] * 1.1)
+            grad_c.add_color_stop_rgba(1.0, fill_rgba[0] * 0.75, fill_rgba[1] * 0.75, fill_rgba[2] * 0.75, fill_rgba[3] * 0.75)
+            ctx.set_source(grad_c)
+            ctx.fill_preserve()
+
+            ctx.save()
+            ctx.clip_preserve()
+            ctx.set_source_rgba(rim_rgba[0], rim_rgba[1], rim_rgba[2], 0.18)
+            ctx.set_line_width(1.2)
+            span_h = (by1 - by0) + 40
+            for h_x in range(int(bx0 - span_h), int(bx1 + 40), 15):
+                ctx.move_to(h_x, by0 - 10)
+                ctx.line_to(h_x + span_h, by1 + 30)
+            ctx.stroke()
+            ctx.restore()
+
+            ctx.new_path()
+            ctx.move_to(ring_xy[0][0], ring_xy[0][1])
+            for pt in ring_xy[1:]:
+                ctx.line_to(pt[0], pt[1])
+            ctx.close_path()
+            ctx.set_source_rgba(rim_rgba[0], rim_rgba[1], rim_rgba[2], 0.24)
+            ctx.set_line_width(8.0)
+            ctx.stroke_preserve()
+            ctx.set_source_rgba(rim_rgba[0], rim_rgba[1], rim_rgba[2], 0.96)
+            ctx.set_line_width(2.4)
+            ctx.stroke()
+
+    pin_coords = []
+    if len(matched_city_pins) >= 2:
+        for city_lbl, city_d in matched_city_pins[:4]:
+            px_c, py_c = proj_fn(city_d["lat"], city_d["lon"])
+            px_c = max(90, min(W - 140, px_c))
+            py_c = max(130, min(H - (460 if is_short else 220), py_c))
+            pin_coords.append((px_c, py_c, city_lbl, city_d))
+    elif active_chokepoint and active_chokepoint.get("route_nodes"):
+        for idx_rn, (rn_lbl, rlat, rlon) in enumerate(active_chokepoint["route_nodes"]):
+            px_c, py_c = proj_fn(rlat, rlon)
+            px_c = max(90, min(W - 140, px_c))
+            py_c = max(130, min(H - (460 if is_short else 220), py_c))
+            cnt_d = matched_countries[min(idx_rn, len(matched_countries) - 1)][1]
+            pin_coords.append((px_c, py_c, rn_lbl, cnt_d))
+    else:
+        for idx_c, (cnt_title, cnt_d) in enumerate(matched_countries[:4]):
+            px_c, py_c = proj_fn(cnt_d.get("lat", target_lat), cnt_d.get("lon", target_lon))
+            px_c = max(90, min(W - 140, px_c))
+            py_c = max(130, min(H - (460 if is_short else 220), py_c))
+            pin_coords.append((px_c, py_c, cnt_title.upper(), cnt_d))
+
+    if len(pin_coords) >= 2:
+        for idx_seg in range(len(pin_coords) - 1):
+            p0_x, p0_y, _, _ = pin_coords[idx_seg]
+            p1_x, p1_y, _, _ = pin_coords[idx_seg + 1]
+            dist_px = math.hypot(p1_x - p0_x, p1_y - p0_y)
+            mid_x = (p0_x + p1_x) * 0.5 - (p1_y - p0_y) * 0.22
+            mid_y = (p0_y + p1_y) * 0.5 - max(36.0, dist_px * 0.18)
+            seg_p = min(max((local_t - idx_seg * 0.35) / 1.35, 0.08), 1.0)
+
+            pts_arc = []
+            n_steps = max(12, int(48 * seg_p))
+            for s_i in range(n_steps + 1):
+                u = (s_i / float(n_steps)) * seg_p
+                bx = ((1 - u) ** 2) * p0_x + 2 * (1 - u) * u * mid_x + (u ** 2) * p1_x
+                by = ((1 - u) ** 2) * p0_y + 2 * (1 - u) * u * mid_y + (u ** 2) * p1_y
+                pts_arc.append((bx, by))
+
+            if len(pts_arc) >= 2:
+                ctx.new_path()
+                ctx.move_to(pts_arc[0][0], pts_arc[0][1])
+                for pt in pts_arc[1:]:
+                    ctx.line_to(pt[0], pt[1])
+                ctx.set_source_rgba(0.88, 0.72, 0.24, 0.26)
+                ctx.set_line_width(9.0)
+                ctx.stroke_preserve()
+                ctx.set_dash([10.0, 6.0], -local_t * 28.0)
+                ctx.set_source_rgba(0.94, 0.78, 0.28, 0.96)
+                ctx.set_line_width(3.0)
+                ctx.stroke()
+                ctx.set_dash([])
+
+                hx, hy = pts_arc[-1]
+                px_prev, py_prev = pts_arc[-2]
+                ang = math.atan2(hy - py_prev, hx - px_prev)
+                ctx.save()
+                ctx.translate(hx, hy)
+                ctx.rotate(ang)
+                ctx.arc(0, 0, 15, 0, 2 * math.pi)
+                ctx.set_source_rgba(0.90, 0.72, 0.22, 0.24)
+                ctx.fill()
+                plane_pts = [
+                    (15, 0), (4, -3), (-2, -14), (-6, -14), (-3, -3),
+                    (-11, -3), (-14, -8), (-16, -8), (-14, 0),
+                    (-16, 8), (-14, 8), (-11, 3), (-3, 3),
+                    (-6, 14), (-2, 14), (4, 3)
+                ]
+                ctx.new_path()
+                ctx.move_to(plane_pts[0][0], plane_pts[0][1])
+                for ppt in plane_pts[1:]:
+                    ctx.line_to(ppt[0], ppt[1])
+                ctx.close_path()
+                ctx.set_source_rgba(0.98, 0.96, 0.92, 1.0)
+                ctx.fill_preserve()
+                ctx.set_source_rgba(0.83, 0.65, 0.22, 1.0)
+                ctx.set_line_width(1.4)
+                ctx.stroke()
+                ctx.restore()
+
+    for idx_p, (px_c, py_c, _, _) in enumerate(pin_coords):
+        is_prim = (idx_p == 0)
+        rc = (0.85, 0.22, 0.28) if is_prim else (0.88, 0.72, 0.24)
+        for r_i in range(2):
+            pr = 12.0 + ((local_t * 34.0 + r_i * 22.0) % 44.0)
+            pa = max(0.0, 0.70 * (1.0 - pr / 56.0))
+            ctx.arc(px_c, py_c, pr, 0, 2 * math.pi)
+            ctx.set_source_rgba(rc[0], rc[1], rc[2], pa)
+            ctx.set_line_width(2.0)
+            ctx.stroke()
+        ctx.arc(px_c, py_c, 6.5, 0, 2 * math.pi)
+        ctx.set_source_rgba(rc[0], rc[1], rc[2], 1.0)
+        ctx.fill_preserve()
+        ctx.set_source_rgba(0.98, 0.96, 0.92, 1.0)
+        ctx.set_line_width(2.0)
+        ctx.stroke()
+
+    bg = _cairo_surface_to_pil_rgba(surf)
+    draw = ImageDraw.Draw(bg, "RGBA")
+
+    if not is_short:
+        c_box = (W - 670, 108, W - 46, 465)
+    else:
+        c_box = (40, 1020, W - 40, 1435)
+
+    occupied_boxes = [
+        (0, 0, W, 96),
+        (0, H - 185, W, H),
+        (c_box[0] - 24, c_box[1] - 16, c_box[2] + 24, H - 150) if not is_short else (c_box[0] - 20, c_box[1] - 16, c_box[2] + 20, c_box[3] + 16),
+    ]
+    for px_c, py_c, _, _ in pin_coords:
+        occupied_boxes.append((int(px_c) - 22, int(py_c) - 22, int(px_c) + 22, int(py_c) + 22))
+
+    def _box_collides(b_test, pad_x=6, pad_y=6):
+        tx0, ty0, tx1, ty1 = b_test[0] - pad_x, b_test[1] - pad_y, b_test[2] + pad_x, b_test[3] + pad_y
+        for ox0, oy0, ox1, oy1 in occupied_boxes:
+            if not (tx1 < ox0 or tx0 > ox1 or ty1 < oy0 or ty0 > oy1):
+                return True
+        return False
+
+    f_pin = get_ui_font(17 if not is_short else 16, "display_bold")
+    for idx_p, (px_c, py_c, cnt_up, cnt_d) in enumerate(pin_coords):
+        p_col = (212, 56, 68, 255) if idx_p == 0 else (218, 178, 68, 255)
+        tw_p = int(f_pin.getlength(cnt_up))
+        pw_pin, ph_pin = tw_p + 64, 38
+        cand_offsets = [
+            (-pw_pin // 2, -62), (-pw_pin // 2, 24), (-pw_pin - 24, -19), (24, -19),
+            (-pw_pin - 20, -56), (20, -56), (-pw_pin - 20, 24), (20, 24),
+            (-pw_pin // 2, -98), (-pw_pin // 2, 62),
+        ]
+        bx_p = max(24, min(W - pw_pin - 24, int(px_c) - pw_pin // 2))
+        by_p = max(106, int(py_c) - 62 if idx_p % 2 == 0 else int(py_c) + 24)
+        for dx_o, dy_o in cand_offsets:
+            cx_try = max(24, min(W - pw_pin - 24, int(px_c) + dx_o))
+            cy_try = max(106, min(H - 210, int(py_c) + dy_o))
+            if not _box_collides((cx_try, cy_try, cx_try + pw_pin, cy_try + ph_pin)):
+                bx_p, by_p = cx_try, cy_try
+                break
+        occupied_boxes.append((bx_p - 8, by_p - 6, bx_p + pw_pin + 8, by_p + ph_pin + 6))
+        draw.line([(int(px_c), int(py_c)), (bx_p + pw_pin // 2, by_p + ph_pin // 2)], fill=(p_col[0], p_col[1], p_col[2], 215), width=2)
+        draw.rounded_rectangle([(bx_p + 2, by_p + 4), (bx_p + pw_pin + 2, by_p + ph_pin + 4)], radius=10, fill=(0, 0, 0, 185))
+        draw.rounded_rectangle([(bx_p, by_p), (bx_p + pw_pin, by_p + ph_pin)], radius=10, fill=(13, 19, 32, 255), outline=p_col, width=2)
+        fl_im = _build_accurate_flag_badge_v78(cnt_d.get("iso2", "US"), 30, 20)
+        bg.paste(fl_im, (bx_p + 10, by_p + 9))
+        draw = ImageDraw.Draw(bg, "RGBA")
+        draw.text((bx_p + 48, by_p + 9), cnt_up, fill=(241, 245, 249, 255), font=f_pin)
+
+    active_names_up = {x[0].upper() for x in matched_countries[:6]} | {x[2].upper() for x in pin_coords}
+    f_neigh = get_ui_font(14, "sans_semibold")
+    for nb_name in ["PORTUGAL", "ALGERIA", "FRANCE", "ITALY", "TUNISIA", "LIBYA", "EGYPT", "TURKEY", "GREECE", "IRAN", "IRAQ", "OMAN", "PAKISTAN"]:
+        if nb_name in active_names_up or nb_name not in COUNTRY_GEO_DB:
+            continue
+        nb_tup = COUNTRY_GEO_DB[nb_name]
+        nx, ny = proj_fn(nb_tup[5], nb_tup[6])
+        tw_n = int(f_neigh.getlength(nb_name))
+        nb_box = (int(nx) - tw_n // 2, int(ny) - 9, int(nx) + tw_n // 2, int(ny) + 15)
+        if 70 <= nb_box[0] and nb_box[2] <= W - 70 and 115 <= nb_box[1] and nb_box[3] <= H - 210:
+            if not _box_collides(nb_box, pad_x=24, pad_y=14):
+                occupied_boxes.append(nb_box)
+                draw.text((nb_box[0] + 1, nb_box[1] + 1), nb_name, fill=(0, 0, 0, 210), font=f_neigh)
+                draw.text((nb_box[0], nb_box[1]), nb_name, fill=(148, 163, 184, 195), font=f_neigh)
+
+    # Clean Think School 3D-Tilted Documentary Briefing Card (Zero Meta-Labels!)
+    cx0, cy0, cx1, cy1 = c_box
+    cw_c, ch_c = cx1 - cx0, cy1 - cy0
+    card_im = Image.new("RGBA", (cw_c + 24, ch_c + 24), (0, 0, 0, 0))
+    cd = ImageDraw.Draw(card_im, "RGBA")
+    cd.rounded_rectangle([(14, 16), (cw_c + 14, ch_c + 16)], radius=18, fill=(0, 0, 0, 175))
+    cd.rounded_rectangle([(8, 8), (cw_c + 8, ch_c + 8)], radius=18, fill=(14, 21, 36, 248), outline=(212, 175, 55, 190), width=2)
+    cd.rectangle([(8, 28), (14, ch_c - 12)], fill=(200, 40, 56, 255))
+
+    route_str = active_chokepoint["title"] if active_chokepoint else ("  ->  ".join(x[2].split(",")[0] for x in pin_coords[:3]) if len(pin_coords) >= 2 else f"{c_name} REGION")
+    cd.text((32, 26), fit_whole_words_limit(route_str, 34), fill=(218, 178, 68, 255), font=get_ui_font(15, "mono_bold"))
+
+    f_mhl = get_ui_font(25 if not is_short else 22, "display_bold")
+    hl_lines = wrap_text_px(point_hl, f_mhl, cw_c - 48, max_lines=2)
+    for h_i, h_ln in enumerate(hl_lines):
+        cd.text((32, 54 + h_i * 32), h_ln, fill=(248, 250, 252, 255), font=f_mhl)
+
+    body_top = 62 + len(hl_lines) * 32
+    cd.line([(32, body_top), (cw_c - 16, body_top)], fill=(51, 65, 85, 220), width=1)
+
+    f_mb = get_ui_font(19 if not is_short else 18, "sans_medium")
+    b_lines_m = wrap_text_px(b_txt, f_mb, cw_c - 48, max_lines=3)
+    for l_i, ln_m in enumerate(b_lines_m):
+        cd.text((32, body_top + 14 + l_i * 28), ln_m, fill=(203, 213, 225, 255), font=f_mb)
+
+    t_y0 = ch_c - 72
+    p_w2 = (cw_c - 56) // 2
+    for idx_m, (m_k, m_v, m_c) in enumerate([
+        ("DEPARTURE", pin_coords[0][2][:18] if pin_coords else c_name, (226, 232, 240, 255)),
+        ("DESTINATION", pin_coords[1][2][:18] if len(pin_coords) > 1 else cap_name, (218, 178, 68, 255)),
+    ]):
+        mx0 = 32 + idx_m * (p_w2 + 12)
+        cd.rounded_rectangle([(mx0, t_y0), (mx0 + p_w2, t_y0 + 56)], radius=10, fill=(20, 29, 48, 255), outline=(64, 80, 104, 210), width=1)
+        cd.text((mx0 + 14, t_y0 + 8), m_k, fill=(148, 163, 184, 255), font=get_ui_font(12, "mono_regular"))
+        cd.text((mx0 + 14, t_y0 + 26), m_v, fill=m_c, font=get_ui_font(16, "display_bold"))
+
+    tilted_card = _apply_3d_perspective_tilt_v80(card_im, tilt_x_deg=1.2, tilt_y_deg=-1.8)
+    slide_in_x = int((1.0 - cubic_bezier_ease_in_out(min(max(local_t / 0.45, 0.0), 1.0))) * 80)
+    bg.alpha_composite(tilted_card, (cx0 - 8 + slide_in_x, cy0 - 8))
+
+    return bg
+
+
+def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_short=True):
+    """
+    V80 THINK SCHOOL & 3D DOCUMENTARY FLOW ARCHETYPES:
+    - ZERO meta-labels (no 'CLAUDE ARTIFACT', 'FLOWCHART ENGINE', 'INSPECTOR', '01 // CAPABILITY').
+    - Refined World Talk Brief / Think School Matte Documentary Palette (Deep Slate, Warm Archival Cream,
+      Muted Matte Gold, Deep Documentary Crimson).
+    - Continuous Camera Zoom-In / Zoom-Out on all photographic scenes.
+    - 3D Perspective Tilt + Progressive Word/Phrase-Synced Element Reveals!
+    """
+    story_obj = beat.get("story") or {}
+    c_prof = story_obj.get("country_profile") or {}
+    c_name = fit_whole_words_limit(str(c_prof.get("name") or "GLOBAL").upper(), 16)
+    topic_anc = fit_whole_words_limit(str(story_obj.get("topic_anchor") or "SPECIAL REPORT").upper(), 28)
+    point_hl = fit_whole_words_limit(str(beat.get("point_highlight") or topic_anc).upper(), 36)
+    b_txt = strip_news_publisher_mentions(beat.get("beat_excerpt", ""))
+    clauses = _extract_dynamic_phrases_v80(b_txt, fallback_hl=point_hl)
+    beat_dur_t = max(float(beat.get("duration") or 5.0), 3.0)
+    sec_idx_m = int(beat.get("section_idx", 0))
+
+    resample_l = getattr(Image, "Resampling", Image).LANCZOS
+    raw_src_im = beat.get("primary_im") or extract_supporting_background_frame(beat, local_t, W, H, darken_factor=1.0, blur_radius=0)
+    raw_sec_im = beat.get("secondary_im") or raw_src_im
+    raw_tert_im = beat.get("tertiary_im") or raw_sec_im
+
+    # Apply continuous smooth camera zoom-in / zoom-out / pan to all scene images!
+    src_im = _extract_camera_zoom_pan_frame_v80(raw_src_im, W, H, local_t, beat_dur_t, mode_idx=sec_idx_m)
+    sec_im = _extract_camera_zoom_pan_frame_v80(raw_sec_im, W, H, local_t, beat_dur_t, mode_idx=sec_idx_m + 1)
+    tert_im = _extract_camera_zoom_pan_frame_v80(raw_tert_im, W, H, local_t, beat_dur_t, mode_idx=sec_idx_m + 2)
+
+    clean_nums = _extract_clean_numbers_v78(b_txt)
+    if not clean_nums:
+        clean_nums = [fit_whole_words_limit(point_hl, 14), c_name, "KEY SHIFT"]
+
+    if not is_short:
+        sx0, sy0, sx1, sy1 = 48, 96, W - 48, H - 152
+    else:
+        sx0, sy0, sx1, sy1 = 36, 150, W - 36, 1465
+    sw, sh = sx1 - sx0, sy1 - sy0
+
+    # Progressive phrase reveal progress (0.0 -> 1.0 across the spoken sentence)
+    sent_prog = min(max(local_t / max(beat_dur_t * 0.78, 1.5), 0.0), 1.0)
+    p_phrase1 = cubic_bezier_ease_in_out(min(max(local_t / 0.45, 0.0), 1.0))
+    p_phrase2 = cubic_bezier_ease_in_out(min(max((local_t - beat_dur_t * 0.24) / 0.48, 0.0), 1.0))
+    p_phrase3 = cubic_bezier_ease_in_out(min(max((local_t - beat_dur_t * 0.48) / 0.48, 0.0), 1.0))
+
+    # ==========================================================================
+    # SCENE DESIGN 1: FULL-BLEED CINEMATIC CAMERA ZOOM + 3D FLOATING LOCATION &
+    #                 PHRASE CALLOUT CARDS (`DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD`)
+    # ==========================================================================
+    if mode in ("DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD", "TS_28_STUDIO_QUOTE_PRESS_MONITOR"):
+        bg = src_im.convert("RGBA")
+
+        # Soft documentary depth gradient on lower third & left edge
+        vsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+        vctx = _pycairo.Context(vsurf)
+        lgrad = _pycairo.LinearGradient(0, H * 0.38, 0, H)
+        lgrad.add_color_stop_rgba(0.0, 0.03, 0.05, 0.09, 0.05)
+        lgrad.add_color_stop_rgba(1.0, 0.03, 0.05, 0.10, 0.86)
+        vctx.set_source(lgrad)
+        vctx.paint()
+
+        # Pin-point leader line on the main subject that draws in smoothly on Phrase 2
+        if p_phrase2 > 0.05:
+            tx_c, ty_c = int(W * 0.55), int(H * 0.42)
+            vctx.arc(tx_c, ty_c, 7, 0, 2 * math.pi)
+            vctx.set_source_rgba(0.85, 0.68, 0.22, p_phrase2)
+            vctx.fill_preserve()
+            vctx.set_source_rgba(1.0, 1.0, 1.0, p_phrase2)
+            vctx.set_line_width(2.0)
+            vctx.stroke()
+            vctx.move_to(tx_c, ty_c)
+            vctx.line_to(tx_c + int(85 * p_phrase2), ty_c - int(75 * p_phrase2))
+            vctx.line_to(tx_c + int(310 * p_phrase2), ty_c - int(75 * p_phrase2))
+            vctx.set_source_rgba(0.85, 0.68, 0.22, p_phrase2)
+            vctx.set_line_width(2.4)
+            vctx.stroke()
+
+        bg.alpha_composite(_cairo_surface_to_pil_rgba(vsurf))
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        if p_phrase2 > 0.25:
+            tx_c, ty_c = int(W * 0.55), int(H * 0.42)
+            draw.rounded_rectangle([(tx_c + 85, ty_c - 118), (tx_c + 415, ty_c - 78)], radius=8, fill=(13, 19, 32, 242), outline=(212, 175, 55, 220), width=2)
+            draw.text((tx_c + 102, ty_c - 108), fit_whole_words_limit(topic_anc, 28), fill=(241, 245, 249, 255), font=get_ui_font(15, "display_bold"))
+
+        # 3D-Tilted Documentary Story Card on Lower-Left (Slides in smoothly with Phrase 1, 2, 3)
+        cw_c = 840 if not is_short else (W - 80)
+        ch_c = 255 if not is_short else 340
+        card_im = Image.new("RGBA", (cw_c + 24, ch_c + 24), (0, 0, 0, 0))
+        cd = ImageDraw.Draw(card_im, "RGBA")
+        cd.rounded_rectangle([(14, 16), (cw_c + 14, ch_c + 16)], radius=18, fill=(0, 0, 0, 180))
+        cd.rounded_rectangle([(8, 8), (cw_c + 8, ch_c + 8)], radius=18, fill=(13, 19, 32, 246), outline=(212, 175, 55, 195), width=2)
+        cd.rectangle([(8, 26), (14, ch_c - 10)], fill=(200, 40, 56, 255))
+
+        cd.text((32, 24), f"{c_name}  •  {topic_anc}", fill=(218, 178, 68, 255), font=get_ui_font(14, "mono_bold"))
+        cd.text((32, 52), fit_whole_words_limit(point_hl, 36), fill=(248, 250, 252, 255), font=get_ui_font(26 if not is_short else 22, "display_bold"))
+
+        f_bc = get_ui_font(19 if not is_short else 18, "sans_medium")
+        for l_i, ln_c in enumerate(wrap_text_px(b_txt, f_bc, cw_c - 56, max_lines=2)):
+            cd.text((32, 92 + l_i * 28), ln_c, fill=(203, 213, 225, 255), font=f_bc)
+
+        # Phrase-Synced Bottom Pills (Each pill pops in as its part of the sentence is spoken!)
+        pw_3 = (cw_c - 72) // 3
+        for p_i in range(3):
+            ph_txt = fit_whole_words_limit(clauses[min(p_i, len(clauses) - 1)].upper(), 18)
+            p_active = (p_i == 0) or (p_i == 1 and p_phrase2 > 0.2) or (p_i == 2 and p_phrase3 > 0.2)
+            px0 = 32 + p_i * (pw_3 + 12)
+            py0 = ch_c - 64
+            bg_p = (24, 34, 54, 255) if p_active else (16, 22, 36, 255)
+            bd_p = (218, 178, 68, 235) if p_active else (51, 65, 85, 180)
+            cd.rounded_rectangle([(px0, py0), (px0 + pw_3, py0 + 48)], radius=10, fill=bg_p, outline=bd_p, width=1)
+            cd.text((px0 + 14, py0 + 14), ph_txt, fill=(248, 250, 252, 255) if p_active else (148, 163, 184, 255), font=get_ui_font(14, "display_bold"))
+
+        tilted_c = _apply_3d_perspective_tilt_v80(card_im, tilt_x_deg=1.0, tilt_y_deg=1.6)
+        off_y = int((1.0 - p_phrase1) * 65)
+        bg.alpha_composite(tilted_c, (48 if not is_short else 36, (H - 425 if not is_short else 1040) + off_y))
+        return bg
+
+    # ==========================================================================
+    # SCENE DESIGN 2: THINK SCHOOL 3D ARCHIVAL PRESS DOSSIER OVER MOVING NIGHT
+    #                 FOOTAGE (`TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT`)
+    # ==========================================================================
+    if mode == "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT":
+        # Darkened moving documentary background with depth blur
+        bg_base = src_im.filter(ImageFilter.GaussianBlur(radius=4))
+        bg = ImageEnhance.Brightness(bg_base).enhance(0.42).convert("RGBA")
+
+        cw_d = int(sw * 0.94)
+        ch_d = int(sh * 0.90)
+        card = Image.new("RGBA", (cw_d + 32, ch_d + 32), (0, 0, 0, 0))
+        cd = ImageDraw.Draw(card, "RGBA")
+
+        # Warm Archival Paper Dossier (#F4F0E6) with subtle 3D drop shadow
+        cd.rounded_rectangle([(20, 22), (cw_d + 20, ch_d + 22)], radius=20, fill=(0, 0, 0, 195))
+        cd.rounded_rectangle([(10, 10), (cw_d + 10, ch_d + 10)], radius=20, fill=(244, 240, 230, 255), outline=(208, 200, 184, 255), width=2)
+
+        # Deep Slate Editorial Header Bar (Zero meta-labels—only real Country & Story Dispatch!)
+        cd.rounded_rectangle([(10, 10), (cw_d + 10, 66)], radius=20, fill=(14, 21, 36, 255))
+        cd.rectangle([(10, 42), (cw_d + 10, 66)], fill=(14, 21, 36, 255))
+        cd.line([(10, 66), (cw_d + 10, 66)], fill=(195, 38, 52, 255), width=3)
+        cd.text((34, 28), f"{c_name} DEFENSE & DIPLOMATIC DISPATCH", fill=(218, 178, 68, 255), font=get_ui_font(16, "mono_bold"))
+        if not is_short:
+            cd.text((cw_d - 245, 29), fit_whole_words_limit(topic_anc, 24), fill=(203, 213, 225, 255), font=get_ui_font(14, "mono_regular"))
+
+        if not is_short:
+            im_box = (34, 88, int(cw_d * 0.50), ch_d - 18)
+            tx_x0, tx_y0, tx_w = int(cw_d * 0.53), 90, int(cw_d * 0.44)
+        else:
+            im_box = (28, 84, cw_d - 14, int(ch_d * 0.48))
+            tx_x0, tx_y0, tx_w = 32, int(ch_d * 0.51), cw_d - 52
+
+        iw_b, ih_b = im_box[2] - im_box[0], im_box[3] - im_box[1]
+        im_c = src_im.resize((iw_b, ih_b), resample_l).convert("RGBA")
+        mask_f = Image.new("L", (iw_b, ih_b), 0)
+        ImageDraw.Draw(mask_f).rounded_rectangle([(0, 0), (iw_b - 1, ih_b - 1)], radius=14, fill=255)
+        card.paste(im_c, (im_box[0], im_box[1]), mask_f)
+        cd = ImageDraw.Draw(card, "RGBA")
+        cd.rounded_rectangle([(im_box[0], im_box[1]), (im_box[2] - 1, im_box[3] - 1)], radius=14, outline=(30, 41, 59, 225), width=2)
+
+        # Magnifying Evidence Loupe that zooms in on Phrase 2
+        if p_phrase2 > 0.1:
+            loupe_r = int((68 if not is_short else 54) * p_phrase2)
+            if loupe_r >= 16:
+                lx_c, ly_c = im_box[2] - 92, im_box[3] - 92
+                z_crop = im_c.crop((max(0, iw_b // 2 - loupe_r), max(0, ih_b // 2 - loupe_r), min(iw_b, iw_b // 2 + loupe_r), min(ih_b, ih_b // 2 + loupe_r))).resize((loupe_r * 2, loupe_r * 2), resample_l)
+                l_mask = Image.new("L", (loupe_r * 2, loupe_r * 2), 0)
+                ImageDraw.Draw(l_mask).ellipse([(0, 0), (loupe_r * 2 - 1, loupe_r * 2 - 1)], fill=255)
+                card.paste(z_crop, (lx_c - loupe_r, ly_c - loupe_r), l_mask)
+                cd = ImageDraw.Draw(card, "RGBA")
+                cd.ellipse([(lx_c - loupe_r, ly_c - loupe_r), (lx_c + loupe_r, ly_c + loupe_r)], outline=(218, 178, 68, 255), width=4)
+
+        # Editorial Serif Headline (`Caladea-Bold`) + Warm Gold Marker Wipe synced to speech
+        cd.text((tx_x0, tx_y0), f"{c_name} SPECIAL REPORT", fill=(185, 28, 44, 255), font=get_ui_font(14, "mono_bold"))
+        f_serif_hl = get_ui_font(30 if not is_short else 24, "serif_bold")
+        hl_lines = wrap_text_px(point_hl.title(), f_serif_hl, tx_w - 16, max_lines=2)
+        hl_box_h = 38 * max(1, len(hl_lines)) + 10
+        hl_w = int((tx_w - 8) * min(max(sent_prog * 1.25, 0.18), 1.0))
+        cd.rounded_rectangle([(tx_x0 - 6, tx_y0 + 26), (tx_x0 - 6 + hl_w, tx_y0 + 26 + hl_box_h)], radius=8, fill=(246, 224, 118, 255))
+        for h_i, h_ln in enumerate(hl_lines):
+            cd.text((tx_x0, tx_y0 + 32 + h_i * 36), h_ln, fill=(18, 20, 26, 255), font=f_serif_hl)
+
+        body_y = tx_y0 + 40 + hl_box_h
+        f_body_iv = get_ui_font(20 if not is_short else 18, "sans_medium")
+        b_lines = wrap_text_px(b_txt, f_body_iv, tx_w - 12, max_lines=3)
+        for l_i, ln_b in enumerate(b_lines):
+            cd.text((tx_x0, body_y + l_i * 30), ln_b, fill=(38, 42, 50, 255), font=f_body_iv)
+
+        # Phrase-Synced Key Point Cards on the Dossier (Appear sequentially as Phrase 1, 2, 3 are spoken!)
+        cards_y = body_y + len(b_lines) * 30 + 22
+        cw_3 = (tx_w - 24) // 3
+        for s_i in range(3):
+            if (s_i == 1 and p_phrase2 < 0.15) or (s_i == 2 and p_phrase3 < 0.15):
+                continue
+            bx_s = tx_x0 + s_i * (cw_3 + 12)
+            ph_clause = clauses[min(s_i, len(clauses) - 1)]
+            if cards_y + 105 <= ch_d - 14:
+                cd.rounded_rectangle([(bx_s, cards_y), (bx_s + cw_3, cards_y + 104)], radius=10, fill=(235, 230, 218, 255), outline=(202, 194, 178, 255), width=1)
+                cd.rectangle([(bx_s, cards_y), (bx_s + cw_3, cards_y + 5)], fill=(195, 38, 52, 255) if s_i == 0 else (212, 175, 55, 255))
+                cd.text((bx_s + 12, cards_y + 14), f"KEY POINT 0{s_i + 1}", fill=(185, 28, 44, 255), font=get_ui_font(12, "mono_bold"))
+                for d_i, d_ln in enumerate(wrap_text_px(ph_clause, get_ui_font(14, "display_bold"), cw_3 - 22, max_lines=3)):
+                    cd.text((bx_s + 12, cards_y + 36 + d_i * 20), d_ln, fill=(24, 28, 36, 255), font=get_ui_font(14, "display_bold"))
+
+        # Apply 3D camera perspective tilt so the dossier floats in 3D space!
+        tilted_dossier = _apply_3d_perspective_tilt_v80(card, tilt_x_deg=1.4, tilt_y_deg=-1.5)
+        px_d = sx0 + (sw - tilted_dossier.size[0]) // 2
+        py_d = sy0 + (sh - tilted_dossier.size[1]) // 2 + int((1.0 - p_phrase1) * 45)
+        bg.alpha_composite(tilted_dossier, (px_d, py_d))
+        return bg
+
+    # ==========================================================================
+    # SCENE DESIGN 3: PIN-POINT SUBJECT ZOOM + WORD-SYNCED SPEC CALLOUT CARDS
+    #                 (`TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`)
+    # ==========================================================================
+    if mode == "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD":
+        bg = Image.new("RGBA", (W, H), (11, 16, 28, 255))
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        if not is_short:
+            sc_box = (sx0, sy0, sx0 + int(sw * 0.56) - 12, sy1)
+            ui_box = (sx0 + int(sw * 0.56) + 12, sy0, sx1, sy1)
+        else:
+            sc_box = (sx0, sy0, sx1, sy0 + int(sh * 0.48) - 10)
+            ui_box = (sx0, sy0 + int(sh * 0.48) + 10, sx1, sy1)
+
+        lw_s, lh_s = sc_box[2] - sc_box[0], sc_box[3] - sc_box[1]
+        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2], sc_box[3])], radius=18, fill=(15, 22, 36, 255), outline=(64, 80, 104, 235), width=2)
+
+        im_c = src_im.resize((lw_s - 4, lh_s - 4), resample_l).convert("RGBA")
+        mask_s = Image.new("L", (lw_s - 4, lh_s - 4), 0)
+        ImageDraw.Draw(mask_s).rounded_rectangle([(0, 0), (lw_s - 5, lh_s - 5)], radius=16, fill=255)
+        bg.paste(im_c, (sc_box[0] + 2, sc_box[1] + 2), mask_s)
+
+        # Direct Pin-Point Leader Callouts on the Subject Photo (Synced to Phrase 1, 2, 3!)
+        pin_surf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+        pctx = _pycairo.Context(pin_surf)
+        pctx.set_antialias(_pycairo.ANTIALIAS_BEST)
+
+        pin1_lbl = fit_whole_words_limit(clauses[0].upper(), 22)
+        pin2_lbl = fit_whole_words_limit(clauses[1].upper(), 22) if len(clauses) > 1 else point_hl[:22]
+        c_pins = [
+            (sc_box[0] + int(lw_s * 0.42), sc_box[1] + int(lh_s * 0.52), sc_box[0] + 24, sc_box[1] + 24, pin1_lbl, (218, 178, 68), p_phrase1),
+            (sc_box[0] + int(lw_s * 0.58), sc_box[1] + int(lh_s * 0.64), sc_box[0] + 24, sc_box[3] - 68, pin2_lbl, (200, 48, 62), p_phrase2),
+        ]
+        for tx_p, ty_p, bx_l, by_l, lbl_p, col_rgb, p_vis in c_pins:
+            if p_vis < 0.15:
+                continue
+            r_c, g_c, b_c = col_rgb[0] / 255.0, col_rgb[1] / 255.0, col_rgb[2] / 255.0
+            pctx.arc(tx_p, ty_p, 14 * p_vis, 0, 2 * math.pi)
+            pctx.set_source_rgba(r_c, g_c, b_c, 0.30 * p_vis)
+            pctx.fill()
+            pctx.arc(tx_p, ty_p, 6, 0, 2 * math.pi)
+            pctx.set_source_rgba(r_c, g_c, b_c, p_vis)
+            pctx.fill_preserve()
+            pctx.set_source_rgba(1, 1, 1, p_vis)
+            pctx.set_line_width(2.0)
+            pctx.stroke()
+            pctx.move_to(tx_p, ty_p)
+            pctx.line_to(bx_l + 140, by_l + 21)
+            pctx.set_source_rgba(r_c, g_c, b_c, 0.90 * p_vis)
+            pctx.set_line_width(2.2)
+            pctx.stroke()
+
+        bg.alpha_composite(_cairo_surface_to_pil_rgba(pin_surf))
+        draw = ImageDraw.Draw(bg, "RGBA")
+        for tx_p, ty_p, bx_l, by_l, lbl_p, col_rgb, p_vis in c_pins:
+            if p_vis < 0.15:
+                continue
+            f_cp = get_ui_font(14, "display_bold")
+            pw_c = max(210, int(f_cp.getlength(str(lbl_p))) + 34)
+            draw.rounded_rectangle([(bx_l, by_l), (bx_l + pw_c, by_l + 42)], radius=10, fill=(13, 19, 32, 245), outline=(col_rgb[0], col_rgb[1], col_rgb[2], 235), width=2)
+            draw.text((bx_l + 16, by_l + 11), str(lbl_p)[:26], fill=(248, 250, 252, 255), font=f_cp)
+
+        # Right Panel: 3-Card Matte Documentary Breakdown (Zero meta-labels!)
+        ux0, uy0, ux1, uy1 = ui_box
+        uw, uh = ux1 - ux0, uy1 - uy0
+
+        # Card 1 (Appears on Phrase 1)
+        b1_y0, b1_y1 = uy0, uy0 + int(uh * 0.34) - 8
+        draw.rounded_rectangle([(ux0, b1_y0), (ux1, b1_y1)], radius=18, fill=(16, 23, 38, 255), outline=(64, 80, 104, 225), width=2)
+        draw.rectangle([(ux0, b1_y0 + 20), (ux0 + 6, b1_y1 - 20)], fill=(200, 40, 56, 255))
+        draw.text((ux0 + 24, b1_y0 + 18), f"{c_name}  •  {topic_anc}", fill=(218, 178, 68, 255), font=get_ui_font(13, "mono_bold"))
+        draw.text((ux0 + 24, b1_y0 + 44), fit_whole_words_limit(point_hl, 30), fill=(248, 250, 252, 255), font=get_ui_font(22 if not is_short else 20, "display_bold"))
+        f_b1 = get_ui_font(18 if not is_short else 17, "sans_medium")
+        for l_i, ln_1 in enumerate(wrap_text_px(b_txt, f_b1, uw - 48, max_lines=3)):
+            draw.text((ux0 + 24, b1_y0 + 82 + l_i * 26), ln_1, fill=(203, 213, 225, 255), font=f_b1)
+
+        # Card 2 (Appears on Phrase 2: Key Metric Count-Up + Smooth Matte Gold Area Curve)
+        b2_y0, b2_y1 = uy0 + int(uh * 0.35) + 4, uy0 + int(uh * 0.68) - 4
+        draw.rounded_rectangle([(ux0, b2_y0), (ux1, b2_y1)], radius=18, fill=(16, 23, 38, 255), outline=(64, 80, 104, 225), width=2)
+        draw.text((ux0 + 24, b2_y0 + 18), fit_whole_words_limit(clauses[0].upper(), 28), fill=(148, 163, 184, 255), font=get_ui_font(13, "mono_bold"))
+        stat_main = format_animated_countup_number(str(clean_nums[0])[:14], min(max(sent_prog * 1.2, 0.25), 1.0))
+        draw.text((ux0 + 24, b2_y0 + 46), stat_main, fill=(218, 178, 68, 255), font=get_ui_font(42 if not is_short else 34, "display_black"))
+        sec_stat = fit_whole_words_limit(clauses[1].upper() if len(clauses) > 1 else point_hl, 22)
+        draw.rounded_rectangle([(ux0 + 24, b2_y0 + 108), (ux0 + 265, b2_y0 + 140)], radius=8, fill=(24, 34, 54, 255), outline=(218, 178, 68, 195), width=1)
+        draw.text((ux0 + 36, b2_y0 + 116), sec_stat[:22], fill=(241, 245, 249, 255), font=get_ui_font(13, "display_bold"))
+
+        ch_x0, ch_y0, ch_w, ch_h = ux0 + int(uw * 0.46), b2_y0 + 22, int(uw * 0.50), (b2_y1 - b2_y0) - 42
+        csurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, ch_w, ch_h)
+        cctx = _pycairo.Context(csurf)
+        cctx.set_antialias(_pycairo.ANTIALIAS_BEST)
+        _cairo_rounded_rect(cctx, 0, 0, ch_w, ch_h, 12)
+        cctx.set_source_rgba(0.04, 0.06, 0.11, 1.0)
+        cctx.fill()
+        vals = [0.78, 0.72, 0.68, 0.56, 0.52, 0.38, 0.28, 0.16]
+        pts_c = [(12 + i * (ch_w - 24) / float(len(vals) - 1), 14 + vals[i] * (ch_h - 28)) for i in range(len(vals))]
+        cctx.new_path()
+        cctx.move_to(pts_c[0][0], ch_h - 8)
+        for px_v, py_v in pts_c:
+            cctx.line_to(px_v, py_v)
+        cctx.line_to(pts_c[-1][0], ch_h - 8)
+        cctx.close_path()
+        agrad = _pycairo.LinearGradient(0, 0, 0, ch_h)
+        agrad.add_color_stop_rgba(0.0, 0.85, 0.68, 0.22, 0.38)
+        agrad.add_color_stop_rgba(1.0, 0.85, 0.68, 0.22, 0.02)
+        cctx.set_source(agrad)
+        cctx.fill()
+        cctx.new_path()
+        cctx.move_to(pts_c[0][0], pts_c[0][1])
+        for px_v, py_v in pts_c[1:]:
+            cctx.line_to(px_v, py_v)
+        cctx.set_source_rgba(0.90, 0.74, 0.28, 1.0)
+        cctx.set_line_width(2.8)
+        cctx.stroke()
+        bg.alpha_composite(_cairo_surface_to_pil_rgba(csurf), (ch_x0, ch_y0))
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        # Card 3 (Appears on Phrase 3: Dynamic Clause Breakdown Bars)
+        b3_y0, b3_y1 = uy0 + int(uh * 0.69) + 8, uy1
+        draw.rounded_rectangle([(ux0, b3_y0), (ux1, b3_y1)], radius=18, fill=(16, 23, 38, 255), outline=(64, 80, 104, 225), width=2)
+        draw.text((ux0 + 24, b3_y0 + 16), f"{c_name} OPERATIONAL IMPACT", fill=(218, 178, 68, 255), font=get_ui_font(13, "mono_bold"))
+        for r_i in range(2):
+            ry = b3_y0 + 50 + r_i * 48
+            if ry + 24 <= b3_y1 - 12:
+                r_lbl = fit_whole_words_limit(clauses[min(r_i, len(clauses) - 1)].upper(), 22)
+                r_pct = 0.90 if r_i == 0 else 0.72
+                r_col = (218, 178, 68, 255) if r_i == 0 else (148, 163, 184, 255)
+                draw.text((ux0 + 24, ry), r_lbl, fill=(226, 232, 240, 255), font=get_ui_font(14, "sans_semibold"))
+                draw.rounded_rectangle([(ux0 + 24, ry + 24), (ux1 - 24, ry + 34)], radius=5, fill=(30, 41, 59, 255))
+                fw_b = max(18, int((uw - 48) * r_pct * min(max(sent_prog * 1.15, 0.25), 1.0)))
+                draw.rounded_rectangle([(ux0 + 24, ry + 24), (ux0 + 24 + fw_b, ry + 34)], radius=5, fill=r_col)
+
+        return bg
+
+    # ==========================================================================
+    # SCENE DESIGN 4: WORD-SYNCED HEAD-TO-HEAD CONTENDER SPLIT & COMPARISON TABLE
+    #                 (`TS_02_HEAD_TO_HEAD_VS_SPLIT`)
+    #                 - Left Contender slides in when Phrase 1 ("On one side...") is spoken!
+    #                 - Right Contender slides in when Phrase 2 ("...while on the other side...") is spoken!
+    # ==========================================================================
+    if mode == "TS_02_HEAD_TO_HEAD_VS_SPLIT":
+        bg = Image.new("RGBA", (W, H), (11, 16, 28, 255))
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        sa_hdr = str(beat.get("side_a_label") or c_name).upper()[:22]
+        sb_hdr = str(beat.get("side_b_label") or "COUNTERPART").upper()[:22]
+        vs_parts = [p.strip() for p in re.split(r"\b(?:and on the other side|on the other side|whereas|while|versus|vs\.?|compared to|in contrast)\b", b_txt, flags=re.I) if len(p.strip()) >= 10]
+        raw_a = vs_parts[0] if len(vs_parts) >= 2 else clauses[0]
+        raw_b = vs_parts[1] if len(vs_parts) >= 2 else (clauses[1] if len(clauses) > 1 else b_txt)
+
+        top_h = int(sh * 0.54)
+        b_left = (sx0, sy0, sx0 + sw // 2 - 18, sy0 + top_h)
+        b_right = (sx0 + sw // 2 + 18, sy0, sx1, sy0 + top_h)
+
+        stat_a_val = clean_nums[0] if clean_nums else sa_hdr
+        stat_b_val = clean_nums[1] if len(clean_nums) > 1 else sb_hdr
+
+        for idx_side, (bx, pim, s_hdr, scol, bg_tint, r_txt, st_val, p_side) in enumerate([
+            (b_left, src_im, sa_hdr, (218, 178, 68), (36, 30, 16, 255), raw_a, stat_a_val, p_phrase1),
+            (b_right, sec_im, sb_hdr, (200, 48, 62), (42, 16, 24, 255), raw_b, stat_b_val, max(0.25, p_phrase2)),
+        ]):
+            bw_s, bh_s = bx[2] - bx[0], bx[3] - bx[1]
+            y_slide = int((1.0 - p_side) * 45)
+            bx0_s, by0_s, bx1_s, by1_s = bx[0], bx[1] + y_slide, bx[2], bx[3] + y_slide
+            draw.rounded_rectangle([(bx0_s, by0_s), (bx1_s, by1_s)], radius=18, fill=(16, 23, 38, 255), outline=(scol[0], scol[1], scol[2], 215), width=2)
+            draw.rounded_rectangle([(bx0_s + 18, by0_s + 14), (bx0_s + 265, by0_s + 42)], radius=8, fill=bg_tint, outline=(scol[0], scol[1], scol[2], 200), width=1)
+            draw.text((bx0_s + 30, by0_s + 20), s_hdr, fill=(scol[0], scol[1], scol[2], 255), font=get_ui_font(14, "mono_bold"))
+
+            im_w_s = int(bw_s * 0.46) if not is_short else (bw_s - 32)
+            im_h_s = (bh_s - 68) if not is_short else int(bh_s * 0.50)
+            pcrop = pim.resize((im_w_s, im_h_s), resample_l).convert("RGBA")
+            pmask = Image.new("L", (im_w_s, im_h_s), 0)
+            ImageDraw.Draw(pmask).rounded_rectangle([(0, 0), (im_w_s - 1, im_h_s - 1)], radius=14, fill=255)
+            bg.paste(pcrop, (bx0_s + 16, by0_s + 52), pmask)
+            draw = ImageDraw.Draw(bg, "RGBA")
+
+            if not is_short:
+                tx_s, ty_s, tw_s = bx0_s + im_w_s + 32, by0_s + 54, bw_s - im_w_s - 48
+            else:
+                tx_s, ty_s, tw_s = bx0_s + 18, by0_s + 60 + im_h_s, bw_s - 36
+
+            draw.text((tx_s, ty_s), str(st_val)[:16], fill=(scol[0], scol[1], scol[2], 255), font=get_ui_font(34 if not is_short else 26, "display_black"))
+            draw.line([(tx_s, ty_s + 48), (tx_s + tw_s, ty_s + 48)], fill=(51, 65, 85, 220), width=1)
+
+            f_st = get_ui_font(19 if not is_short else 17, "sans_semibold")
+            for l_i, ln_s in enumerate(wrap_text_px(r_txt, f_st, tw_s, max_lines=4)):
+                draw.text((tx_s, ty_s + 62 + l_i * 27), ln_s, fill=(241, 245, 249, 255), font=f_st)
+
+        # Bottom Half: Clean Documentary Comparison Table
+        tb_y0 = sy0 + top_h + 18
+        draw.rounded_rectangle([(sx0, tb_y0), (sx1, sy1)], radius=18, fill=(15, 21, 34, 255), outline=(64, 80, 104, 220), width=2)
+        draw.rounded_rectangle([(sx0, tb_y0), (sx1, tb_y0 + 44)], radius=18, fill=(20, 29, 46, 255))
+        draw.rectangle([(sx0, tb_y0 + 24), (sx1, tb_y0 + 44)], fill=(20, 29, 46, 255))
+        draw.text((sx0 + 26, tb_y0 + 13), sa_hdr, fill=(218, 178, 68, 255), font=get_ui_font(15, "mono_bold"))
+        mid_x_tb = (sx0 + sx1) // 2
+        draw.text((mid_x_tb - 92, tb_y0 + 13), "STRATEGIC COMPARISON", fill=(148, 163, 184, 255), font=get_ui_font(14, "mono_bold"))
+        draw.text((sx1 - 220, tb_y0 + 13), sb_hdr, fill=(225, 75, 88, 255), font=get_ui_font(15, "mono_bold"))
+
+        rows_data = [
+            (stat_a_val, "PRIMARY CAPABILITY", stat_b_val, 0.88, 0.82),
+            (fit_whole_words_limit(raw_a.upper(), 20), "STRATEGIC POSTURE", fit_whole_words_limit(raw_b.upper(), 20), 0.90, 0.84),
+            ("REGIONAL MOBILITY", "THEATER FOCUS", "AIRSPACE DETERRENCE", 0.85, 0.80),
+        ]
+        row_h = max(46, (sy1 - (tb_y0 + 50)) // 3)
+        bar_anim = min(max(sent_prog * 1.15, 0.25), 1.0)
+        for r_idx, (val_a, metric_name, val_b, pct_a, pct_b) in enumerate(rows_data):
+            ry = tb_y0 + 50 + r_idx * row_h
+            if r_idx > 0:
+                draw.line([(sx0 + 20, ry - 4), (sx1 - 20, ry - 4)], fill=(30, 41, 59, 220), width=1)
+            draw.text((sx0 + 26, ry + 8), str(val_a)[:24], fill=(241, 245, 249, 255), font=get_ui_font(16, "display_bold"))
+            f_mn = get_ui_font(14, "mono_regular")
+            mw_n = int(f_mn.getlength(metric_name))
+            draw.text((mid_x_tb - mw_n // 2, ry + 10), metric_name, fill=(148, 163, 184, 245), font=f_mn)
+            f_vb = get_ui_font(16, "display_bold")
+            vw_b = int(f_vb.getlength(str(val_b)[:24]))
+            draw.text((sx1 - 26 - vw_b, ry + 8), str(val_b)[:24], fill=(241, 245, 249, 255), font=f_vb)
+
+            bw_max = int(sw * 0.28)
+            w_a = int(bw_max * pct_a * bar_anim)
+            w_b = int(bw_max * pct_b * bar_anim)
+            draw.rounded_rectangle([(mid_x_tb - 130 - bw_max, ry + 32), (mid_x_tb - 130, ry + 40)], radius=4, fill=(30, 41, 59, 255))
+            draw.rounded_rectangle([(mid_x_tb - 130 - w_a, ry + 32), (mid_x_tb - 130, ry + 40)], radius=4, fill=(218, 178, 68, 255))
+            draw.rounded_rectangle([(mid_x_tb + 130, ry + 32), (mid_x_tb + 130 + bw_max, ry + 40)], radius=4, fill=(30, 41, 59, 255))
+            draw.rounded_rectangle([(mid_x_tb + 130, ry + 32), (mid_x_tb + 130 + w_b, ry + 40)], radius=4, fill=(200, 48, 62, 255))
+
+        return bg
+
+    # ==========================================================================
+    # SCENE DESIGN 5: 3-STAGE DOCUMENTARY CHAIN REACTION WITH 3 DISTINCT PHOTOS
+    #                 & SEQUENTIAL PHRASE-SYNCED REVEAL (`TS_04_DOMINO_CHAIN_FLOWCHART`)
+    # ==========================================================================
+    if mode == "TS_04_DOMINO_CHAIN_FLOWCHART":
+        bg = Image.new("RGBA", (W, H), (11, 16, 28, 255))
+        draw = ImageDraw.Draw(bg, "RGBA")
+        for gx in range(40, W - 24, 40):
+            for gy in range(88, H - 140, 40):
+                draw.point((gx, gy), fill=(51, 65, 85, 220))
+
+        # Clean Documentary Header Bar (Zero 'CLAUDE FLOWCHART ENGINE' meta-label!)
+        draw.rounded_rectangle([(sx0, sy0), (sx1, sy0 + 52)], radius=14, fill=(16, 23, 38, 255), outline=(212, 175, 55, 195), width=1)
+        draw.text((sx0 + 24, sy0 + 16), f"{c_name} STRATEGIC CHAIN REACTION  •  {point_hl}", fill=(218, 178, 68, 255), font=get_ui_font(15, "mono_bold"))
+
+        raw_steps = [s.strip(" .,;:-") for s in re.split(r"[:;—–]|\b(?:led to|triggering|shifting|causing|which then|resulting in)\b", b_txt, flags=re.I) if len(s.strip()) >= 8]
+        while len(raw_steps) < 3:
+            raw_steps.extend(clauses if clauses else [b_txt])
+
+        if not is_short:
+            nw = int((sw - 96) // 3)
+            nh = int(sh - 76)
+            node_boxes = [
+                (sx0 + i * (nw + 48), sy0 + 68, sx0 + i * (nw + 48) + nw, sy0 + 68 + nh)
+                for i in range(3)
+            ]
+        else:
+            nw = sw - 24
+            nh = int((sh - 120) // 3)
+            node_boxes = [
+                (sx0 + 12, sy0 + 68 + i * (nh + 22), sx0 + 12 + nw, sy0 + 68 + i * (nh + 22) + nh)
+                for i in range(3)
+            ]
+
+        nsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+        nctx = _pycairo.Context(nsurf)
+        nctx.set_antialias(_pycairo.ANTIALIAS_BEST)
+        for i in range(2):
+            b0, b1 = node_boxes[i], node_boxes[i + 1]
+            if not is_short:
+                x0_c, y0_c = b0[2], (b0[1] + b0[3]) * 0.5
+                x1_c, y1_c = b1[0], (b1[1] + b1[3]) * 0.5
+                cx1_b, cy1_b = (x0_c + x1_c) * 0.5, y0_c - 28
+                cx2_b, cy2_b = (x0_c + x1_c) * 0.5, y1_c + 28
+            else:
+                x0_c, y0_c = (b0[0] + b0[2]) * 0.5, b0[3]
+                x1_c, y1_c = (b1[0] + b1[2]) * 0.5, b1[1]
+                cx1_b, cy1_b = x0_c, (y0_c + y1_c) * 0.5
+                cx2_b, cy2_b = x1_c, (y0_c + y1_c) * 0.5
+
+            nctx.new_path()
+            nctx.move_to(x0_c, y0_c)
+            nctx.curve_to(cx1_b, cy1_b, cx2_b, cy2_b, x1_c, y1_c)
+            nctx.set_source_rgba(0.85, 0.68, 0.22, 0.85)
+            nctx.set_line_width(3.0)
+            nctx.stroke()
+
+            u_p = (local_t * 0.85 + i * 0.4) % 1.0
+            px_p = ((1 - u_p) ** 3) * x0_c + 3 * ((1 - u_p) ** 2) * u_p * cx1_b + 3 * (1 - u_p) * (u_p ** 2) * cx2_b + (u_p ** 3) * x1_c
+            py_p = ((1 - u_p) ** 3) * y0_c + 3 * ((1 - u_p) ** 2) * u_p * cy1_b + 3 * (1 - u_p) * (u_p ** 2) * cy2_b + (u_p ** 3) * y1_c
+            nctx.arc(px_p, py_p, 7, 0, 2 * math.pi)
+            nctx.set_source_rgba(0.95, 0.80, 0.28, 1.0)
+            nctx.fill()
+
+        bg.alpha_composite(_cairo_surface_to_pil_rgba(nsurf))
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        if tert_im is src_im and sec_im is not src_im:
+            tert_im = sec_im.transpose(getattr(Image, "Transpose", Image).FLIP_LEFT_RIGHT)
+
+        node_themes = [
+            ("STEP 01  •  ORIGIN", (218, 178, 68), (36, 30, 16, 255), src_im, p_phrase1),
+            ("STEP 02  •  TRANSIT & ACTION", (203, 213, 225), (24, 34, 52, 255), sec_im, max(0.25, p_phrase2)),
+            ("STEP 03  •  STRATEGIC OUTCOME", (200, 48, 62), (42, 16, 24, 255), tert_im, max(0.20, p_phrase3)),
+        ]
+        for idx_n, (nx0, ny0, nx1, ny1) in enumerate(node_boxes):
+            ntitle, ncol, n_bg_pill, nim, p_node = node_themes[idx_n]
+            nw_b, nh_b = nx1 - nx0, ny1 - ny0
+            y_off_n = int((1.0 - p_node) * 38)
+            ny0_a, ny1_a = ny0 + y_off_n, ny1 + y_off_n
+            draw.rounded_rectangle([(nx0 + 4, ny0_a + 8), (nx1 + 4, ny1_a + 8)], radius=18, fill=(0, 0, 0, 180))
+            draw.rounded_rectangle([(nx0, ny0_a), (nx1, ny1_a)], radius=18, fill=(16, 23, 38, 255), outline=(ncol[0], ncol[1], ncol[2], 220), width=2)
+            draw.rounded_rectangle([(nx0, ny0_a), (nx1, ny0_a + 42)], radius=18, fill=(22, 31, 50, 255))
+            draw.rectangle([(nx0, ny0_a + 24), (nx1, ny0_a + 42)], fill=(22, 31, 50, 255))
+            draw.text((nx0 + 18, ny0_a + 12), ntitle, fill=(ncol[0], ncol[1], ncol[2], 255), font=get_ui_font(14, "mono_bold"))
+
+            if not is_short:
+                im_h_n = int(nh_b * 0.46)
+                ncrop = nim.resize((nw_b - 28, im_h_n), resample_l).convert("RGBA")
+                nmask = Image.new("L", (nw_b - 28, im_h_n), 0)
+                ImageDraw.Draw(nmask).rounded_rectangle([(0, 0), (nw_b - 29, im_h_n - 1)], radius=12, fill=255)
+                bg.paste(ncrop, (nx0 + 14, ny0_a + 54), nmask)
+                draw = ImageDraw.Draw(bg, "RGBA")
+                ty_n = ny0_a + 70 + im_h_n
+            else:
+                ty_n = ny0_a + 54
+
+            f_nt = get_ui_font(21 if not is_short else 18, "display_bold")
+            step_lines = wrap_text_px(raw_steps[idx_n].title(), f_nt, nw_b - 36, max_lines=3)
+            for l_i, ln_n in enumerate(step_lines):
+                draw.text((nx0 + 18, ty_n + l_i * 28), ln_n, fill=(248, 250, 252, 255), font=f_nt)
+
+            draw.rounded_rectangle([(nx0 + 18, ny1_a - 52), (nx1 - 18, ny1_a - 16)], radius=8, fill=n_bg_pill, outline=(ncol[0], ncol[1], ncol[2], 210), width=1)
+            draw.text((nx0 + 28, ny1_a - 41), fit_whole_words_limit(raw_steps[idx_n].upper(), 24), fill=(241, 245, 249, 255), font=get_ui_font(13, "mono_bold"))
+
+        return bg
+
+    # ==========================================================================
+    # SCENE DESIGN 6: LIVE SURVEILLANCE RADAR & RANGE TELEMETRY DASHBOARD
+    #                 (`GEO_08_MILITARY_FIREPOWER_RADAR`)
+    # ==========================================================================
+    if mode == "GEO_08_MILITARY_FIREPOWER_RADAR":
+        bg = Image.new("RGBA", (W, H), (11, 16, 28, 255))
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        if not is_short:
+            left_box = (sx0, sy0, sx0 + int(sw * 0.56) - 12, sy1)
+            right_box = (sx0 + int(sw * 0.56) + 12, sy0, sx1, sy1)
+        else:
+            left_box = (sx0, sy0, sx1, sy0 + int(sh * 0.48) - 10)
+            right_box = (sx0, sy0 + int(sh * 0.48) + 10, sx1, sy1)
+
+        lw_r, lh_r = left_box[2] - left_box[0], left_box[3] - left_box[1]
+        draw.rounded_rectangle([(left_box[0], left_box[1]), (left_box[2], left_box[3])], radius=18, fill=(15, 22, 36, 255), outline=(212, 175, 55, 210), width=2)
+        im_c = src_im.resize((lw_r - 8, lh_r - 8), resample_l).convert("RGBA")
+        mask_r = Image.new("L", (lw_r - 8, lh_r - 8), 0)
+        ImageDraw.Draw(mask_r).rounded_rectangle([(0, 0), (lw_r - 9, lh_r - 9)], radius=16, fill=255)
+        bg.paste(im_c, (left_box[0] + 4, left_box[1] + 4), mask_r)
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        draw.rounded_rectangle([(left_box[0] + 20, left_box[3] - 125), (left_box[2] - 20, left_box[3] - 18)], radius=14, fill=(13, 19, 32, 242), outline=(212, 175, 55, 200), width=1)
+        draw.text((left_box[0] + 36, left_box[3] - 110), fit_whole_words_limit(point_hl, 34), fill=(218, 178, 68, 255), font=get_ui_font(22 if not is_short else 19, "display_bold"))
+        f_rsub = get_ui_font(17, "sans_medium")
+        for l_i, ln_r in enumerate(wrap_text_px(b_txt, f_rsub, lw_r - 76, max_lines=2)):
+            draw.text((left_box[0] + 36, left_box[3] - 76 + l_i * 24), ln_r, fill=(226, 232, 240, 255), font=f_rsub)
+
+        rx0, ry0, rx1, ry1 = right_box
+        rw_r, rh_r = rx1 - rx0, ry1 - ry0
+        draw.rounded_rectangle([(rx0, ry0), (rx1, ry1)], radius=18, fill=(15, 22, 36, 255), outline=(64, 80, 104, 225), width=2)
+        draw.text((rx0 + 26, ry0 + 20), f"{c_name} SURVEILLANCE & RANGE COVERAGE", fill=(218, 178, 68, 255), font=get_ui_font(14, "mono_bold"))
+
+        rad_cx = (rx0 + rx1) // 2
+        rad_cy = ry0 + int(rh_r * 0.44)
+        rad_r = min(int(rw_r * 0.34), int(rh_r * 0.31))
+
+        rsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+        rctx = _pycairo.Context(rsurf)
+        rctx.set_antialias(_pycairo.ANTIALIAS_BEST)
+
+        rctx.arc(rad_cx, rad_cy, rad_r, 0, 2 * math.pi)
+        rctx.set_source_rgba(0.04, 0.07, 0.12, 1.0)
+        rctx.fill_preserve()
+        rctx.set_source_rgba(0.85, 0.68, 0.22, 0.85)
+        rctx.set_line_width(2.2)
+        rctx.stroke()
+
+        for ring_frac in [0.33, 0.66, 1.0]:
+            rctx.arc(rad_cx, rad_cy, rad_r * ring_frac, 0, 2 * math.pi)
+            rctx.set_source_rgba(0.85, 0.68, 0.22, 0.28)
+            rctx.set_line_width(1.2)
+            rctx.stroke()
+
+        sweep_ang = (local_t * 2.2) % (2 * math.pi)
+        rctx.move_to(rad_cx, rad_cy)
+        rctx.arc(rad_cx, rad_cy, rad_r - 2, sweep_ang - 0.55, sweep_ang)
+        rctx.close_path()
+        rctx.set_source_rgba(0.85, 0.68, 0.22, 0.26)
+        rctx.fill()
+        rctx.move_to(rad_cx, rad_cy)
+        rctx.line_to(rad_cx + (rad_r - 2) * math.cos(sweep_ang), rad_cy + (rad_r - 2) * math.sin(sweep_ang))
+        rctx.set_source_rgba(0.94, 0.78, 0.28, 1.0)
+        rctx.set_line_width(2.6)
+        rctx.stroke()
+
+        for bx_off, by_off in [(-0.38, -0.28), (0.42, -0.18), (0.18, 0.44), (-0.25, 0.35)]:
+            tx_b = rad_cx + int(rad_r * bx_off)
+            ty_b = rad_cy + int(rad_r * by_off)
+            rctx.arc(tx_b, ty_b, 5, 0, 2 * math.pi)
+            rctx.set_source_rgba(0.88, 0.24, 0.30, 1.0)
+            rctx.fill()
+
+        bg.alpha_composite(_cairo_surface_to_pil_rgba(rsurf))
+        draw = ImageDraw.Draw(bg, "RGBA")
+
+        stat_r1 = clean_nums[0] if clean_nums else "+45% RANGE"
+        stat_r2 = clean_nums[1] if len(clean_nums) > 1 else "1,550 MILES"
+        grid_y0 = ry1 - 165
+        gw_c = (rw_r - 64) // 2
+        for g_i, (gk, gv, gc) in enumerate([
+            ("RANGE EXPANSION", str(stat_r1)[:16], (218, 178, 68, 255)),
+            ("PATROL COVERAGE", str(stat_r2)[:16], (241, 245, 249, 255)),
+            ("PRIMARY ZONE", c_name[:18], (218, 178, 68, 255)),
+            ("OPERATIONAL STATUS", "ACTIVE PATROL", (203, 213, 225, 255)),
+        ]):
+            gx0 = rx0 + 26 + (g_i % 2) * (gw_c + 12)
+            gy0 = grid_y0 + (g_i // 2) * 70
+            draw.rounded_rectangle([(gx0, gy0), (gx0 + gw_c, gy0 + 58)], radius=10, fill=(20, 29, 48, 255), outline=(64, 80, 104, 210), width=1)
+            draw.text((gx0 + 14, gy0 + 8), gk, fill=(148, 163, 184, 255), font=get_ui_font(11, "mono_regular"))
+            draw.text((gx0 + 14, gy0 + 28), gv, fill=gc, font=get_ui_font(16, "display_bold"))
+
+        return bg
+
+    # ==========================================================================
+    # SCENE DESIGN 7: REGIONAL CORRIDOR MAP + 3D FLOATING INFRASTRUCTURE FRAME
+    #                 (`TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD`)
+    # ==========================================================================
+    if mode == "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD":
+        bg = render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=is_short)
+        if not is_short:
+            pip_w, pip_h = 624, 385
+            pip_x, pip_y = W - 670, 505
+        else:
+            pip_w, pip_h = W - 80, 390
+            pip_x, pip_y = 40, 585
+
+        pip_card = Image.new("RGBA", (pip_w + 24, pip_h + 24), (0, 0, 0, 0))
+        pd = ImageDraw.Draw(pip_card, "RGBA")
+        pd.rounded_rectangle([(14, 16), (pip_w + 14, pip_h + 16)], radius=18, fill=(0, 0, 0, 185))
+        pd.rounded_rectangle([(8, 8), (pip_w + 8, pip_h + 8)], radius=18, fill=(14, 21, 36, 255), outline=(212, 175, 55, 220), width=2)
+
+        im_pc = src_im.resize((pip_w - 8, pip_h - 52), resample_l).convert("RGBA")
+        mask_p = Image.new("L", (pip_w - 8, pip_h - 52), 0)
+        ImageDraw.Draw(mask_p).rounded_rectangle([(0, 0), (pip_w - 9, pip_h - 53)], radius=14, fill=255)
+        pip_card.paste(im_pc, (12, 52), mask_p)
+        pd = ImageDraw.Draw(pip_card, "RGBA")
+        pd.text((24, 20), fit_whole_words_limit(point_hl, 36), fill=(218, 178, 68, 255), font=get_ui_font(14, "mono_bold"))
+
+        tilted_pip = _apply_3d_perspective_tilt_v80(pip_card, tilt_x_deg=-1.2, tilt_y_deg=-1.6)
+        slide_y = int((1.0 - p_phrase2) * 55)
+        bg.alpha_composite(tilted_pip, (pip_x - 8, pip_y - 8 + slide_y))
+        return bg
+
+    return None
+
+
 def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
+    if HAS_PYCAIRO_V78:
+        try:
+            return render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=is_short)
+        except Exception:
+            pass
     """
     V72 AUTHENTIC THINK SCHOOL (`Ub4ZmBuSA7Q`) CARTOGRAPHIC MAP & CHOKEPOINT ENGINE:
     - Powered by embedded 177-Country Natural Earth Vector Atlas + 1:50m GeoJSON upgrade.
@@ -14255,8 +15813,42 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
             active_chokepoint = ck_cfg
             break
 
-    # 2. Identify countries mentioned in THIS sentence (`b_low`) FIRST!
+    # 2. Identify cities & countries mentioned in THIS sentence (`b_low`) FIRST!
+    STRATEGIC_CITY_ATLAS = {
+        "seville": ("SEVILLE (SPAIN)", "SPAIN", "ES", 37.389, -5.984),
+        "madrid": ("MADRID (SPAIN)", "SPAIN", "ES", 40.416, -3.703),
+        "rabat": ("RABAT (MOROCCO)", "MOROCCO", "MA", 34.020, -6.841),
+        "robot": ("RABAT (MOROCCO)", "MOROCCO", "MA", 34.020, -6.841),
+        "kenitra": ("KENITRA AIR BASE", "MOROCCO", "MA", 34.261, -6.580),
+        "casablanca": ("CASABLANCA (MOROCCO)", "MOROCCO", "MA", 33.573, -7.589),
+        "algiers": ("ALGIERS (ALGERIA)", "ALGERIA", "DZ", 36.753, 3.058),
+        "tel aviv": ("TEL AVIV (ISRAEL)", "ISRAEL", "IL", 32.085, 34.781),
+        "jerusalem": ("JERUSALEM (ISRAEL)", "ISRAEL", "IL", 31.768, 35.213),
+        "haifa": ("HAIFA PORT (ISRAEL)", "ISRAEL", "IL", 32.794, 34.989),
+        "gaza": ("GAZA STRIP", "PALESTINE", "PS", 31.501, 34.466),
+        "tehran": ("TEHRAN (IRAN)", "IRAN", "IR", 35.689, 51.389),
+        "riyadh": ("RIYADH (SAUDI)", "SAUDI ARABIA", "SA", 24.713, 46.675),
+        "dubai": ("DUBAI (UAE)", "UNITED ARAB EMIRATES", "AE", 25.204, 55.270),
+        "abu dhabi": ("ABU DHABI (UAE)", "UNITED ARAB EMIRATES", "AE", 24.453, 54.377),
+        "mumbai": ("MUMBAI (INDIA)", "INDIA", "IN", 19.076, 72.877),
+        "new delhi": ("NEW DELHI (INDIA)", "INDIA", "IN", 28.613, 77.209),
+        "beijing": ("BEIJING (CHINA)", "CHINA", "CN", 39.904, 116.407),
+        "taipei": ("TAIPEI (TAIWAN)", "TAIWAN", "TW", 25.033, 121.565),
+        "moscow": ("MOSCOW (RUSSIA)", "RUSSIA", "RU", 55.755, 37.617),
+        "kyiv": ("KYIV (UKRAINE)", "UKRAINE", "UA", 50.450, 30.523),
+        "washington": ("WASHINGTON D.C. (USA)", "UNITED STATES", "US", 38.907, -77.036),
+        "istanb": ("ISTANBUL (TURKEY)", "TURKEY", "TR", 41.008, 28.978),
+        "cairo": ("CAIRO (EGYPT)", "EGYPT", "EG", 30.044, 31.235),
+        "piraeus": ("PIRAEUS (GREECE)", "GREECE", "GR", 37.942, 23.646)
+    }
+    matched_city_pins = []
     matched_countries = []
+    for city_k, (city_lbl, parent_cnt, c_iso2, clat, clon) in STRATEGIC_CITY_ATLAS.items():
+        if re.search(rf"\b{re.escape(city_k)}", b_low):
+            matched_city_pins.append((city_lbl, {"name": parent_cnt.title(), "iso2": c_iso2, "capital": city_lbl, "lat": clat, "lon": clon}))
+            d_parent = _unpack_cnt(parent_cnt)
+            if d_parent and parent_cnt.title() not in [x[0] for x in matched_countries]:
+                matched_countries.append((parent_cnt.title(), d_parent))
     if active_chokepoint:
         for ck_cnt in active_chokepoint["countries"]:
             d_c = _unpack_cnt(ck_cnt)
@@ -14330,12 +15922,12 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     cont_zoom_p = min(max(local_t / beat_dur_m, 0.0), 1.0)
     cur_zoom = zoom_scale * (0.86 + 0.22 * cont_zoom_p)
 
-    # 3. Build Base Map Canvas (Satellite terrain if online, else 2x-Supersampled 177-Country Cartographic Atlas)
-    map_im, tile_proj = _fetch_real_cartodb_map_canvas(center_lat, center_lon, W, H, zoom_lvl=tile_z)
-    if map_im is not None and tile_proj is not None:
-        bg = map_im.convert("RGBA")
-        proj_fn = tile_proj
-    else:
+    # 3. V76 100% THINK-SCHOOL 177-COUNTRY VECTOR CARTOGRAPHIC ATLAS (Never use raw unlabeled satellite mud tiles!):
+    #    On 9:16 Shorts (`is_short=True`), shift `center_lat` slightly south so the active countries and flight arcs
+    #    appear in the upper-middle viewport (`y = 280..920`), completely above the bottom briefing card (`y = 1055..1375`)!
+    view_center_lat = center_lat
+    view_center_lon = center_lon
+    if True:
         ss = 2
         mw_s, mh_s = W * ss, H * ss
         # Deep Think School Tactical Ocean Slate
@@ -14345,11 +15937,11 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
         # Subtle cartographic lat/lon graticule grid
         grid_step_deg = 5 if cur_zoom >= 4.2 else (10 if cur_zoom >= 2.4 else 15)
         for glon in range(-180, 185, grid_step_deg):
-            gx, _ = _latlon_to_mercator_xy(center_lat, glon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
+            gx, _ = _latlon_to_mercator_xy(center_lat, glon, mw_s, mh_s, center_lat=view_center_lat, center_lon=view_center_lon, zoom_scale=cur_zoom)
             if 0 <= gx <= mw_s:
                 md.line([(gx, 0), (gx, mh_s)], fill=(22, 38, 62, 110), width=2)
         for glat in range(-65, 75, grid_step_deg):
-            _, gy = _latlon_to_mercator_xy(glat, center_lon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
+            _, gy = _latlon_to_mercator_xy(glat, center_lon, mw_s, mh_s, center_lat=view_center_lat, center_lon=view_center_lon, zoom_scale=cur_zoom)
             if 0 <= gy <= mh_s:
                 md.line([(0, gy), (mw_s, gy)], fill=(22, 38, 62, 110), width=2)
 
@@ -14368,7 +15960,7 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
                 pts_r = []
                 wrap_r = False
                 for (plat, plon) in c_ring:
-                    px_m, py_m = _latlon_to_mercator_xy(plat, plon, mw_s, mh_s, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
+                    px_m, py_m = _latlon_to_mercator_xy(plat, plon, mw_s, mh_s, center_lat=view_center_lat, center_lon=view_center_lon, zoom_scale=cur_zoom)
                     if pts_r and abs(px_m - pts_r[-1][0]) > mw_s * 0.45:
                         wrap_r = True
                         break
@@ -14378,12 +15970,15 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
                     ys = [p[1] for p in pts_r]
                     if max(xs) < -200 or min(xs) > mw_s + 200 or max(ys) < -200 or min(ys) > mh_s + 200:
                         continue
-                    md.polygon(pts_r, fill=(28, 44, 68, 255))
-                    md.line(pts_r + [pts_r[0]], fill=(64, 92, 130, 215), width=3)
+                    # Bathymetric coastal shelf outer glow + crisp sovereign territory fill
+                    md.line(pts_r + [pts_r[0]], fill=(22, 62, 98, 125), width=14)
+                    md.line(pts_r + [pts_r[0]], fill=(32, 82, 126, 95), width=7)
+                    md.polygon(pts_r, fill=(26, 40, 62, 255))
+                    md.line(pts_r + [pts_r[0]], fill=(72, 104, 148, 235), width=3)
 
         bg = map_layer.resize((W, H), getattr(Image, "Resampling", Image).LANCZOS)
         def proj_fn(lat_p, lon_p):
-            return _latlon_to_mercator_xy(lat_p, lon_p, W, H, center_lat=center_lat, center_lon=center_lon, zoom_scale=cur_zoom)
+            return _latlon_to_mercator_xy(lat_p, lon_p, W, H, center_lat=view_center_lat, center_lon=view_center_lon, zoom_scale=cur_zoom)
 
     # 4. Highlight Active Story Countries with Crisp Think School Crimson & Gold Borders
     highlight_palette = [
@@ -14401,7 +15996,21 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
             ring_xy = [proj_fn(plat, plon) for (plat, plon) in c_ring]
             if len(ring_xy) >= 3:
                 pd_ov.polygon(ring_xy, fill=fill_c)
-                pd_ov.line(ring_xy + [ring_xy[0]], fill=(rim_c[0], rim_c[1], rim_c[2], 95), width=8)
+                # Tactical diagonal scan-line hatching inside active territory bounding box
+                r_xs = [p[0] for p in ring_xy]
+                r_ys = [p[1] for p in ring_xy]
+                bx0_h, by0_h, bx1_h, by1_h = max(0, int(min(r_xs))), max(0, int(min(r_ys))), min(W, int(max(r_xs))), min(H, int(max(r_ys)))
+                if (bx1_h - bx0_h) > 20 and (by1_h - by0_h) > 20:
+                    h_mask = Image.new("L", (W, H), 0)
+                    ImageDraw.Draw(h_mask).polygon(ring_xy, fill=255)
+                    h_lines = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                    hd_l = ImageDraw.Draw(h_lines, "RGBA")
+                    for h_step in range(bx0_h - (by1_h - by0_h), bx1_h + 20, 14):
+                        hd_l.line([(h_step, by0_h), (h_step + (by1_h - by0_h), by1_h)], fill=(rim_c[0], rim_c[1], rim_c[2], 52), width=2)
+                    poly_ov = Image.composite(Image.alpha_composite(poly_ov, h_lines), poly_ov, h_mask)
+                    pd_ov = ImageDraw.Draw(poly_ov, "RGBA")
+                pd_ov.line(ring_xy + [ring_xy[0]], fill=(rim_c[0], rim_c[1], rim_c[2], 75), width=12)
+                pd_ov.line(ring_xy + [ring_xy[0]], fill=(rim_c[0], rim_c[1], rim_c[2], 145), width=6)
                 pd_ov.line(ring_xy + [ring_xy[0]], fill=rim_c, width=3)
     bg.alpha_composite(poly_ov)
     draw = ImageDraw.Draw(bg, "RGBA")
@@ -14427,7 +16036,13 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
 
     # 6. Compute Active Country Flag Pins & Step-by-Step Animated Corridor Curve Points
     pin_coords = []
-    if active_chokepoint and active_chokepoint.get("route_nodes"):
+    if len(matched_city_pins) >= 2:
+        for city_lbl, city_d in matched_city_pins[:4]:
+            px_c, py_c = proj_fn(city_d["lat"], city_d["lon"])
+            px_c = max(90, min(W - 140, px_c))
+            py_c = max(140, min(H - (440 if is_short else 230), py_c))
+            pin_coords.append((px_c, py_c, city_lbl, city_d))
+    elif active_chokepoint and active_chokepoint.get("route_nodes"):
         for idx_rn, (rn_lbl, rlat, rlon) in enumerate(active_chokepoint["route_nodes"]):
             px_c, py_c = proj_fn(rlat, rlon)
             px_c = max(90, min(W - 140, px_c))
@@ -14605,8 +16220,27 @@ def render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=True):
     draw.text((cx0 + 34, cy0 + 73), fit_whole_words_limit(point_hl, 30), fill=(12, 16, 24, 255), font=get_font(22 if not is_short else 20))
 
     f_mc = get_font(20)
-    for l_i, ln_m in enumerate(wrap_text_px(b_txt, f_mc, (cx1 - cx0) - 48, max_lines=4)):
-        draw.text((cx0 + 26, cy0 + 122 + l_i * 34), ln_m, fill=(24, 30, 42, 255), font=f_mc)
+    for l_i, ln_m in enumerate(wrap_text_px(b_txt, f_mc, (cx1 - cx0) - 48, max_lines=3)):
+        draw.text((cx0 + 26, cy0 + 120 + l_i * 32), ln_m, fill=(24, 30, 42, 255), font=f_mc)
+    # Telemetry footer bar inside Map Briefing Card
+    draw.line([(cx0 + 24, cy1 - 44), (cx1 - 24, cy1 - 44)], fill=(205, 195, 175, 255), width=2)
+    draw.text((cx0 + 26, cy1 - 34), f"LAT {target_lat:.2f}°N  •  LON {target_lon:.2f}°E  •  SAT-VECTOR LOCK", fill=(185, 28, 45, 255), font=get_font(15))
+
+    # 9. Cartographic Compass Rose & Distance Scale Bar (Lower-Left Studio Detailing)
+    if not is_short:
+        sc_x, sc_y = 58, H - 225
+        draw.rounded_rectangle([(sc_x - 14, sc_y - 48), (sc_x + 255, sc_y + 28)], radius=12, fill=(11, 19, 34, 225), outline=(72, 104, 148, 195), width=2)
+        # Compass icon
+        draw.ellipse([(sc_x, sc_y - 34), (sc_x + 44, sc_y + 10)], outline=(245, 158, 11, 230), width=2)
+        draw.polygon([(sc_x + 22, sc_y - 30), (sc_x + 15, sc_y - 8), (sc_x + 29, sc_y - 8)], fill=(230, 57, 70, 255))
+        draw.polygon([(sc_x + 22, sc_y + 6), (sc_x + 15, sc_y - 8), (sc_x + 29, sc_y - 8)], fill=(148, 163, 184, 255))
+        draw.text((sc_x + 17, sc_y - 46), "N", fill=(255, 215, 0, 255), font=get_font(13))
+        # Scale bar (0 --- 250 --- 500 KM)
+        draw.text((sc_x + 60, sc_y - 36), "CARTOGRAPHIC SCALE (1:50M)", fill=(148, 163, 184, 240), font=get_font(14))
+        draw.line([(sc_x + 60, sc_y - 8), (sc_x + 220, sc_y - 8)], fill=(255, 215, 0, 255), width=3)
+        for tick_x, tick_lbl in [(sc_x + 60, "0"), (sc_x + 140, "250"), (sc_x + 220, "500 KM")]:
+            draw.line([(tick_x, sc_y - 15), (tick_x, sc_y - 2)], fill=(255, 215, 0, 255), width=2)
+            draw.text((tick_x - 6, sc_y + 1), tick_lbl, fill=(226, 232, 240, 245), font=get_font(13))
 
     bg.alpha_composite(get_prebuilt_vignette_overlay(W, H))
     return bg
@@ -14946,14 +16580,34 @@ def make_section_clip_from_beats(section_beats, watermark, voice_sub_dir, sectio
     def make_frame(t):
         elapsed = 0.0
         chosen_beat = section_beats[-1]
+        prev_beat = None
         local_t = 0.0
-        for b in section_beats:
+        for idx_b, b in enumerate(section_beats):
             if t <= elapsed + b["duration"] or b is section_beats[-1]:
                 chosen_beat = b
+                if idx_b > 0:
+                    prev_beat = section_beats[idx_b - 1]
                 local_t = max(0.0, t - elapsed)
                 break
             elapsed += b["duration"]
-        return render_1080p_beat_frame(chosen_beat, watermark, voice_sub_dir, local_t, W, H, is_short=is_short)
+        cur_f = render_1080p_beat_frame(chosen_beat, watermark, voice_sub_dir, local_t, W, H, is_short=is_short)
+        # V80 SMOOTH 3D CAMERA ZOOM-THROUGH & WHIP-SLIDE TRANSITION BETWEEN EVERY BEAT (first 0.30s):
+        if prev_beat is not None and local_t < 0.30:
+            try:
+                p_tr = cubic_bezier_ease_in_out(min(max(local_t / 0.30, 0.0), 1.0))
+                prev_f = render_1080p_beat_frame(prev_beat, watermark, voice_sub_dir, max(0.0, prev_beat["duration"] - 0.05), W, H, is_short=is_short)
+                # Zoom-through push on outgoing beat + smooth cross-dissolve into incoming beat
+                im_prev = Image.fromarray(prev_f)
+                z_out = 1.0 + 0.10 * p_tr
+                zw, zh = int(W * z_out), int(H * z_out)
+                im_prev_z = im_prev.resize((zw, zh), getattr(Image, "Resampling", Image).BILINEAR).crop(((zw - W) // 2, (zh - H) // 2, (zw - W) // 2 + W, (zh - H) // 2 + H))
+                arr_prev = np.asarray(im_prev_z, dtype=np.float32)
+                arr_cur = np.asarray(cur_f, dtype=np.float32)
+                blended = np.clip(arr_prev * (1.0 - p_tr) + arr_cur * p_tr, 0, 255).astype(np.uint8)
+                return blended
+            except Exception:
+                pass
+        return cur_f
     return VideoClip(make_frame, duration=section_dur)
 
 def compute_exact_sentence_beat_timings(narration, raw_sents, word_timings, sec_dur):
@@ -15241,9 +16895,14 @@ def build_prop_driven_storyboard_1080p(
                 tag_id=f"{tag_prefix}_b{global_beat_idx}", used_image_urls=used_image_urls,
                 beat_text=b_txt, bv_dict=cur_bv_dict
             )
+            # V76 ZERO-DUPLICATE PHOTO GUARANTEE: If `beat_im` was already used in this video (`id(beat_im) in unit_used_photos`),
+            # discard it and generate a brand-new, sentence-specific 1080p Pin-Point Scene!
+            unit_used_photos = dossier.setdefault("_unit_used_photo_ids", set())
+            if beat_im is not None and id(beat_im) in unit_used_photos:
+                beat_im = None
             if beat_im is None:
                 beat_im = fetch_huggingface_or_pollinations_1080p_scene(
-                    cur_bv_dict.get("ai_prompt") or search_q, existing_hashes,
+                    cur_bv_dict.get("ai_prompt") or f"{dossier.get('topic_anchor', '')} {search_q}", existing_hashes,
                     tag_id=f"{tag_prefix}_ai_{global_beat_idx}", is_short=is_short, dossier=dossier, beat_text=b_txt
                 )
             unit_used_photos = dossier.setdefault("_unit_used_photo_ids", set())
@@ -18338,29 +19997,31 @@ def build_v69_search_first_seo_tags_and_lead(dossier, final_title, entities, is_
 
 def build_v66_punchy_viral_short_title(dossier, long_title=""):
     """
-    V66 SCROLL-STOPPING SHORT TITLE GENERATOR (<58 Chars + #shorts):
-    Why Shorts titles were getting cut off ('Pakistan Cricket's Hidden War: The Baba...'):
-    Mobile Shorts shelves truncate titles after ~48-52 characters!
-    V66 crafts a punchy, complete <52-char curiosity-gap Short title + `#shorts` so viewers
-    read the entire hook in 0.5 seconds and tap!
+    V76 COMPLETE & VIRAL SHORT TITLE ENGINE (Never cuts off mid-clause like ': King! #shorts'!):
+    - Keeps complete, high-CTR curiosity hooks up to 72 chars + `#shorts` (YouTube allows 100 chars).
+    - If a colon `Left: Right` exists and the full title is > 72 chars, combines the core country/entity
+      with the complete dramatic payoff so a title NEVER ends on a dangling 1-word fragment after a colon!
     """
     raw_t = str(long_title or dossier.get("original_yt_title") or dossier.get("title") or "").replace("#Shorts", "").replace("#shorts", "").strip()
-    t_anc = str(dossier.get("topic_anchor") or "").strip()
-    # If `raw_t` has a colon (`Topic: The Dramatic Hook`), see which half is punchier and complete under 50 chars
-    if ":" in raw_t:
+    raw_t = re.sub(r"\s*\|\s*(?:Geopolitical Case Study|World News Explained|Case Study).*$", "", raw_t, flags=re.I).strip()
+    if len(raw_t) <= 74:
+        base_s = raw_t
+    elif ":" in raw_t:
         left_p, right_p = [p.strip() for p in raw_t.split(":", 1)]
-        if 18 <= len(raw_t) <= 52:
-            base_s = raw_t
-        elif len(left_p) <= 26 and len(right_p) <= 28:
-            base_s = f"{left_p}: {right_p}"
-        elif len(right_p) >= 16 and len(right_p) <= 48 and t_anc and t_anc.split()[0].lower() in right_p.lower():
-            base_s = right_p
+        if len(right_p) >= 18 and len(left_p.split()[0]) + 2 + len(right_p) <= 72:
+            lead_ent = " ".join(left_p.split()[:2]).rstrip("'s,:;")
+            base_s = f"{lead_ent}: {right_p}" if lead_ent.lower() not in right_p.lower() else right_p
         else:
-            base_s = fit_whole_words_limit(raw_t, 50)
+            base_s = left_p if len(left_p) >= 24 else fit_whole_words_limit(raw_t, 72)
     else:
-        base_s = fit_whole_words_limit(raw_t, 50)
+        base_s = fit_whole_words_limit(raw_t, 72)
 
     base_s = base_s.rstrip(".,;:- ")
+    # Never leave a dangling 1-word tail after a colon (like ': King')
+    if ":" in base_s:
+        lp_chk, rp_chk = [x.strip() for x in base_s.split(":", 1)]
+        if len(rp_chk.split()) <= 2:
+            base_s = lp_chk
     if not base_s.endswith(("!", "?")):
         base_s += "!"
     return f"{base_s} #shorts"
