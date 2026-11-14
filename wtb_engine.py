@@ -1023,13 +1023,7 @@ def get_prebuilt_vignette_overlay(W, H):
         alpha = int(215 * (((y - (H - bot_grad_h)) / float(bot_grad_h)) ** 1.3))
         draw.line([(0, y), (W, y)], fill=(4, 7, 15, alpha))
 
-    # Subtle documentary viewfinder corner brackets
-    b_len = 28
-    c_col = (0, 235, 255, 110)
-    draw.line([(24, 108), (24 + b_len, 108)], fill=c_col, width=2)
-    draw.line([(24, 108), (24, 108 + b_len)], fill=c_col, width=2)
-    draw.line([(W - 24 - b_len, 108), (W - 24, 108)], fill=c_col, width=2)
-    draw.line([(W - 24, 108), (W - 24, 108 + b_len)], fill=c_col, width=2)
+    # V74 Claude UI/UX Clean Cinema Frame: ZERO robotic cyan viewfinder brackets!
 
     VIGNETTE_CACHE[key] = ov
     return ov
@@ -1117,6 +1111,77 @@ def parse_json_safely(raw_text):
     return None
 
 def call_multi_api_ai_brain_json(system_prompt, user_prompt):
+    # 0. V73 OPENROUTER FREE HIGH-REASONING AI AGENT BRAIN (Inspired by Hermes Agent / OpenRouter `:free` workflow):
+    #    Supports OPENROUTER_API_KEY rotating across top free high-reasoning models (`deepseek-r1:free`, `deepseek-chat-v3:free`, `llama-3.3-70b:free`, `qwen3:free`)!
+    openrouter_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if openrouter_key:
+        or_free_models = [
+            "openrouter/free",
+            "deepseek/deepseek-chat-v3-0324:free",
+            "deepseek/deepseek-r1:free",
+            "meta-llama/llama-3.3-70b-instruct:free",
+            "qwen/qwen3-235b-a22b:free",
+            "qwen/qwen-2.5-72b-instruct:free",
+            "google/gemini-2.0-flash-exp:free",
+            "mistralai/mistral-small-3.1-24b-instruct:free"
+        ]
+        # Dynamically discover live `:free` models from OpenRouter API (cached in memory)
+        if not hasattr(call_multi_api_ai_brain_json, "_live_or_free_models"):
+            try:
+                rm = requests.get("https://openrouter.ai/api/v1/models", timeout=8)
+                if rm.status_code == 200:
+                    dyn_free = [
+                        m.get("id") for m in (rm.json().get("data") or [])
+                        if str(m.get("id") or "").endswith(":free")
+                        and any(k in str(m.get("id") or "").lower() for k in ["deepseek", "llama-3.3", "qwen", "gemini", "claude", "mistral", "gemma-3"])
+                    ]
+                    for df in dyn_free[:6]:
+                        if df not in or_free_models:
+                            or_free_models.append(df)
+            except Exception:
+                pass
+            call_multi_api_ai_brain_json._live_or_free_models = or_free_models
+        else:
+            or_free_models = call_multi_api_ai_brain_json._live_or_free_models
+
+        for or_model in or_free_models[:8]:
+            for use_reasoning in (True, False):
+                try:
+                    payload_or = {
+                        "model": or_model,
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": user_prompt}
+                        ],
+                        "temperature": 0.45,
+                        "max_tokens": 4000
+                    }
+                    if use_reasoning and ("r1" in or_model or "qwen3" in or_model or "openrouter/free" in or_model):
+                        payload_or["reasoning"] = {"effort": "high"}
+                    elif use_reasoning:
+                        continue
+                    r = requests.post(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        headers={
+                            "Authorization": f"Bearer {openrouter_key}",
+                            "Content-Type": "application/json",
+                            "HTTP-Referer": "https://github.com/bapuop17/wtb_engine",
+                            "X-Title": "World Talk Brief V74 Geopolitical Engine"
+                        },
+                        json=payload_or,
+                        timeout=32
+                    )
+                    if r.status_code == 200:
+                        j_or = r.json()
+                        if j_or.get("choices"):
+                            content = j_or["choices"][0].get("message", {}).get("content", "")
+                            parsed = parse_json_safely(content)
+                            if parsed:
+                                print(f"🧠 [OpenRouter Free AI Connected]: {or_model}", flush=True)
+                                return parsed
+                except Exception:
+                    pass
+
     groq_key = os.environ.get("GROQ_API_KEY", "").strip()
     if groq_key:
         live_models = get_available_groq_chat_models(groq_key)
@@ -1195,16 +1260,16 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
             except Exception:
                 pass
 
-    for p_endpoint in ["https://text.pollinations.ai/openai", "https://text.pollinations.ai/"]:
+    for p_model in ["openai-large", "openai", "mistral"]:
         try:
             r = requests.post(
-                p_endpoint,
+                "https://text.pollinations.ai/openai",
                 json={
                     "messages": [
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt}
                     ],
-                    "model": "openai",
+                    "model": p_model,
                     "seed": random.randint(1, 99999)
                 },
                 headers={"Content-Type": "application/json"},
@@ -1256,8 +1321,11 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
         "- STAGE 5 (Head-to-Head Philosophy Clash & Follow-the-Money): Compare the two competing strategies side-by-side ('While [Side A] wants to use maximum pressure..., [Side B] argues that...') and trace where the billions of dollars, weapons, or trade leverage flow. "
         "- STAGE 6 (The 'Cat on the Wall' Catch & 3 Future Scenarios): Reveal the unexpected catch or kingmaker twist ('So it\'s game over, right? No, no, no — there is another catch...'), lay out the 3 concrete scenarios from here, and finish with: 'Now tell me your opinion in the comments.' "
         f"CRITICAL FACTUAL & VISUAL ACCURACY RULES (TODAY'S DATE IS {today_date_str}): "
-        "1. NEVER sound like an AI or textbook; use natural human transitions ('Ladies and gentlemen...', 'Now look at this picture...', 'Sounds simple, right? But here\'s the problem...', 'So think about it for a second...'). "
-        "2. Every single sentence in `narration` MUST have a matching entry in `beat_visuals` with a concrete, real-world `photo_query` naming the exact country + leader/facility/chokepoint/asset spoken in that sentence! "
+        "1. NEVER sound like an AI or textbook and NEVER start with cliché phrases like 'Ladies and gentlemen'; open immediately with a sharp Think School cold-open fact or paradox, and use natural human transitions ('Now look at this picture...', 'Sounds simple, right? But here\'s the problem...', 'So think about it for a second...', 'Let\'s do the simple math...'). "
+        "2. CLAUDE UI/UX MOTION GRAPHICS & PIN-POINT SCENE SKILL (ACTIVE): Every single sentence in `narration` MUST have a matching entry in `beat_visuals` with: "
+        "(a) `point_highlight`: 3-5 CAPS words summarizing the exact visual data point or action of that sentence, "
+        "(b) `photo_query`: concrete 5-7 word real news/Wikimedia search query naming the exact Country + Leader/Facility/Chokepoint/Ship/Asset spoken in that sentence, and "
+        "(c) `ai_prompt`: a hyper-detailed 1080p photorealistic documentary camera prompt describing the exact pin-point scene of that sentence (no generic abstractions, no text overlays). "
         "Output STRICT JSON only."
     )
 
@@ -1330,61 +1398,26 @@ CRITICAL RULES:
             needed_more = 10 - len(ai_pkg["scenes"])
             already_covered = " | ".join(str(s.get("context_pill", "")) for s in ai_pkg["scenes"])
             true_dom_p2 = classify_story_true_domain_v60(dossier)
-            if true_dom_p2 == "CHAMPIONSHIP_SPORTS":
+            if true_dom_p2 == "TECH_SEMICONDUCTORS":
                 domain_chapters_guide = (
-                    "- Chapter A: Tactical & Technical Match Breakdown (Court/pitch positioning, turning-point stats, and shot/play execution)\n"
-                    "- Chapter B: Head-to-Head Contender Comparison (Training pedigree, coaching strategy, and career trajectory)\n"
-                    "- Chapter C: Championship Psychology & Mental Edge Under Arena Pressure\n"
-                    "- Chapter D: Tour Standings, Prize & Ranking Impact, and What Comes Next in the Season"
-                )
-            elif true_dom_p2 == "SPACE_ASTROPHYSICS":
-                domain_chapters_guide = (
-                    "- Chapter A: Telescope & Observatory Telemetry Breakdown (How instruments measured the scale, distance, and light-years)\n"
-                    "- Chapter B: Cosmological Architecture & Physics Explained (Gravity, dark matter filaments, or orbital mechanics in plain math)\n"
-                    "- Chapter C: Comparing This Discovery Against Known Cosmic Benchmarks (Laniakea, Sloan Great Wall, or orbital records)\n"
-                    "- Chapter D: Next-Generation Missions & What Astronomers Will Probe Next"
-                )
-            elif true_dom_p2 == "CINEMA_MEDIA":
-                domain_chapters_guide = (
-                    "- Chapter A: Studio Production & VFX Engineering Breakdown (How the director and visual effects team built the spectacle)\n"
-                    "- Chapter B: Lore, Franchise Legacy & Monster/Character Evolution Across Eras\n"
-                    "- Chapter C: Global Box-Office Economics, Theatrical Strategy & Audience Reception\n"
-                    "- Chapter D: Future Franchise Roadmap & Industry Impact"
-                )
-            elif true_dom_p2 == "TECH_SEMICONDUCTORS":
-                domain_chapters_guide = (
-                    "- Chapter A: Silicon, Compute & Systems Architecture Breakdown (Wafer nodes, GPU clusters, and engineering bottlenecks)\n"
-                    "- Chapter B: Head-to-Head Tech Giant Rivalry (CapEx math, cloud infrastructure, and proprietary moat)\n"
-                    "- Chapter C: Hardware Supply Chain & Data-Center Deployment Reality\n"
-                    "- Chapter D: 3 Strategic Tech Takeaways & The Next Computing Frontier"
+                    "- Chapter A: Silicon, Compute & Systems Architecture Breakdown (Wafer nodes, GPU clusters, and engineering bottlenecks tied strictly to this story)\n"
+                    "- Chapter B: Head-to-Head Tech & Superpower Rivalry (Comparing the rival companies or nations in this story)\n"
+                    "- Chapter C: Hardware Supply Chain & Geopolitical Export Controls Impact\n"
+                    "- Chapter D: 3 Concrete Future Scenarios & Global Tech Takeaways"
                 )
             elif true_dom_p2 == "FINANCE_BANKING":
                 domain_chapters_guide = (
-                    "- Chapter A: Think School 'Follow-the-Money' Capital Allocation, Deal Fees & Balance-Sheet Math\n"
-                    "- Chapter B: Head-to-Head Institutional Strategy (Comparing the rival banks, funds, or corporate contenders)\n"
-                    "- Chapter C: Macro-Economic & Capital-Market Ripple Effects (IPO pipeline, yield curves, and FII/FDI flows)\n"
-                    "- Chapter D: 3 Strategic Lessons for Investors & Global Markets"
-                )
-            elif true_dom_p2 == "BIOTECH_HEALTH":
-                domain_chapters_guide = (
-                    "- Chapter A: Clinical Trial Data & Biological Mechanism Breakdown\n"
-                    "- Chapter B: Healthcare Delivery, Manufacturing Scale & Patient Access\n"
-                    "- Chapter C: Regulatory Milestones & Biotech Research Comparison\n"
-                    "- Chapter D: Future Medical Roadmap & Key Takeaways"
-                )
-            elif true_dom_p2 == "LAW_SOCIETY":
-                domain_chapters_guide = (
-                    "- Chapter A: Forensic Timeline & Institutional Response Breakdown\n"
-                    "- Chapter B: Legal, Safety & Governance Protocols Under Review\n"
-                    "- Chapter C: Community Impact & Official Investigation Findings\n"
-                    "- Chapter D: Key Reforms & Accountability Measures Ahead"
+                    "- Chapter A: Think School 'Follow-the-Money' Capital Allocation, Tariffs & Balance-Sheet Math\n"
+                    "- Chapter B: Head-to-Head Institutional & Sovereign Strategy (Comparing the key players in this story)\n"
+                    "- Chapter C: Global Market, Currency, Oil & Household Wallet Ripple Effects\n"
+                    "- Chapter D: 3 Concrete Scenarios for Investors & Global Markets"
                 )
             else:
                 domain_chapters_guide = (
-                    "- Chapter A: Think School 'Follow-the-Money' Financial, Trade & Supply-Chain Math Breakdown\n"
-                    "- Chapter B: Geopolitical & Strategic Winners vs Losers (Regional & global power calculations)\n"
-                    "- Chapter C: Global Market, Maritime Corridor & Economic Ripple Effects\n"
-                    "- Chapter D: 3 Big Strategic Lessons & Future Scenarios"
+                    "- Chapter A: Think School 'Follow-the-Money' Economic, Defense & Supply-Chain Math Breakdown\n"
+                    "- Chapter B: Head-to-Head Strategic Clash (Comparing the two opposing camps/leaders and their red lines)\n"
+                    "- Chapter C: Global Chokepoints, Maritime Corridors & Superpower Ripple Effects\n"
+                    "- Chapter D: The 'Cat on the Wall' Twist & 3 Concrete Future Scenarios"
                 )
             part2_prompt = f"""
 Continue the investigative documentary on: "{raw_title}" ({c_prof_name}) [Domain: {true_dom_p2}].
@@ -2507,18 +2540,37 @@ PUBLISHER_NAMES_STRIP_REGEX = (
 )
 
 def strip_news_publisher_mentions(text_str):
-    """
-    100% ZERO EXTERNAL NEWS CHANNEL/ARTICLE ATTRIBUTION GUARD:
-    Ensures we NEVER mention 'Al Jazeera', 'BBC', 'CNN', 'The Guardian', 'Reuters', etc.
-    in our spoken script, HUD overlays, or video descriptions!
-    """
     if not text_str:
         return ""
     s = str(text_str)
-    s = re.sub(r"\b(?:according to|reported by|as reported by|verified data from|reports from|speaking to|told|tells)\s+" + PUBLISHER_NAMES_STRIP_REGEX + r"\s*,?\s*", "", s, flags=re.I)
-    s = re.sub(PUBLISHER_NAMES_STRIP_REGEX + r"\s+(?:reported|reports|revealed|stated|said|warned|confirmed|noted|said)\s*,?\s*(?:that\s+)?", "", s, flags=re.I)
-    s = re.sub(r",?\s*(?:according to\s+)?" + PUBLISHER_NAMES_STRIP_REGEX + r"(?:\s+said|\s+reported|\s+added)?\.?", ".", s, flags=re.I)
-    s = re.sub(PUBLISHER_NAMES_STRIP_REGEX, "international analysts", s, flags=re.I)
+    # Strip 'Reports from Premium Times and other outlets suggest that...' / 'According to Reuters...'
+    s = re.sub(
+        r"\b(?:reports\s+from|according\s+to(?:\s+reports\s+from)?|as\s+reported\s+by)\s+"
+        r"(?:premium\s+times|vanguard|punch|the\s+cable|sahara\s+reporters|channels\s+tv|reuters|associated\s+press|"
+        r"ap\s+news|bbc|cnn|al\s+jazeera|the\s+guardian|bloomberg|cnbc|financial\s+times|wall\s+street\s+journal|"
+        r"new\s+york\s+times|washington\s+post|times\s+of\s+india|the\s+hindu|hindustan\s+times|ndtv|dawn|"
+        r"geo\s+news|france\s*24|dw\s+news|politico|axios|the\s+hill|nikkei|south\s+china\s+morning\s+post)"
+        r"(?:\s+and\s+other\s+(?:media\s+)?outlets)?(?:\s+(?:suggest|indicate|reveal|confirm|state|show)s?\s+that)?[,:\s]*",
+        "",
+        s,
+        flags=re.I
+    )
+    pubs = [
+        "Al Jazeera", "BBC News", "BBC", "Reuters", "Associated Press", "AP News",
+        "The Guardian", "CNN", "France 24", "France24", "DW News", "Deutsche Welle",
+        "Bloomberg", "CNBC", "Financial Times", "Wall Street Journal", "New York Times",
+        "Washington Post", "The Hindu", "Times of India", "Hindustan Times", "NDTV",
+        "India Today", "Indian Express", "Firstpost", "WION", "Sky News", "NPR",
+        "Politico", "Axios", "The Diplomat", "Foreign Policy", "Foreign Affairs",
+        "Premium Times", "Vanguard Nigeria", "Punch Newspapers", "Sahara Reporters",
+        "Dawn News", "Geo News", "The Express Tribune", "Arab News", "Gulf News",
+        "Jerusalem Post", "Times of Israel", "Haaretz", "Kyiv Independent", "TASS",
+        "South China Morning Post", "SCMP", "Nikkei Asia", "Yonhap", "Kyodo News"
+    ]
+    for p in pubs:
+        s = re.sub(rf"\b(?:according to|reported by|told|source:|via|from)\s+{re.escape(p)}\b[,:\s]*", "", s, flags=re.I)
+        s = re.sub(rf"\s*[\-–—|]\s*{re.escape(p)}\b.*$", "", s, flags=re.I)
+    s = re.sub(r"^(?:ladies and gentlemen[,\s]*)", "", s.strip(), flags=re.I)
     s = re.sub(r"\s+", " ", s).strip()
     if s and s[0].islower():
         s = s[0].upper() + s[1:]
@@ -2765,72 +2817,66 @@ def resolve_google_or_bing_redirect_url(raw_link, headline_title=""):
 
 def auto_detect_true_sub_pillar_and_hub_v64(title, summary, requested_sub_pillar):
     """
-    V64 TRUE DOMAIN & PILLAR LOCK:
-    When a breaking viral story is harvested from Google Trends or Global Breaking Wires,
-    automatically classifies its true `sub_pillar` and `core_hub` from the headline and summary
-    so a Cricket ('Brydon Carse') or NBA ('Celtics') story NEVER gets stamped as 'AI_ROBOTICS'
-    ('AI & SILICON FRONTIER') and NEVER receives semiconductor chapters!
+    V73 STRICT WORD-BOUNDARY DOMAIN & PILLAR LOCK:
+    Uses regex word boundaries (`\b`) so substring collisions like 'concern' -> 'cern' or 'nigeria' -> 'ai'
+    NEVER misclassify a geopolitical story into Science/Astrophysics!
     """
     comb_low = f"{title} {summary}".lower()
-    if any(sk in comb_low for sk in [
-        "cricket", "test cricket", "ipl", "bcci", "england lion", "brydon carse", "shoaib bashir",
-        "nba", "celtics", "lakers", "warriors", "nfl", "super bowl", "wta", "atp", "motogp", "moto3"
-    ]):
-        return "GEOPOLITICS", "WORLD"
-
-    if any(tk in comb_low for tk in [
-        "openai", "chatgpt", "nvidia", "tsmc", "asml", "semiconductor", "silicon wafer", "gpu", "artificial intelligence",
-        "deepmind", "gemini", "claude", "anthropic", "quantum computer", "robotics", "humanoid robot", "cyberattack", "ransomware"
-    ]):
+    if re.search(r"\b(openai|chatgpt|nvidia|tsmc|asml|semiconductor|semiconductors|silicon wafer|gpu|artificial intelligence|deepmind|gemini|anthropic|quantum computer|humanoid robot|cyberattack|ransomware)\b", comb_low):
         return "AI_ROBOTICS", "TECHNOLOGY"
 
-    if any(bk in comb_low for bk in [
-        "stock market", "sensex", "nifty", "wall street", "nasdaq", "s&p 500", "dow jones", "ipo ", "rbi ",
-        "federal reserve", "interest rate", "inflation", "gdp", "hsbc", "citigroup", "goldman sachs", "jpmorgan",
-        "morgan stanley", "blackrock", "quarterly earnings", "q1 ", "q2 ", "q3 ", "q4 ", "central bank"
-    ]):
+    if re.search(r"\b(stock market|sensex|nifty|wall street|nasdaq|s&p 500|dow jones|federal reserve|interest rate|inflation|gdp|hsbc|citigroup|goldman sachs|jpmorgan|blackrock|central bank|tariff|tariffs|bond yield|imf|world bank)\b", comb_low):
         return "STOCK_MARKETS", "BUSINESS"
 
-    if any(spk in comb_low for spk in [
-        "nasa", "isro", "spacex", "starship", "james webb", "hubble", "supercluster", "galaxy", "exoplanet",
-        "asteroid", "lunar", "mars rover", "space station", "cern", "nuclear fusion"
-    ]):
-        return "SCIENCE", "SCIENCE"
-
-    if any(gk in comb_low for gk in [
-        "missile", "airstrike", "nato", "pentagon", "sanctions", "ceasefire", "kremlin", "white house",
-        "prime minister", "president", "parliament", "summit", "warship", "aircraft carrier", "fighter jet", "strait"
-    ]):
-        if any(ik in comb_low for ik in ["india", "new delhi", "modi", "jaishankar", "indian"]):
-            return "INDIA_TRENDING", "WORLD"
+    if re.search(r"\b(missile|airstrike|nato|pentagon|sanctions|ceasefire|kremlin|white house|prime minister|president|parliament|summit|warship|aircraft carrier|fighter jet|strait|hormuz|red sea|suez|taiwan|ukraine|israel|iran)\b", comb_low):
         return "GEOPOLITICS", "WORLD"
 
-    return requested_sub_pillar, PILLAR_TO_CORE_HUB.get(requested_sub_pillar, "WORLD")
+    return "GEOPOLITICS", "WORLD"
+
 
 def is_valid_think_school_global_case_study(title_str, summary_str=""):
     """
-    V71 STRICT THINK-SCHOOL GLOBAL GEOPOLITICS, MACRO-ECONOMY, DEFENSE & FRONTIER TECH GATE:
-    Hard-bans video games (Xbox, Wolfenstein, PlayStation, Nintendo, GTA, Steam), celebrity galas
-    (Daddy Yankee, Latin Grammy, Vegas Gala, Oscars, Met Gala), sports matches, and local tabloid
-    stories so @WorldTalkBrief 100% covers high-stakes global case studies!
+    V73 STRICT US & GLOBAL GEOPOLITICS, MACRO-ECONOMY, DEFENSE & FRONTIER TECH GATE:
+    1. Hard-bans local college/campus party tragedies ('students die after party', 'house party', 'drug overdose',
+       'campus lodge'), local domestic crime, road crashes, video games, celebrity gossip, and sports matches.
+    2. Requires at least ONE verified Geopolitical, Superpower, Economic, Defense, Maritime Chokepoint, or
+       Sovereign Tech signal word so @WorldTalkBrief 100% covers high-stakes global case studies!
     """
     comb = f"{title_str} {summary_str}".lower()
     hard_banned_fluff = (
+        "after party", "after-party", "house party", "graduation party", "sign-out party", "sign out party",
+        "students die", "student dies", "campus lodge", "hostel party", "drug overdose", "suspected hard drugs",
+        "nightclub", "bar fight", "drunk driving", "car crash", "bus crash", "road accident", "local police",
+        "robbery", "burglary", "shoplifting", "domestic dispute", "celebrity", "red carpet",
         "xbox", "wolfenstein", "playstation", "ps5", "nintendo", "switch 2", "gta ", "grand theft auto",
         "fortnite", "call of duty", "warzone", "minecraft", "roblox", "steam deck", "og games",
         "video game", "gaming", "gamer", "esports", "twitch", "pokemon", "zelda", "halo ", "ubisoft",
         "daddy yankee", "grammy", "latin grammy", "vegas gala", "met gala", "oscar", "academy awards",
-        "emmy", "golden globe", "red carpet", "box office", "billboard hot", "taylor swift", "beyonce",
+        "emmy", "golden globe", "box office", "billboard hot", "taylor swift", "beyonce",
         "kardashian", "kanye", "drake", "justin bieber", "selena gomez", "rihanna", "bad bunny",
         "hollywood", "bollywood", "netflix series", "movie trailer", "season finale", "reality tv",
         "bachelor", "love island", "biggboss", "bigg boss", "horoscope", "zodiac", "astrology",
         "swimsuit", "bikini", "girlfriend", "boyfriend", "wedding", "divorce", "dating",
-        "babar azam", "shaheen afridi", "brydon carse", "shoaib bashir", "celtics", "coco gauff",
-        "pegula", "claire liu", "jaguars", "jordan davis", "motogp", "ufc ", "wwe ", "premier league",
-        "champions league", "la liga", "nba ", "nfl ", "mlb ", "nhl ", "ipl ", "wta ", "atp ",
+        "babar azam", "shaheen afridi", "qalandars", "psl", "cricket", "ipl ", "bcci",
+        "brydon carse", "shoaib bashir", "celtics", "coco gauff", "pegula", "claire liu",
+        "jaguars", "jordan davis", "motogp", "moto3", "ufc ", "wwe ", "premier league",
+        "champions league", "la liga", "nba ", "nfl ", "mlb ", "nhl ", "wta ", "atp ",
         "medal to guard", "scolded him", "arlington cemetery"
     )
     if any(b in comb for b in hard_banned_fluff):
+        return False
+
+    # Must contain at least one Geopolitical, Defense, Macro-Economic, Energy/Corridor, or Sovereign Tech keyword:
+    geo_stakes_pattern = (
+        r"\b(president|prime minister|parliament|election|coalition|majority|sanctions|tariff|tariffs|military|"
+        r"missile|missiles|navy|warship|submarine|fighter jet|air force|pentagon|kremlin|white house|state department|"
+        r"nato|brics|european union|united nations|security council|strait|hormuz|red sea|suez|canal|corridor|chokepoint|"
+        r"central bank|federal reserve|wall street|inflation|recession|gdp|sovereign debt|treasury|imf|world bank|"
+        r"crude oil|natural gas|opec|refinery|pipeline|supply chain|trade war|export ban|semiconductor|semiconductors|"
+        r"microchip|nvidia|tsmc|asml|openai|artificial intelligence|nuclear|uranium|ceasefire|airstrike|invasion|"
+        r"troops|border|treaty|summit|diplomat|embassy|billion|trillion|geopolitical|superpower)\b"
+    )
+    if not re.search(geo_stakes_pattern, comb):
         return False
     return True
 
@@ -4983,18 +5029,29 @@ def validate_and_enhance_1080p(im, existing_hashes, min_w=800, min_h=450, story_
 
     return apply_copyright_safe_documentary_lut(im)
 
-def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, tag_id="real_fallback", is_short=False, dossier=None):
+def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, tag_id="real_fallback", is_short=False, dossier=None, beat_text=""):
+    """
+    V73 PIN-POINT 1080p HD SCENE & VISUAL ENGINE (Inspired by `dKsMC5Bae_w` Free AI Workflow):
+    1. First checks Bing News RSS HD & Bing Async 1080p Photo CDN for a high-scoring (`>= 74`) real news photo
+       matching the exact sentence entities.
+    2. When a sentence describes a specific action, room, corridor, or tactical moment where no exact press photo
+       exists, generates a **Pin-Point 1920x1080 HD Documentary Visual Scene** matching the exact sentence via:
+       - HuggingFace Free Router (`black-forest-labs/FLUX.1-schnell`) if `HF_TOKEN` is set, OR
+       - Pollinations.ai Free Flux HD (`https://image.pollinations.ai/prompt/...?width=1920&height=1080&model=flux&nologo=true&enhance=true`) — 100% Free, Zero API Key required!
+    """
     d_obj = dossier or {"title": str(ai_prompt or ""), "topic_anchor": str(ai_prompt or "")[:30], "pillar": "WORLD"}
+    c_name = str((d_obj.get("country_profile") or {}).get("name") or "Global").strip()
     master_qs = extract_topic_master_queries(d_obj)
-    cand_qs = ([str(ai_prompt).strip()] if ai_prompt and len(str(ai_prompt).strip()) >= 6 else []) + master_qs[:5]
+    cand_qs = ([str(ai_prompt).strip()] if ai_prompt and len(str(ai_prompt).strip()) >= 6 else []) + master_qs[:3]
     neg_suffix = "-cartoon -illustration -stock -pagoda -sakura -cherry -waterfall -castle -fuji -tourist -landmarks"
-    for clean_q in cand_qs[:5]:
-        # 1. Try Bing News RSS HD CDN first (never blocked on GitHub Actions!)
+
+    # Step 1: High-Confidence Real News Photo (Score >= 74)
+    for clean_q in cand_qs[:3]:
         try:
             b_rss = f"https://www.bing.com/news/search?q={urllib.parse.quote(clean_q)}&format=rss"
-            br = requests.get(b_rss, headers=HEADERS_WEB, timeout=4.5)
+            br = requests.get(b_rss, headers=HEADERS_WEB, timeout=4.0)
             b_feed = feedparser.parse(br.content)
-            for b_ent in b_feed.entries[:12]:
+            for b_ent in b_feed.entries[:10]:
                 ent_title = getattr(b_ent, "title", "")
                 if hasattr(b_ent, "media_thumbnail") and b_ent.media_thumbnail:
                     tu = b_ent.media_thumbnail[0].get("url", "")
@@ -5005,10 +5062,10 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                         cap_t = f"{ent_title}".strip()
                         if len(cap_t) < 8 or not passes_audit_gate_1_caption_and_url(tu_hd, cap_t, d_obj, clean_q):
                             continue
-                        if compute_visual_relevance_score(tu_hd, cap_t, d_obj, query_str=clean_q) < 55:
+                        if compute_visual_relevance_score(tu_hd, cap_t, d_obj, query_str=clean_q) < 74:
                             continue
-                        ir = requests.get(tu_hd, headers=HEADERS_WEB, timeout=4.5)
-                        if ir.status_code == 200 and len(ir.content) > 12000:
+                        ir = requests.get(tu_hd, headers=HEADERS_WEB, timeout=4.0)
+                        if ir.status_code == 200 and len(ir.content) > 14000:
                             p = f"temp/{tag_id}_rssnews.jpg"
                             with open(p, "wb") as f:
                                 f.write(ir.content)
@@ -5017,48 +5074,56 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                                 return vim
         except Exception:
             pass
-        # 2. Try Bing Async Image Search with turl_hd prioritized
-        try:
-            b_url = f"https://www.bing.com/images/async?q={urllib.parse.quote(clean_q + ' ' + neg_suffix)}&first=0&count=35&adlt=strict&qft=+filterui:imagesize-large+filterui:photo-photo+filterui:aspect-wide"
-            r = requests.get(b_url, headers=HEADERS_WEB, timeout=5)
-            blocks = []
-            for mc in re.findall(r'm="(\{.*?\})"', r.text)[:28]:
-                mc_u = mc.replace("&quot;", '"').replace("&amp;", "&").replace("\\u003cb\\u003e", "").replace("\\u003c/b\\u003e", "")
-                um = re.search(r'"murl"\s*:\s*"(https?://[^"]+)"', mc_u)
-                turl_m = re.search(r'"turl"\s*:\s*"(https?://[^"]+)"', mc_u)
-                if not um and not turl_m:
-                    continue
-                turl_hd = (turl_m.group(1) + "&w=1920&h=1080&c=7&rs=1&p=0&qlt=95") if turl_m else ""
-                u_prim = um.group(1) if um else turl_hd
-                tm = re.search(r'"t"\s*:\s*"([^"]+)"', mc_u)
-                pm = re.search(r'"purl"\s*:\s*"(https?://[^"]+)"', mc_u)
-                p_slug = re.sub(r"[^a-zA-Z0-9]+", " ", urllib.parse.urlparse(pm.group(1)).path).strip() if pm else ""
-                cap_str = f"{tm.group(1) if tm else ''} {p_slug}".strip()
-                if len(cap_str) >= 8:
-                    blocks.append((u_prim, turl_hd, cap_str))
-            for u, u_turl, cap_t in blocks[:22]:
-                u_clean = u.replace("&amp;", "&")
-                if not passes_audit_gate_1_caption_and_url(u_clean, cap_t, d_obj, clean_q):
-                    continue
-                if compute_visual_relevance_score(u_clean, cap_t, d_obj, query_str=clean_q) < 60:
-                    continue
-                if not ai_audit_caption_and_scene_match(cap_t, u_clean, d_obj.get('title', ''), clean_q, dossier=d_obj):
-                    continue
-                for try_u in ([u_clean, u_turl] if u_turl and u_turl != u_clean else [u_clean]):
-                    try:
-                        ir = requests.get(try_u, headers=HEADERS_WEB, timeout=4.5)
-                        if ir.status_code == 200 and len(ir.content) > 12000:
-                            p = f"temp/{tag_id}_realnews.jpg"
-                            with open(p, "wb") as f:
-                                f.write(ir.content)
-                            vim = validate_and_enhance_1080p(Image.open(p), existing_hashes, min_w=640, min_h=360, story_title=d_obj.get("title", ""), query_context=clean_q)
-                            if vim is not None:
-                                print(f"   📸 [Topic-Locked HD Press Photo Locked]: {clean_q[:42]}", flush=True)
-                                return vim
-                    except Exception:
-                        pass
-        except Exception:
-            pass
+
+    # Step 2: 100% Free Pin-Point 1080p HD AI Documentary Scene Generation (HuggingFace FLUX.1-schnell + Pollinations Flux HD)
+    scene_desc = str(beat_text or ai_prompt or d_obj.get("title", "")).strip()
+    scene_desc = strip_news_publisher_mentions(scene_desc)[:180]
+    cinematic_prompt = (
+        f" Pulitzer Prize editorial photojournalism, Sony A7R V 35mm documentary photograph in {c_name}: "
+        f"{scene_desc}. Authentic newsroom realism, natural dramatic lighting, crisp 8k detail, zero text, zero watermarks, zero logos"
+    )
+
+    hf_token = os.environ.get("HF_TOKEN", "").strip()
+    if hf_token:
+        for hf_img_model in ["black-forest-labs/FLUX.1-schnell", "stabilityai/stable-diffusion-xl-base-1.0"]:
+            try:
+                hf_url = f"https://router.huggingface.co/hf-inference/models/{hf_img_model}"
+                r_hf = requests.post(
+                    hf_url,
+                    headers={"Authorization": f"Bearer {hf_token}"},
+                    json={"inputs": cinematic_prompt},
+                    timeout=14
+                )
+                if r_hf.status_code == 200 and len(r_hf.content) > 18000:
+                    p_hf = f"temp/{tag_id}_hfflux.jpg"
+                    with open(p_hf, "wb") as f:
+                        f.write(r_hf.content)
+                    im_hf = Image.open(p_hf).convert("RGB")
+                    im_hf = enhance_broadcast_color_grade(im_hf.resize((1920, 1080), getattr(Image, "Resampling", Image).LANCZOS))
+                    print(f"   🎨 [HF FLUX.1 Pin-Point HD Scene Generated]: {scene_desc[:52]}", flush=True)
+                    return im_hf
+            except Exception:
+                pass
+
+    # Pollinations Free 1080p Flux Documentary Scene Generator (100% Free, Zero API Key!)
+    try:
+        seed_val = abs(hash(f"{tag_id}_{scene_desc}")) % 999999 + 1
+        pol_url = (
+            f"https://image.pollinations.ai/prompt/{urllib.parse.quote(cinematic_prompt)}"
+            f"?width=1920&height=1080&model=flux&nologo=true&enhance=true&seed={seed_val}"
+        )
+        r_pol = requests.get(pol_url, headers=HEADERS_WEB, timeout=14)
+        if r_pol.status_code == 200 and len(r_pol.content) > 18000:
+            p_pol = f"temp/{tag_id}_polflux.jpg"
+            with open(p_pol, "wb") as f:
+                f.write(r_pol.content)
+            im_pol = Image.open(p_pol).convert("RGB")
+            im_pol = enhance_broadcast_color_grade(im_pol.resize((1920, 1080), getattr(Image, "Resampling", Image).LANCZOS))
+            print(f"   🎨 [Pollinations Flux Free 1080p Pin-Point Scene]: {scene_desc[:52]}", flush=True)
+            return im_pol
+    except Exception:
+        pass
+
     return None
 
 def fit_whole_words_limit(text_str, max_chars=26):
@@ -9820,65 +9885,18 @@ METAPHOR_TO_CAMERA_SCENE_DICTIONARY_V60 = {
 
 def classify_story_true_domain_v60(dossier):
     """
-    Determines the true canonical documentary domain for `dossier` strictly from the headline,
-    topic anchor, and pillar so non-geopolitical stories (Sports, Finance, Tech, Space, Cinema, Health, Domestic Law)
-    NEVER get hijacked into unrelated geopolitical or fake utility/supply-chain templates.
+    V73 WORD-BOUNDARY CANONICAL DOMAIN CLASSIFIER:
+    Uses strict regex word boundaries (`\b`) on the headline and topic anchor ONLY so substring collisions
+    (like 'concern' -> 'cern', 'marsh' -> 'mars', or 'nigeria' -> 'ai') NEVER happen!
     """
     title_low = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')}".lower()
     pillar = str(dossier.get("sub_pillar") or dossier.get("pillar", "WORLD")).upper()
 
-    if any(k in title_low for k in [
-        "tennis", "wta", "atp", "claire liu", "eala", "swiatek", "sabalenka", "gauff", "pegula", "alcaraz", "sinner", "djokovic",
-        "wimbledon", "roland garros", "us open", "australian open", "hong kong open", "indian wells", "grand slam",
-        "cricket", "test cricket", "ipl", "bcci", "brydon carse", "shoaib bashir", "stokes", "kohli", "rohit", "bumrah", "world cup",
-        "nba", "celtics", "lakers", "warriors", "bucks", "knicks", "tatum", "queta", "basketball", "nfl", "super bowl", "jaguars", "eagles",
-        "premier league", "champions league", "real madrid", "manchester united", "barcelona", "arsenal", "liverpool", "mourinho", "guardiola", "amorim",
-        "formula 1", "f1", "verstappen", "hamilton", "ferrari", "motogp", "moto3", "marquez", "bagnaia", "bezzecchi", "veda ega", "badminton", "chess", "olympic", "ufc", "boxing"
-    ]) or pillar in ("SPORTS", "VIRAL_UNDERDOG_SPORTS"):
-        return "CHAMPIONSHIP_SPORTS"
-
-    if any(k in title_low for k in [
-        "godzilla", "ghidorah", "toho", "yamazaki", "trailer", "box office", "movie", "film", "cinema",
-        "imax", "hollywood", "netflix", "disney", "oscar", "academy award", "kaiju"
-    ]) or pillar in ("ENTERTAINMENT", "CINEMA_POP"):
-        if any(sk in title_low for sk in ["supercluster", "galaxy", "astronomy", "universe", "light-year", "telescope"]):
-            return "SPACE_ASTROPHYSICS"
-        return "CINEMA_MEDIA"
-
-    if any(k in title_low for k in [
-        "supercluster", "galaxy", "galaxies", "cosmic", "nebula", "james webb", "jwst", "hubble", "subaru telescope",
-        "euclid", "vera rubin", "black hole", "exoplanet", "dark matter", "asteroid", "meteorite", "isro", "nasa",
-        "spacex", "starship", "lunar", "mars", "orbit", "astronaut", "cern", "hadron collider", "fusion", "tokamak"
-    ]) or pillar in ("SCIENCE", "SPACE_COSMOS"):
-        return "SPACE_ASTROPHYSICS"
-
-    if any(k in title_low for k in [
-        "hsbc", "citi", "citigroup", "goldman sachs", "jpmorgan", "morgan stanley", "blackrock", "ubs", "barclays",
-        "deutsche bank", "standard chartered", "wall street", "dalal street", "sensex", "nifty", "stock market",
-        "ipo", "rbi", "federal reserve", "interest rate", "inflation", "tariff", "gdp", "earnings", "q1", "q2", "q3", "q4",
-        "revenue", "profit", "billion", "trillion", "bank", "banking", "wealth management", "private equity",
-        "bmw", "byd", "toyota", "volkswagen", "hyundai", "aramco", "reliance", "adani"
-    ]) or pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS"):
+    if re.search(r"\b(hsbc|citi|citigroup|goldman sachs|jpmorgan|morgan stanley|blackrock|ubs|barclays|deutsche bank|wall street|nasdaq|s&p 500|dow jones|federal reserve|interest rate|inflation|tariff|tariffs|gdp|earnings|revenue|profit|billion|trillion|central bank|imf|world bank|bond yield|treasury)\b", title_low) or pillar in ("BUSINESS", "STOCK_MARKETS", "BILLIONAIRES_MARKETS"):
         return "FINANCE_BANKING"
 
-    if any(k in title_low for k in [
-        "nvidia", "tsmc", "asml", "openai", "chatgpt", "deepmind", "gemini", "anthropic", "claude", "microsoft",
-        "google", "apple", "meta", "amazon", "aws", "crusoe", "data center", "semiconductor", "chip", "gpu",
-        "wafer", "ai ", "artificial intelligence", "quantum", "robotics", "humanoid", "cyber", "huawei", "smic", "samsung", "hynix"
-    ]) or pillar in ("TECHNOLOGY", "AI_ROBOTICS", "CYBER_INTELLIGENCE"):
+    if re.search(r"\b(nvidia|tsmc|asml|openai|chatgpt|deepmind|gemini|anthropic|claude|microsoft|google|apple|meta|amazon|aws|data center|semiconductor|semiconductors|microchip|gpu|wafer|artificial intelligence|quantum computer|robotics|humanoid|cyberattack|huawei|smic)\b", title_low) or pillar in ("TECHNOLOGY", "AI_ROBOTICS", "CYBER_INTELLIGENCE"):
         return "TECH_SEMICONDUCTORS"
-
-    if any(k in title_low for k in [
-        "vaccine", "clinical", "hospital", "medical", "cancer", "crispr", "ozempic", "glp-1", "pharma", "biotech",
-        "fda", "who ", "patient", "longevity", "genome", "therapy", "virus", "disease"
-    ]) or pillar == "HEALTH":
-        return "BIOTECH_HEALTH"
-
-    if any(k in title_low for k in [
-        "campus", "university", "college", "school", "police", "sheriff", "court", "judge", "supreme court",
-        "trial", "lawsuit", "indictment", "arrest", "investigation", "governor", "mayor", "domestic"
-    ]):
-        return "LAW_SOCIETY"
 
     return "GEOPOLITICS"
 
@@ -12265,6 +12283,7 @@ V51_ALL_28_TEMPLATE_MODES = {
     "TS_05_CHOKEPOINT_CORRIDOR_MAP",
     "TS_06_SIMPLE_100_MATH_GRID",
     "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
+    "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
     "GEO_08_MILITARY_FIREPOWER_RADAR",
     "GEO_09_SANCTIONS_TARIFF_BARRIER",
     "GEO_10_ALLIANCE_POWER_NETWORK",
@@ -12440,25 +12459,23 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
         used_chapters.add(sec_idx)
         return best_mode
 
-    # V71 THINK SCHOOL GUARANTEED CHAPTER VISUAL CANVAS:
-    # On `beat_in_sec == 1` of EVERY chapter, if no regex hit `>= 76`, rotate through Think School's
-    # signature analytical canvases (Geopolitical Chokepoint Map, Head-to-Head VS Split, Alliance Power Network,
-    # Domino Chain Flowchart, Follow-the-Money Scorecard, Studio Quote Monitor, Chronology Timeline)
-    # so EVERY chapter has true Think School motion-graphics editing!
-    if beat_in_sec == 1:
-        ts_rotation = [
+    # V73 CONTEXT-VERIFIED THINK SCHOOL & CLAUDE UI/UX GRAPHIC ROUTER:
+    # NEVER force an Election Hemicycle (`TS_03`), 100-Math Grid (`TS_06`), or Contender VS Split (`TS_02`)
+    # unless the sentence actually matches those concepts!
+    # On `beat_in_sec == 1` of a chapter, use ONLY universally accurate documentary layouts:
+    # - Chapter 0/1: Cartographic Map (`TS_05_CHOKEPOINT_CORRIDOR_MAP`) to establish exact geography
+    # - Next: Tilted Archival Newspaper Clipping (`TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT`)
+    # - Next: Claude UI/UX Pin-Point Scene & Event Breakdown Card (`TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`)
+    # - Next: 3-Step Cause & Effect Domino Card (`TS_04_DOMINO_CHAIN_FLOWCHART`)
+    if beat_in_sec == 1 and sec_idx in (0, 2, 4, 6, 8):
+        safe_editorial_rotation = [
             "TS_05_CHOKEPOINT_CORRIDOR_MAP",
             "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
-            "TS_02_HEAD_TO_HEAD_VS_SPLIT",
+            "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
             "TS_04_DOMINO_CHAIN_FLOWCHART",
-            "TS_06_SIMPLE_100_MATH_GRID",
-            "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE",
-            "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
-            "BIZ_14_FOLLOW_THE_MONEY_WATERFALL",
-            "GEO_10_ALLIANCE_POWER_NETWORK",
-            "TS_28_STUDIO_QUOTE_PRESS_MONITOR"
+            "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD"
         ]
-        for cand_ts in ts_rotation:
+        for cand_ts in safe_editorial_rotation:
             if cand_ts not in used_templates:
                 used_templates.add(cand_ts)
                 used_chapters.add(sec_idx)
@@ -12568,6 +12585,7 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
         "TS_04_DOMINO_CHAIN_FLOWCHART": ("SYSTEMIC DOMINO CHAIN REACTION", (255, 185, 0)),
         "TS_06_SIMPLE_100_MATH_GRID": ("PROPORTIONAL BREAKDOWN  •  100-UNIT MODEL", (0, 235, 255)),
         "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD": ("CRITICAL ROADMAP & SCENARIOS", (255, 215, 0)),
+        "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD": ("PIN-POINT SCENE & EVIDENCE BRIEFING", (245, 158, 11)),
         "GEO_08_MILITARY_FIREPOWER_RADAR": ("STRATEGIC DEFENSE & FIREPOWER MATRIX", (255, 65, 95)),
         "GEO_09_SANCTIONS_TARIFF_BARRIER": ("SANCTIONS & TRADE BLOCKADE WALL", (255, 165, 0)),
         "GEO_11_CHRONOLOGY_TIMELINE_RIBBON": ("HISTORICAL ESCALATION TIMELINE", (0, 235, 255)),
@@ -12826,6 +12844,75 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
             draw.rectangle([(rx_p, by_b), (rx_p + 10, by_b + 96)], fill=b_col)
             draw.text((rx_p + 26, by_b + 16), b_lbl, fill=(b_col[0], b_col[1], b_col[2], 255), font=get_font(18))
             draw.text((rx_p + 26, by_b + 46), str(b_val), fill=(255, 255, 255, 255), font=get_font(32))
+
+    # ==========================================================================
+    # MODE 3B: TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD (Claude UI/UX Design Skill Pin-Point Scene + Structured Data Card!)
+    #          Inspired by `dKsMC5Bae_w` (04:05 & 13:05): Clean matte UI/UX, zero ugly default gradients,
+    #          combining a 1080p Pin-Point Scene Frame on the left with a structured Case Evidence & Timeline Card on the right!
+    # ==========================================================================
+    elif mode == "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD":
+        if not is_short:
+            sc_box = (sx0, sy0, sx0 + int(sw * 0.55) - 14, sy1)
+            ui_box = (sx0 + int(sw * 0.55) + 14, sy0, sx1, sy1)
+        else:
+            sc_box = (sx0, sy0, sx1, sy0 + int(sh * 0.52) - 12)
+            ui_box = (sx0, sy0 + int(sh * 0.52) + 12, sx1, sy1)
+
+        # Left Panel: Crisp 1080p Pin-Point Scene Visual with subtle matte border & location/time pill
+        lw_s, lh_s = sc_box[2] - sc_box[0], sc_box[3] - sc_box[1]
+        sc_f = max(lw_s / float(src_im.size[0]), lh_s / float(src_im.size[1]))
+        im_r = src_im.resize((int(src_im.size[0] * sc_f), int(src_im.size[1] * sc_f)), resample_l)
+        im_c = im_r.crop(((im_r.size[0] - lw_s) // 2, (im_r.size[1] - lh_s) // 2, (im_r.size[0] - lw_s) // 2 + lw_s, (im_r.size[1] - lh_s) // 2 + lh_s)).convert("RGBA")
+        mask_s = Image.new("L", (lw_s, lh_s), 0)
+        ImageDraw.Draw(mask_s).rounded_rectangle([(0, 0), (lw_s - 1, lh_s - 1)], radius=20, fill=255)
+        bg.paste(im_c, (sc_box[0], sc_box[1]), mask_s)
+        draw = ImageDraw.Draw(bg, "RGBA")
+        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2] - 1, sc_box[3] - 1)], radius=20, outline=(245, 158, 11, 215), width=2)
+
+        # Top-left scene location/timestamp tag inside the visual frame
+        loc_tag = f"SCENE FOCUS  •  {c_name}"
+        f_lt = get_font(17)
+        lt_w = int(f_lt.getlength(loc_tag)) + 34
+        draw.rounded_rectangle([(sc_box[0] + 18, sc_box[1] + 18), (sc_box[0] + 18 + lt_w, sc_box[1] + 54)], radius=8, fill=(15, 23, 42, 235), outline=(245, 158, 11, 220), width=2)
+        draw.text((sc_box[0] + 35, sc_box[1] + 26), loc_tag, fill=(255, 215, 0, 255), font=f_lt)
+
+        # Right Panel: Clean Matte UI/UX Designer Card (`#0F172A` Slate + Warm Cream & Amber Accents, Zero Ugly Gradients!)
+        ux0, uy0, ux1, uy1 = ui_box
+        uw, uh = ux1 - ux0, uy1 - uy0
+        draw.rounded_rectangle([(ux0 + 6, uy0 + 8), (ux1 + 6, uy1 + 8)], radius=20, fill=(0, 0, 0, 175))
+        draw.rounded_rectangle([(ux0, uy0), (ux1, uy1)], radius=20, fill=(15, 23, 42, 248), outline=(51, 65, 85, 255), width=2)
+        draw.rectangle([(ux0, uy0 + 20), (ux0 + 8, uy1 - 20)], fill=(230, 57, 70, 255))
+
+        # Kicker + Highlighted Headline Box
+        draw.text((ux0 + 28, uy0 + 22), f"KEY MECHANISM  •  {fit_whole_words_limit(topic_anc.upper(), 22)}", fill=(245, 158, 11, 255), font=get_font(18))
+        draw.rounded_rectangle([(ux0 + 26, uy0 + 54), (ux1 - 24, uy0 + 106)], radius=8, fill=(247, 243, 232, 250))
+        draw.text((ux0 + 38, uy0 + 66), fit_whole_words_limit(point_hl, 28), fill=(15, 23, 42, 255), font=get_font(24 if not is_short else 21))
+
+        # Structured Clause Bullets + Key Stat Pill
+        f_ub = get_font(21 if not is_short else 19)
+        bullet_y = uy0 + 126
+        sub_pts = [x.strip() for x in re.split(r"[,;—–]|\\b(?:causing|forcing|while|which|because|leading to)\\b", b_txt) if len(x.strip()) >= 12]
+        uniq_b = []
+        for sp in (sub_pts + clauses):
+            sp_c = sp.strip(" .,;:-")
+            if len(sp_c) >= 12 and sp_c.lower()[:24] not in [u.lower()[:24] for u in uniq_b]:
+                uniq_b.append(sp_c)
+        for c_i, cl_str in enumerate(uniq_b[:3]):
+            cl_lines = wrap_text_px(cl_str.strip(), f_ub, uw - 76, max_lines=2)
+            if not cl_lines:
+                continue
+            draw.ellipse([(ux0 + 30, bullet_y + 8), (ux0 + 42, bullet_y + 20)], fill=(245, 158, 11, 255) if c_i == 0 else (56, 189, 248, 255))
+            for ln_u in cl_lines:
+                draw.text((ux0 + 54, bullet_y), ln_u, fill=(241, 245, 249, 255), font=f_ub)
+                bullet_y += 30
+            bullet_y += 12
+            if bullet_y > uy1 - 95:
+                break
+
+        # Bottom Verified Metric Strip inside the UI Card
+        stat_val_u = clean_nums[0] if clean_nums else c_name
+        draw.rounded_rectangle([(ux0 + 26, uy1 - 68), (ux1 - 24, uy1 - 20)], radius=10, fill=(30, 41, 59, 255), outline=(245, 158, 11, 185), width=2)
+        draw.text((ux0 + 42, uy1 - 54), f"VERIFIED FOCUS:  {fit_whole_words_limit(str(stat_val_u), 24)}", fill=(255, 215, 0, 255), font=get_font(20))
 
     # ==========================================================================
     # MODE 4: TS_04_DOMINO_CHAIN_FLOWCHART & MODE 16: BIZ_16_SUPPLY_CHAIN_PIPELINE_HUD
@@ -15054,7 +15141,8 @@ def build_prop_driven_storyboard_1080p(
             )
             if beat_im is None:
                 beat_im = fetch_huggingface_or_pollinations_1080p_scene(
-                    search_q, existing_hashes, tag_id=f"{tag_prefix}_ai_{global_beat_idx}", is_short=is_short, dossier=dossier
+                    cur_bv_dict.get("ai_prompt") or search_q, existing_hashes,
+                    tag_id=f"{tag_prefix}_ai_{global_beat_idx}", is_short=is_short, dossier=dossier, beat_text=b_txt
                 )
             unit_used_photos = dossier.setdefault("_unit_used_photo_ids", set())
             if beat_im is not None:
@@ -15912,9 +16000,25 @@ def run_4_stage_script_audit_and_blueprint(sections, dossier, is_short=True):
     seen_audit_sentences = []
     audited_sections = []
 
+    title_And_facts_low = f"{dossier.get('title', '')} {' '.join(str(x) for x in (dossier.get('raw_facts') or []))}".lower()
+    off_topic_hallucination_tokens = (
+        "vera rubin", "vera sea reuben", "rubin observatory", "sloan great wall", "cosmic web",
+        "dark matter filament", "coma cluster", "interferometer", "millimagnitude", "milliarcsecond",
+        "millarchse", "megaparsec", "luminosity distance", "solar masses", "cosmological constant"
+    )
+    filtered_input_sections = []
+    for sec in sections:
+        s_nar_low = str(sec.get("narration", "")).lower()
+        if any(ht in s_nar_low and ht not in title_And_facts_low for ht in off_topic_hallucination_tokens):
+            print(f"🛡️ [V73 Domain Integrity Gate] Dropped off-topic hallucinated section: {s_nar_low[:65]}...", flush=True)
+            continue
+        filtered_input_sections.append(sec)
+    if filtered_input_sections:
+        sections = filtered_input_sections
+
     for idx, sec in enumerate(sections):
         # Script Audit #1, #2 & #3: Factual grounding, deduplication, and grammar polish
-        raw_nar = str(sec.get("narration", "")).strip()
+        raw_nar = strip_news_publisher_mentions(str(sec.get("narration", "")).strip())
         clean_nar = restore_exact_fact_proper_nouns(proofread_and_deduplicate_narration(raw_nar, seen_audit_sentences, dossier, scene_idx=idx), dossier=dossier)
         if len(clean_nar) < 20:
             clean_nar = proofread_and_deduplicate_narration(claims[idx % len(claims)]["text"], seen_audit_sentences, dossier, scene_idx=idx)
@@ -16954,17 +17058,11 @@ def build_20_country_youtube_localizations(en_title, en_description):
 
 def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per_run=30):
     """
-    V69 STRICT >=10-VIEWS KEEPER & <10-VIEWS CHANNEL-WIDE PRIVATIZER:
-    Per explicit user instruction ('jisme 10-20-30 se jyada view he wah rehne do, baki sab private kardo'):
-    1. Immediately sets known off-brand sports/tabloid uploads (`0sCf4NdEwAI` Swimsuit Photo, `zdSiUYwg6eI` & `449lfTBs_TY`
-       Pakistan Cricket, `Et6kEJg7Jeg` & `fTk8TnSvwqU` Brydon Carse, `q8D-xyYYpZw` & `egOuM0OpM1s` Celtics,
-       `9ghWL-PyuuI` & `8XHR31rNuXY` Coco Gauff, `BuPaDYt50Yg` Claire Liu, `k24wgWvpiNA` WSSU) to `PRIVATE`.
-    2. Scans through the channel's `uploads` playlist (`v69_scan_page_token`, 50 videos per page = 1 quota unit):
-       - Any `public` video older than 6 hours with `viewCount < 10` (or matching sports/tabloid keywords) is
-         automatically set to `PRIVATE` (`privacyStatus: "private"`)!
-       - Any `public` video with `viewCount >= 10` (such as `b_MC7vXf2QM` 187 views, `9gV_eYCLUvY` 46 views,
-         `zTcYNdOkeng` 12 views, `U3lhlTtnMRI` 10 views, `DHG681PDrS8` 10 views) is KEPT PUBLIC and its
-         description is cleaned of any 18-language spam block!
+    V74 100% PUBLIC-ONLY CHANNEL SEO ENHANCER (ZERO AUTO-PRIVATING!):
+    - Completely removes all automatic video privatizing (`privacyStatus = "private"` is NEVER set!).
+    - If any recent geopolitical/world-news video on the channel was previously set to `private` by the old
+      V69 <10-views privatizer, automatically restores it to `PUBLIC` (`privacyStatus: "public"`)!
+    - Cleans legacy multi-language spam blocks from descriptions while keeping all videos 100% PUBLIC.
     """
     if yt is None:
         return
@@ -16972,31 +17070,8 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
         if hist_obj is None:
             hist_obj = load_published_history()
         update_v70_channel_level_seo_branding_keywords(yt, hist_obj=hist_obj)
-        checked_v69 = set(hist_obj.get("v69_checked_video_ids", []))
+        checked_v74 = set(hist_obj.get("v74_public_checked_ids", []))
 
-        # Step A: Force-Privatize known off-brand sports/tabloid/hybrid videos immediately
-        force_private_ids = [
-            "0sCf4NdEwAI", "zdSiUYwg6eI", "449lfTBs_TY", "Et6kEJg7Jeg", "fTk8TnSvwqU",
-            "q8D-xyYYpZw", "egOuM0OpM1s", "9ghWL-PyuuI", "8XHR31rNuXY", "BuPaDYt50Yg",
-            "k24wgWvpiNA", "p7L3fo-xCks", "aVCPMsgUiYI", "LYw3mW3-6KY", "rXvD0c-cO0c"
-        ]
-        pending_force = [fid for fid in force_private_ids if fid not in checked_v69]
-        if pending_force:
-            try:
-                fr = yt.videos().list(part="status,snippet", id=",".join(pending_force[:15])).execute()
-                for fit in (fr.get("items") or []):
-                    f_id = fit.get("id")
-                    if (fit.get("status") or {}).get("privacyStatus") != "private":
-                        yt.videos().update(
-                            part="status",
-                            body={"id": f_id, "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False}}
-                        ).execute()
-                        print(f"🔒 [V69 Off-Brand/Low-View Privatizer] Set https://youtu.be/{f_id} ('{(fit.get('snippet') or {}).get('title', '')[:42]}') to PRIVATE!", flush=True)
-                    checked_v69.add(f_id)
-            except Exception:
-                pass
-
-        # Step B: Paginate through the entire `uploads` playlist (50 videos per page)
         ch_resp = yt.channels().list(part="contentDetails", mine=True).execute()
         ch_items = ch_resp.get("items") or []
         if not ch_items:
@@ -17005,102 +17080,41 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
         if not uploads_pl:
             return
 
-        page_tok = hist_obj.get("v69_scan_page_token") or None
-        pl_kwargs = {"part": "contentDetails", "playlistId": uploads_pl, "maxResults": 50}
-        if page_tok:
-            pl_kwargs["pageToken"] = page_tok
-        pl_resp = yt.playlistItems().list(**pl_kwargs).execute()
-        next_tok = pl_resp.get("nextPageToken")
-        hist_obj["v69_scan_page_token"] = next_tok if next_tok else ""
-
+        pl_resp = yt.playlistItems().list(part="contentDetails", playlistId=uploads_pl, maxResults=30).execute()
         cand_vids = [
             it.get("contentDetails", {}).get("videoId")
             for it in (pl_resp.get("items") or [])
-            if it.get("contentDetails", {}).get("videoId") and it.get("contentDetails", {}).get("videoId") not in checked_v69
+            if it.get("contentDetails", {}).get("videoId") and it.get("contentDetails", {}).get("videoId") not in checked_v74
         ]
         if not cand_vids:
-            hist_obj["v69_checked_video_ids"] = list(checked_v69)[-900:]
-            save_published_history(hist_obj, update_upload_epoch=False)
             return
 
-        v_resp = yt.videos().list(part="snippet,status,statistics", id=",".join(cand_vids[:50])).execute()
+        v_resp = yt.videos().list(part="snippet,status", id=",".join(cand_vids[:30])).execute()
         fixes_done = 0
-        now_utc_dt = datetime.utcnow()
-        off_brand_kws = (
-            "swimsuit", "bikini", "girlfriend", "babar azam", "shaheen afridi", "brydon carse",
-            "shoaib bashir", "celtics", "coco gauff", "pegula", "claire liu", "jaguars", "jordan davis",
-            "marquez", "motogp", "wssu", "campus chaos", "xbox", "wolfenstein", "daddy yankee",
-            "grammy", "vegas gala", "og games", "achievements to four", "medal to guard", "scolded him"
-        )
-
         for v_item in (v_resp.get("items") or []):
             if fixes_done >= max_fixes_per_run:
                 break
             vid_id = v_item.get("id")
             snip = v_item.get("snippet") or {}
             stat = v_item.get("status") or {}
-            stats_obj = v_item.get("statistics") or {}
             priv_status = stat.get("privacyStatus", "public")
-
-            if priv_status == "private":
-                checked_v69.add(vid_id)
-                continue
-
-            view_cnt = int(stats_obj.get("viewCount") or 0)
             orig_t = str(snip.get("title") or "")
-            orig_t_low = orig_t.lower()
-            pub_str = str(snip.get("publishedAt") or "")
-            age_hours = 24.0
-            if pub_str:
-                try:
-                    p_dt = datetime.fromisoformat(pub_str.replace("Z", "").split("+")[0])
-                    age_hours = max(0.1, (now_utc_dt - p_dt).total_seconds() / 3600.0)
-                except Exception:
-                    age_hours = 24.0
-
-            is_off_brand = any(obk in orig_t_low for obk in off_brand_kws)
-
-            # RULE 1: If `view_cnt < 10` (and older than 6 hours so today's brand-new Global News video gets time to grow)
-            # OR if it's an off-brand sports/tabloid video -> SET TO PRIVATE!
-            if is_off_brand or (age_hours >= 6.0 and view_cnt < 10):
-                try:
-                    yt.videos().update(
-                        part="status",
-                        body={
-                            "id": vid_id,
-                            "status": {
-                                "privacyStatus": "private",
-                                "selfDeclaredMadeForKids": False
-                            }
-                        }
-                    ).execute()
-                    fixes_done += 1
-                    checked_v69.add(vid_id)
-                    print(f"🔒 [V69 <10-Views Privatizer] Set https://youtu.be/{vid_id} ({view_cnt} views, {int(age_hours)}h old | '{orig_t[:42]}') to PRIVATE!", flush=True)
-                    continue
-                except Exception as up_e:
-                    if "quotaExceeded" in str(up_e) or "403" in str(up_e):
-                        break
-                    continue
-
-            # RULE 2: Video has `>= 10 views` (e.g. 187 views, 46 views, 12 views, 10 views)!
-            # Keep it PUBLIC, strip any 18-language spam block, AND retroactively inject V70 Autocomplete SEO tags!
             orig_d = str(snip.get("description") or "")
             orig_tags = list(snip.get("tags") or [])
             cat_id = str(snip.get("categoryId") or "25")
+
             new_d = orig_d
-            needs_clean = False
+            needs_update = False
             for spam_marker in ["🌍 GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:", "GLOBAL & HINDI MULTI-LANGUAGE HEADLINES:"]:
                 if spam_marker in new_d:
                     new_d = new_d.split(spam_marker)[0].strip()
-                    needs_clean = True
-            if "🔍 Key Search Topics:" not in new_d and len(orig_t) >= 8:
-                synth_d = {"title": orig_t, "topic_anchor": " ".join(orig_t.split()[:3]), "country_profile": {"name": "World"}}
-                v70_kws = fetch_v70_live_youtube_autocomplete_keywords(synth_d, orig_t, max_results=8)
-                new_d = f"{orig_t} — Full Global News & Geopolitical Briefing by World Talk Brief (@WorldTalkBrief).\n\n{new_d}\n\n🔍 Key Search Topics: {' | '.join(v70_kws[:5])}"
-                orig_tags = v70_kws[:6] + orig_tags
-                needs_clean = True
-            if needs_clean:
+                    needs_update = True
+
+            # If a valid geopolitical/news video was previously set to private by the old <10-views rule, restore it to PUBLIC!
+            if priv_status == "private" and is_valid_think_school_global_case_study(orig_t, new_d[:300]):
+                needs_update = True
+
+            if needs_update:
                 try:
                     clean_healed_tags = ["World Talk Brief", "WorldTalkBrief", "Geopolitics Explained", "World News Today"] + [
                         ascii_transliterate_keep_vowels(t)[:28] for t in orig_tags
@@ -17127,15 +17141,16 @@ def run_v63_youtube_api_channel_antispam_healer(yt, hist_obj=None, max_fixes_per
                         }
                     ).execute()
                     fixes_done += 1
-                    print(f"🌟 [V69 Winner Kept PUBLIC & Cleaned] https://youtu.be/{vid_id} ({view_cnt} views | '{orig_t[:44]}')", flush=True)
-                except Exception:
-                    pass
-            checked_v69.add(vid_id)
+                    print(f"🌍 [V74 Public Status Guaranteed] https://youtu.be/{vid_id} ('{orig_t[:44]}') -> PUBLIC", flush=True)
+                except Exception as up_e:
+                    if "quotaExceeded" in str(up_e) or "403" in str(up_e):
+                        break
+            checked_v74.add(vid_id)
 
-        hist_obj["v69_checked_video_ids"] = list(checked_v69)[-900:]
+        hist_obj["v74_public_checked_ids"] = list(checked_v74)[-900:]
         save_published_history(hist_obj, update_upload_epoch=False)
     except Exception as heal_e:
-        print("⚠️ [V69 Channel Privatizer Note]:", str(heal_e)[:110], flush=True)
+        print(f"ℹ️ [V74 Public SEO Healer Note]: {heal_e}", flush=True)
 
 
 def build_and_upload_multilang_captions_and_dubs(yt_client, video_id, sections_list, video_tag="long_1", is_short=False, video_path=None):
