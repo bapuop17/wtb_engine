@@ -1124,32 +1124,56 @@ def get_available_groq_chat_models(groq_key):
     CACHED_GROQ_MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
     return CACHED_GROQ_MODELS
 
+def _normalize_llm_json_to_dict(obj):
+    """
+    Ensures LLM JSON output is ALWAYS a Python `dict` (never a raw `list`, `str`, or `int`)
+    so `.get(...)` never raises `AttributeError: 'list' object has no attribute 'get'`!
+    """
+    if isinstance(obj, dict):
+        return obj
+    if isinstance(obj, list):
+        dict_items = [x for x in obj if isinstance(x, dict)]
+        if not dict_items:
+            return None
+        if len(dict_items) == 1 and any(k in dict_items[0] for k in ("scenes", "extra_scenes", "viral_title")):
+            return dict_items[0]
+        if any("narration" in x or "context_pill" in x or "scene_num" in x for x in dict_items):
+            return {"scenes": dict_items, "extra_scenes": dict_items}
+        return dict_items[0]
+    return None
+
+
 def parse_json_safely(raw_text):
     """
     BULLETPROOF JSON PARSER:
     Strips `<think>...</think>` reasoning blocks (from Qwen3 / DeepSeek models), markdown fences,
-    and trailing commas before extracting the JSON object!
+    and trailing commas before extracting and normalizing the JSON object to a `dict`!
     """
     if not raw_text:
         return None
-    # Strip <think>...</think> reasoning blocks so braces inside thoughts never break json.loads!
-    no_think = re.sub(r"<think>.*?</think>", "", raw_text, flags=re.S | re.I).strip()
+    if isinstance(raw_text, (dict, list)):
+        return _normalize_llm_json_to_dict(raw_text)
+    no_think = re.sub(r"<think>.*?</think>", "", str(raw_text), flags=re.S | re.I).strip()
     if "<think>" in no_think:
         no_think = no_think.split("</think>")[-1].strip()
     cleaned = re.sub(r"^```(?:json)?\s*", "", no_think, flags=re.I)
     cleaned = re.sub(r"\s*```$", "", cleaned.strip())
     cleaned = re.sub(r",\s*([}\]])", r"\1", cleaned)
     try:
-        return json.loads(cleaned)
+        return _normalize_llm_json_to_dict(json.loads(cleaned))
     except Exception:
-        m = re.search(r"\{.*\}", cleaned, flags=re.S)
-        if m:
-            cand = re.sub(r",\s*([}\]])", r"\1", m.group(0))
-            try:
-                return json.loads(cand)
-            except Exception:
-                pass
+        for pat in (r"\{.*\}", r"\[.*\]"):
+            m = re.search(pat, cleaned, flags=re.S)
+            if m:
+                cand = re.sub(r",\s*([}\]])", r"\1", m.group(0))
+                try:
+                    res = _normalize_llm_json_to_dict(json.loads(cand))
+                    if res is not None:
+                        return res
+                except Exception:
+                    pass
     return None
+
 
 def call_multi_api_ai_brain_json(system_prompt, user_prompt):
     # 0. V73 OPENROUTER FREE HIGH-REASONING AI AGENT BRAIN (Inspired by Hermes Agent / OpenRouter `:free` workflow):
@@ -1432,12 +1456,14 @@ CRITICAL RULES:
 1. Generate EXACTLY {num_scenes} distinct scenes in "scenes".
 2. Every `photo_query` and `video_broll_query` MUST be a concrete Google Images / YouTube News search query describing the exact physical subject of that sentence (ships, missiles, ports, parliament, stock exchange, leaders, laboratories) — NEVER generic words like 'hole', 'attack', 'table', or a country name alone!
 """
-    ai_pkg = call_multi_api_ai_brain_json(sys_prompt, usr_prompt)
-    if ai_pkg and isinstance(ai_pkg.get("scenes"), list) and len(ai_pkg["scenes"]) >= 4:
+    ai_pkg = _normalize_llm_json_to_dict(call_multi_api_ai_brain_json(sys_prompt, usr_prompt))
+    if isinstance(ai_pkg, dict) and isinstance(ai_pkg.get("scenes"), list):
+        ai_pkg["scenes"] = [s for s in ai_pkg["scenes"] if isinstance(s, dict) and str(s.get("narration", "")).strip()]
+    if isinstance(ai_pkg, dict) and isinstance(ai_pkg.get("scenes"), list) and len(ai_pkg["scenes"]) >= 4:
         # If this is a Long Documentary and the first LLM call returned fewer than 9 scenes, ask the LLM to write Part 2 (remaining deep-dive chapters) so we NEVER rely on repetitive template sentences!
         if (not is_short) and len(ai_pkg["scenes"]) < 9:
             needed_more = 10 - len(ai_pkg["scenes"])
-            already_covered = " | ".join(str(s.get("context_pill", "")) for s in ai_pkg["scenes"])
+            already_covered = " | ".join(str(s.get("context_pill", "")) for s in ai_pkg["scenes"] if isinstance(s, dict))
             true_dom_p2 = classify_story_true_domain_v60(dossier)
             if true_dom_p2 == "TECH_SEMICONDUCTORS":
                 domain_chapters_guide = (
@@ -1491,9 +1517,10 @@ Return ONLY valid JSON:
   ]
 }}
 """
-            part2_pkg = call_multi_api_ai_brain_json(sys_prompt, part2_prompt)
-            if part2_pkg and isinstance(part2_pkg.get("extra_scenes"), list):
-                for ex_s in part2_pkg["extra_scenes"]:
+            part2_pkg = _normalize_llm_json_to_dict(call_multi_api_ai_brain_json(sys_prompt, part2_prompt))
+            extra_list = (part2_pkg.get("extra_scenes") or part2_pkg.get("scenes")) if isinstance(part2_pkg, dict) else None
+            if isinstance(extra_list, list):
+                for ex_s in extra_list:
                     if isinstance(ex_s, dict) and len(str(ex_s.get("narration", "")).split()) >= 35:
                         ai_pkg["scenes"].append(ex_s)
                         if len(ai_pkg["scenes"]) >= 10:
@@ -3702,7 +3729,7 @@ def fetch_person_portrait_image(wiki_name, display_name, role_str=""):
                 w_desc_low = f"{data.get('description', '')} {data.get('extract', '')[:200]}".lower()
                 if not is_animal_or_obj and any(bad_d in w_desc_low for bad_d in ["car ", "automobile", "sports car", "vehicle", "album", "song", "film", "disambiguation", "company"]):
                     continue
-                img_u = data.get("originalimage", {}).get("source") or data.get({}).get("source")
+                img_u = (data.get("originalimage") or {}).get("source") or (data.get("thumbnail") or {}).get("source")
                 if img_u and not img_u.lower().endswith(".svg") and not any(b in img_u.lower() for b in banned_spotlight_tokens):
                     ir = requests.get(img_u, headers=HEADERS_WIKI, timeout=5)
                     if ir.status_code == 200 and len(ir.content) > 10000:
