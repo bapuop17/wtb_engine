@@ -154,7 +154,7 @@ jobs:
           else
             sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu/|http://archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true
             timeout 60s sudo apt-get update -y || true
-            timeout 90s sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-liberation || true
+            timeout 90s sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-inter fonts-crosextra-caladea fonts-noto-mono python3-cairo python3-shapely fonts-liberation || true
           fi
 
       - name: Install Python V71 Documentary & Motion-Graphics Libraries (Fast Binary Wheels)
