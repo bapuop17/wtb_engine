@@ -1,4 +1,4 @@
-name: WTB News Engine V72 (Think School Human-Edited Edition • Zero-Recursion Crash Fix) (Zero-Apt-Timeout Instant Boot • 25s Channel Cleaner • Auto Google Search Console Verify)
+name: WTB News Engine V74 (Think School + Claude UI/UX Motion + OpenRouter Free AI • 100% Public)
 
 on:
   workflow_dispatch:
@@ -145,16 +145,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fast 25s Channel Spam-Backlog Cleaner (Runs During Cooldown Ticks!)
-        if: steps.cooldown_gate.outputs.should_run == 'false'
-        env:
-          YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
-          YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
-          YOUTUBE_TOKEN_JSON_B64_3: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_3 }}
-          YOUTUBE_TOKEN_JSON_B64_4: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_4 }}
-        run: |
-          pip install --quiet google-api-python-client google-auth-oauthlib google-auth-httplib2 requests feedparser beautifulsoup4 pillow numpy opencv-python-headless
-          python3 -u wtb_engine.py --rehab-only || true
 
       - name: Verify Pre-Installed FFmpeg & Fonts (Zero Azure Apt Hang!)
         if: steps.cooldown_gate.outputs.should_run == 'true'
@@ -181,6 +171,7 @@ jobs:
           YOUTUBE_TOKEN_JSON_B64_3: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_3 }}
           YOUTUBE_TOKEN_JSON_B64_4: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_4 }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           DEEPGRAM_API_KEY: ${{ secrets.DEEPGRAM_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
