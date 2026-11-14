@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-14T12:28:11.120535",
-  "last_upload_epoch": 1794659291,
+  "updated_at": "2026-11-14T14:39:30.374943",
+  "last_upload_epoch": 1794667170,
   "round_robin_idx": 7,
   "country_rot_idx": 62,
   "bgm_track_counter": 3354741359,
@@ -699,29 +699,10 @@
     "philip_k_dick_s_ai_prophecy",
     "global_tech_ai_philip_k_dick",
     "north_carolina_third_congressional_district_election",
-    "why_north_carolina_third_congressional_district"
+    "why_north_carolina_third_congressional_district",
+    "united_states_why_north_carolina_third"
   ],
   "event_fingerprints": [
-    {
-      "title": "Japan\u2019s Secret Weapon: Why China Is Terrified of This Tech",
-      "tokens": [
-        "china",
-        "japan",
-        "tech",
-        "terrified",
-        "weapon"
-      ]
-    },
-    {
-      "title": "Germany's Gen Z Riots: Why Frankfurt Shops Were Looted",
-      "tokens": [
-        "frankfurt",
-        "germany",
-        "looted",
-        "riots",
-        "shops"
-      ]
-    },
     {
       "title": "Why Japan's Secret Arms Deal Is Triggering a Cyber\u2011Intelligence Arms Race in the Indo\u2011Pa #Short",
       "tokens": [
@@ -8201,6 +8182,31 @@
         "election",
         "north",
         "results",
+        "third"
+      ]
+    },
+    {
+      "title": "United States: Why North Carolina Third Congressional District Election Results",
+      "tokens": [
+        "carolina",
+        "congressional",
+        "district",
+        "election",
+        "north",
+        "results",
+        "states",
+        "third",
+        "united"
+      ]
+    },
+    {
+      "title": "Why North Carolina Third Congressional District! #shorts",
+      "tokens": [
+        "carolina",
+        "congressional",
+        "district",
+        "north",
+        "shorts",
         "third"
       ]
     }
