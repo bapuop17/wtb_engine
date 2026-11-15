@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-15T00:51:19.404960",
-  "last_upload_epoch": 1794703879,
-  "round_robin_idx": 9,
-  "country_rot_idx": 74,
-  "bgm_track_counter": 3417710979,
+  "updated_at": "2026-11-15T04:03:05.752000",
+  "last_upload_epoch": 1794715385,
+  "round_robin_idx": 10,
+  "country_rot_idx": 5,
+  "bgm_track_counter": 3424708996,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -705,69 +705,12 @@
     "why_quad_summit_likely_to_be",
     "philippines_why_quad_summit_likely_to",
     "general_staff_neptune_missiles_strike_uav",
-    "ukraine_neptune_missile_hits_rostov_drone"
+    "ukraine_neptune_missile_hits_rostov_drone",
+    "ukraine_neptune_russia_s_supply_chain",
+    "nigeria_s_upcoming_election_marred_by",
+    "nigeria_2027_election_crisis_ai_deepfakes"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why Italy's Cost\u2011of\u2011Living Uprising Could Redraw Europe's Power Map",
-      "tokens": [
-        "cost",
-        "costs",
-        "could",
-        "europe",
-        "italy",
-        "living",
-        "nationwide",
-        "protests",
-        "public",
-        "redraw",
-        "services",
-        "uprising"
-      ]
-    },
-    {
-      "title": "A Nutrient Found in Red Meat Could Make Dangerous Inflammation Even Worse",
-      "tokens": [
-        "also",
-        "body",
-        "burn",
-        "cause",
-        "common",
-        "could",
-        "dangerous",
-        "even",
-        "foods",
-        "found",
-        "helping",
-        "immune",
-        "inflammation",
-        "known",
-        "make",
-        "making",
-        "meat",
-        "nutrient",
-        "overdrive",
-        "system",
-        "worse"
-      ]
-    },
-    {
-      "title": "Why a Common Red Meat Nutrient Is Fueling a Hidden Inflammation Crisis",
-      "tokens": [
-        "common",
-        "could",
-        "dangerous",
-        "even",
-        "found",
-        "fueling",
-        "hidden",
-        "inflammation",
-        "make",
-        "meat",
-        "nutrient",
-        "worse"
-      ]
-    },
     {
       "title": "China-Africa green mobility cooperation gains momentum at automotive partnership gathering",
       "tokens": [
@@ -8217,10 +8160,59 @@
         "ukraine",
         "warehouse"
       ]
+    },
+    {
+      "title": "Ukraine Neptune: Russia's Supply Chain Breaks! #shorts",
+      "tokens": [
+        "breaks",
+        "chain",
+        "neptune",
+        "russia",
+        "shorts",
+        "supply",
+        "ukraine"
+      ]
+    },
+    {
+      "title": "Nigeria's upcoming election marred by rising AI disinformation",
+      "tokens": [
+        "about",
+        "artificial",
+        "closer",
+        "disinformation",
+        "election",
+        "electoral",
+        "inches",
+        "institutional",
+        "integrity",
+        "intelligence",
+        "marred",
+        "nige",
+        "nigeria",
+        "polls",
+        "process",
+        "prompted",
+        "questions",
+        "readiness",
+        "rising",
+        "upcoming"
+      ]
+    },
+    {
+      "title": "Nigeria 2027 Election Crisis: AI Deepfakes vs Tinubu",
+      "tokens": [
+        "deepfakes",
+        "disinformation",
+        "election",
+        "marred",
+        "nigeria",
+        "rising",
+        "tinubu",
+        "upcoming"
+      ]
     }
   ],
   "last_categories": [
-    "SCIENCE",
     "TECHNOLOGY",
     "MIND_BLOWING_FACTS",
     "INDIA_TRENDING",
@@ -8259,10 +8251,10 @@
     "AI_ROBOTICS",
     "GEOPOLITICS",
     "GEOPOLITICS",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "NASA, SpaceX, ESA & Global Space Missions",
     "Ars Technica",
     "Global Country Wire [CUBA \u2022 MIND_BLOWING_FACTS]",
     "Google World Top Headlines (US/Global)",
@@ -8301,10 +8293,10 @@
     "Global AI, Nvidia, OpenAI & Semiconductor Race",
     "Google Trends USA Viral 24h",
     "Global Country Wire [OMAN \u2022 GLOBAL_POWERS]",
-    "Google Trends UK Viral 24h"
+    "Google Trends UK Viral 24h",
+    "DW World News (Europe & Global)"
   ],
   "last_countries": [
-    "CHINA",
     "MEXICO",
     "PHILIPPINES",
     "GLOBAL BRIEFING",
@@ -8353,7 +8345,8 @@
     "GLOBAL TECH & AI",
     "UNITED STATES",
     "PHILIPPINES",
-    "UKRAINE"
+    "UKRAINE",
+    "NIGERIA"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8575,6 +8568,30 @@
       "is_short": true,
       "published_iso": "2026-11-15T00:50:56Z",
       "summary": "Ukraine's General Staff confirms a massive Neptune missile strike on Rostov-on-Don, targeting the heart of Russia's drone supply chain. This deep-dive analyzes how a coastal defense system is being used to decapitate Russian UAV production, storage, and repair"
+    },
+    {
+      "video_id": "r7iV5TZIxzA",
+      "title": "Nigeria 2027 Election Crisis: AI Deepfakes vs Tinubu | Geopolitical Case Study",
+      "url": "https://www.youtube.com/watch?v=r7iV5TZIxzA",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/r7iV5TZIxzA.html",
+      "thumb_url": "https://i.ytimg.com/vi/r7iV5TZIxzA/maxresdefault.jpg",
+      "pillar": "AI_ROBOTICS",
+      "country": "Nigeria",
+      "is_short": false,
+      "published_iso": "2026-11-15T03:41:12Z",
+      "summary": "As Nigeria approaches the 2027 general election, a shadow war is being fought not with bullets, but with algorithms. Incumbent President Bola Tinubu faces a new existential threat: AI-driven disinformation designed to destabilize the nation's democratic proces"
+    },
+    {
+      "video_id": "rrjhtKQiy0s",
+      "title": "Nigeria 2027 Election Crisis: AI Deepfakes vs Tinubu",
+      "url": "https://www.youtube.com/shorts/rrjhtKQiy0s",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/rrjhtKQiy0s.html",
+      "thumb_url": "https://i.ytimg.com/vi/rrjhtKQiy0s/maxresdefault.jpg",
+      "pillar": "AI_ROBOTICS",
+      "country": "Nigeria",
+      "is_short": true,
+      "published_iso": "2026-11-15T04:02:45Z",
+      "summary": "Nigeria's 2027 general election is fast approaching, but a new wave of AI\u2011generated deepfakes is flooding social media, threatening to distort the vote. President Bola Tinubu has publicly warned that these synthetic videos could spark chaos, while fact\u2011checker"
     }
   ]
 }
