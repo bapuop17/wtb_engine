@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-15T04:03:05.752000",
-  "last_upload_epoch": 1794715385,
-  "round_robin_idx": 10,
-  "country_rot_idx": 5,
-  "bgm_track_counter": 3424708996,
+  "updated_at": "2026-11-15T05:37:39.665612",
+  "last_upload_epoch": 1794721059,
+  "round_robin_idx": 11,
+  "country_rot_idx": 11,
+  "bgm_track_counter": 3452207693,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -708,82 +708,11 @@
     "ukraine_neptune_missile_hits_rostov_drone",
     "ukraine_neptune_russia_s_supply_chain",
     "nigeria_s_upcoming_election_marred_by",
-    "nigeria_2027_election_crisis_ai_deepfakes"
+    "nigeria_2027_election_crisis_ai_deepfakes",
+    "fact_check_iranian_content_farms_reach",
+    "why_fact_check_iranian_content_farms"
   ],
   "event_fingerprints": [
-    {
-      "title": "China-Africa green mobility cooperation gains momentum at automotive partnership gathering",
-      "tokens": [
-        "africa",
-        "automotive",
-        "china",
-        "cooperation",
-        "gains",
-        "gathering",
-        "green",
-        "mobility",
-        "momentum",
-        "partnership"
-      ]
-    },
-    {
-      "title": "China-Africa green mobility cooperation gains momentum at automotive partnership gatheri #Short",
-      "tokens": [
-        "africa",
-        "automotive",
-        "china",
-        "cooperation",
-        "gains",
-        "gatheri",
-        "green",
-        "mobility",
-        "momentum",
-        "partnership",
-        "short"
-      ]
-    },
-    {
-      "title": "Ethiopia's Russian fighter jets raise stakes in Eritrea standoff",
-      "tokens": [
-        "abiy",
-        "ahmed",
-        "could",
-        "eritrea",
-        "ethiopia",
-        "fighter",
-        "jets",
-        "latest",
-        "martin",
-        "military",
-        "minister",
-        "plaut",
-        "prime",
-        "purchases",
-        "rais",
-        "raise",
-        "russian",
-        "stakes",
-        "standoff",
-        "transform"
-      ]
-    },
-    {
-      "title": "Why Ethiopia's Russian Jets Could Ignite a New Horn of Africa War",
-      "tokens": [
-        "africa",
-        "could",
-        "eritrea",
-        "ethiopia",
-        "fighter",
-        "horn",
-        "ignite",
-        "jets",
-        "raise",
-        "russian",
-        "stakes",
-        "standoff"
-      ]
-    },
     {
       "title": "Flock keeps ignoring requests to cancel its contracts",
       "tokens": [
@@ -8210,10 +8139,71 @@
         "tinubu",
         "upcoming"
       ]
+    },
+    {
+      "title": "Nigeria 2027 Election Crisis: AI Deepfakes vs Tinubu | Geopolitical Case Study",
+      "tokens": [
+        "case",
+        "deepfakes",
+        "election",
+        "geopolitical",
+        "nigeria",
+        "study",
+        "tinubu"
+      ]
+    },
+    {
+      "title": "Nigeria 2027 Election Crisis: AI Deepfakes vs Tinubu! #shorts",
+      "tokens": [
+        "deepfakes",
+        "election",
+        "nigeria",
+        "shorts",
+        "tinubu"
+      ]
+    },
+    {
+      "title": "Fact check: 'Iranian' content farms reach millions",
+      "tokens": [
+        "accounts",
+        "being",
+        "called",
+        "check",
+        "claiming",
+        "content",
+        "fact",
+        "farms",
+        "iranian",
+        "looks",
+        "media",
+        "military",
+        "millions",
+        "operate",
+        "part",
+        "reach",
+        "represent",
+        "several",
+        "show",
+        "signs",
+        "social",
+        "they",
+        "users"
+      ]
+    },
+    {
+      "title": "Why Fact Check: 'Iranian' Content Farms Reach Millions",
+      "tokens": [
+        "check",
+        "content",
+        "fact",
+        "farms",
+        "iranian",
+        "millions",
+        "reach"
+      ]
     }
   ],
   "last_categories": [
-    "TECHNOLOGY",
     "MIND_BLOWING_FACTS",
     "INDIA_TRENDING",
     "MIND_BLOWING_FACTS",
@@ -8252,10 +8242,10 @@
     "GEOPOLITICS",
     "GEOPOLITICS",
     "GEOPOLITICS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "Ars Technica",
     "Global Country Wire [CUBA \u2022 MIND_BLOWING_FACTS]",
     "Google World Top Headlines (US/Global)",
     "Global Country Wire [MALAYSIA \u2022 MIND_BLOWING_FACTS]",
@@ -8294,10 +8284,10 @@
     "Google Trends USA Viral 24h",
     "Global Country Wire [OMAN \u2022 GLOBAL_POWERS]",
     "Google Trends UK Viral 24h",
+    "DW World News (Europe & Global)",
     "DW World News (Europe & Global)"
   ],
   "last_countries": [
-    "MEXICO",
     "PHILIPPINES",
     "GLOBAL BRIEFING",
     "NIGERIA",
@@ -8346,7 +8336,8 @@
     "UNITED STATES",
     "PHILIPPINES",
     "UKRAINE",
-    "NIGERIA"
+    "NIGERIA",
+    "UNITED STATES"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8592,6 +8583,30 @@
       "is_short": true,
       "published_iso": "2026-11-15T04:02:45Z",
       "summary": "Nigeria's 2027 general election is fast approaching, but a new wave of AI\u2011generated deepfakes is flooding social media, threatening to distort the vote. President Bola Tinubu has publicly warned that these synthetic videos could spark chaos, while fact\u2011checker"
+    },
+    {
+      "video_id": "hBViBpjipkM",
+      "title": "United States: Why Fact Check: 'Iranian' Content Farms Reach Millions Explained",
+      "url": "https://www.youtube.com/watch?v=hBViBpjipkM",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/hBViBpjipkM.html",
+      "thumb_url": "https://i.ytimg.com/vi/hBViBpjipkM/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "United States",
+      "is_short": false,
+      "published_iso": "2026-11-15T05:23:45Z",
+      "summary": "World Talk Brief [GEOPOLITICS] presents an original deep-dive case study."
+    },
+    {
+      "video_id": "tPtGhA9O_E8",
+      "title": "Why Fact Check: 'Iranian' Content Farms Reach Millions",
+      "url": "https://www.youtube.com/shorts/tPtGhA9O_E8",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/tPtGhA9O_E8.html",
+      "thumb_url": "https://i.ytimg.com/vi/tPtGhA9O_E8/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "United States",
+      "is_short": true,
+      "published_iso": "2026-11-15T05:37:17Z",
+      "summary": "World Talk Brief [GEOPOLITICS] original #Shorts case study."
     }
   ]
 }
