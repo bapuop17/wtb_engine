@@ -1209,8 +1209,17 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
         else:
             or_free_models = call_multi_api_ai_brain_json._live_or_free_models
 
-        for or_model in or_free_models[:8]:
-            for use_reasoning in (True, False):
+        for or_model in [
+            "deepseek/deepseek-chat-v3-0324:free",
+            "meta-llama/llama-3.3-70b-instruct:free",
+            "google/gemini-2.0-flash-exp:free",
+            "qwen/qwen-2.5-72b-instruct:free",
+            "mistralai/mistral-small-3.1-24b-instruct:free",
+            "openrouter/free",
+            "deepseek/deepseek-r1:free",
+            "qwen/qwen3-235b-a22b:free",
+        ]:
+            for use_reasoning in (False, True):
                 try:
                     payload_or = {
                         "model": or_model,
@@ -1219,7 +1228,7 @@ def call_multi_api_ai_brain_json(system_prompt, user_prompt):
                             {"role": "user", "content": user_prompt}
                         ],
                         "temperature": 0.45,
-                        "max_tokens": 4000
+                        "max_tokens": 7500
                     }
                     if use_reasoning and ("r1" in or_model or "qwen3" in or_model or "openrouter/free" in or_model):
                         payload_or["reasoning"] = {"effort": "high"}
@@ -2521,6 +2530,8 @@ def extract_primary_topic_anchor(dossier):
 
     clickbait_hook_stops = {
         "the", "this", "that", "why", "how", "what", "when", "where", "who", "inside", "behind",
+        "be", "is", "are", "was", "were", "to", "in", "on", "at", "of", "by", "for", "with", "from",
+        "likely", "held", "sources", "say", "says", "said", "expected", "amid", "after", "before",
         "donation", "empire", "collapse", "teen", "teenager", "prodigy", "bold", "youth", "gamble",
         "massive", "shocking", "historic", "signs", "signed", "deal", "year", "years", "old",
         "sudden", "secret", "truth", "breaking", "world", "talk", "brief", "million", "billion",
@@ -2549,7 +2560,14 @@ def extract_primary_topic_anchor(dossier):
             if not replaced:
                 proper_phrases.append(clean_p)
     if proper_phrases:
-        return fit_whole_words_limit(" ".join(proper_phrases[:2]), 38)
+        # V81 DEDUPLICATED SINGLE-ANCHOR LOCK: Never concatenate two phrases that repeat a word (e.g. 'Quad Summit' + 'Quad Business Forum' -> 'Quad Summit')!
+        p0 = proper_phrases[0]
+        if len(proper_phrases) >= 2:
+            p0_toks = {w.lower() for w in p0.split()}
+            p1_toks = [w for w in proper_phrases[1].split() if w.lower() not in p0_toks]
+            if len(p0.split()) <= 2 and p1_toks and len(p0_toks.intersection({w.lower() for w in proper_phrases[1].split()})) == 0:
+                return fit_whole_words_limit(f"{p0} {p1_toks[0]}", 28)
+        return fit_whole_words_limit(p0, 28)
 
     # 2. Fallback to meaningful non-clickbait nouns from title + first fact
     content_nouns = [
@@ -3278,22 +3296,26 @@ def discover_dossier_for_pillar(sub_pillar, hist_obj, winning_keywords, batch_fi
             # Only apply a mild tie-breaker (-35) if the exact same country was in the immediately preceding upload,
             # AND give a +110 High-Search-Demand Boost to major global power hubs (USA, INDIA, CHINA, RUSSIA, ISRAEL, UK, IRAN, TAIWAN, JAPAN)!
             # V67 TRUE ALL-WORLD GLOBAL COUNTRY ROTATION (Covers all 46+ countries worldwide without repeating the last 4 countries!):
-            if country_name_upper in last_countries[-2:]:
-                country_penalty = 280
-            elif country_name_upper in last_countries[-5:]:
-                country_penalty = 140
+            # V81 US & GLOBAL GEOPOLITICS CHANNEL PRIORITY (Rejects weak 'sources say likely to be held / awaiting formal' routine blurbs!)
+            if any(weak_b in comb for weak_b in [
+                "likely to be held", "awaiting a formal", "awaiting formal intimation",
+                "told journalists only", "would keep them updated", "routine briefing", "sources say"
+            ]) and not any(strong_k in comb for strong_k in ["strike", "sanctions", "tariff", "missile", "invasion", "billion", "trillion", "signed", "war"]):
+                continue
+
+            if country_name_upper != "UNITED STATES" and country_name_upper in last_countries[-1:]:
+                country_penalty = 95
             else:
                 country_penalty = 0
-            major_demand_boost = 75 if country_name_upper != "INTERNATIONAL" else 35
 
-            # 2. Equal Global Country Boost + Massive 100K-200K+ Viral Traffic Boost + V45 44K-View Underdog Prodigy Boost!
-            tier_boost = 30 if country_name_upper != "INTERNATIONAL" else 5
-            underdog_viral_boost = 0
-            if any(ukw in comb for ukw in ["year-old", "16-year-old", "17-year-old", "18-year-old", "19-year-old", "teen", "teenager", "prodigy", "rookie", "youngest", "underdog", "moto3", "motogp", "grandmaster", "upset", "stunned"]):
-                underdog_viral_boost += 95
-            if country_name_upper in {"INDONESIA", "INDIA", "PHILIPPINES", "BRAZIL", "MALAYSIA", "VIETNAM", "THAILAND", "TURKEY", "MEXICO", "PAKISTAN", "BANGLADESH", "NIGERIA", "EGYPT", "SOUTH AFRICA", "KENYA"}:
-                underdog_viral_boost += 55
-            tier_boost += underdog_viral_boost
+            us_superpower_boost = 0
+            if country_name_upper == "UNITED STATES" or any(us_k in comb for us_k in [
+                "united states", "u.s.", "white house", "pentagon", "washington", "trump", "rubio",
+                "wall street", "federal reserve", "nato", "china", "russia", "israel", "iran", "taiwan", "ukraine"
+            ]):
+                us_superpower_boost = 165
+            major_demand_boost = 85 + us_superpower_boost
+            tier_boost = 40
             high_impact_kws = ["war", "military", "missile", "president", "prime minister", "parliament", "sanctions", "crisis", "billion", "trillion", "protest", "strike", "supreme court", "breakthrough", "nuclear", "treaty", "summit", "collapse", "intelligence", "tariffs", "arrest"]
             impact_boost = sum(12 for hkw in high_impact_kws if hkw in comb)
 
@@ -10237,12 +10259,21 @@ def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
     return (ner["specific_entities"][0] if ner["specific_entities"] else (ner["locations"][0] if ner["locations"] else topic_anchor)), q_built, must_match
 
 def sanitize_visual_search_query(raw_q, dossier):
+    q_str = str(raw_q or "")
+    story_blob = f"{dossier.get('title', '')} {dossier.get('topic_anchor', '')}".lower() if isinstance(dossier, dict) else ""
+    # V81 GEOPOLITICAL HOMONYM DISAMBIGUATOR (Prevents 'Quad Summit' from matching 'Quad Bike / ATV'!)
+    if re.search(r"\bquad\b", q_str.lower()) or re.search(r"\bquad\b", story_blob):
+        q_str = re.sub(r"\bquad\b", "Quadrilateral Security Dialogue diplomatic summit leaders", q_str, flags=re.I)
     clean_words = [
-        w for w in re.findall(r"[A-Za-z0-9\-]{3,}", str(raw_q or ""))
+        w for w in re.findall(r"[A-Za-z0-9\-]{3,}", q_str)
         if w.lower() not in SENTENCE_VISUAL_STOPWORDS and w.lower() not in {"hole", "holes", "regelt", "were", "handed", "package"}
     ]
-    if len(clean_words) >= 2:
-        return " ".join(clean_words[:6]).strip()
+    dedup_w = []
+    for cw in clean_words:
+        if cw.lower() not in [x.lower() for x in dedup_w]:
+            dedup_w.append(cw)
+    if len(dedup_w) >= 2:
+        return " ".join(dedup_w[:7]).strip()
     master_qs = extract_topic_master_queries(dossier)
     return master_qs[0] if master_qs else str(dossier.get("topic_anchor") or dossier.get("title", ""))[:40]
 
@@ -10554,7 +10585,12 @@ def passes_audit_gate_1_caption_and_url(img_url, img_title_or_desc, dossier, que
         "suno india", "air india express", "kimono", "geisha", "yukata", "great wall of china",
         "south india", "north india", "question mark", "3d man", "3d character", "stick figure",
         "scooter", "moped", "delivery rider", "food delivery", "pizza", "courier", "vespa",
-        "gas cylinder", "lpg truck", "street vendor", "rickshaw", "tuk tuk", "camel ride"
+        "gas cylinder", "lpg truck", "street vendor", "rickshaw", "tuk tuk", "camel ride",
+        "atv", "quad bike", "quadbike", "quad-bike", "all-terrain vehicle", "all terrain vehicle",
+        "four-wheeler", "4-wheeler", "four wheeler", "off-road", "offroad", "motocross", "dirt bike",
+        "dirtbike", "dune buggy", "kawasaki", "yamaha", "polaris", "can-am", "suzuki", "honda trx",
+        "cfmoto", "arctic cat", "kymco", "outlander", "grizzly", "raptor 700", "brute force",
+        "palawan", "el nido", "coron", "boracay", "island hopping", "beach resort", "outtrigger", "bangka"
     ]
     if any(tw in comb_meta for tw in off_topic_ad_and_trap_words):
         return False
@@ -10758,16 +10794,35 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                 "source_angle": "multi_site_original_article",
                 "base_priority": 68
             })
-    for a_u in ([dossier.get("lead_img")] if dossier.get("lead_img") else []):
-        if a_u and a_u not in seen_cand_urls and not any(b in a_u.lower() for b in ["livingcost", "numbeo", "statista", "chart", "logo"]):
+    # V81 TOP-PRIORITY REAL BREAKING NEWS ARTICLE PHOTOS (`article_inline_images` + `lead_img`)
+    for a_u in (([dossier.get("lead_img")] if dossier.get("lead_img") else []) + list(dossier.get("article_inline_images") or [])):
+        if a_u and a_u not in seen_cand_urls and not any(b in a_u.lower() for b in ["livingcost", "numbeo", "statista", "chart", "logo", "atv", "quadbike"]):
             seen_cand_urls.add(a_u)
             raw_candidates.append({
                 "url": a_u,
-                "caption": f"{story_title} {topic_anchor}",
+                "caption": f"{story_title} {topic_anchor} official press photo",
                 "media_type": "image",
                 "source_angle": "direct_article",
-                "base_priority": 64
+                "base_priority": 96
             })
+    # V81 YOUTUBE OFFICIAL NEWS BROADCAST & INTERVIEW HD FRAME HARVESTER (`i.ytimg.com/vi/<id>/maxresdefault.jpg`)
+    try:
+        yt_q = sanitize_visual_search_query(f"{story_title} news report interview", dossier)
+        r_yt = requests.get(f"https://www.youtube.com/results?search_query={urllib.parse.quote(yt_q)}&sp=EgIIAw%253D%253D", headers=HEADERS_WEB, timeout=4.5)
+        if r_yt.status_code == 200:
+            for yt_vid_id, yt_t in re.findall(r'"videoId":"([A-Za-z0-9_\-]{11})".*?"title":\{"runs":\[\{"text":"([^"]{15,120})"', r_yt.text)[:10]:
+                yt_hd_u = f"https://i.ytimg.com/vi/{yt_vid_id}/maxresdefault.jpg"
+                if yt_hd_u not in seen_cand_urls and passes_audit_gate_1_caption_and_url(yt_hd_u, yt_t, dossier, yt_q):
+                    seen_cand_urls.add(yt_hd_u)
+                    raw_candidates.append({
+                        "url": yt_hd_u,
+                        "caption": f"{yt_t} {story_title}",
+                        "media_type": "image",
+                        "source_angle": "youtube_news_broadcast_hd",
+                        "base_priority": 88
+                    })
+    except Exception:
+        pass
 
     def fetch_bing_news_rss_angle(kw_news):
         rss_items = []
@@ -12619,19 +12674,27 @@ def render_v51_28_template_frame(sim_mode, beat, local_t, W, H, is_short=True):
     mode = alias_map.get(sim_mode, sim_mode)
 
     # Delegate the 5 existing V50 flagship renderers directly for their mapped modes:
-    if mode == "TS_05_CHOKEPOINT_CORRIDOR_MAP":
+    if mode in ("TS_05_CHOKEPOINT_CORRIDOR_MAP", "GEO_10_ALLIANCE_POWER_NETWORK"):
         return render_tactical_geopolitical_map_frame(beat, local_t, W, H, is_short=is_short)
-    if HAS_PYCAIRO_V78 and mode in (
-        "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
-        "TS_02_HEAD_TO_HEAD_VS_SPLIT",
-        "TS_04_DOMINO_CHAIN_FLOWCHART",
-        "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
-        "DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD",
-        "TS_28_STUDIO_QUOTE_PRESS_MONITOR",
-        "GEO_08_MILITARY_FIREPOWER_RADAR",
-        "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
-    ):
-        _v78_im = render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_short=is_short)
+    if HAS_PYCAIRO_V78:
+        # Map any legacy mode to one of the 8 V81 3D Documentary Flow Archetypes so old V51/V77 boxes NEVER run!
+        _v81_mode_map = {
+            "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT": "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
+            "TS_02_HEAD_TO_HEAD_VS_SPLIT": "TS_02_HEAD_TO_HEAD_VS_SPLIT",
+            "TS_03_PARLIAMENT_MAJORITY_HEMICYCLE": "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
+            "TS_04_DOMINO_CHAIN_FLOWCHART": "TS_04_DOMINO_CHAIN_FLOWCHART",
+            "TS_06_SIMPLE_100_MATH_GRID": "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
+            "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD": "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD",
+            "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD": "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
+            "DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD": "DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD",
+            "TS_28_STUDIO_QUOTE_PRESS_MONITOR": "DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD",
+            "GEO_08_MILITARY_FIREPOWER_RADAR": "GEO_08_MILITARY_FIREPOWER_RADAR",
+            "BIZ_14_FOLLOW_THE_MONEY_WATERFALL": "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD",
+            "GEO_11_CHRONOLOGY_TIMELINE_RIBBON": "TS_04_DOMINO_CHAIN_FLOWCHART",
+            "MYST_27_DECLASSIFIED_FORENSIC_BOARD": "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT",
+        }
+        _mapped_m = _v81_mode_map.get(mode, "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD")
+        _v78_im = render_v78_claude_2026_ui_archetype_frame(_mapped_m, beat, local_t, W, H, is_short=is_short)
         if _v78_im is not None:
             return _v78_im
     if mode == "GEO_10_ALLIANCE_POWER_NETWORK":
@@ -14464,8 +14527,23 @@ try:
     import cairo as _pycairo
     HAS_PYCAIRO_V78 = True
 except Exception:
-    _pycairo = None
-    HAS_PYCAIRO_V78 = False
+    # Auto-install python3-cairo / pycairo on GitHub Actions if user only updated wtb_engine.py!
+    try:
+        import subprocess as _sp_c
+        if os.environ.get("GITHUB_ACTIONS") == "true" or sys.platform.startswith("linux"):
+            _sp_c.run(["sudo", "-n", "apt-get", "update", "-qq"], timeout=25, check=False)
+            _sp_c.run(["sudo", "-n", "apt-get", "install", "-y", "-qq", "python3-cairo", "python3-shapely", "fonts-inter", "fonts-crosextra-caladea", "fonts-noto-mono"], timeout=45, check=False)
+        import cairo as _pycairo
+        HAS_PYCAIRO_V78 = True
+    except Exception:
+        try:
+            import subprocess as _sp_c2
+            _sp_c2.run([sys.executable, "-m", "pip", "install", "-q", "pycairo", "shapely"], timeout=45, check=False)
+            import cairo as _pycairo
+            HAS_PYCAIRO_V78 = True
+        except Exception:
+            _pycairo = None
+            HAS_PYCAIRO_V78 = False
 
 
 def _cairo_surface_to_pil_rgba(surface):
@@ -15337,136 +15415,174 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         return bg
 
     # ==========================================================================
-    # SCENE DESIGN 3: PIN-POINT SUBJECT ZOOM + WORD-SYNCED SPEC CALLOUT CARDS
+    # SCENE DESIGN 3: FULL-BLEED CINEMA DATA & PIN-POINT EVIDENCE OVERLAY
     #                 (`TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`)
+    #                 - Zero old-fashioned 3-stacked dark boxes!
+    #                 - Full-screen moving 1080p event photo + direct subject pointer callouts
+    #                 - 3D Frosted-Glass Translucent Data Card with Giant 68pt Metric,
+    #                   Glowing PyCairo Spline Curve with Data Nodes, and Synced Comparison Bars!
     # ==========================================================================
     if mode == "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD":
-        bg = Image.new("RGBA", (W, H), (11, 16, 28, 255))
-        draw = ImageDraw.Draw(bg, "RGBA")
+        bg = src_im.convert("RGBA")
 
+        # Smooth cinematic gradient shading on the right (16:9) or bottom (9:16) so the full photo breathes
+        gsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+        gctx = _pycairo.Context(gsurf)
+        gctx.set_antialias(_pycairo.ANTIALIAS_BEST)
         if not is_short:
-            sc_box = (sx0, sy0, sx0 + int(sw * 0.56) - 12, sy1)
-            ui_box = (sx0 + int(sw * 0.56) + 12, sy0, sx1, sy1)
+            dgrad = _pycairo.LinearGradient(W * 0.28, 0, W, 0)
+            dgrad.add_color_stop_rgba(0.0, 0.03, 0.05, 0.09, 0.05)
+            dgrad.add_color_stop_rgba(0.55, 0.04, 0.06, 0.12, 0.68)
+            dgrad.add_color_stop_rgba(1.0, 0.04, 0.06, 0.12, 0.92)
         else:
-            sc_box = (sx0, sy0, sx1, sy0 + int(sh * 0.48) - 10)
-            ui_box = (sx0, sy0 + int(sh * 0.48) + 10, sx1, sy1)
+            dgrad = _pycairo.LinearGradient(0, H * 0.25, 0, H)
+            dgrad.add_color_stop_rgba(0.0, 0.03, 0.05, 0.09, 0.05)
+            dgrad.add_color_stop_rgba(0.48, 0.04, 0.06, 0.12, 0.72)
+            dgrad.add_color_stop_rgba(1.0, 0.04, 0.06, 0.12, 0.94)
+        gctx.set_source(dgrad)
+        gctx.paint()
 
-        lw_s, lh_s = sc_box[2] - sc_box[0], sc_box[3] - sc_box[1]
-        draw.rounded_rectangle([(sc_box[0], sc_box[1]), (sc_box[2], sc_box[3])], radius=18, fill=(15, 22, 36, 255), outline=(64, 80, 104, 235), width=2)
+        # Direct Pin-Point Leader Callouts on the Full-Screen Subject (Left / Upper Viewport)
+        pin1_lbl = fit_whole_words_limit(clauses[0].upper(), 24)
+        pin2_lbl = fit_whole_words_limit(clauses[1].upper(), 24) if len(clauses) > 1 else point_hl[:24]
+        if not is_short:
+            c_pins = [
+                (int(W * 0.28), int(H * 0.46), 56, 128, pin1_lbl, (218, 178, 68), p_phrase1),
+                (int(W * 0.42), int(H * 0.64), 56, H - 245, pin2_lbl, (200, 48, 62), p_phrase2),
+            ]
+        else:
+            c_pins = [
+                (int(W * 0.46), int(H * 0.30), 44, 175, pin1_lbl, (218, 178, 68), p_phrase1),
+                (int(W * 0.58), int(H * 0.42), 44, 580, pin2_lbl, (200, 48, 62), p_phrase2),
+            ]
 
-        im_c = src_im.resize((lw_s - 4, lh_s - 4), resample_l).convert("RGBA")
-        mask_s = Image.new("L", (lw_s - 4, lh_s - 4), 0)
-        ImageDraw.Draw(mask_s).rounded_rectangle([(0, 0), (lw_s - 5, lh_s - 5)], radius=16, fill=255)
-        bg.paste(im_c, (sc_box[0] + 2, sc_box[1] + 2), mask_s)
-
-        # Direct Pin-Point Leader Callouts on the Subject Photo (Synced to Phrase 1, 2, 3!)
-        pin_surf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
-        pctx = _pycairo.Context(pin_surf)
-        pctx.set_antialias(_pycairo.ANTIALIAS_BEST)
-
-        pin1_lbl = fit_whole_words_limit(clauses[0].upper(), 22)
-        pin2_lbl = fit_whole_words_limit(clauses[1].upper(), 22) if len(clauses) > 1 else point_hl[:22]
-        c_pins = [
-            (sc_box[0] + int(lw_s * 0.42), sc_box[1] + int(lh_s * 0.52), sc_box[0] + 24, sc_box[1] + 24, pin1_lbl, (218, 178, 68), p_phrase1),
-            (sc_box[0] + int(lw_s * 0.58), sc_box[1] + int(lh_s * 0.64), sc_box[0] + 24, sc_box[3] - 68, pin2_lbl, (200, 48, 62), p_phrase2),
-        ]
         for tx_p, ty_p, bx_l, by_l, lbl_p, col_rgb, p_vis in c_pins:
-            if p_vis < 0.15:
+            if p_vis < 0.12:
                 continue
             r_c, g_c, b_c = col_rgb[0] / 255.0, col_rgb[1] / 255.0, col_rgb[2] / 255.0
-            pctx.arc(tx_p, ty_p, 14 * p_vis, 0, 2 * math.pi)
-            pctx.set_source_rgba(r_c, g_c, b_c, 0.30 * p_vis)
-            pctx.fill()
-            pctx.arc(tx_p, ty_p, 6, 0, 2 * math.pi)
-            pctx.set_source_rgba(r_c, g_c, b_c, p_vis)
-            pctx.fill_preserve()
-            pctx.set_source_rgba(1, 1, 1, p_vis)
-            pctx.set_line_width(2.0)
-            pctx.stroke()
-            pctx.move_to(tx_p, ty_p)
-            pctx.line_to(bx_l + 140, by_l + 21)
-            pctx.set_source_rgba(r_c, g_c, b_c, 0.90 * p_vis)
-            pctx.set_line_width(2.2)
-            pctx.stroke()
+            gctx.arc(tx_p, ty_p, 16 * p_vis, 0, 2 * math.pi)
+            gctx.set_source_rgba(r_c, g_c, b_c, 0.30 * p_vis)
+            gctx.fill()
+            gctx.arc(tx_p, ty_p, 6.5, 0, 2 * math.pi)
+            gctx.set_source_rgba(r_c, g_c, b_c, p_vis)
+            gctx.fill_preserve()
+            gctx.set_source_rgba(1, 1, 1, p_vis)
+            gctx.set_line_width(2.2)
+            gctx.stroke()
+            gctx.move_to(tx_p, ty_p)
+            gctx.line_to(bx_l + 150, by_l + 22)
+            gctx.set_source_rgba(r_c, g_c, b_c, 0.92 * p_vis)
+            gctx.set_line_width(2.4)
+            gctx.stroke()
 
-        bg.alpha_composite(_cairo_surface_to_pil_rgba(pin_surf))
+        bg.alpha_composite(_cairo_surface_to_pil_rgba(gsurf))
         draw = ImageDraw.Draw(bg, "RGBA")
         for tx_p, ty_p, bx_l, by_l, lbl_p, col_rgb, p_vis in c_pins:
-            if p_vis < 0.15:
+            if p_vis < 0.12:
                 continue
-            f_cp = get_ui_font(14, "display_bold")
-            pw_c = max(210, int(f_cp.getlength(str(lbl_p))) + 34)
-            draw.rounded_rectangle([(bx_l, by_l), (bx_l + pw_c, by_l + 42)], radius=10, fill=(13, 19, 32, 245), outline=(col_rgb[0], col_rgb[1], col_rgb[2], 235), width=2)
-            draw.text((bx_l + 16, by_l + 11), str(lbl_p)[:26], fill=(248, 250, 252, 255), font=f_cp)
+            f_cp = get_ui_font(15, "display_bold")
+            pw_c = max(220, int(f_cp.getlength(str(lbl_p))) + 36)
+            draw.rounded_rectangle([(bx_l, by_l), (bx_l + pw_c, by_l + 44)], radius=10, fill=(13, 19, 32, 244), outline=(col_rgb[0], col_rgb[1], col_rgb[2], 235), width=2)
+            draw.text((bx_l + 18, by_l + 12), str(lbl_p)[:26], fill=(248, 250, 252, 255), font=f_cp)
 
-        # Right Panel: 3-Card Matte Documentary Breakdown (Zero meta-labels!)
-        ux0, uy0, ux1, uy1 = ui_box
-        uw, uh = ux1 - ux0, uy1 - uy0
+        # Single Unified 3D Frosted-Glass Data & Spline Chart Dossier on Right (16:9) or Lower Half (9:16)
+        if not is_short:
+            d_box = (W - 760, 185, W - 52, H - 175)
+        else:
+            d_box = (40, 720, W - 40, 1450)
+        dx0, dy0, dx1, dy1 = d_box
+        dw_c, dh_c = dx1 - dx0, dy1 - dy0
 
-        # Card 1 (Appears on Phrase 1)
-        b1_y0, b1_y1 = uy0, uy0 + int(uh * 0.34) - 8
-        draw.rounded_rectangle([(ux0, b1_y0), (ux1, b1_y1)], radius=18, fill=(16, 23, 38, 255), outline=(64, 80, 104, 225), width=2)
-        draw.rectangle([(ux0, b1_y0 + 20), (ux0 + 6, b1_y1 - 20)], fill=(200, 40, 56, 255))
-        draw.text((ux0 + 24, b1_y0 + 18), f"{c_name}  •  {topic_anc}", fill=(218, 178, 68, 255), font=get_ui_font(13, "mono_bold"))
-        draw.text((ux0 + 24, b1_y0 + 44), fit_whole_words_limit(point_hl, 30), fill=(248, 250, 252, 255), font=get_ui_font(22 if not is_short else 20, "display_bold"))
-        f_b1 = get_ui_font(18 if not is_short else 17, "sans_medium")
-        for l_i, ln_1 in enumerate(wrap_text_px(b_txt, f_b1, uw - 48, max_lines=3)):
-            draw.text((ux0 + 24, b1_y0 + 82 + l_i * 26), ln_1, fill=(203, 213, 225, 255), font=f_b1)
+        # Real Frosted-Glass Blur of the underlying photograph
+        draw_2026_visionos_glass_card(bg, d_box, radius=24, tint=(12, 18, 32, 228), border_col=(212, 175, 55, 200), accent_col=(200, 40, 56), accent_pos="top", blur_px=22)
+        draw = ImageDraw.Draw(bg, "RGBA")
 
-        # Card 2 (Appears on Phrase 2: Key Metric Count-Up + Smooth Matte Gold Area Curve)
-        b2_y0, b2_y1 = uy0 + int(uh * 0.35) + 4, uy0 + int(uh * 0.68) - 4
-        draw.rounded_rectangle([(ux0, b2_y0), (ux1, b2_y1)], radius=18, fill=(16, 23, 38, 255), outline=(64, 80, 104, 225), width=2)
-        draw.text((ux0 + 24, b2_y0 + 18), fit_whole_words_limit(clauses[0].upper(), 28), fill=(148, 163, 184, 255), font=get_ui_font(13, "mono_bold"))
-        stat_main = format_animated_countup_number(str(clean_nums[0])[:14], min(max(sent_prog * 1.2, 0.25), 1.0))
-        draw.text((ux0 + 24, b2_y0 + 46), stat_main, fill=(218, 178, 68, 255), font=get_ui_font(42 if not is_short else 34, "display_black"))
-        sec_stat = fit_whole_words_limit(clauses[1].upper() if len(clauses) > 1 else point_hl, 22)
-        draw.rounded_rectangle([(ux0 + 24, b2_y0 + 108), (ux0 + 265, b2_y0 + 140)], radius=8, fill=(24, 34, 54, 255), outline=(218, 178, 68, 195), width=1)
-        draw.text((ux0 + 36, b2_y0 + 116), sec_stat[:22], fill=(241, 245, 249, 255), font=get_ui_font(13, "display_bold"))
+        draw.text((dx0 + 32, dy0 + 26), f"{c_name}  •  {topic_anc}", fill=(218, 178, 68, 255), font=get_ui_font(14, "mono_bold"))
+        draw.text((dx0 + 32, dy0 + 54), fit_whole_words_limit(point_hl, 32), fill=(248, 250, 252, 255), font=get_ui_font(26 if not is_short else 23, "display_bold"))
 
-        ch_x0, ch_y0, ch_w, ch_h = ux0 + int(uw * 0.46), b2_y0 + 22, int(uw * 0.50), (b2_y1 - b2_y0) - 42
+        f_db = get_ui_font(19 if not is_short else 18, "sans_medium")
+        for l_i, ln_d in enumerate(wrap_text_px(b_txt, f_db, dw_c - 64, max_lines=2)):
+            draw.text((dx0 + 32, dy0 + 94 + l_i * 28), ln_d, fill=(203, 213, 225, 255), font=f_db)
+
+        # Giant Hero Metric + Glowing PyCairo Spline Chart Canvas inside Frosted-Glass Dossier
+        stat_main = format_animated_countup_number(str(clean_nums[0])[:12], min(max(sent_prog * 1.25, 0.25), 1.0))
+        draw.text((dx0 + 32, dy0 + 166), "KEY DATA BENCHMARK", fill=(148, 163, 184, 255), font=get_ui_font(12, "mono_bold"))
+        draw.text((dx0 + 32, dy0 + 188), stat_main, fill=(218, 178, 68, 255), font=get_ui_font(56 if not is_short else 48, "display_black"))
+
+        if len(clean_nums) > 1:
+            draw.rounded_rectangle([(dx0 + 32, dy0 + 262), (dx0 + 255, dy0 + 296)], radius=8, fill=(22, 32, 52, 255), outline=(218, 178, 68, 195), width=1)
+            draw.text((dx0 + 46, dy0 + 271), f"SECONDARY: {str(clean_nums[1])[:14]}", fill=(241, 245, 249, 255), font=get_ui_font(13, "mono_bold"))
+
+        # High-Precision PyCairo Spline Curve with Vertical Grid & Glowing Data Points
+        ch_x0 = dx0 + 300 if not is_short else dx0 + 32
+        ch_y0 = dy0 + 168 if not is_short else dy0 + 315
+        ch_w = (dw_c - 332) if not is_short else (dw_c - 64)
+        ch_h = 185 if not is_short else 175
         csurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, ch_w, ch_h)
         cctx = _pycairo.Context(csurf)
         cctx.set_antialias(_pycairo.ANTIALIAS_BEST)
-        _cairo_rounded_rect(cctx, 0, 0, ch_w, ch_h, 12)
-        cctx.set_source_rgba(0.04, 0.06, 0.11, 1.0)
-        cctx.fill()
-        vals = [0.78, 0.72, 0.68, 0.56, 0.52, 0.38, 0.28, 0.16]
-        pts_c = [(12 + i * (ch_w - 24) / float(len(vals) - 1), 14 + vals[i] * (ch_h - 28)) for i in range(len(vals))]
+        _cairo_rounded_rect(cctx, 0, 0, ch_w, ch_h, 14)
+        cctx.set_source_rgba(0.04, 0.06, 0.11, 0.88)
+        cctx.fill_preserve()
+        cctx.set_source_rgba(0.25, 0.32, 0.44, 0.65)
+        cctx.set_line_width(1.2)
+        cctx.stroke()
+
+        # Subtle internal chart gridlines
+        for gy_i in range(1, 4):
+            gy_c = int(ch_h * gy_i / 4.0)
+            cctx.move_to(14, gy_c)
+            cctx.line_to(ch_w - 14, gy_c)
+            cctx.set_source_rgba(0.25, 0.32, 0.44, 0.28)
+            cctx.set_line_width(1.0)
+            cctx.stroke()
+
+        vals = [0.76, 0.68, 0.72, 0.54, 0.46, 0.32, 0.18]
+        pts_c = [(20 + i * (ch_w - 40) / float(len(vals) - 1), 22 + vals[i] * (ch_h - 44)) for i in range(len(vals))]
         cctx.new_path()
-        cctx.move_to(pts_c[0][0], ch_h - 8)
+        cctx.move_to(pts_c[0][0], ch_h - 12)
         for px_v, py_v in pts_c:
             cctx.line_to(px_v, py_v)
-        cctx.line_to(pts_c[-1][0], ch_h - 8)
+        cctx.line_to(pts_c[-1][0], ch_h - 12)
         cctx.close_path()
         agrad = _pycairo.LinearGradient(0, 0, 0, ch_h)
-        agrad.add_color_stop_rgba(0.0, 0.85, 0.68, 0.22, 0.38)
+        agrad.add_color_stop_rgba(0.0, 0.85, 0.68, 0.22, 0.42)
         agrad.add_color_stop_rgba(1.0, 0.85, 0.68, 0.22, 0.02)
         cctx.set_source(agrad)
         cctx.fill()
+
         cctx.new_path()
         cctx.move_to(pts_c[0][0], pts_c[0][1])
         for px_v, py_v in pts_c[1:]:
             cctx.line_to(px_v, py_v)
-        cctx.set_source_rgba(0.90, 0.74, 0.28, 1.0)
-        cctx.set_line_width(2.8)
+        cctx.set_source_rgba(0.92, 0.76, 0.28, 1.0)
+        cctx.set_line_width(3.2)
         cctx.stroke()
+
+        for px_v, py_v in pts_c[::2]:
+            cctx.arc(px_v, py_v, 4.5, 0, 2 * math.pi)
+            cctx.set_source_rgba(0.98, 0.96, 0.90, 1.0)
+            cctx.fill_preserve()
+            cctx.set_source_rgba(0.85, 0.22, 0.28, 1.0)
+            cctx.set_line_width(2.0)
+            cctx.stroke()
+
         bg.alpha_composite(_cairo_surface_to_pil_rgba(csurf), (ch_x0, ch_y0))
         draw = ImageDraw.Draw(bg, "RGBA")
 
-        # Card 3 (Appears on Phrase 3: Dynamic Clause Breakdown Bars)
-        b3_y0, b3_y1 = uy0 + int(uh * 0.69) + 8, uy1
-        draw.rounded_rectangle([(ux0, b3_y0), (ux1, b3_y1)], radius=18, fill=(16, 23, 38, 255), outline=(64, 80, 104, 225), width=2)
-        draw.text((ux0 + 24, b3_y0 + 16), f"{c_name} OPERATIONAL IMPACT", fill=(218, 178, 68, 255), font=get_ui_font(13, "mono_bold"))
+        # Bottom 2 Clean Documentary Comparison Bars inside the Frosted-Glass Dossier
+        bars_top = dy1 - 155
+        draw.line([(dx0 + 32, bars_top - 16), (dx1 - 32, bars_top - 16)], fill=(51, 65, 85, 200), width=1)
         for r_i in range(2):
-            ry = b3_y0 + 50 + r_i * 48
-            if ry + 24 <= b3_y1 - 12:
-                r_lbl = fit_whole_words_limit(clauses[min(r_i, len(clauses) - 1)].upper(), 22)
-                r_pct = 0.90 if r_i == 0 else 0.72
-                r_col = (218, 178, 68, 255) if r_i == 0 else (148, 163, 184, 255)
-                draw.text((ux0 + 24, ry), r_lbl, fill=(226, 232, 240, 255), font=get_ui_font(14, "sans_semibold"))
-                draw.rounded_rectangle([(ux0 + 24, ry + 24), (ux1 - 24, ry + 34)], radius=5, fill=(30, 41, 59, 255))
-                fw_b = max(18, int((uw - 48) * r_pct * min(max(sent_prog * 1.15, 0.25), 1.0)))
-                draw.rounded_rectangle([(ux0 + 24, ry + 24), (ux0 + 24 + fw_b, ry + 34)], radius=5, fill=r_col)
+            ry = bars_top + r_i * 64
+            r_lbl = fit_whole_words_limit(clauses[min(r_i, len(clauses) - 1)].upper(), 28)
+            r_pct = 0.92 if r_i == 0 else 0.74
+            r_col = (218, 178, 68, 255) if r_i == 0 else (200, 48, 62, 255)
+            draw.text((dx0 + 32, ry), r_lbl, fill=(241, 245, 249, 255), font=get_ui_font(15, "display_bold"))
+            draw.text((dx1 - 95, ry), f"{int(r_pct * 100)}%", fill=r_col, font=get_ui_font(15, "mono_bold"))
+            draw.rounded_rectangle([(dx0 + 32, ry + 26), (dx1 - 32, ry + 38)], radius=6, fill=(24, 34, 52, 255))
+            fw_b = max(24, int((dw_c - 64) * r_pct * min(max(sent_prog * 1.2, 0.25), 1.0)))
+            draw.rounded_rectangle([(dx0 + 32, ry + 26), (dx0 + 32 + fw_b, ry + 38)], radius=6, fill=r_col)
 
         return bg
 
@@ -15658,15 +15774,29 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
                 draw = ImageDraw.Draw(bg, "RGBA")
                 ty_n = ny0_a + 70 + im_h_n
             else:
-                ty_n = ny0_a + 54
+                # On 9:16 Shorts, render a crisp left-side photo thumbnail inside EVERY node card so boxes are NEVER empty!
+                im_w_sh, im_h_sh = int(nw_b * 0.38), nh_b - 68
+                if im_w_sh > 40 and im_h_sh > 40:
+                    nw_src, nh_src = nim.size
+                    mid_im = nim.crop((0, int(nh_src * 0.22), nw_src, int(nh_src * 0.78))) if nh_src > nw_src else nim
+                    sc_sh = max(im_w_sh / float(mid_im.size[0]), im_h_sh / float(mid_im.size[1]))
+                    r_sh = mid_im.resize((int(mid_im.size[0] * sc_sh), int(mid_im.size[1] * sc_sh)), resample_l)
+                    ncrop = r_sh.crop(((r_sh.size[0] - im_w_sh) // 2, (r_sh.size[1] - im_h_sh) // 2, (r_sh.size[0] - im_w_sh) // 2 + im_w_sh, (r_sh.size[1] - im_h_sh) // 2 + im_h_sh)).convert("RGBA")
+                    nmask = Image.new("L", (im_w_sh, im_h_sh), 0)
+                    ImageDraw.Draw(nmask).rounded_rectangle([(0, 0), (im_w_sh - 1, im_h_sh - 1)], radius=12, fill=255)
+                    bg.paste(ncrop, (nx0 + 14, ny0_a + 52), nmask)
+                    draw = ImageDraw.Draw(bg, "RGBA")
+                ty_n = ny0_a + 58
 
-            f_nt = get_ui_font(21 if not is_short else 18, "display_bold")
-            step_lines = wrap_text_px(raw_steps[idx_n].title(), f_nt, nw_b - 36, max_lines=3)
+            tx_node_l = (nx0 + 18) if not is_short else (nx0 + int(nw_b * 0.38) + 28)
+            tw_node_l = (nw_b - 36) if not is_short else (nw_b - int(nw_b * 0.38) - 44)
+            f_nt = get_ui_font(21 if not is_short else 19, "display_bold")
+            step_lines = wrap_text_px(raw_steps[idx_n].title(), f_nt, tw_node_l, max_lines=3)
             for l_i, ln_n in enumerate(step_lines):
-                draw.text((nx0 + 18, ty_n + l_i * 28), ln_n, fill=(248, 250, 252, 255), font=f_nt)
+                draw.text((tx_node_l, ty_n + l_i * 28), ln_n, fill=(248, 250, 252, 255), font=f_nt)
 
-            draw.rounded_rectangle([(nx0 + 18, ny1_a - 52), (nx1 - 18, ny1_a - 16)], radius=8, fill=n_bg_pill, outline=(ncol[0], ncol[1], ncol[2], 210), width=1)
-            draw.text((nx0 + 28, ny1_a - 41), fit_whole_words_limit(raw_steps[idx_n].upper(), 24), fill=(241, 245, 249, 255), font=get_ui_font(13, "mono_bold"))
+            draw.rounded_rectangle([(tx_node_l, ny1_a - 52), (nx1 - 18, ny1_a - 16)], radius=8, fill=n_bg_pill, outline=(ncol[0], ncol[1], ncol[2], 210), width=1)
+            draw.text((tx_node_l + 12, ny1_a - 41), fit_whole_words_limit(raw_steps[idx_n].upper(), 22), fill=(241, 245, 249, 255), font=get_ui_font(13, "mono_bold"))
 
         return bg
 
@@ -17544,8 +17674,9 @@ def build_long_documentary_script(dossier):
     for idx, grp in enumerate(sent_groups):
         body_txt = strip_news_publisher_mentions(" ".join(grp))
         if idx == 0:
-            hook_intro = f"What just unfolded around {t_anc} has triggered an immediate global shockwave, and here is the real story behind the headlines."
-            body_txt = f"{hook_intro} {paraphrase_into_original_creator_voice(dossier['title'], 0, dossier=dossier)} {body_txt}"
+            lead_hook = paraphrase_into_original_creator_voice(dossier["title"], 0, dossier=dossier)
+            if lead_hook.lower()[:28] not in body_txt.lower():
+                body_txt = f"{lead_hook} {body_txt}"
         if idx == len(sent_groups) - 1:
             verdict_outro = build_domain_grounded_conclusion(dossier, body_txt)
             body_txt = f"{body_txt} {verdict_outro}"
@@ -18129,9 +18260,9 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
         # V60 STRICT NARRATIVE INTEGRITY LOCK:
         # When the AI Director has written a coherent chapter (`>= 48 words` or has explicit `beat_visuals`),
         # NEVER append generic `domain_matrix` boilerplate sentences to the end of the chapter!
-        has_ai_beats = isinstance(sec.get("beat_visuals"), list) and len(sec.get("beat_visuals")) >= 2
-        min_w_target = 48 if has_ai_beats else 72
-        while len(nar.split()) < min_w_target:
+        # V81 ZERO MAD-LIBS BOILERPLATE LOCK: Never append robotic `domain_matrix` template sentences to chapters!
+        min_w_target = 18
+        while False and len(nar.split()) < min_w_target:
             add_s = domain_matrix[matrix_cursor % len(domain_matrix)]
             matrix_cursor += 1
             if add_s and add_s[:28].lower() not in nar.lower():
