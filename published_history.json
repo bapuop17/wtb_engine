@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-14T19:11:19.308757",
-  "last_upload_epoch": 1794683479,
-  "round_robin_idx": 8,
-  "country_rot_idx": 68,
-  "bgm_track_counter": 3387894482,
+  "updated_at": "2026-11-15T00:51:19.404960",
+  "last_upload_epoch": 1794703879,
+  "round_robin_idx": 9,
+  "country_rot_idx": 74,
+  "bgm_track_counter": 3417710979,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -702,87 +702,12 @@
     "why_north_carolina_third_congressional_district",
     "united_states_why_north_carolina_third",
     "quad_summit_likely_to_be_held",
-    "why_quad_summit_likely_to_be"
+    "why_quad_summit_likely_to_be",
+    "philippines_why_quad_summit_likely_to",
+    "general_staff_neptune_missiles_strike_uav",
+    "ukraine_neptune_missile_hits_rostov_drone"
   ],
   "event_fingerprints": [
-    {
-      "title": "5 New Foldable Phones To Consider Instead Of The iPhone Duo",
-      "tokens": [
-        "android",
-        "better",
-        "consider",
-        "discover",
-        "features",
-        "five",
-        "foldable",
-        "foldables",
-        "hype",
-        "instead",
-        "iphone",
-        "phones",
-        "pricing",
-        "standout",
-        "versatility",
-        "worth"
-      ]
-    },
-    {
-      "title": "Why a US Senator Is Defending Russia at the G20 \u2013 The Hidden Geopolitical Gamble",
-      "tokens": [
-        "allies",
-        "criticism",
-        "defending",
-        "defends",
-        "despite",
-        "gamble",
-        "geopolitical",
-        "hidden",
-        "presence",
-        "rubio",
-        "russia",
-        "russian",
-        "senator"
-      ]
-    },
-    {
-      "title": "Apple's Foldable iPhone: The $2,000 Tech Trap?",
-      "tokens": [
-        "apple",
-        "consider",
-        "foldable",
-        "instead",
-        "iphone",
-        "phones",
-        "tech",
-        "trap"
-      ]
-    },
-    {
-      "title": "Italy hit by nationwide protests over living costs, public services",
-      "tokens": [
-        "across",
-        "anger",
-        "boils",
-        "cost",
-        "costs",
-        "erupts",
-        "italy",
-        "living",
-        "mass",
-        "military",
-        "nationwide",
-        "protest",
-        "protests",
-        "public",
-        "rising",
-        "sees",
-        "services",
-        "spending",
-        "thousands",
-        "violent",
-        "wages"
-      ]
-    },
     {
       "title": "Why Italy's Cost\u2011of\u2011Living Uprising Could Redraw Europe's Power Map",
       "tokens": [
@@ -8210,10 +8135,91 @@
         "sources",
         "summit"
       ]
+    },
+    {
+      "title": "Philippines: Why Quad Summit Likely to Be Held in Manila on November 17, Sources Say",
+      "tokens": [
+        "held",
+        "likely",
+        "manila",
+        "november",
+        "philippines",
+        "quad",
+        "sources",
+        "summit"
+      ]
+    },
+    {
+      "title": "Why Quad Summit Likely to Be Held in Manila on November 17, Sources Say! #shorts",
+      "tokens": [
+        "held",
+        "likely",
+        "manila",
+        "november",
+        "quad",
+        "shorts",
+        "sources",
+        "summit"
+      ]
+    },
+    {
+      "title": "General Staff: Neptune Missiles Strike UAV Production Facility, Warehouse, and Service Center in Rostov",
+      "tokens": [
+        "center",
+        "centre",
+        "facility",
+        "forces",
+        "fuel",
+        "general",
+        "missiles",
+        "navy",
+        "neptune",
+        "plant",
+        "production",
+        "rocket",
+        "rostov",
+        "russian",
+        "service",
+        "site",
+        "staff",
+        "storage",
+        "strike",
+        "strikes",
+        "successfully",
+        "supplying",
+        "targeted",
+        "ukraine",
+        "ukrainian",
+        "warehouse"
+      ]
+    },
+    {
+      "title": "Ukraine Neptune Missile Hits Rostov Drone Plant: Russia's Supply Chain Breaks",
+      "tokens": [
+        "breaks",
+        "center",
+        "chain",
+        "drone",
+        "facility",
+        "general",
+        "hits",
+        "missile",
+        "missiles",
+        "neptune",
+        "plant",
+        "production",
+        "rostov",
+        "russia",
+        "service",
+        "staff",
+        "strike",
+        "supply",
+        "ukraine",
+        "warehouse"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "SCIENCE",
     "TECHNOLOGY",
     "MIND_BLOWING_FACTS",
@@ -8252,10 +8258,10 @@
     "GEOPOLITICS",
     "AI_ROBOTICS",
     "GEOPOLITICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "Google Trends Viral [IRELAND]",
     "NASA, SpaceX, ESA & Global Space Missions",
     "Ars Technica",
     "Global Country Wire [CUBA \u2022 MIND_BLOWING_FACTS]",
@@ -8294,10 +8300,10 @@
     "Global Country Wire [MOROCCO \u2022 UNDERRATED_GEOPOLITICS]",
     "Global AI, Nvidia, OpenAI & Semiconductor Race",
     "Google Trends USA Viral 24h",
-    "Global Country Wire [OMAN \u2022 GLOBAL_POWERS]"
+    "Global Country Wire [OMAN \u2022 GLOBAL_POWERS]",
+    "Google Trends UK Viral 24h"
   ],
   "last_countries": [
-    "NEW ZEALAND",
     "CHINA",
     "MEXICO",
     "PHILIPPINES",
@@ -8346,7 +8352,8 @@
     "MOROCCO",
     "GLOBAL TECH & AI",
     "UNITED STATES",
-    "PHILIPPINES"
+    "PHILIPPINES",
+    "UKRAINE"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8544,6 +8551,30 @@
       "is_short": true,
       "published_iso": "2026-11-14T19:10:58Z",
       "summary": "World Talk Brief [GEOPOLITICS] original #Shorts case study."
+    },
+    {
+      "video_id": "0Uwcsv9zNsw",
+      "title": "Ukraine Neptune Missile Hits Rostov Drone Plant: Russia's Supply Chain Breaks",
+      "url": "https://www.youtube.com/watch?v=0Uwcsv9zNsw",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/0Uwcsv9zNsw.html",
+      "thumb_url": "https://i.ytimg.com/vi/0Uwcsv9zNsw/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Ukraine",
+      "is_short": false,
+      "published_iso": "2026-11-15T00:44:22Z",
+      "summary": "Ukraine's General Staff confirms a massive Neptune missile strike on Rostov-on-Don, targeting the heart of Russia's drone supply chain. This deep-dive analyzes how a coastal defense system is being used to decapitate Russian UAV production, storage, and repair"
+    },
+    {
+      "video_id": "CMCRzosNFTY",
+      "title": "Ukraine Neptune Missile Hits Rostov Drone Plant: Russia's Supply Chain Breaks",
+      "url": "https://www.youtube.com/shorts/CMCRzosNFTY",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/CMCRzosNFTY.html",
+      "thumb_url": "https://i.ytimg.com/vi/CMCRzosNFTY/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Ukraine",
+      "is_short": true,
+      "published_iso": "2026-11-15T00:50:56Z",
+      "summary": "Ukraine's General Staff confirms a massive Neptune missile strike on Rostov-on-Don, targeting the heart of Russia's drone supply chain. This deep-dive analyzes how a coastal defense system is being used to decapitate Russian UAV production, storage, and repair"
     }
   ]
 }
