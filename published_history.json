@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-15T07:40:35.581114",
-  "last_upload_epoch": 1794728435,
-  "round_robin_idx": 12,
-  "country_rot_idx": 17,
-  "bgm_track_counter": 3458788590,
+  "updated_at": "2026-11-15T13:34:44.638800",
+  "last_upload_epoch": 1794749684,
+  "round_robin_idx": 13,
+  "country_rot_idx": 23,
+  "bgm_track_counter": 3471543717,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -713,60 +713,11 @@
     "why_fact_check_iranian_content_farms",
     "united_states_why_fact_check_iranian",
     "saudi_led_coalition_says_it_intercepts",
-    "saudi_s_gen_turki_al_maliki"
+    "saudi_s_gen_turki_al_maliki",
+    "saudi_arabia_saudi_s_gen_turki",
+    "lutnick_under_fire_how_trump_s"
   ],
   "event_fingerprints": [
-    {
-      "title": "Egypt Silences Last Free Voice: Lina Attalah Arrested",
-      "tokens": [
-        "arrested",
-        "attalah",
-        "egypt",
-        "free",
-        "last",
-        "lina",
-        "silences",
-        "voice"
-      ]
-    },
-    {
-      "title": "Turkey's Secret Libya Deal Just Broke The Mediterranean",
-      "tokens": [
-        "broke",
-        "deal",
-        "just",
-        "libya",
-        "mediterranean",
-        "turkey"
-      ]
-    },
-    {
-      "title": "Serbian Students Just Broke Europe's Political Model",
-      "tokens": [
-        "broke",
-        "europe",
-        "just",
-        "model",
-        "political",
-        "serbian",
-        "students"
-      ]
-    },
-    {
-      "title": "BREAKING UPDATE: Egypt fines prominent editor Lina Attalah and shuts independent news",
-      "tokens": [
-        "attalah",
-        "breaking",
-        "editor",
-        "egypt",
-        "fines",
-        "independent",
-        "lina",
-        "prominent",
-        "shuts",
-        "update"
-      ]
-    },
     {
       "title": "Canada's Historic Spacewalk: ISS Power Upgraded",
       "tokens": [
@@ -8206,10 +8157,82 @@
         "targeting",
         "turki"
       ]
+    },
+    {
+      "title": "Saudi Arabia: Saudi's Gen. Turki al-Maliki: Coalition Intercepts 2 Houthi Missiles",
+      "tokens": [
+        "arabia",
+        "coalition",
+        "houthi",
+        "intercepts",
+        "maliki",
+        "missiles",
+        "saudi",
+        "turki"
+      ]
+    },
+    {
+      "title": "Saudi's Gen. Turki al-Maliki: Coalition Intercepts 2 Houthi Missiles! #shorts",
+      "tokens": [
+        "coalition",
+        "houthi",
+        "intercepts",
+        "maliki",
+        "missiles",
+        "saudi",
+        "shorts",
+        "turki"
+      ]
+    },
+    {
+      "title": "Lutnick under fire: How Trump's commerce secretary cultivated Nvidia's CEO while chip controls slipped",
+      "tokens": [
+        "chief",
+        "chip",
+        "commerce",
+        "controls",
+        "criticized",
+        "cultivated",
+        "discussing",
+        "exports",
+        "familiar",
+        "fire",
+        "future",
+        "house",
+        "howard",
+        "lutnick",
+        "nvidia",
+        "people",
+        "resignation",
+        "secretary",
+        "slipped",
+        "trump",
+        "under",
+        "while",
+        "white"
+      ]
+    },
+    {
+      "title": "Lutnick Under Fire: How Trump's Commerce Chief Failed Nvidia",
+      "tokens": [
+        "chief",
+        "chip",
+        "commerce",
+        "controls",
+        "cultivated",
+        "failed",
+        "fire",
+        "lutnick",
+        "nvidia",
+        "secretary",
+        "slipped",
+        "trump",
+        "under",
+        "while"
+      ]
     }
   ],
   "last_categories": [
-    "INDIA_TRENDING",
     "MIND_BLOWING_FACTS",
     "UNDERRATED_GEOPOLITICS",
     "HEALTH",
@@ -8248,10 +8271,10 @@
     "GEOPOLITICS",
     "AI_ROBOTICS",
     "GEOPOLITICS",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Google World Top Headlines (US/Global)",
     "Global Country Wire [MALAYSIA \u2022 MIND_BLOWING_FACTS]",
     "Global Country Wire [PAKISTAN \u2022 UNDERRATED_GEOPOLITICS]",
     "Global Country Wire [ITALY \u2022 HEALTH]",
@@ -8290,10 +8313,10 @@
     "Google Trends UK Viral 24h",
     "DW World News (Europe & Global)",
     "DW World News (Europe & Global)",
-    "Google Trends Viral [SAUDI ARABIA]"
+    "Google Trends Viral [SAUDI ARABIA]",
+    "Global Country Wire [SOUTH KOREA \u2022 GLOBAL_POWERS]"
   ],
   "last_countries": [
-    "GLOBAL BRIEFING",
     "NIGERIA",
     "FRANCE",
     "GLOBAL TECH & AI",
@@ -8342,7 +8365,8 @@
     "UKRAINE",
     "NIGERIA",
     "UNITED STATES",
-    "SAUDI ARABIA"
+    "SAUDI ARABIA",
+    "UNITED STATES"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8636,6 +8660,30 @@
       "is_short": true,
       "published_iso": "2026-11-15T07:40:14Z",
       "summary": "Saudi air defenses shot down two Iranian-backed Houthi ballistic missiles targeting the capital Riyadh, while drones struck the kingdom's oil-rich Eastern Province. Coalition spokesman General Turki Al-Maliki confirmed the intercepts on X, marking a sharp esca"
+    },
+    {
+      "video_id": "IJMx6c8njuU",
+      "title": "United States: Lutnick Under Fire: How Trump's Commerce Chief Failed Nvidia Explained",
+      "url": "https://www.youtube.com/watch?v=IJMx6c8njuU",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/IJMx6c8njuU.html",
+      "thumb_url": "https://i.ytimg.com/vi/IJMx6c8njuU/maxresdefault.jpg",
+      "pillar": "AI_ROBOTICS",
+      "country": "United States",
+      "is_short": false,
+      "published_iso": "2026-11-15T13:27:13Z",
+      "summary": "Commerce Secretary Howard Lutnick is facing intense scrutiny after revelations that he cultivated a close relationship with Nvidia CEO Jensen Huang while US chip export controls to China slipped. This documentary breaks down the internal White House tensions, "
+    },
+    {
+      "video_id": "IeC75L1K6rQ",
+      "title": "Lutnick Under Fire: How Trump's Commerce Chief Failed Nvidia",
+      "url": "https://www.youtube.com/shorts/IeC75L1K6rQ",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/IeC75L1K6rQ.html",
+      "thumb_url": "https://i.ytimg.com/vi/IeC75L1K6rQ/maxresdefault.jpg",
+      "pillar": "AI_ROBOTICS",
+      "country": "United States",
+      "is_short": true,
+      "published_iso": "2026-11-15T13:34:22Z",
+      "summary": "The White House is quietly discussing whether Commerce Secretary Howard Lutnick survives the week. The trigger isn't a tariff or a trade war \u2014 it's the Nvidia H100, the most valuable AI chip on earth, and an alleged Chinese spy scandal that has now pulled the "
     }
   ]
 }
