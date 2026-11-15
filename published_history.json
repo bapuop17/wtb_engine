@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-15T05:37:39.665612",
-  "last_upload_epoch": 1794721059,
+  "updated_at": "2026-11-15T06:08:55.360182",
+  "last_upload_epoch": 1794722935,
   "round_robin_idx": 11,
   "country_rot_idx": 11,
   "bgm_track_counter": 3452207693,
@@ -710,49 +710,10 @@
     "nigeria_s_upcoming_election_marred_by",
     "nigeria_2027_election_crisis_ai_deepfakes",
     "fact_check_iranian_content_farms_reach",
-    "why_fact_check_iranian_content_farms"
+    "why_fact_check_iranian_content_farms",
+    "united_states_why_fact_check_iranian"
   ],
   "event_fingerprints": [
-    {
-      "title": "Flock keeps ignoring requests to cancel its contracts",
-      "tokens": [
-        "cancel",
-        "canceling",
-        "cities",
-        "city",
-        "contracts",
-        "council",
-        "difficult",
-        "discovering",
-        "flock",
-        "ignoring",
-        "instances",
-        "just",
-        "keeps",
-        "many",
-        "minnesota",
-        "more",
-        "plymouth",
-        "requests",
-        "safety",
-        "some",
-        "their",
-        "vote",
-        "while"
-      ]
-    },
-    {
-      "title": "Flock keeps ignoring requests to cancel its contracts | Technology Explained",
-      "tokens": [
-        "cancel",
-        "contracts",
-        "flock",
-        "ignoring",
-        "keeps",
-        "requests",
-        "technology"
-      ]
-    },
     {
       "title": "Why US Farmers Are Betraying The GOP Before Midterms",
       "tokens": [
@@ -8200,6 +8161,33 @@
         "iranian",
         "millions",
         "reach"
+      ]
+    },
+    {
+      "title": "United States: Why Fact Check: 'Iranian' Content Farms Reach Millions Explained",
+      "tokens": [
+        "check",
+        "content",
+        "fact",
+        "farms",
+        "iranian",
+        "millions",
+        "reach",
+        "states",
+        "united"
+      ]
+    },
+    {
+      "title": "Why Fact Check: 'Iranian' Content Farms Reach Millions! #shorts",
+      "tokens": [
+        "check",
+        "content",
+        "fact",
+        "farms",
+        "iranian",
+        "millions",
+        "reach",
+        "shorts"
       ]
     }
   ],
