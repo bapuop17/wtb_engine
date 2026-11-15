@@ -13605,23 +13605,22 @@ try:
     import cairo as _pycairo
     HAS_PYCAIRO_V78 = True
 except Exception:
-    # Auto-install python3-cairo / pycairo on GitHub Actions if user only updated wtb_engine.py!
+    # Auto-install libcairo2-dev + pkg-config + pycairo into active Python (`sys.executable`) on GitHub Actions!
     try:
         import subprocess as _sp_c
         if os.environ.get("GITHUB_ACTIONS") == "true" or sys.platform.startswith("linux"):
-            _sp_c.run(["sudo", "-n", "apt-get", "update", "-qq"], timeout=25, check=False)
-            _sp_c.run(["sudo", "-n", "apt-get", "install", "-y", "-qq", "python3-cairo", "python3-shapely", "fonts-inter", "fonts-crosextra-caladea", "fonts-noto-mono"], timeout=45, check=False)
+            _sp_c.run(["sudo", "-n", "apt-get", "update", "-qq"], timeout=30, check=False)
+            _sp_c.run([
+                "sudo", "-n", "apt-get", "install", "-y", "-qq",
+                "libcairo2-dev", "pkg-config", "python3-cairo", "python3-shapely",
+                "fonts-inter", "fonts-crosextra-caladea", "fonts-noto-mono"
+            ], timeout=60, check=False)
+        _sp_c.run([sys.executable, "-m", "pip", "install", "-q", "pycairo", "shapely"], timeout=60, check=False)
         import cairo as _pycairo
         HAS_PYCAIRO_V78 = True
     except Exception:
-        try:
-            import subprocess as _sp_c2
-            _sp_c2.run([sys.executable, "-m", "pip", "install", "-q", "pycairo", "shapely"], timeout=45, check=False)
-            import cairo as _pycairo
-            HAS_PYCAIRO_V78 = True
-        except Exception:
-            _pycairo = None
-            HAS_PYCAIRO_V78 = False
+        _pycairo = None
+        HAS_PYCAIRO_V78 = False
 
 
 def _cairo_surface_to_pil_rgba(surface):
@@ -13641,6 +13640,21 @@ def _cairo_rounded_rect(ctx, x, y, w, h, r):
     ctx.arc(x + r, y + h - r, r, math.pi / 2, math.pi)
     ctx.arc(x + r, y + r, r, math.pi, 3 * math.pi / 2)
     ctx.close_path()
+
+
+def _apply_vertical_gradient_pil(bg_rgba, y_start_frac, y_end_frac, end_alpha=215):
+    W, H = bg_rgba.size
+    y0 = int(H * y_start_frac)
+    y1 = max(y0 + 1, int(H * y_end_frac))
+    grad = np.zeros((H, W, 4), dtype=np.uint8)
+    grad[:, :, 0] = 6
+    grad[:, :, 1] = 10
+    grad[:, :, 2] = 20
+    ramp = np.linspace(0, end_alpha, y1 - y0, dtype=np.uint8)
+    grad[y0:y1, :, 3] = ramp[:, None]
+    if y1 < H:
+        grad[y1:, :, 3] = end_alpha
+    bg_rgba.alpha_composite(Image.fromarray(grad, "RGBA"))
 
 
 def _apply_3d_perspective_tilt_v80(card_rgba, tilt_x_deg=0.0, tilt_y_deg=0.0):
@@ -13944,6 +13958,8 @@ def render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=True
     def proj_fn(lat_p, lon_p):
         return _latlon_to_mercator_xy(lat_p, lon_p, W, H, center_lat=view_center_lat, center_lon=view_center_lon, zoom_scale=cur_zoom)
 
+    if _pycairo is None:
+        return Image.new("RGBA", (W, H), (12, 18, 32, 255))
     surf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
     ctx = _pycairo.Context(surf)
     ctx.set_antialias(_pycairo.ANTIALIAS_BEST)
@@ -14337,32 +14353,31 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
     if mode in ("DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD", "TS_28_STUDIO_QUOTE_PRESS_MONITOR"):
         bg = src_im.convert("RGBA")
 
-        # Soft documentary depth gradient on lower third & left edge
-        vsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
-        vctx = _pycairo.Context(vsurf)
-        lgrad = _pycairo.LinearGradient(0, H * 0.38, 0, H)
-        lgrad.add_color_stop_rgba(0.0, 0.03, 0.05, 0.09, 0.05)
-        lgrad.add_color_stop_rgba(1.0, 0.03, 0.05, 0.10, 0.86)
-        vctx.set_source(lgrad)
-        vctx.paint()
-
-        # Pin-point leader line on the main subject that draws in smoothly on Phrase 2
-        if p_phrase2 > 0.05:
-            tx_c, ty_c = int(W * 0.55), int(H * 0.42)
-            vctx.arc(tx_c, ty_c, 7, 0, 2 * math.pi)
-            vctx.set_source_rgba(0.85, 0.68, 0.22, p_phrase2)
-            vctx.fill_preserve()
-            vctx.set_source_rgba(1.0, 1.0, 1.0, p_phrase2)
-            vctx.set_line_width(2.0)
-            vctx.stroke()
-            vctx.move_to(tx_c, ty_c)
-            vctx.line_to(tx_c + int(85 * p_phrase2), ty_c - int(75 * p_phrase2))
-            vctx.line_to(tx_c + int(310 * p_phrase2), ty_c - int(75 * p_phrase2))
-            vctx.set_source_rgba(0.85, 0.68, 0.22, p_phrase2)
-            vctx.set_line_width(2.4)
-            vctx.stroke()
-
-        bg.alpha_composite(_cairo_surface_to_pil_rgba(vsurf))
+        if _pycairo is not None:
+            vsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+            vctx = _pycairo.Context(vsurf)
+            lgrad = _pycairo.LinearGradient(0, H * 0.38, 0, H)
+            lgrad.add_color_stop_rgba(0.0, 0.03, 0.05, 0.09, 0.05)
+            lgrad.add_color_stop_rgba(1.0, 0.03, 0.05, 0.10, 0.86)
+            vctx.set_source(lgrad)
+            vctx.paint()
+            if p_phrase2 > 0.05:
+                tx_c, ty_c = int(W * 0.55), int(H * 0.42)
+                vctx.arc(tx_c, ty_c, 7, 0, 2 * math.pi)
+                vctx.set_source_rgba(0.85, 0.68, 0.22, p_phrase2)
+                vctx.fill_preserve()
+                vctx.set_source_rgba(1.0, 1.0, 1.0, p_phrase2)
+                vctx.set_line_width(2.0)
+                vctx.stroke()
+                vctx.move_to(tx_c, ty_c)
+                vctx.line_to(tx_c + int(85 * p_phrase2), ty_c - int(75 * p_phrase2))
+                vctx.line_to(tx_c + int(310 * p_phrase2), ty_c - int(75 * p_phrase2))
+                vctx.set_source_rgba(0.85, 0.68, 0.22, p_phrase2)
+                vctx.set_line_width(2.4)
+                vctx.stroke()
+            bg.alpha_composite(_cairo_surface_to_pil_rgba(vsurf))
+        else:
+            _apply_vertical_gradient_pil(bg, 0.38, 1.0, 215)
         draw = ImageDraw.Draw(bg, "RGBA")
 
         if p_phrase2 > 0.25:
@@ -14503,6 +14518,8 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
     #                   Glowing PyCairo Spline Curve with Data Nodes, and Synced Comparison Bars!
     # ==========================================================================
     if mode == "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD":
+        if _pycairo is None:
+            return render_v78_claude_2026_ui_archetype_frame("V82_CINEMA_02_GLASS_STORY_SIDEBAR", beat, local_t, W, H, is_short=is_short)
         bg = src_im.convert("RGBA")
 
         # Smooth cinematic gradient shading on the right (16:9) or bottom (9:16) so the full photo breathes
@@ -14771,6 +14788,8 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
     #                 & SEQUENTIAL PHRASE-SYNCED REVEAL (`TS_04_DOMINO_CHAIN_FLOWCHART`)
     # ==========================================================================
     if mode == "TS_04_DOMINO_CHAIN_FLOWCHART":
+        if _pycairo is None:
+            return render_v78_claude_2026_ui_archetype_frame("V82_CINEMA_02_GLASS_STORY_SIDEBAR", beat, local_t, W, H, is_short=is_short)
         bg = Image.new("RGBA", (W, H), (11, 16, 28, 255))
         draw = ImageDraw.Draw(bg, "RGBA")
         for gx in range(40, W - 24, 40):
@@ -14892,6 +14911,8 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
     #                 (`GEO_08_MILITARY_FIREPOWER_RADAR`)
     # ==========================================================================
     if mode == "GEO_08_MILITARY_FIREPOWER_RADAR":
+        if _pycairo is None:
+            return render_v78_claude_2026_ui_archetype_frame("V82_CINEMA_02_GLASS_STORY_SIDEBAR", beat, local_t, W, H, is_short=is_short)
         bg = Image.new("RGBA", (W, H), (11, 16, 28, 255))
         draw = ImageDraw.Draw(bg, "RGBA")
 
@@ -15055,14 +15076,17 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
     if mode == "V82_CINEMA_01_KINETIC_LOWER_THIRD":
         bg = src_im.convert("RGBA")
         # Subtle lower-third cinema shadow gradient so the 1080p image stays 88% unobstructed
-        gsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
-        gctx = _pycairo.Context(gsurf)
-        lgrad = _pycairo.LinearGradient(0, H * 0.52, 0, H)
-        lgrad.add_color_stop_rgba(0.0, 0.02, 0.04, 0.08, 0.0)
-        lgrad.add_color_stop_rgba(1.0, 0.02, 0.04, 0.09, 0.84)
-        gctx.set_source(lgrad)
-        gctx.paint()
-        bg.alpha_composite(_cairo_surface_to_pil_rgba(gsurf))
+        if _pycairo is not None:
+            gsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+            gctx = _pycairo.Context(gsurf)
+            lgrad = _pycairo.LinearGradient(0, H * 0.52, 0, H)
+            lgrad.add_color_stop_rgba(0.0, 0.02, 0.04, 0.08, 0.0)
+            lgrad.add_color_stop_rgba(1.0, 0.02, 0.04, 0.09, 0.84)
+            gctx.set_source(lgrad)
+            gctx.paint()
+            bg.alpha_composite(_cairo_surface_to_pil_rgba(gsurf))
+        else:
+            _apply_vertical_gradient_pil(bg, 0.52, 1.0, 210)
 
         # Sleek lower-left kinetic banner that slides in and highlights the active spoken phrase
         active_clause = clauses[0] if local_t < beat_dur_t * 0.36 else (clauses[1] if (len(clauses) > 1 and local_t < beat_dur_t * 0.70) else clauses[-1])
@@ -15122,43 +15146,49 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
 
     if mode == "V82_CINEMA_03_OPTICAL_TARGET_CALLOUT":
         bg = src_im.convert("RGBA")
-        tsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
-        tctx = _pycairo.Context(tsurf)
-        tctx.set_antialias(_pycairo.ANTIALIAS_BEST)
-
         tx_c = int(W * 0.44) if not is_short else int(W * 0.50)
         ty_c = int(H * 0.44) if not is_short else int(H * 0.38)
         ring_r = 46.0 + 6.0 * math.sin(local_t * 3.5)
-
-        tctx.arc(tx_c, ty_c, ring_r, 0, 2 * math.pi)
-        tctx.set_source_rgba(0.88, 0.72, 0.24, 0.88 * p_phrase1)
-        tctx.set_line_width(2.4)
-        tctx.set_dash([14.0, 8.0], local_t * 24.0)
-        tctx.stroke()
-        tctx.set_dash([])
-
-        tctx.arc(tx_c, ty_c, 7.0, 0, 2 * math.pi)
-        tctx.set_source_rgba(0.86, 0.20, 0.28, p_phrase1)
-        tctx.fill_preserve()
-        tctx.set_source_rgba(1.0, 1.0, 1.0, p_phrase1)
-        tctx.set_line_width(2.0)
-        tctx.stroke()
-
         if not is_short:
             kx0, ky0 = tx_c + 88, max(118, ty_c - 105)
             kw_c, kh_c = 560, 168
-            tctx.move_to(tx_c + 7, ty_c - 4)
-            tctx.line_to(tx_c + 52, ky0 + 36)
-            tctx.line_to(kx0, ky0 + 36)
         else:
             kx0, ky0 = 40, int(H * 0.52)
             kw_c, kh_c = W - 80, 175
-            tctx.move_to(tx_c, ty_c + 7)
-            tctx.line_to(tx_c, ky0)
-        tctx.set_source_rgba(0.88, 0.72, 0.24, 0.95 * p_phrase1)
-        tctx.set_line_width(2.5)
-        tctx.stroke()
-        bg.alpha_composite(_cairo_surface_to_pil_rgba(tsurf))
+
+        if _pycairo is not None:
+            tsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+            tctx = _pycairo.Context(tsurf)
+            tctx.set_antialias(_pycairo.ANTIALIAS_BEST)
+            tctx.arc(tx_c, ty_c, ring_r, 0, 2 * math.pi)
+            tctx.set_source_rgba(0.88, 0.72, 0.24, 0.88 * p_phrase1)
+            tctx.set_line_width(2.4)
+            tctx.set_dash([14.0, 8.0], local_t * 24.0)
+            tctx.stroke()
+            tctx.set_dash([])
+            tctx.arc(tx_c, ty_c, 7.0, 0, 2 * math.pi)
+            tctx.set_source_rgba(0.86, 0.20, 0.28, p_phrase1)
+            tctx.fill_preserve()
+            tctx.set_source_rgba(1.0, 1.0, 1.0, p_phrase1)
+            tctx.set_line_width(2.0)
+            tctx.stroke()
+            if not is_short:
+                tctx.move_to(tx_c + 7, ty_c - 4)
+                tctx.line_to(tx_c + 52, ky0 + 36)
+                tctx.line_to(kx0, ky0 + 36)
+            else:
+                tctx.move_to(tx_c, ty_c + 7)
+                tctx.line_to(tx_c, ky0)
+            tctx.set_source_rgba(0.88, 0.72, 0.24, 0.95 * p_phrase1)
+            tctx.set_line_width(2.5)
+            tctx.stroke()
+            bg.alpha_composite(_cairo_surface_to_pil_rgba(tsurf))
+        else:
+            td = ImageDraw.Draw(bg, "RGBA")
+            rr_i = int(ring_r)
+            td.ellipse([(tx_c - rr_i, ty_c - rr_i), (tx_c + rr_i, ty_c + rr_i)], outline=(218, 178, 68, 220), width=3)
+            td.ellipse([(tx_c - 7, ty_c - 7), (tx_c + 7, ty_c + 7)], fill=(218, 52, 68, 255), outline=(255, 255, 255, 255), width=2)
+            td.line([(tx_c, ty_c), (kx0, ky0 + 36)], fill=(218, 178, 68, 235), width=3)
 
         card_p = Image.new("RGBA", (kw_c + 16, kh_c + 16), (0, 0, 0, 0))
         cpd = ImageDraw.Draw(card_p, "RGBA")
@@ -15183,18 +15213,21 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         md.polygon([(split_top_x, 0), (W, 0), (W, H), (split_bot_x, H)], fill=255)
         bg.paste(right_im, (0, 0), mask_diag)
 
-        dsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
-        dctx = _pycairo.Context(dsurf)
-        dctx.set_antialias(_pycairo.ANTIALIAS_BEST)
-        dctx.move_to(split_top_x, 0)
-        dctx.line_to(split_bot_x, H)
-        dctx.set_source_rgba(0.88, 0.72, 0.24, 0.35)
-        dctx.set_line_width(12.0)
-        dctx.stroke_preserve()
-        dctx.set_source_rgba(0.96, 0.82, 0.32, 0.98)
-        dctx.set_line_width(3.2)
-        dctx.stroke()
-        bg.alpha_composite(_cairo_surface_to_pil_rgba(dsurf))
+        if _pycairo is not None:
+            dsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+            dctx = _pycairo.Context(dsurf)
+            dctx.set_antialias(_pycairo.ANTIALIAS_BEST)
+            dctx.move_to(split_top_x, 0)
+            dctx.line_to(split_bot_x, H)
+            dctx.set_source_rgba(0.88, 0.72, 0.24, 0.35)
+            dctx.set_line_width(12.0)
+            dctx.stroke_preserve()
+            dctx.set_source_rgba(0.96, 0.82, 0.32, 0.98)
+            dctx.set_line_width(3.2)
+            dctx.stroke()
+            bg.alpha_composite(_cairo_surface_to_pil_rgba(dsurf))
+        else:
+            ImageDraw.Draw(bg, "RGBA").line([(split_top_x, 0), (split_bot_x, H)], fill=(218, 178, 68, 255), width=4)
 
         draw = ImageDraw.Draw(bg, "RGBA")
         bw_d = 760 if not is_short else (W - 64)
@@ -15211,14 +15244,17 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
 
     if mode == "V82_CINEMA_05_EDITORIAL_QUOTE_SPOTLIGHT":
         bg = src_im.convert("RGBA")
-        qsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
-        qctx = _pycairo.Context(qsurf)
-        lgrad = _pycairo.LinearGradient(0, H * 0.45, 0, H)
-        lgrad.add_color_stop_rgba(0.0, 0.02, 0.04, 0.08, 0.05)
-        lgrad.add_color_stop_rgba(1.0, 0.02, 0.04, 0.10, 0.88)
-        qctx.set_source(lgrad)
-        qctx.paint()
-        bg.alpha_composite(_cairo_surface_to_pil_rgba(qsurf))
+        if _pycairo is not None:
+            qsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
+            qctx = _pycairo.Context(qsurf)
+            lgrad = _pycairo.LinearGradient(0, H * 0.45, 0, H)
+            lgrad.add_color_stop_rgba(0.0, 0.02, 0.04, 0.08, 0.05)
+            lgrad.add_color_stop_rgba(1.0, 0.02, 0.04, 0.10, 0.88)
+            qctx.set_source(lgrad)
+            qctx.paint()
+            bg.alpha_composite(_cairo_surface_to_pil_rgba(qsurf))
+        else:
+            _apply_vertical_gradient_pil(bg, 0.45, 1.0, 220)
 
         qw_c = 1040 if not is_short else (W - 64)
         qh_c = 148 if not is_short else 164
