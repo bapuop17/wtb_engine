@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-15T19:37:49.058568",
-  "last_upload_epoch": 1794771469,
-  "round_robin_idx": 14,
-  "country_rot_idx": 29,
-  "bgm_track_counter": 3491484034,
+  "updated_at": "2026-11-16T00:22:18.074998",
+  "last_upload_epoch": 1794788538,
+  "round_robin_idx": 15,
+  "country_rot_idx": 35,
+  "bgm_track_counter": 3506130537,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -717,51 +717,11 @@
     "saudi_arabia_saudi_s_gen_turki",
     "lutnick_under_fire_how_trump_s",
     "united_states_lutnick_under_fire_how",
-    "estonia_to_close_border_with_russia"
+    "estonia_to_close_border_with_russia",
+    "zelensky_urges_us_and_musk_to",
+    "zelensky_vs_musk_starlink_cut_threatens"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why Israel's Election Hinges On 17 Arab Seats",
-      "tokens": [
-        "arab",
-        "election",
-        "hinges",
-        "israel",
-        "seats"
-      ]
-    },
-    {
-      "title": "Why Kylian Mbappe Just Lost Everything in China",
-      "tokens": [
-        "china",
-        "everything",
-        "just",
-        "kylian",
-        "lost",
-        "mbappe"
-      ]
-    },
-    {
-      "title": "Why Gaza's Fourth Winter Is The Ultimate Test Of Survival",
-      "tokens": [
-        "fourth",
-        "gaza",
-        "survival",
-        "test",
-        "ultimate",
-        "winter"
-      ]
-    },
-    {
-      "title": "Oscars Just Went Global: The YouTube Shock",
-      "tokens": [
-        "just",
-        "oscars",
-        "shock",
-        "went",
-        "youtube"
-      ]
-    },
     {
       "title": "Trump's Midterm Nightmare: Why Polls Lie",
       "tokens": [
@@ -8254,10 +8214,78 @@
         "warfare",
         "will"
       ]
+    },
+    {
+      "title": "Estonia to Close Border with Russia After 'sabotage Attack' on Defense Firm Explained",
+      "tokens": [
+        "attack",
+        "border",
+        "close",
+        "defense",
+        "estonia",
+        "firm",
+        "russia",
+        "sabotage"
+      ]
+    },
+    {
+      "title": "Estonia to Close Border with Russia After 'sabotage Attack' on Defense! #shorts",
+      "tokens": [
+        "attack",
+        "border",
+        "close",
+        "defense",
+        "estonia",
+        "russia",
+        "sabotage",
+        "shorts"
+      ]
+    },
+    {
+      "title": "Zelensky urges US and Musk to lift Starlink restrictions and be on 'right side of history'",
+      "tokens": [
+        "attacks",
+        "difficult",
+        "down",
+        "hampering",
+        "internet",
+        "lift",
+        "making",
+        "musk",
+        "president",
+        "restrictions",
+        "right",
+        "russian",
+        "side",
+        "slowed",
+        "speed",
+        "starlink",
+        "starshield",
+        "stop",
+        "ukraine",
+        "ukrainian",
+        "urges",
+        "volodymyr",
+        "zelensky"
+      ]
+    },
+    {
+      "title": "Zelensky vs Musk: Starlink Cut Threatens Ukraine",
+      "tokens": [
+        "lift",
+        "musk",
+        "restrictions",
+        "right",
+        "side",
+        "starlink",
+        "threatens",
+        "ukraine",
+        "urges",
+        "zelensky"
+      ]
     }
   ],
   "last_categories": [
-    "UNDERRATED_GEOPOLITICS",
     "HEALTH",
     "GEOPOLITICS",
     "STOCK_MARKETS",
@@ -8296,10 +8324,10 @@
     "GEOPOLITICS",
     "GEOPOLITICS",
     "AI_ROBOTICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "Global Country Wire [PAKISTAN \u2022 UNDERRATED_GEOPOLITICS]",
     "Global Country Wire [ITALY \u2022 HEALTH]",
     "DW World News (Europe & Global)",
     "Global Country Wire [THAILAND \u2022 STOCK_MARKETS]",
@@ -8338,10 +8366,10 @@
     "DW World News (Europe & Global)",
     "Google Trends Viral [SAUDI ARABIA]",
     "Global Country Wire [SOUTH KOREA \u2022 GLOBAL_POWERS]",
-    "Global Superpowers Geopolitics 24h"
+    "Global Superpowers Geopolitics 24h",
+    "BBC World Global"
   ],
   "last_countries": [
-    "FRANCE",
     "GLOBAL TECH & AI",
     "GLOBAL CINEMA",
     "SPACE & SCIENCE",
@@ -8390,7 +8418,8 @@
     "UNITED STATES",
     "SAUDI ARABIA",
     "UNITED STATES",
-    "RUSSIA"
+    "RUSSIA",
+    "UKRAINE"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8732,6 +8761,30 @@
       "is_short": true,
       "published_iso": "2026-11-15T19:37:27Z",
       "summary": "Estonia is closing all border crossings with Russia after authorities foiled a GRU-linked arson attack on drone manufacturer Threod Systems. Prime Minister Kristen Michal accuses Moscow of hybrid warfare, marking a major escalation on NATO's eastern flank. Thi"
+    },
+    {
+      "video_id": "-lAUgYUBgXg",
+      "title": "Zelensky vs Musk: Starlink Cut Threatens Ukraine | Geopolitical Case Study",
+      "url": "https://www.youtube.com/watch?v=-lAUgYUBgXg",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/-lAUgYUBgXg.html",
+      "thumb_url": "https://i.ytimg.com/vi/-lAUgYUBgXg/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Ukraine",
+      "is_short": false,
+      "published_iso": "2026-11-16T00:12:32Z",
+      "summary": "In a shocking geopolitical twist, Ukrainian President Volodymyr Zelensky has publicly urged Elon Musk and the US administration to lift Starlink restrictions, warning that slowed internet speeds are crippling Ukraine's ability to intercept Russian drones. This"
+    },
+    {
+      "video_id": "Kv-L0oiMXEY",
+      "title": "Zelensky vs Musk: Starlink Cut Threatens Ukraine",
+      "url": "https://www.youtube.com/shorts/Kv-L0oiMXEY",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/Kv-L0oiMXEY.html",
+      "thumb_url": "https://i.ytimg.com/vi/Kv-L0oiMXEY/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Ukraine",
+      "is_short": true,
+      "published_iso": "2026-11-16T00:21:55Z",
+      "summary": "In a shocking geopolitical twist, Ukrainian President Volodymyr Zelensky has publicly urged Elon Musk and the US administration to lift Starlink restrictions, warning that slowed internet speeds are crippling Ukraine's ability to intercept Russian drones. This"
     }
   ]
 }
