@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-16T07:32:55.411445",
-  "last_upload_epoch": 1794814375,
-  "round_robin_idx": 17,
-  "country_rot_idx": 47,
-  "bgm_track_counter": 3525896024,
+  "updated_at": "2026-11-16T11:01:17.778088",
+  "last_upload_epoch": 1794826877,
+  "round_robin_idx": 18,
+  "country_rot_idx": 53,
+  "bgm_track_counter": 3553796821,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -724,18 +724,10 @@
     "trump_s_asean_shock_manila_clashes",
     "united_states_trump_s_asean_shock",
     "yemeni_forces_retreat_leaves_houthis_in",
-    "yemen_s_bab_al_mandab_falls"
+    "yemen_s_bab_al_mandab_falls",
+    "ambassadors_of_eu_member_states_approve"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why One Word Cost Mbapp His China Empire",
-      "tokens": [
-        "china",
-        "cost",
-        "mbapp",
-        "word"
-      ]
-    },
     {
       "title": "Beyond Bad Cholesterol: Scientists Uncover a Hidden Driver of Heart Disease | Mind Blowing Fact",
       "tokens": [
@@ -8352,10 +8344,36 @@
         "yemen",
         "yemeni"
       ]
+    },
+    {
+      "title": "Ambassadors of EU member states approve new Russia sanctions: 50 banks listed",
+      "tokens": [
+        "addition",
+        "aggres",
+        "ambassadors",
+        "approve",
+        "approved",
+        "banks",
+        "committee",
+        "entities",
+        "european",
+        "individuals",
+        "legal",
+        "listed",
+        "lists",
+        "member",
+        "permanent",
+        "provisionally",
+        "representatives",
+        "russia",
+        "russian",
+        "sanctions",
+        "states",
+        "union"
+      ]
     }
   ],
   "last_categories": [
-    "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
@@ -8394,10 +8412,10 @@
     "GEOPOLITICS",
     "GEOPOLITICS",
     "GEOPOLITICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "Global Country Wire [THAILAND \u2022 STOCK_MARKETS]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "CNBC Markets & Finance",
     "Google Trends Viral [BELGIUM]",
@@ -8436,10 +8454,10 @@
     "Global Superpowers Geopolitics 24h",
     "BBC World Global",
     "Middle East, Europe, Asia & Africa Geopolitics 24h",
-    "Global Superpower & World Headlines Top 24h"
+    "Global Superpower & World Headlines Top 24h",
+    "Google Trends Viral [NORWAY]"
   ],
   "last_countries": [
-    "SPACE & SCIENCE",
     "EUROPE",
     "UNITED STATES",
     "UNITED KINGDOM",
@@ -8488,7 +8506,8 @@
     "RUSSIA",
     "UKRAINE",
     "UNITED STATES",
-    "YEMEN"
+    "YEMEN",
+    "RUSSIA"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8890,6 +8909,30 @@
       "is_short": false,
       "published_iso": "2026-11-16T07:32:32Z",
       "summary": "In a stunning reversal, Saudi-backed Yemeni government forces have withdrawn from the Bab al-Mandab Strait after a six-week offensive, handing Iran-backed Houthi rebels full control of the Red Sea's southern gateway. This documentary breaks down why the fall o"
+    },
+    {
+      "video_id": "9tYfVJAf-7s",
+      "title": "Ambassadors of EU Member States Approve New Russia Sanctions: 50 Banks Listed",
+      "url": "https://www.youtube.com/watch?v=9tYfVJAf-7s",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/9tYfVJAf-7s.html",
+      "thumb_url": "https://i.ytimg.com/vi/9tYfVJAf-7s/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Russia",
+      "is_short": false,
+      "published_iso": "2026-11-16T10:40:54Z",
+      "summary": "World Talk Brief [GEOPOLITICS] presents an original deep-dive case study."
+    },
+    {
+      "video_id": "gjDftlchdn4",
+      "title": "Ambassadors of EU Member States Approve New Russia Sanctions: 50 Banks Listed",
+      "url": "https://www.youtube.com/shorts/gjDftlchdn4",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/gjDftlchdn4.html",
+      "thumb_url": "https://i.ytimg.com/vi/gjDftlchdn4/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Russia",
+      "is_short": true,
+      "published_iso": "2026-11-16T11:00:56Z",
+      "summary": "EU ambassadors have just approved a sweeping sanctions package targeting Russia, adding 145 individuals and entities and freezing assets of 50 Russian banks. The move follows a high\u2011profile NATO interception of a ghost\u2011fleet oil tanker in the Mediterranean, si"
     }
   ]
 }
