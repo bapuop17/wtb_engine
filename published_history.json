@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-16T15:30:43.367827",
-  "last_upload_epoch": 1794843043,
-  "round_robin_idx": 0,
-  "country_rot_idx": 65,
-  "bgm_track_counter": 3595416009,
+  "updated_at": "2026-11-16T20:16:45.503864",
+  "last_upload_epoch": 1794860205,
+  "round_robin_idx": 1,
+  "country_rot_idx": 71,
+  "bgm_track_counter": 3607506418,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -728,53 +728,11 @@
     "ambassadors_of_eu_member_states_approve",
     "uk_and_allies_call_on_israel",
     "eu_chief_diplomat_kallas_blasts_russian",
-    "why_eu_chief_diplomat_kallas_blasts"
+    "why_eu_chief_diplomat_kallas_blasts",
+    "france_accuses_iran_of_cyberattacks_on",
+    "france_s_barrot_blames_iran_s"
   ],
   "event_fingerprints": [
-    {
-      "title": "What causes mysterious long delayed radio echoes in Earth's atmosphere? | Science Explained",
-      "tokens": [
-        "atmosphere",
-        "causes",
-        "delayed",
-        "earth",
-        "echoes",
-        "long",
-        "mysterious",
-        "radio",
-        "science"
-      ]
-    },
-    {
-      "title": "NASA Just Broke The Rules: The New Mission Race",
-      "tokens": [
-        "broke",
-        "just",
-        "mission",
-        "nasa",
-        "race",
-        "rules"
-      ]
-    },
-    {
-      "title": "The NASA Discovery That Surprised Scientists",
-      "tokens": [
-        "discovery",
-        "nasa",
-        "scientists",
-        "surprised"
-      ]
-    },
-    {
-      "title": "NASA Just Broke Its Own Rules For Speed",
-      "tokens": [
-        "broke",
-        "just",
-        "nasa",
-        "rules",
-        "speed"
-      ]
-    },
     {
       "title": "Why SpaceX's 330-Foot Rocket Just Broke History",
       "tokens": [
@@ -8407,10 +8365,78 @@
         "peace",
         "russian"
       ]
+    },
+    {
+      "title": "Why EU Chief Diplomat Kallas Blasts Russian Peace Demands As 'absurd' Explained",
+      "tokens": [
+        "absurd",
+        "blasts",
+        "chief",
+        "demands",
+        "diplomat",
+        "kallas",
+        "peace",
+        "russian"
+      ]
+    },
+    {
+      "title": "Why EU Chief Diplomat Kallas Blasts Russian Peace Demands As 'absurd'! #shorts",
+      "tokens": [
+        "absurd",
+        "blasts",
+        "chief",
+        "demands",
+        "diplomat",
+        "kallas",
+        "peace",
+        "russian",
+        "shorts"
+      ]
+    },
+    {
+      "title": "France accuses Iran of cyberattacks on supermarket fridges, seeks EU sanctions",
+      "tokens": [
+        "accuses",
+        "attacks",
+        "chief",
+        "cyber",
+        "cyberattacks",
+        "foreign",
+        "france",
+        "fridges",
+        "iran",
+        "jerusalem",
+        "kaja",
+        "kallas",
+        "later",
+        "monday",
+        "policy",
+        "post",
+        "sanctions",
+        "seeks",
+        "supermarket"
+      ]
+    },
+    {
+      "title": "France's Barrot Blames Iran's IRGC for Fridge Hack \u2013 EU Sanctions",
+      "tokens": [
+        "accuses",
+        "barrot",
+        "blames",
+        "cyberattacks",
+        "france",
+        "fridge",
+        "fridges",
+        "hack",
+        "iran",
+        "irgc",
+        "sanctions",
+        "seeks",
+        "supermarket"
+      ]
     }
   ],
   "last_categories": [
-    "GLOBAL_POWERS",
     "AI_ROBOTICS",
     "STOCK_MARKETS",
     "ENTERTAINMENT",
@@ -8449,10 +8475,10 @@
     "GEOPOLITICS",
     "GEOPOLITICS",
     "GEOPOLITICS",
-    "GEOPOLITICS"
+    "GEOPOLITICS",
+    "AI_ROBOTICS"
   ],
   "last_sources": [
-    "Google Trends Viral [BELGIUM]",
     "TechCrunch AI",
     "DW Business & Trade",
     "Hollywood Reporter",
@@ -8491,10 +8517,10 @@
     "Global Superpower & World Headlines Top 24h",
     "Google Trends Viral [NORWAY]",
     "Global Superpower & World Headlines Top 24h",
-    "Global Superpower & World Headlines Top 24h"
+    "Global Superpower & World Headlines Top 24h",
+    "Global Superpowers Geopolitics 24h"
   ],
   "last_countries": [
-    "UNITED KINGDOM",
     "CUBA",
     "ISRAEL",
     "MALAYSIA",
@@ -8543,7 +8569,8 @@
     "YEMEN",
     "RUSSIA",
     "UNITED KINGDOM",
-    "RUSSIA"
+    "RUSSIA",
+    "FRANCE"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -9017,6 +9044,30 @@
       "is_short": true,
       "published_iso": "2026-11-16T15:30:20Z",
       "summary": "World Talk Brief [GEOPOLITICS] original #Shorts case study."
+    },
+    {
+      "video_id": "0iYhcdTO89Q",
+      "title": "France's Barrot Blames Iran's IRGC for Fridge Hack - EU Sanctions Explained",
+      "url": "https://www.youtube.com/watch?v=0iYhcdTO89Q",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/0iYhcdTO89Q.html",
+      "thumb_url": "https://i.ytimg.com/vi/0iYhcdTO89Q/maxresdefault.jpg",
+      "pillar": "AI_ROBOTICS",
+      "country": "France",
+      "is_short": false,
+      "published_iso": "2026-11-16T19:23:50Z",
+      "summary": "France\u2019s foreign minister Jean\u2011No\u00ebl Barrot has publicly accused Iran\u2019s Islamic Revolutionary Guard Corps of launching a coordinated cyber\u2011attack that crippled refrigeration units in more than 700 French supermarkets, spoiling millions of euros worth of food an"
+    },
+    {
+      "video_id": "TRwaizEsN-s",
+      "title": "France's Barrot Blames Iran's IRGC for Fridge Hack \u2013 EU Sanctions",
+      "url": "https://www.youtube.com/shorts/TRwaizEsN-s",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/TRwaizEsN-s.html",
+      "thumb_url": "https://i.ytimg.com/vi/TRwaizEsN-s/maxresdefault.jpg",
+      "pillar": "AI_ROBOTICS",
+      "country": "France",
+      "is_short": true,
+      "published_iso": "2026-11-16T20:16:20Z",
+      "summary": "France\u2019s foreign minister Jean\u2011No\u00ebl Barrot has publicly accused Iran\u2019s Islamic Revolutionary Guard Corps of launching a coordinated cyber\u2011attack that crippled refrigeration units in more than 700 French supermarkets, spoiling millions of euros worth of food an"
     }
   ]
 }
