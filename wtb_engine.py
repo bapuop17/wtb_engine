@@ -58,12 +58,12 @@ os.makedirs("output", exist_ok=True)
 # VIDEO B-ROLL POOL & DOWNLOAD CONFIGURATION (SEPARATED FOR CLARITY)
 # ==============================================================================
 VIDEO_POOL_MAX_CLIPS = 24
-VIDEO_POOL_TIME_BUDGET_SEC = 900.0
-VIDEO_YTDLP_DOWNLOAD_TIMEOUT_SEC = 60
-VIDEO_YTDLP_FALLBACK_TIMEOUT_SEC = 50
+VIDEO_POOL_TIME_BUDGET_SEC = 2400.0
+VIDEO_YTDLP_DOWNLOAD_TIMEOUT_SEC = 90
+VIDEO_YTDLP_FALLBACK_TIMEOUT_SEC = 75
 VIDEO_DIRECT_MP4_TIMEOUT_SEC = 35.0
-VIDEO_TRANSCODE_TIMEOUT_SEC = 45
-VIDEO_YTSEARCH_TIMEOUT_SEC = 25
+VIDEO_TRANSCODE_TIMEOUT_SEC = 75
+VIDEO_YTSEARCH_TIMEOUT_SEC = 40
 
 for fn in os.listdir("temp"):
     try:
@@ -4678,7 +4678,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         "kuwait towers", "taj mahal", "scooter", "scooters", "hazmat", "thailand", "bangkok", "phuket"
     ]
 
-    story_ctx_low = f"{story_title} {topic_anchor} {dossier.get('country_profile', {}).get('name', '')}".lower()
+    story_ctx_low = f"{story_title} {topic_anchor} {dossier.get('country_profile', {}).get('name', '')} {' '.join(str(x) for x in (dossier.get('raw_facts') or [])[:6])}".lower()
 
     # Extract strict subject nouns directly from the story headline (`story_title`) + `query_str`
     # so random words from paragraph 8 of `raw_facts` (like 'leave', 'votes', 'dive') can NEVER validate an off-topic video clip!
@@ -4719,7 +4719,7 @@ def fetch_and_transcode_real_video_broll(video_query, dossier, used_video_urls, 
         if relaxed_for_commons:
             return (anchor_hits >= 1) or (has_geo and (subj_hits >= 1 or ev_hits >= 1)) or (subj_hits >= 2)
         # V58: Accept real interview / event footage if it matches the primary topic anchor (`anchor_hits >= 1` and `subj_hits >= 1`)!
-        return (subj_hits >= 2) or (anchor_hits >= 1 and (subj_hits >= 1 or ev_hits >= 1)) or (has_geo and (subj_hits >= 1 or ev_hits >= 2))
+        return (subj_hits >= 1) or (anchor_hits >= 1) or (has_geo and ev_hits >= 1)
 
     # V53 SHORT 2-TO-4 WORD VIDEO SEARCH QUERIES (Crucial for Dailymotion, Reddit, Wikimedia & Bing Video APIs!):
     # 7-word queries return 0 results on Dailymotion/Reddit/Wikimedia AND-search; 2-to-4 word entity queries return dozens of HD clips!
@@ -5200,7 +5200,7 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                     hf_url,
                     headers={"Authorization": f"Bearer {hf_token}"},
                     json={"inputs": cinematic_prompt},
-                    timeout=45
+                    timeout=60
                 )
                 if r_hf.status_code == 200 and len(r_hf.content) > 18000:
                     p_hf = f"temp/{tag_id}_hfflux.jpg"
@@ -5214,14 +5214,14 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                 pass
 
     # Pollinations Free 1080p Flux Documentary Scene Generator (3 Retries, 45s Deep-Render Timeout + Backoff!)
-    for attempt_pol in range(3):
+    for attempt_pol in range(4):
         try:
             seed_val = (abs(hash(f"{tag_id}_{scene_desc}")) + attempt_pol * 7919) % 999999 + 1
             pol_url = (
                 f"https://image.pollinations.ai/prompt/{urllib.parse.quote(cinematic_prompt)}"
                 f"?width=1920&height=1080&model=flux&nologo=true&enhance=true&seed={seed_val}"
             )
-            r_pol = requests.get(pol_url, headers=HEADERS_WEB, timeout=45)
+            r_pol = requests.get(pol_url, headers=HEADERS_WEB, timeout=60)
             if r_pol.status_code == 200 and len(r_pol.content) > 18000:
                 p_pol = f"temp/{tag_id}_polflux.jpg"
                 with open(p_pol, "wb") as f:
@@ -5232,7 +5232,7 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                 return im_pol
         except Exception:
             pass
-        if attempt_pol < 2:
+        if attempt_pol < 3:
             time.sleep(2.0 * (attempt_pol + 1))
 
     return None
@@ -10377,17 +10377,17 @@ def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
 
     # V45 Sport & Vehicle Discipline Lock for sentence queries
     full_story_check_low = f"{story_title_low} {topic_anchor.lower()} {' '.join((dossier.get('raw_facts') or [])[:3]).lower()}"
-    if any(mk in full_story_check_low for mk in ["moto3", "motogp", "moto2", "superbike", "minibike", "veda ega"]):
+    if re.search(r"\b(moto3|motogp|moto2|superbike|minibike|veda ega)\b", full_story_check_low):
         for mw_add in ["Moto3", "motorcycle", "racing"]:
             if mw_add.lower() not in [x.lower() for x in phys_filtered] and mw_add.lower() not in lead_words_low:
                 phys_filtered.insert(0, mw_add)
-    elif any(ck in full_story_check_low for ck in ["cricket", "ipl", "bcci", "t20", "test match"]):
+    elif re.search(r"\b(cricket|ipl|bcci|t20|test match)\b", full_story_check_low):
         if "cricket" not in [x.lower() for x in phys_filtered] and "cricket" not in lead_words_low:
             phys_filtered.insert(0, "cricket")
-    elif any(bk in full_story_check_low for bk in ["badminton", "bwf", "shuttlecock"]):
+    elif re.search(r"\b(badminton|bwf|shuttlecock)\b", full_story_check_low):
         if "badminton" not in [x.lower() for x in phys_filtered] and "badminton" not in lead_words_low:
             phys_filtered.insert(0, "badminton")
-    elif any(chk in full_story_check_low for chk in ["chess", "fide", "grandmaster", "gukesh"]):
+    elif re.search(r"\b(chess|fide|grandmaster|gukesh)\b", full_story_check_low):
         if "chess" not in [x.lower() for x in phys_filtered] and "chess" not in lead_words_low:
             phys_filtered.insert(0, "chess")
 
@@ -16387,7 +16387,7 @@ def build_prop_driven_storyboard_1080p(
                 # Moving Video Clip guarantees Frame 0 of every Short & Long video shows the exact main subject!
                 # If no pre-pooled clip matched THIS sentence's specific entity (e.g. 'Warsaw Chopin Airport', 'Madrid-Barajas',
                 # 'Sofia Airport', 'Port of Piraeus', 'Europol'), convert THIS sentence's exact `beat_im` into a 30fps 3D Parallax Moving Video Clip!
-                if vseg is None and beat_im is not None and b_i in (0, 2) and (not is_short):
+                if vseg is None and beat_im is not None and ((b_i in (0, 2) and not is_short) or (is_short and b_i == 0)):
                     syn_beat_vc = synthesize_3d_parallax_broadcast_video_broll(
                         beat_im,
                         tag_id=f"{tag_prefix}_b{global_beat_idx}_syncv",
@@ -17336,12 +17336,60 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
             "claim_meta": cl_item
         })
 
+    # V88 6.5 TO 8.5 MINUTE LONG DOCUMENTARY DURATION LOCK (Minimum 920 words = ~6.5 mins!):
+    # 1. Pack any remaining real `unused_claims` into short chapters (< 95 words) so no verified fact is wasted!
+    for sec in sections:
+        if not unused_claims:
+            break
+        cur_nar = str(sec.get("narration", "")).strip()
+        while unused_claims and len(cur_nar.split()) < 95:
+            cl_extra = unused_claims.pop(0)
+            add_txt = paraphrase_into_original_creator_voice(cl_extra["text"], len(sections), dossier=dossier)
+            if add_txt and add_txt[:24].lower() not in cur_nar.lower():
+                cur_nar = f"{cur_nar.rstrip('.!?')}. {add_txt}"
+        sec["narration"] = cur_nar
+
+    # 2. If total script is still under 920 words (~6.5 mins), expand short chapters via LLM grounded in `raw_facts`!
+    total_doc_words = sum(len(str(s.get("narration", "")).split()) for s in sections)
+    if total_doc_words < 920:
+        short_indices = [i for i, s in enumerate(sections) if len(str(s.get("narration", "")).split()) < 90]
+        if short_indices:
+            try:
+                raw_facts_ctx = "\n".join(f"- {rf}" for rf in (dossier.get("raw_facts") or [])[:12])
+                chaps_to_expand = [
+                    {"idx": i, "headline": sections[i].get("headline", ""), "draft": sections[i].get("narration", "")}
+                    for i in short_indices[:8]
+                ]
+                exp_sys = (
+                    "You are the Lead Investigative Documentary Scriptwriter for World Talk Brief (Think School / Nitish Rajput style). "
+                    "Expand each short chapter draft into a rich, conversational, analytical 95-to-115 word spoken chapter grounded STRICTLY "
+                    "in the verified story facts, geopolitics, Follow-the-Money economics, and strategic stakes. "
+                    "NEVER use placeholders like 'When A strikes B' or off-topic filler. Return STRICT JSON only."
+                )
+                exp_usr = (
+                    f"STORY TITLE: {dossier.get('title', '')} ({c_name})\n"
+                    f"VERIFIED FACTS:\n{raw_facts_ctx}\n\n"
+                    f"SHORT CHAPTERS TO EXPAND TO 95-115 WORDS EACH:\n{json.dumps(chaps_to_expand, indent=2)}\n\n"
+                    f"Return JSON: {{\"expanded\": [{{\"idx\": 0, \"narration\": \"95-115 words...\"}}]}}"
+                )
+                exp_res = _normalize_llm_json_to_dict(call_multi_api_ai_brain_json(exp_sys, exp_usr))
+                if isinstance(exp_res, dict) and isinstance(exp_res.get("expanded"), list):
+                    for item in exp_res["expanded"]:
+                        if isinstance(item, dict) and isinstance(item.get("idx"), int) and 0 <= item["idx"] < len(sections):
+                            new_n = str(item.get("narration") or "").strip()
+                            if len(new_n.split()) > len(str(sections[item["idx"]].get("narration", "")).split()) + 15:
+                                sections[item["idx"]]["narration"] = new_n
+            except Exception:
+                pass
+
     for sec in sections:
         nar = normalize_narration_entity_spelling(str(sec.get("narration", "")).strip())
         if nar and nar[-1] not in ".!?":
             nar += "."
         sec["narration"] = nar
 
+    final_wc = sum(len(str(s.get("narration", "")).split()) for s in sections)
+    print(f"⏱️ [V88 Documentary Duration Lock] {len(sections)} Chapters | {final_wc} Words (~{round(final_wc / 145.0, 1)} mins)", flush=True)
     return sections
 
 def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
@@ -18834,7 +18882,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     ))
     final_long = final_long.with_audio(CompositeAudioClip([final_long.audio, bgm_l])) if MOVIEPY_V2 else final_long.set_audio(CompositeAudioClip([final_long.audio, bgm_l]))
     out_long = "output/WTB_1080p_Long_16x9.mp4" if unit_num == 1 else f"output/WTB_1080p_Long_{unit_num}_16x9.mp4"
-    final_long.write_videofile(out_long, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="320k", bitrate="12500k", preset="medium", threads=max(4, os.cpu_count() or 4), ffmpeg_params=["-pix_fmt", "yuv420p", "-movflags", "+faststart", "-profile:v", "high", "-level", "4.2"], logger=None)
+    final_long.write_videofile(out_long, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="320k", bitrate="12500k", preset="slow", threads=max(4, os.cpu_count() or 4), ffmpeg_params=["-pix_fmt", "yuv420p", "-movflags", "+faststart", "-profile:v", "high", "-level", "4.2"], logger=None)
     try:
         final_long.close()
         bgm_l.close()
@@ -19309,7 +19357,7 @@ async def render_and_upload_short_unit(
     ))
     final_short = final_short.with_audio(CompositeAudioClip([final_short.audio, bgm_s])) if MOVIEPY_V2 else final_short.set_audio(CompositeAudioClip([final_short.audio, bgm_s]))
     out_short = "output/WTB_1080p_Short_9x16.mp4" if unit_num == 1 else f"output/WTB_1080p_Short_{unit_num}_9x16.mp4"
-    final_short.write_videofile(out_short, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="320k", bitrate="10500k", preset="medium", threads=max(4, os.cpu_count() or 4), ffmpeg_params=["-pix_fmt", "yuv420p", "-movflags", "+faststart", "-profile:v", "high", "-level", "4.2"], logger=None)
+    final_short.write_videofile(out_short, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="320k", bitrate="10500k", preset="slow", threads=max(4, os.cpu_count() or 4), ffmpeg_params=["-pix_fmt", "yuv420p", "-movflags", "+faststart", "-profile:v", "high", "-level", "4.2"], logger=None)
     try:
         final_short.close()
         bgm_s.close()
