@@ -138,19 +138,19 @@ PILLAR_TO_CORE_HUB = {
 }
 
 CATEGORY_VOICE_CAST = {
-    "WORLD": ("en-US-AndrewMultilingualNeural", "en-US-BrianMultilingualNeural", "aura-orion-en", "+1%", "+4%"),
-    "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-helios-en", "+1%", "+4%"),
-    "MIND_BLOWING_FACTS": ("en-US-AndrewMultilingualNeural", "en-US-GuyNeural", "aura-asteria-en", "+1%", "+4%"),
-    "SCIENCE": ("en-US-BrianMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-helios-en", "+1%", "+4%"),
-    "BUSINESS": ("en-US-AndrewMultilingualNeural", "en-US-GuyNeural", "aura-orion-en", "+1%", "+4%"),
-    "HEALTH": ("en-US-AndrewMultilingualNeural", "en-US-BrianMultilingualNeural", "aura-asteria-en", "+1%", "+4%"),
-    "SPORTS": ("en-US-GuyNeural", "en-US-AndrewMultilingualNeural", "aura-arcas-en", "+2%", "+5%"),
-    "ENTERTAINMENT": ("en-US-BrianMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-stella-en", "+1%", "+4%")
+    "WORLD": ("en-US-ChristopherNeural", "en-US-GuyNeural", "aura-orion-en", "+1%", "+4%"),
+    "TECHNOLOGY": ("en-US-GuyNeural", "en-US-ChristopherNeural", "aura-helios-en", "+1%", "+4%"),
+    "MIND_BLOWING_FACTS": ("en-US-ChristopherNeural", "en-US-GuyNeural", "aura-asteria-en", "+1%", "+4%"),
+    "SCIENCE": ("en-US-GuyNeural", "en-US-ChristopherNeural", "aura-helios-en", "+1%", "+4%"),
+    "BUSINESS": ("en-US-ChristopherNeural", "en-US-GuyNeural", "aura-orion-en", "+1%", "+4%"),
+    "HEALTH": ("en-US-ChristopherNeural", "en-US-GuyNeural", "aura-asteria-en", "+1%", "+4%"),
+    "SPORTS": ("en-US-GuyNeural", "en-US-ChristopherNeural", "aura-arcas-en", "+2%", "+5%"),
+    "ENTERTAINMENT": ("en-US-GuyNeural", "en-US-ChristopherNeural", "aura-stella-en", "+1%", "+4%")
 }
 
 DOCUMENTARY_MULTI_VOICE_POOL = [
-    ("en-US-AndrewMultilingualNeural", "+1%", "-2Hz"),   # Lead Investigative Host (Warm, Human, Johnny Harris / Think School style)
-    ("en-US-BrianMultilingualNeural", "+1%", "+0Hz"),    # Co-Host / Strategic Analyst Voice
+    ("en-US-ChristopherNeural", "+1%", "-2Hz"),   # Lead Investigative Host (Warm, Human, Johnny Harris / Think School style)
+    ("en-US-GuyNeural", "+1%", "+0Hz"),    # Co-Host / Strategic Analyst Voice
     ("en-GB-RyanNeural", "+1%", "-1Hz"),                 # Official Quote / International Correspondent Voice
     ("en-US-GuyNeural", "+1%", "-2Hz")                   # Senior Broadcast Narrator Voice
 ]
@@ -1389,11 +1389,11 @@ def ai_direct_complete_video_package(dossier, is_short=True, top_channel_hits=No
         "You are the Lead Geopolitical Case-Study Showrunner for 'World Talk Brief' (@WorldTalkBrief), a US-based Global Geopolitics & World News Documentary channel modeled 100% on THINK SCHOOL's 1M+-view geopolitical case studies (like 'Israel\'s Election Shock! | How Netanyahu Lost His Majority and Why the World Is Watching?' - https://youtu.be/Ub4ZmBuSA7Q). "
         "Write in a sharp, conversational, human-edited voice (never robotic AI prose!) using Think School's exact 6-Stage Narrative Architecture: "
         "- STAGE 1 (Cold Open & Global Stakes): Open immediately with the breaking geopolitical event, exact Country, and Named Leader/Institution in the first sentence. Explain why everyone from Washington and Wall Street traders in New York to energy ministers in Europe, the Middle East, and Asia is watching this exact flashpoint. "
-        "- STAGE 2 ('Now Look at This Picture' + The Core Rivalry + The 3 Big Questions): Reference a concrete visual or statement ('Now look at this picture / statement...'), frame the clash ('On one side, there is [Leader/Faction A]... and on the other side, there is [Leader/Faction B]...'), explain why a viewer in the United States and worldwide should care (impact on oil prices, inflation, stock markets, shipping, defense), and state the 3 clear questions this case study will answer. "
+        "- STAGE 2 ('Now Look at This Picture' + The Core Rivalry + The 3 Big Questions): Reference a concrete visual or statement ('Now look at this picture / statement...'), frame the clash between the two specific named leaders or factions using their real names, explain why a viewer in the United States and worldwide should care (impact on oil prices, inflation, stock markets, shipping, defense), and state the 3 clear questions this case study will answer. "
         "- STAGE 3 (The Historical Paradox & 'Let\'s Do The Simple Math'): Reveal the structural irony or paradox behind the country's system and break down the numbers using a crystal-clear simple math breakdown ('Let\'s say out of 100...' or exact seat/budget/tariff math) so any viewer grasps the mechanism in 30 seconds. "
-        "- STAGE 4 (The Geopolitical Map Chokepoint & Domino Chain): Walk the viewer across the map step-by-step ('If you look at this map... when A strikes B, shipping through the [Strait/Canal/Corridor] drops by X%, forcing cargo to reroute around..., which drives global costs up...'). Explicitly name the real countries, capitals, straits, and corridors so our cartographic map engine highlights them accurately! "
+        "- STAGE 4 (The Geopolitical Map Chokepoint & Domino Chain): Walk the viewer across the map step-by-step naming the exact real countries, straits, islands, ports, and shipping routes involved and explaining the exact cause-and-effect chain on global trade. Explicitly name the real countries, capitals, straits, and corridors so our cartographic map engine highlights them accurately! "
         "- STAGE 5 (Head-to-Head Philosophy Clash & Follow-the-Money): Compare the two competing strategies side-by-side ('While [Side A] wants to use maximum pressure..., [Side B] argues that...') and trace where the billions of dollars, weapons, or trade leverage flow. "
-        "- STAGE 6 (The 'Cat on the Wall' Catch & 3 Future Scenarios): Reveal the unexpected catch or kingmaker twist ('So it\'s game over, right? No, no, no — there is another catch...'), lay out the 3 concrete scenarios from here, and finish with: 'Now tell me your opinion in the comments.' "
+        "- STAGE 6 (The 'Cat on the Wall' Catch & 3 Future Scenarios): Reveal the unexpected catch or kingmaker twist ('So it\'s game over, right? No, no, no — there is another catch...'), lay out the 3 concrete future scenarios from here, and finish with a single crisp question asking the viewer's verdict in the comments. "
         f"CRITICAL FACTUAL & VISUAL ACCURACY RULES (TODAY'S DATE IS {today_date_str}): "
         "1. NEVER sound like an AI or textbook and NEVER start with cliché phrases like 'Ladies and gentlemen'; open immediately with a sharp Think School cold-open fact or paradox, and use natural human transitions ('Now look at this picture...', 'Sounds simple, right? But here\'s the problem...', 'So think about it for a second...', 'Let\'s do the simple math...'). "
         "2. CLAUDE UI/UX MOTION GRAPHICS & PIN-POINT SCENE SKILL (ACTIVE): Every single sentence in `narration` MUST have a matching entry in `beat_visuals` with: "
@@ -1682,7 +1682,7 @@ def synthesize_pro_sfx_event(sfx_type, sr=44100):
         freq_sweep = 62.0 * np.exp(-t * 1.15) + 32.0
         phase = 2.0 * np.pi * np.cumsum(freq_sweep) / float(sr)
         sub_wave = 0.68 * np.sin(phase) + 0.22 * np.sin(phase * 2.0) + 0.10 * np.tanh(2.5 * np.sin(phase * 1.5))
-        return (sub_wave * env * 0.072).astype(np.float32)
+        return (sub_wave * env * 0.145).astype(np.float32)
     elif "glitch" in st or "hud" in st:
         dur = 0.22
         n = int(sr * dur)
@@ -1769,7 +1769,7 @@ def synthesize_segment_music_wave(seg_dur, mood, track_idx, sr=44100):
     raw_mix = pad_layer + sub_layer + arp_layer + pulse_layer
     warm_mix = lowpass_warm_filter(raw_mix, window_len=24)
     max_s = max(float(np.max(np.abs(warm_mix))), 1e-4)
-    mastered_seg = (warm_mix / max_s) * 0.062
+    mastered_seg = (warm_mix / max_s) * 0.054
     return mastered_seg.astype(np.float32), track_name
 
 def build_30_track_mood_adaptive_album_bgm(filename, duration, beat_switch_times, mood="dark_geopolitics", track_seed=0, sfx_events=None):
@@ -2360,7 +2360,11 @@ def proofread_and_deduplicate_narration(raw_narration, seen_sentences, dossier, 
         (r"(?i)\bnot just a metaphor, is a physical\b", "not just a metaphor, it is a physical"),
         (r"(?i)\bis not just a metaphor, is a\b", "is not just a metaphor, it is a"),
         (r"(?i)\b(\d+)\s*km/h\b", r"\1 kilometers per hour"),
-        (r"(?i)\b(\d+(?:\.\d+)?)\s*bn\b", r"\1 billion")
+        (r"(?i)\b(\d+(?:\.\d+)?)\s*bn\b", r"\1 billion"),
+        (r"(?i)\bwhen\s+A\s+strikes\s+B(?:\s+here)?\s*,?\s*", "when forces strike this chokepoint, "),
+        (r"(?i)\bif\s+A\s+strikes\s+B(?:\s+here)?\s*,?\s*", "if forces strike this corridor, "),
+        (r"(?i)\b\[?(?:Leader|Faction|Side)\s*[AB]\]?\b", "the opposing force"),
+        (r"(?i)\bdrops\s+by\s+X\s*%\b", "drops sharply"),
     ]
     for pat, rep in grammar_fixes:
         txt = re.sub(pat, rep, txt)
@@ -5234,31 +5238,178 @@ def fit_whole_words_limit(text_str, max_chars=26):
             break
     return " ".join(out) if out else s[:max_chars]
 
+BANNED_HEADING_FILLER_TOKENS_V84 = {
+    "one", "two", "vs", "versus", "relies", "rely", "deploy", "deploys", "deployed", "launched",
+    "watching", "watch", "planners", "planner", "now", "giants", "thousands", "miles",
+    "here", "heres", "there", "theres", "where", "wheres", "what", "whats", "that", "thats",
+    "this", "these", "those", "when", "while", "whereas", "because", "since", "until", "unless",
+    "didnt", "doesnt", "isnt", "arent", "wasnt", "werent", "wont", "wouldnt", "couldnt", "shouldnt",
+    "cant", "cannot", "dont", "hasnt", "havent", "hadnt", "lets", "youre", "weve", "theyre",
+    "problem", "just", "only", "even", "also", "very", "really", "actually", "basically", "literally",
+    "simply", "look", "looks", "looking", "picture", "photo", "image", "think", "thinking", "imagine",
+    "second", "moment", "minute", "question", "questions", "answer", "answers", "side", "other",
+    "first", "secondly", "third", "finally", "meanwhile", "however", "moreover", "therefore",
+    "about", "into", "from", "with", "without", "within", "across", "through", "between", "among",
+    "under", "over", "after", "before", "during", "against", "toward", "towards", "around",
+    "have", "has", "had", "having", "been", "being", "were", "was", "are", "will", "would", "could",
+    "should", "might", "must", "shall", "their", "they", "them", "your", "ours", "which", "whose",
+    "strikes", "strike", "hitting", "makes", "make", "made", "making", "does", "doing", "done",
+    "goes", "going", "went", "gone", "comes", "coming", "came", "gets", "getting", "take", "takes"
+}
+
+
+def extract_3_word_metric_pairs_v84(sentence_text):
+    """
+    V84 '3-WORD RULE' METRIC & ENTITY BADGE EXTRACTOR (Page 3 Rule #2 of PDF):
+    When narrator says '358 cruise missiles and 5,000 Shahed-136 drones', returns:
+    ['358 MISSILES', '5,000 DRONES']!
+    When narrator says 'daily 4.8 million barrels oil transit and 12% global seaborne trade', returns:
+    ['4.8M BARRELS', '12% GLOBAL TRADE']!
+    """
+    s = str(sentence_text or "")
+    s_clean = re.sub(r"\b[A-Za-z]{1,12}-\d{1,4}[A-Za-z]?\b", " ", s)
+    s_clean = re.sub(r"(\d+)-mile(?:-wide)?\b", r"\1 MILES", s_clean, flags=re.I)
+    badges = []
+    pat = re.compile(
+        r"(?<![A-Za-z0-9])(\$?\d[\d,]*(?:\.\d+)?%?)\s*(million|billion|trillion|thousand|percent|%)?\s+([A-Za-z]+(?:\s+[A-Za-z]+){0,6})",
+        flags=re.I
+    )
+    skip_words = {
+        "in", "of", "to", "for", "at", "on", "by", "with", "from", "the", "a", "an", "and", "or",
+        "extra", "more", "over", "nearly", "about", "around", "daily", "every",
+        "single", "cruise", "seaborne", "shahed", "fuel", "crew"
+    }
+    stop_break_words = {"while", "whereas", "across", "through", "toward", "into", "over", "under", "every", "since", "when", "after", "before"}
+    for m in pat.finditer(s_clean):
+        num_s = m.group(1).upper()
+        mag_s = (m.group(2) or "").lower()
+        tail_s = m.group(3) or ""
+        if mag_s in ("million", "mln"):
+            num_s = f"{num_s}M"
+        elif mag_s in ("billion", "bln", "bn"):
+            num_s = f"{num_s}B"
+        elif mag_s in ("trillion", "tln"):
+            num_s = f"{num_s}T"
+        elif mag_s == "thousand":
+            num_s = f"{num_s}K"
+        elif mag_s in ("percent", "%") and not num_s.endswith("%"):
+            num_s = f"{num_s}%"
+
+        if re.fullmatch(r"(19\d\d|20[0-3]\d)", num_s):
+            continue
+
+        tail_toks = []
+        for w in tail_s.split():
+            w_cl = re.sub(r"[^A-Za-z]", "", w)
+            if not w_cl:
+                continue
+            if w_cl.lower() in stop_break_words:
+                break
+            if w_cl.lower() in ("and", "or") and len(tail_toks) >= 1:
+                break
+            if w_cl.lower() in skip_words or w_cl.lower() in BANNED_HEADING_FILLER_TOKENS_V84:
+                continue
+            tail_toks.append(w_cl.upper())
+            if len(tail_toks) >= 2:
+                break
+        if tail_toks:
+            badge = f"{num_s} {' '.join(tail_toks[:2])}"
+            if badge not in badges:
+                badges.append(badge[:24])
+    return badges[:3]
+
+
 def extract_key_point_from_sentence(sentence_text, beat_num=1, fallback_stat=""):
+    """
+    V84 GRAMMAR-LOCKED 3-TO-4 WORD KEY POINT EXTRACTOR:
+    - Fixes `[02:52]` ('HERES PROBLEM HOUTHIS DIDNT') and `[03:37]` ('STRIKES SHIPPING DOESNT JUST')
+      by stripping contractions BEFORE tokenizing and banning all conversational/auxiliary fragments.
+    - Fixes `[04:01]` (Taiz vs 'RIYADH MISSILE ATTACK') and `[06:16]` ($300M vs 'WAR RISK INSURANCE 4X')
+      by ALWAYS extracting the heading from `sentence_text` FIRST (never letting chapter `fallback_stat`
+      override the current spoken sentence!).
+    """
     clean_s = strip_news_publisher_mentions(ascii_transliterate_keep_vowels(str(sentence_text or ""))).strip()
-    words = [re.sub(r"[^a-zA-Z0-9$%\-.:]", "", w).strip(".:") for w in clean_s.split()]
+    # Remove contractions completely so "Here's", "didn't", "doesn't" NEVER become "HERES", "DIDNT", "DOESNT"!
+    clean_s_no_contr = re.sub(r"[A-Za-z]+'[A-Za-z]+", " ", clean_s)
+    words = [re.sub(r"[^a-zA-Z0-9$%\-]", "", w).strip("-") for w in clean_s_no_contr.split()]
     words = [w for w in words if len(w) >= 2]
 
     hl_kw = set()
     for w in words:
         wl = w.lower()
-        if any(c.isdigit() for c in w) or (len(w) >= 5 and wl not in HEADLINE_STOP_VERBS_ADJS and wl not in COMMON_SENTENCE_START_WORDS):
+        if any(c.isdigit() for c in w) or (len(w) >= 5 and wl not in HEADLINE_STOP_VERBS_ADJS and wl not in BANNED_HEADING_FILLER_TOKENS_V84):
             hl_kw.add(re.sub(r"[^a-z0-9$%]", "", wl))
             if len(hl_kw) >= 3:
                 break
 
-    if fallback_stat and len(str(fallback_stat).strip()) >= 6:
-        fb_clean = fit_whole_words_limit(str(fallback_stat).upper().strip(), 30)
-        if not any(bad in fb_clean for bad in ["POINT ", "EVIDENCE FILE", "CASE EVIDENCE"]):
-            return fb_clean, hl_kw
+    # 1. First Priority: Exact Metric Badges in THIS sentence (e.g. '358 MISSILES & 5,000 DRONES', '$300M SHIPPING COST')
+    metric_badges = extract_3_word_metric_pairs_v84(clean_s)
+    if len(metric_badges) >= 2:
+        comb_m = f"{metric_badges[0]} & {metric_badges[1]}"
+        if len(comb_m) <= 30:
+            return comb_m, hl_kw
+        return metric_badges[0], hl_kw
+    elif len(metric_badges) == 1:
+        # Pair the single metric with the top proper noun or domain noun in the sentence if short
+        mb = metric_badges[0]
+        if len(mb.split()) <= 2:
+            extra_n = [
+                w.upper() for w in words
+                if len(w) >= 4 and not any(c.isdigit() for c in w)
+                and w.upper() not in mb
+                and w.lower() not in BANNED_HEADING_FILLER_TOKENS_V84
+                and w.lower() not in HEADLINE_STOP_VERBS_ADJS
+            ]
+            if extra_n:
+                mb = f"{mb} {extra_n[0]}"
+        return fit_whole_words_limit(mb, 28), hl_kw
 
-    imp_words = [
+    # 2. Second Priority: Named Geographic Locations / Proper Entities in THIS sentence (e.g. 'TAIZ', 'CAPE OF GOOD HOPE', 'ASSAB & BERBERA')
+    s_low = clean_s.lower()
+    geo_hits = []
+    for geo_phrase, geo_badge in [
+        ("bab al-mandab", "BAB AL-MANDAB CHOKEPOINT"),
+        ("perim island", "PERIM ISLAND CHANNELS"),
+        ("cape of good hope", "CAPE OF GOOD HOPE REROUTE"),
+        ("assab", "ASSAB & BERBERA PORTS"),
+        ("berbera", "BERBERA PORT CORRIDOR"),
+        ("taiz", "TAIZ FRONTLINE STANDOFF"),
+        ("hodeidah", "HODEIDAH PORT FLASHPOINT"),
+        ("sanaa", "SANAA COMMAND CENTER"),
+        ("riyadh", "RIYADH MISSILE TARGET"),
+        ("three axes", "THREE-AXIS COUNTER-ATTACK"),
+        ("strait of hormuz", "STRAIT OF HORMUZ TRANSIT"),
+        ("strait of gibraltar", "GIBRALTAR FLIGHT CORRIDOR"),
+        ("red sea", "RED SEA SHIPPING CRISIS"),
+        ("suez canal", "SUEZ CANAL REROUTING"),
+    ]:
+        if geo_phrase in s_low:
+            geo_hits.append(geo_badge)
+    if geo_hits:
+        return geo_hits[0], hl_kw
+
+    # 3. Third Priority: Clean 3-Word Noun Phrase from THIS sentence (strictly excluding contractions & verbs)
+    imp_nouns = [
         w.upper() for w in words
-        if (any(c.isdigit() for c in w) or (len(w) >= 4 and w.lower() not in HEADLINE_STOP_VERBS_ADJS and w.lower() not in COMMON_SENTENCE_START_WORDS and w.lower() not in {"this", "that", "with", "from", "have", "were", "been", "they", "their"}))
+        if len(w) >= 4
+        and w.lower() not in BANNED_HEADING_FILLER_TOKENS_V84
+        and w.lower() not in HEADLINE_STOP_VERBS_ADJS
+        and w.lower() not in COMMON_SENTENCE_START_WORDS
+        and not w.lower().endswith(("ing", "ed", "ly", "nt"))
     ]
-    if len(imp_words) >= 3:
-        return fit_whole_words_limit(" ".join(imp_words[:5]), 30), hl_kw
-    return fit_whole_words_limit(" ".join(w.upper() for w in words[:5]), 30) or f"KEY EVIDENCE #{beat_num}", hl_kw
+    if len(imp_nouns) >= 2:
+        return fit_whole_words_limit(" ".join(imp_nouns[:3]), 26), hl_kw
+
+    if fallback_stat and len(str(fallback_stat).strip()) >= 4:
+        fb_words = [
+            re.sub(r"[^A-Za-z0-9$%\-]", "", w).upper()
+            for w in re.sub(r"[A-Za-z]+'[A-Za-z]+", " ", str(fallback_stat)).split()
+        ]
+        fb_words = [w for w in fb_words if len(w) >= 3 and w.lower() not in BANNED_HEADING_FILLER_TOKENS_V84]
+        if len(fb_words) >= 2:
+            return fit_whole_words_limit(" ".join(fb_words[:3]), 26), hl_kw
+
+    return f"KEY BRIEFING #{beat_num}", hl_kw
 
 def extract_speaker_or_prop_for_beat(beat_text, dossier, entities, beat_idx):
     sub_pillar = dossier.get("sub_pillar", dossier.get("pillar", "WORLD"))
@@ -12628,7 +12779,7 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
         semantic_graphic = "TS_02_HEAD_TO_HEAD_VS_SPLIT"
     elif re.search(r"\b(press\s+release|official\s+dispatch|declassified|dossier|document\s+reveals|investigation\s+found|quietly\s+landed)\b", low):
         semantic_graphic = "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT"
-    elif re.search(r"\b(flew|flight path|strait|gibraltar|hormuz|red sea|suez|across\s+the\s+border|from\s+[a-z]+\s+to\s+[a-z]+|maritime\s+route)\b", low):
+    elif re.search(r"\b(flew|flight path|strait|gibraltar|hormuz|bab al-mandab|mandab|perim|cape of good hope|rerout|assab|berbera|red sea|suez|three axes|3 axes|counter-attack|counterattack|across\s+the\s+border|from\s+[a-z]+\s+to\s+[a-z]+|maritime\s+route|chokepoint)\b", low):
         semantic_graphic = "TS_05_CHOKEPOINT_CORRIDOR_MAP"
     elif re.search(r"\b(corridor|imec|deep-water port|rail network|links\s+india|three\s+pillars|three\s+scenarios|three\s+regions)\b", low):
         semantic_graphic = "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD"
@@ -12639,7 +12790,8 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
     elif re.search(r"\b(domino|chain\s+reaction|balance\s+of\s+power|step\s+by\s+step|three\s+stages|strategic\s+outcome)\b", low):
         semantic_graphic = "TS_04_DOMINO_CHAIN_FLOWCHART"
 
-    if semantic_graphic and mode_counts.get(semantic_graphic, 0) < max_graphic_uses and semantic_graphic != last_mode:
+    max_allowed = (4 if (not is_short and semantic_graphic == 'TS_05_CHOKEPOINT_CORRIDOR_MAP') else max_graphic_uses)
+    if semantic_graphic and mode_counts.get(semantic_graphic, 0) < max_allowed and semantic_graphic != last_mode:
         mode_counts[semantic_graphic] = mode_counts.get(semantic_graphic, 0) + 1
         dossier[last_mode_key] = semantic_graphic
         used_seq.append(semantic_graphic)
@@ -13778,27 +13930,85 @@ def _clean_spoken_phrase_tag_v80(s):
     return s.strip(" .,;:-—")
 
 
-def _extract_dynamic_phrases_v80(b_txt, fallback_hl=""):
-    raw = [
-        _clean_spoken_phrase_tag_v80(p)
-        for p in re.split(r"[,;—–:]|\\b(?:while|whereas|because|triggering|boosting|increasing|leading to|which|after|before|built for|across|to land in)\\b", b_txt, flags=re.I)
-        if len(_clean_spoken_phrase_tag_v80(p)) >= 5
+def _to_3_word_badge_v84(text_frag, default_lbl="STRATEGIC SHIFT"):
+    """
+    Converts any clause or sentence fragment into a clean 2-to-4 word uppercase visual badge
+    following the PDF's '3-Word Rule' (zero full sentences inside dark blue cards!).
+    """
+    m_badges = extract_3_word_metric_pairs_v84(text_frag)
+    if m_badges:
+        return m_badges[0][:24]
+    no_contr = re.sub(r"[A-Za-z]+'[A-Za-z]+", " ", str(text_frag or ""))
+    toks = [
+        re.sub(r"[^A-Za-z0-9$%\-]", "", w).upper()
+        for w in no_contr.split()
     ]
-    uniq = []
-    for p in raw:
-        if p.lower()[:14] not in [u.lower()[:14] for u in uniq]:
-            uniq.append(p)
-    words = _clean_spoken_phrase_tag_v80(b_txt).split()
-    if len(uniq) < 3 and len(words) >= 6:
-        third = max(2, len(words) // 3)
-        for chunk in [" ".join(words[:third]), " ".join(words[third:2*third]), " ".join(words[2*third:])]:
-            c_clean = _clean_spoken_phrase_tag_v80(chunk)
-            if len(c_clean) >= 4 and c_clean.lower()[:14] not in [u.lower()[:14] for u in uniq]:
-                uniq.append(c_clean)
-    while len(uniq) < 3:
-        uniq.append(fallback_hl or b_txt)
-    return uniq[:4]
+    clean_t = [
+        w for w in toks
+        if len(w) >= 3
+        and w.lower() not in BANNED_HEADING_FILLER_TOKENS_V84
+        and w.lower() not in HEADLINE_STOP_VERBS_ADJS
+        and w.lower() not in {"the", "and", "for", "with", "from", "into", "over", "under", "after", "before"}
+    ]
+    if len(clean_t) >= 2:
+        return " ".join(clean_t[:3])[:26]
+    elif len(clean_t) == 1:
+        return f"{clean_t[0]} IMPACT"[:26]
+    return default_lbl[:26]
 
+
+def _extract_dynamic_phrases_v80(b_txt, fallback_hl=""):
+    """
+    V84 ZERO-DUPLICATE 3-WORD STAGE EXTRACTOR:
+    - Guarantees 3 distinct, non-repeating 2-to-4 word badges for every beat (fixes `[03:59]` where
+      all 3 flowchart boxes had the exact same line copy-pasted!).
+    - Also enforces the PDF's '3-Word Rule' so cards show concise 3-word visual badges instead of full sentences.
+    """
+    badges = []
+    # First check if multiple numeric metrics exist in the sentence (e.g. '358 MISSILES', '5,000 DRONES')
+    for mb in extract_3_word_metric_pairs_v84(b_txt):
+        if mb not in badges:
+            badges.append(mb)
+
+    raw_clauses = [
+        p.strip()
+        for p in re.split(r"[,;—–:]|(?:while|whereas|because|triggering|forcing|boosting|increasing|leading to|which|after|before|and)", str(b_txt or ""), flags=re.I)
+        if len(p.strip()) >= 6
+    ]
+    for rc in raw_clauses:
+        b_cand = _to_3_word_badge_v84(rc, default_lbl="")
+        if b_cand and b_cand not in badges and not any(b_cand[:10] == ex[:10] for ex in badges):
+            badges.append(b_cand)
+
+    # Split remaining content words into 3 distinct buckets if fewer than 3 badges
+    no_contr = re.sub(r"[A-Za-z]+'[A-Za-z]+", " ", str(b_txt or ""))
+    all_content_w = [
+        re.sub(r"[^A-Za-z0-9$%\-]", "", w).upper()
+        for w in no_contr.split()
+        if len(re.sub(r"[^A-Za-z0-9$%\-]", "", w)) >= 3
+        and re.sub(r"[^A-Za-z0-9$%\-]", "", w).lower() not in BANNED_HEADING_FILLER_TOKENS_V84
+        and re.sub(r"[^A-Za-z0-9$%\-]", "", w).lower() not in {"the", "and", "for", "with", "from"}
+    ]
+    if len(badges) < 3 and len(all_content_w) >= 6:
+        step = max(2, len(all_content_w) // 3)
+        for chunk in [all_content_w[:step], all_content_w[step:2*step], all_content_w[2*step:]]:
+            b_cand = " ".join(chunk[:3])[:26]
+            if b_cand and b_cand not in badges and not any(w in " ".join(badges) for w in b_cand.split()[:1]):
+                badges.append(b_cand)
+
+    fallback_defaults = [
+        _to_3_word_badge_v84(fallback_hl, "CORE TRIGGER"),
+        "STRATEGIC ESCALATION",
+        "GLOBAL SUPPLY IMPACT",
+        "REGIONAL POWER SHIFT",
+    ]
+    for fd in fallback_defaults:
+        if len(badges) >= 3:
+            break
+        if fd not in badges:
+            badges.append(fd)
+
+    return badges[:4]
 
 def _refine_coastal_ring_v78(pts, iterations=2):
     if len(pts) < 4:
@@ -13860,12 +14070,38 @@ def render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=True
         return {"name": k_up.title(), "iso2": tup[0], "iso3": tup[1], "capital": tup[2], "lat": float(tup[5]), "lon": float(tup[6])}
 
     active_chokepoint = None
-    for ck_key, ck_cfg in STRATEGIC_CHOKEPOINT_ATLAS.items():
-        if ck_key in b_low or ck_key in title_low:
-            active_chokepoint = ck_cfg
-            break
+    if "cape of good hope" in b_low or ("africa" in b_low and "rerout" in b_low):
+        active_chokepoint = {
+            "title": "CAPE OF GOOD HOPE REROUTING CORRIDOR",
+            "center_lat": -16.0,
+            "center_lon": 28.0,
+            "zoom_scale": 1.45,
+            "countries": ["SOUTH AFRICA", "MOZAMBIQUE", "MADAGASCAR", "YEMEN"],
+            "route_nodes": [
+                ("BAB AL-MANDAB BLOCKADE", 12.58, 43.33),
+                ("INDIAN OCEAN DETOUR", -14.50, 43.00),
+                ("CAPE OF GOOD HOPE", -34.35, 18.47),
+            ],
+        }
+    else:
+        for ck_key, ck_cfg in STRATEGIC_CHOKEPOINT_ATLAS.items():
+            if ck_key in b_low:
+                active_chokepoint = ck_cfg
+                break
 
     STRATEGIC_CITY_ATLAS = {
+        "bab al-mandab": ("BAB AL-MANDAB STRAIT", "YEMEN", "YE", 12.585, 43.333),
+        "perim": ("PERIM ISLAND", "YEMEN", "YE", 12.656, 43.415),
+        "cape of good hope": ("CAPE OF GOOD HOPE", "SOUTH AFRICA", "ZA", -34.356, 18.474),
+        "assab": ("ASSAB PORT, ERITREA", "ERITREA", "ER", 13.009, 42.739),
+        "berbera": ("BERBERA PORT", "SOMALIA", "SO", 10.439, 45.014),
+        "taiz": ("TAIZ FRONTLINE", "YEMEN", "YE", 13.578, 44.017),
+        "aden": ("PORT OF ADEN", "YEMEN", "YE", 12.785, 45.018),
+        "hodeidah": ("HODEIDAH PORT", "YEMEN", "YE", 14.797, 42.954),
+        "sanaa": ("SANAA, YEMEN", "YEMEN", "YE", 15.369, 44.191),
+        "djibouti": ("DJIBOUTI BASE", "DJIBOUTI", "DJ", 11.572, 43.145),
+        "suez": ("SUEZ CANAL", "EGYPT", "EG", 30.585, 32.265),
+        "hormuz": ("STRAIT OF HORMUZ", "IRAN", "IR", 26.566, 56.250),
         "seville": ("SEVILLE, SPAIN", "SPAIN", "ES", 37.389, -5.984),
         "madrid": ("MADRID, SPAIN", "SPAIN", "ES", 40.416, -3.703),
         "rabat": ("RABAT, MOROCCO", "MOROCCO", "MA", 34.020, -6.841),
@@ -14096,7 +14332,14 @@ def render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=True
             ctx.stroke()
 
     pin_coords = []
-    if len(matched_city_pins) >= 2:
+    if active_chokepoint and "CAPE OF GOOD HOPE" in active_chokepoint.get("title", ""):
+        for idx_rn, (rn_lbl, rlat, rlon) in enumerate(active_chokepoint["route_nodes"]):
+            px_c, py_c = proj_fn(rlat, rlon)
+            px_c = max(90, min(W - 140, px_c))
+            py_c = max(130, min(H - (460 if is_short else 220), py_c))
+            cnt_d = matched_countries[min(idx_rn, len(matched_countries) - 1)][1]
+            pin_coords.append((px_c, py_c, rn_lbl, cnt_d))
+    elif len(matched_city_pins) >= 2:
         for city_lbl, city_d in matched_city_pins[:4]:
             px_c, py_c = proj_fn(city_d["lat"], city_d["lon"])
             px_c = max(90, min(W - 140, px_c))
@@ -14173,6 +14416,37 @@ def render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=True
                 ctx.set_line_width(1.4)
                 ctx.stroke()
                 ctx.restore()
+
+    # V84 3-AXIS TACTICAL OFFENSIVE ARROWS (Fixes `[02:41]` where 'three axes counter-attack' had no tactical map arrows!):
+    if len(pin_coords) == 1 or any(ax_k in b_low for ax_k in ["three axes", "3 axes", "counter-attack", "counterattack", "multi-front", "encircle", "pincer", "seize", "retreat"]):
+        tx_0, ty_0, _, _ = pin_coords[0]
+        axis_Progress = min(max(local_t / 1.15, 0.15), 1.0)
+        for ax_dx, ax_dy in [(-155, -95), (-170, 35), (-85, 135)]:
+            sx_a, sy_a = tx_0 + ax_dx, ty_0 + ax_dy
+            ex_a = sx_a + (tx_0 - sx_a) * 0.84 * axis_Progress
+            ey_a = sy_a + (ty_0 - sy_a) * 0.84 * axis_Progress
+            ctx.new_path()
+            ctx.move_to(sx_a, sy_a)
+            ctx.line_to(ex_a, ey_a)
+            ctx.set_source_rgba(0.92, 0.22, 0.28, 0.32)
+            ctx.set_line_width(9.0)
+            ctx.stroke_preserve()
+            ctx.set_source_rgba(0.98, 0.32, 0.36, 0.96)
+            ctx.set_line_width(3.4)
+            ctx.stroke()
+            ang_a = math.atan2(ey_a - sy_a, ex_a - sx_a)
+            ctx.save()
+            ctx.translate(ex_a, ey_a)
+            ctx.rotate(ang_a)
+            ctx.new_path()
+            ctx.move_to(0, 0)
+            ctx.line_to(-14, -7)
+            ctx.line_to(-10, 0)
+            ctx.line_to(-14, 7)
+            ctx.close_path()
+            ctx.set_source_rgba(0.98, 0.82, 0.28, 1.0)
+            ctx.fill()
+            ctx.restore()
 
     for idx_p, (px_c, py_c, _, _) in enumerate(pin_coords):
         is_prim = (idx_p == 0)
@@ -14276,10 +14550,11 @@ def render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=True
     body_top = 62 + len(hl_lines) * 32
     cd.line([(32, body_top), (cw_c - 16, body_top)], fill=(51, 65, 85, 220), width=1)
 
-    f_mb = get_ui_font(19 if not is_short else 18, "sans_medium")
-    b_lines_m = wrap_text_px(b_txt, f_mb, cw_c - 48, max_lines=3)
-    for l_i, ln_m in enumerate(b_lines_m):
-        cd.text((32, body_top + 14 + l_i * 28), ln_m, fill=(203, 213, 225, 255), font=f_mb)
+    map_badges = _extract_dynamic_phrases_v80(b_txt, fallback_hl=point_hl)
+    f_mb = get_ui_font(22 if not is_short else 20, "display_bold")
+    for l_i, mb_txt in enumerate(map_badges[:2]):
+        cd.rounded_rectangle([(32, body_top + 12 + l_i * 42), (cw_c - 24, body_top + 46 + l_i * 42)], radius=8, fill=(22, 33, 54, 240), outline=(218, 178, 68, 180), width=1)
+        cd.text((46, body_top + 17 + l_i * 42), f"•  {mb_txt}", fill=(248, 250, 252, 255), font=f_mb)
 
     t_y0 = ch_c - 72
     p_w2 = (cw_c - 56) // 2
@@ -14597,18 +14872,20 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         draw.text((dx0 + 32, dy0 + 26), f"{c_name}  •  {topic_anc}", fill=(218, 178, 68, 255), font=get_ui_font(14, "mono_bold"))
         draw.text((dx0 + 32, dy0 + 54), fit_whole_words_limit(point_hl, 32), fill=(248, 250, 252, 255), font=get_ui_font(26 if not is_short else 23, "display_bold"))
 
-        f_db = get_ui_font(19 if not is_short else 18, "sans_medium")
-        for l_i, ln_d in enumerate(wrap_text_px(b_txt, f_db, dw_c - 64, max_lines=2)):
-            draw.text((dx0 + 32, dy0 + 94 + l_i * 28), ln_d, fill=(203, 213, 225, 255), font=f_db)
+        # V84 3-WORD RULE: Never dump full narration sentence `b_txt` inside the data card!
+        m_pairs_v84 = extract_3_word_metric_pairs_v84(b_txt)
+        badge_1_v84 = m_pairs_v84[0] if m_pairs_v84 else clauses[0]
+        badge_2_v84 = m_pairs_v84[1] if len(m_pairs_v84) > 1 else (clauses[1] if len(clauses) > 1 else point_hl)
+        draw.text((dx0 + 32, dy0 + 96), f"•  {badge_1_v84}", fill=(241, 245, 249, 255), font=get_ui_font(22 if not is_short else 20, "display_bold"))
 
         # Giant Hero Metric + Glowing PyCairo Spline Chart Canvas inside Frosted-Glass Dossier
         stat_main = format_animated_countup_number(str(clean_nums[0])[:12], min(max(local_t / 0.65, 0.35), 1.0))
-        draw.text((dx0 + 32, dy0 + 166), "KEY DATA BENCHMARK", fill=(148, 163, 184, 255), font=get_ui_font(12, "mono_bold"))
-        draw.text((dx0 + 32, dy0 + 188), stat_main, fill=(218, 178, 68, 255), font=get_ui_font(56 if not is_short else 48, "display_black"))
+        draw.text((dx0 + 32, dy0 + 156), "VERIFIED METRIC", fill=(148, 163, 184, 255), font=get_ui_font(12, "mono_bold"))
+        draw.text((dx0 + 32, dy0 + 180), stat_main, fill=(218, 178, 68, 255), font=get_ui_font(54 if not is_short else 46, "display_black"))
 
         if len(clean_nums) > 1:
-            draw.rounded_rectangle([(dx0 + 32, dy0 + 262), (dx0 + 255, dy0 + 296)], radius=8, fill=(22, 32, 52, 255), outline=(218, 178, 68, 195), width=1)
-            draw.text((dx0 + 46, dy0 + 271), f"SECONDARY: {str(clean_nums[1])[:14]}", fill=(241, 245, 249, 255), font=get_ui_font(13, "mono_bold"))
+            draw.rounded_rectangle([(dx0 + 32, dy0 + 256), (dx0 + 275, dy0 + 294)], radius=8, fill=(22, 32, 52, 255), outline=(218, 178, 68, 195), width=1)
+            draw.text((dx0 + 46, dy0 + 266), str(badge_2_v84)[:20], fill=(241, 245, 249, 255), font=get_ui_font(15, "display_bold"))
 
         # High-Precision PyCairo Spline Curve with Vertical Grid & Glowing Data Points
         ch_x0 = dx0 + 300 if not is_short else dx0 + 32
@@ -14667,19 +14944,22 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         bg.alpha_composite(_cairo_surface_to_pil_rgba(csurf), (ch_x0, ch_y0))
         draw = ImageDraw.Draw(bg, "RGBA")
 
-        # Bottom 2 Clean Documentary Comparison Bars inside the Frosted-Glass Dossier
-        bars_top = dy1 - 155
+        # V84 ZERO FAKE PERCENTAGES (Fixes `[05:53]` 'FOLLOW THE MONEY FAKE_PCT' / 'THE COALITION HAS SPENT $100 FAKE_PCT'):
+        # Displays 2 big, clean 3-Word Metric Callout Cards side-by-side with zero fabricated percentages!
+        bars_top = dy1 - 142
         draw.line([(dx0 + 32, bars_top - 16), (dx1 - 32, bars_top - 16)], fill=(51, 65, 85, 200), width=1)
-        for r_i in range(2):
-            ry = bars_top + r_i * 64
-            r_lbl = fit_whole_words_limit(clauses[min(r_i, len(clauses) - 1)].upper(), 28)
-            r_pct = 0.92 if r_i == 0 else 0.74
-            r_col = (218, 178, 68, 255) if r_i == 0 else (200, 48, 62, 255)
-            draw.text((dx0 + 32, ry), r_lbl, fill=(241, 245, 249, 255), font=get_ui_font(15, "display_bold"))
-            draw.text((dx1 - 95, ry), f"{int(r_pct * 100)}%", fill=r_col, font=get_ui_font(15, "mono_bold"))
-            draw.rounded_rectangle([(dx0 + 32, ry + 26), (dx1 - 32, ry + 38)], radius=6, fill=(24, 34, 52, 255))
-            fw_b = max(24, int((dw_c - 64) * r_pct * min(max(sent_prog * 1.2, 0.25), 1.0)))
-            draw.rounded_rectangle([(dx0 + 32, ry + 26), (dx0 + 32 + fw_b, ry + 38)], radius=6, fill=r_col)
+        card_w_half = (dw_c - 84) // 2
+        b_cards = [
+            ("KEY FIGURE #1", badge_1_v84, (218, 178, 68, 255)),
+            ("KEY FIGURE #2", badge_2_v84, (200, 48, 62, 255)),
+        ]
+        for r_i, (k_tag, v_badge, r_col) in enumerate(b_cards):
+            cx_b = dx0 + 32 + r_i * (card_w_half + 20)
+            draw.rounded_rectangle([(cx_b, bars_top), (cx_b + card_w_half, bars_top + 110)], radius=14, fill=(18, 27, 44, 255), outline=r_col, width=2)
+            draw.text((cx_b + 18, bars_top + 14), k_tag, fill=(148, 163, 184, 255), font=get_ui_font(13, "mono_bold"))
+            f_vb = get_ui_font(24 if not is_short else 21, "display_black")
+            for l_i, ln_v in enumerate(wrap_text_px(str(v_badge), f_vb, card_w_half - 32, max_lines=2)):
+                draw.text((cx_b + 18, bars_top + 42 + l_i * 28), ln_v, fill=r_col if l_i == 0 else (248, 250, 252, 255), font=f_vb)
 
         return bg
 
@@ -14696,22 +14976,32 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         vs_parts = [p.strip(" ,;:-") for p in re.split(r"\b(?:while on the other side|and on the other side|on the other side|whereas|while|versus|vs\.?|compared to|in contrast)\b", b_txt, flags=re.I) if len(p.strip(" ,;:-")) >= 10]
         raw_a = vs_parts[0].strip(" ,;:-") if len(vs_parts) >= 2 else clauses[0].strip(" ,;:-")
         raw_b = vs_parts[1].strip(" ,;:-") if len(vs_parts) >= 2 else (clauses[1].strip(" ,;:-") if len(clauses) > 1 else b_txt)
-        sa_hdr = str(beat.get("side_a_label") or c_name).upper()[:22]
+        sa_hdr = str(beat.get("side_a_label") or "").upper()[:22]
+        if not sa_hdr or sa_hdr == c_name.upper():
+            if "houthi" in raw_a.lower():
+                sa_hdr = "HOUTHI FORCES"
+            else:
+                sa_hdr = c_name.upper()[:22]
         sb_hdr = str(beat.get("side_b_label") or "").upper()[:22]
-        if not sb_hdr:
+        if not sb_hdr or sb_hdr == sa_hdr:
             for cnt_k in COUNTRY_GEO_DB.keys():
                 if len(cnt_k) >= 4 and cnt_k.upper() != c_name.upper() and cnt_k.lower() in raw_b.lower():
                     sb_hdr = cnt_k.upper()[:22]
                     break
         if not sb_hdr:
-            sb_hdr = "RIVAL FORCE" 
+            if "plc" in raw_b.lower() or "coalition" in raw_b.lower():
+                sb_hdr = "SAUDI / PLC COALITION"
+            else:
+                sb_hdr = "RIVAL FORCE"
 
         top_h = int(sh * 0.54)
         b_left = (sx0, sy0, sx0 + sw // 2 - 18, sy0 + top_h)
         b_right = (sx0 + sw // 2 + 18, sy0, sx1, sy0 + top_h)
 
-        stat_a_val = clean_nums[0] if clean_nums else sa_hdr
-        stat_b_val = clean_nums[1] if len(clean_nums) > 1 else sb_hdr
+        m_a = extract_3_word_metric_pairs_v84(raw_a)
+        m_b = extract_3_word_metric_pairs_v84(raw_b)
+        stat_a_val = m_a[0] if m_a else sa_hdr
+        stat_b_val = m_b[0] if m_b else sb_hdr
 
         for idx_side, (bx, pim, s_hdr, scol, bg_tint, r_txt, st_val, p_side) in enumerate([
             (b_left, src_im, sa_hdr, (218, 178, 68), (36, 30, 16, 255), raw_a, stat_a_val, p_phrase1),
@@ -14740,11 +15030,13 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
             draw.text((tx_s, ty_s), str(st_val)[:16], fill=(scol[0], scol[1], scol[2], 255), font=get_ui_font(34 if not is_short else 26, "display_black"))
             draw.line([(tx_s, ty_s + 48), (tx_s + tw_s, ty_s + 48)], fill=(51, 65, 85, 220), width=1)
 
-            f_st = get_ui_font(19 if not is_short else 17, "sans_semibold")
-            for l_i, ln_s in enumerate(wrap_text_px(r_txt, f_st, tw_s, max_lines=4)):
-                draw.text((tx_s, ty_s + 62 + l_i * 27), ln_s, fill=(241, 245, 249, 255), font=f_st)
+            # V84 3-WORD RULE: Show clean 3-word capability badge instead of full sentence paragraph!
+            clean_side_badge = _to_3_word_badge_v84(r_txt, default_lbl=s_hdr)
+            f_st = get_ui_font(24 if not is_short else 20, "display_bold")
+            for l_i, ln_s in enumerate(wrap_text_px(clean_side_badge, f_st, tw_s, max_lines=2)):
+                draw.text((tx_s, ty_s + 66 + l_i * 32), ln_s, fill=(248, 250, 252, 255), font=f_st)
 
-        # Bottom Half: Clean Documentary Comparison Table
+        # Bottom Half: Clean Documentary Comparison Table (Zero 'NOW LOOK AT THIS' / 'ON ONE SIDE' script fragments!)
         tb_y0 = sy0 + top_h + 18
         draw.rounded_rectangle([(sx0, tb_y0), (sx1, sy1)], radius=18, fill=(15, 21, 34, 255), outline=(64, 80, 104, 220), width=2)
         draw.rounded_rectangle([(sx0, tb_y0), (sx1, tb_y0 + 44)], radius=18, fill=(20, 29, 46, 255))
@@ -14754,10 +15046,12 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         draw.text((mid_x_tb - 92, tb_y0 + 13), "STRATEGIC COMPARISON", fill=(148, 163, 184, 255), font=get_ui_font(14, "mono_bold"))
         draw.text((sx1 - 220, tb_y0 + 13), sb_hdr, fill=(225, 75, 88, 255), font=get_ui_font(15, "mono_bold"))
 
+        badge_a_posture = _to_3_word_badge_v84(raw_a, default_lbl="ASYMMETRIC FORCE")
+        badge_b_posture = _to_3_word_badge_v84(raw_b, default_lbl="COALITION DEFENSE")
         rows_data = [
-            (stat_a_val, "PRIMARY CAPABILITY", stat_b_val, 0.88, 0.82),
-            (fit_whole_words_limit(raw_a.upper(), 20), "STRATEGIC POSTURE", fit_whole_words_limit(raw_b.upper(), 20), 0.90, 0.84),
-            ("REGIONAL MOBILITY", "THEATER FOCUS", "AIRSPACE DETERRENCE", 0.85, 0.80),
+            (_to_3_word_badge_v84(str(stat_a_val), sa_hdr), "PRIMARY CAPABILITY", _to_3_word_badge_v84(str(stat_b_val), sb_hdr), 0.88, 0.82),
+            (badge_a_posture, "STRATEGIC POSTURE", badge_b_posture, 0.90, 0.84),
+            ("CHOKEPOINT LEVERAGE", "THEATER DOCTRINE", "DETERRENCE SHIELD", 0.85, 0.80),
         ]
         row_h = max(46, (sy1 - (tb_y0 + 50)) // 3)
         bar_anim = min(max(sent_prog * 1.15, 0.25), 1.0)
@@ -14800,9 +15094,8 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         draw.rounded_rectangle([(sx0, sy0), (sx1, sy0 + 52)], radius=14, fill=(16, 23, 38, 255), outline=(212, 175, 55, 195), width=1)
         draw.text((sx0 + 24, sy0 + 16), f"{c_name} STRATEGIC CHAIN REACTION  •  {point_hl}", fill=(218, 178, 68, 255), font=get_ui_font(15, "mono_bold"))
 
-        raw_steps = [s.strip(" .,;:-") for s in re.split(r"[:;—–]|\b(?:led to|triggering|shifting|causing|which then|resulting in)\b", b_txt, flags=re.I) if len(s.strip()) >= 8]
-        while len(raw_steps) < 3:
-            raw_steps.extend(clauses if clauses else [b_txt])
+        # V84 3-WORD RULE & ZERO-DUPLICATE FLOWCHART LOCK (Fixes `[03:59]` duplicate 3-box flowchart):
+        raw_steps = _extract_dynamic_phrases_v80(b_txt, fallback_hl=point_hl)
 
         if not is_short:
             nw = int((sw - 96) // 3)
@@ -15088,12 +15381,28 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         else:
             _apply_vertical_gradient_pil(bg, 0.52, 1.0, 210)
 
-        # Sleek lower-left kinetic banner that slides in and highlights the active spoken phrase
+        # Sleek lower-left kinetic banner on 16:9; on 9:16 Shorts use a compact, bold top-hook pill (zero middle-screen dark box!)
         active_clause = clauses[0] if local_t < beat_dur_t * 0.36 else (clauses[1] if (len(clauses) > 1 and local_t < beat_dur_t * 0.70) else clauses[-1])
-        cw_bar = 820 if not is_short else (W - 64)
-        ch_bar = 128 if not is_short else 136
-        bx0 = (48 + int((1.0 - p_phrase1) * -90)) if not is_short else 32
-        by0 = (H - 282) if not is_short else 1285
+        if is_short:
+            cw_bar = W - 72
+            f_cl = get_ui_font(32, "display_bold")
+            wrapped_s = wrap_text_px(active_clause, f_cl, cw_bar - 44, max_lines=2)
+            ch_bar = 54 + len(wrapped_s) * 40
+            bx0, by0 = 36, 128
+            bar_im = Image.new("RGBA", (cw_bar + 12, ch_bar + 12), (0, 0, 0, 0))
+            bd = ImageDraw.Draw(bar_im, "RGBA")
+            bd.rounded_rectangle([(4, 4), (cw_bar + 4, ch_bar + 4)], radius=16, fill=(10, 16, 28, 224), outline=(218, 178, 68, 225), width=2)
+            bd.rectangle([(4, 4), (14, ch_bar + 4)], fill=(212, 46, 62, 255))
+            bd.text((26, 14), f"{c_name}  •  {fit_whole_words_limit(point_hl, 26)}", fill=(218, 178, 68, 255), font=get_ui_font(18, "mono_bold"))
+            for l_i, ln_s in enumerate(wrapped_s):
+                bd.text((26, 42 + l_i * 40), ln_s, fill=(248, 250, 252, 255), font=f_cl)
+            bg.alpha_composite(bar_im, (bx0, by0))
+            return bg
+
+        cw_bar = 820
+        ch_bar = 128
+        bx0 = 48 + int((1.0 - p_phrase1) * -90)
+        by0 = H - 282
 
         bar_im = Image.new("RGBA", (cw_bar + 16, ch_bar + 16), (0, 0, 0, 0))
         bd = ImageDraw.Draw(bar_im, "RGBA")
@@ -15101,11 +15410,10 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         bd.rounded_rectangle([(4, 4), (cw_bar + 4, ch_bar + 4)], radius=16, fill=(11, 17, 30, 238), outline=(218, 178, 68, 215), width=2)
         bd.rectangle([(4, 4), (14, ch_bar + 4)], fill=(212, 46, 62, 255))
 
-        # Animated progress wipe under header
         wipe_w = int((cw_bar - 44) * sent_prog)
         bd.rectangle([(28, 42), (28 + max(12, wipe_w), 45)], fill=(218, 178, 68, 255))
         bd.text((28, 16), f"{c_name}  •  {fit_whole_words_limit(point_hl, 34)}", fill=(218, 178, 68, 255), font=get_ui_font(15, "mono_bold"))
-        f_cl = get_ui_font(23 if not is_short else 21, "display_bold")
+        f_cl = get_ui_font(23, "display_bold")
         for l_i, ln_s in enumerate(wrap_text_px(active_clause, f_cl, cw_bar - 44, max_lines=2)):
             bd.text((28, 54 + l_i * 30), ln_s, fill=(248, 250, 252, 255), font=f_cl)
 
@@ -15153,8 +15461,8 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
             kx0, ky0 = tx_c + 88, max(118, ty_c - 105)
             kw_c, kh_c = 560, 168
         else:
-            kx0, ky0 = 40, int(H * 0.52)
-            kw_c, kh_c = W - 80, 175
+            kx0, ky0 = 36, 128
+            kw_c, kh_c = W - 72, 160
 
         if _pycairo is not None:
             tsurf = _pycairo.ImageSurface(_pycairo.FORMAT_ARGB32, W, H)
@@ -15195,8 +15503,8 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         cpd.rounded_rectangle([(10, 12), (kw_c + 10, kh_c + 12)], radius=16, fill=(0, 0, 0, 175))
         cpd.rounded_rectangle([(4, 4), (kw_c + 4, kh_c + 4)], radius=16, fill=(12, 19, 33, 244), outline=(218, 178, 68, 225), width=2)
         cpd.text((24, 18), f"{c_name}  •  {fit_whole_words_limit(point_hl, 30)}", fill=(218, 178, 68, 255), font=get_ui_font(15, "mono_bold"))
-        f_cp = get_ui_font(21 if not is_short else 20, "display_bold")
-        for l_i, ln_p in enumerate(wrap_text_px(b_txt, f_cp, kw_c - 40, max_lines=3)):
+        f_cp = get_ui_font(21 if not is_short else 29, "display_bold")
+        for l_i, ln_p in enumerate(wrap_text_px('  •  '.join(clauses[:2]), f_cp, kw_c - 40, max_lines=2)):
             cpd.text((24, 50 + l_i * 29), ln_p, fill=(248, 250, 252, 255), font=f_cp)
         tilted_cp = _apply_3d_perspective_tilt_v80(card_p, tilt_x_deg=1.0, tilt_y_deg=-1.5)
         bg.alpha_composite(tilted_cp, (kx0, ky0))
@@ -15238,7 +15546,7 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         draw.rounded_rectangle([(bx_d, by_d), (bx_d + bw_d, by_d + bh_d)], radius=16, fill=(12, 18, 32, 244), outline=(218, 178, 68, 225), width=2)
         draw.text((bx_d + 24, by_d + 14), f"{c_name}  •  {fit_whole_words_limit(point_hl, 34)}", fill=(218, 178, 68, 255), font=get_ui_font(15, "mono_bold"))
         f_dd = get_ui_font(21 if not is_short else 19, "display_bold")
-        for l_i, ln_d in enumerate(wrap_text_px(b_txt, f_dd, bw_d - 48, max_lines=2)):
+        for l_i, ln_d in enumerate(wrap_text_px('  •  '.join(clauses[:2]), f_dd, bw_d - 48, max_lines=2)):
             draw.text((bx_d + 24, by_d + 44 + l_i * 28), ln_d, fill=(248, 250, 252, 255), font=f_dd)
         return bg
 
@@ -15259,7 +15567,7 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         qw_c = 1040 if not is_short else (W - 64)
         qh_c = 148 if not is_short else 164
         qx0 = (W - qw_c) // 2
-        qy0 = (H - 298) if not is_short else 1255
+        qy0 = (H - 298) if not is_short else 128
 
         qcard = Image.new("RGBA", (qw_c + 16, qh_c + 16), (0, 0, 0, 0))
         qd = ImageDraw.Draw(qcard, "RGBA")
@@ -15267,8 +15575,8 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
         qd.rounded_rectangle([(4, 4), (qw_c + 4, qh_c + 4)], radius=18, fill=(14, 21, 36, 242), outline=(218, 178, 68, 220), width=2)
         qd.rectangle([(4, 4), (14, qh_c + 4)], fill=(218, 178, 68, 255))
         qd.text((28, 16), f"VERIFIED REPORT  •  {c_name}  •  {fit_whole_words_limit(point_hl, 32)}", fill=(218, 178, 68, 255), font=get_ui_font(15, "mono_bold"))
-        f_qt = get_ui_font(23 if not is_short else 20, "serif_bold")
-        for l_i, ln_q in enumerate(wrap_text_px(b_txt, f_qt, qw_c - 52, max_lines=3)):
+        f_qt = get_ui_font(23 if not is_short else 28, "serif_bold")
+        for l_i, ln_q in enumerate(wrap_text_px('  •  '.join(clauses[:2]), f_qt, qw_c - 52, max_lines=2)):
             qd.text((28, 48 + l_i * 30), ln_q, fill=(248, 250, 252, 255), font=f_qt)
         bg.alpha_composite(qcard, (qx0, qy0))
         return bg
@@ -15933,7 +16241,7 @@ def build_prop_driven_storyboard_1080p(
                 prop_badge = sec["role"]
 
             point_hl_str, hl_keywords = extract_key_point_from_sentence(
-                b_txt, beat_num=(global_beat_idx + 1), fallback_stat=(bv_point_hl or stat_callout)
+                b_txt, beat_num=(global_beat_idx + 1), fallback_stat=bv_point_hl
             )
 
             beat_person_popup = None
@@ -15968,16 +16276,20 @@ def build_prop_driven_storyboard_1080p(
             has_shock_turning_point = bool(re.search(r"\b(5-0|five to zero|humiliation|anarchy|sacking|sacked|collapsed|crippled|dustbin|casualty|dead|killed|violation|crisis)\b", b_txt, flags=re.I))
             has_date_or_year = bool(re.search(r"\b(19\d{2}|20\d{2}|100 years|century)\b", b_txt, flags=re.I))
 
-            if has_shock_turning_point:
-                chosen_sfx = "crisis_stat_sub_drop"
-            elif special_sim_mode is not None:
-                chosen_sfx = "digital_hud_glitch"
-            elif global_beat_idx == 2:
+            # V84 3-LAYER SOUND DESIGN ROUTER (Page 3 Rule #6 of PDF):
+            # - Map transitions -> soft cinematic whoosh (`vinyl_stop_transition`)
+            # - Missile/conflict/strike beats -> deep boom/hit (`crisis_stat_sub_drop` at -15dB)
+            # - Number/percentage/dollar beats -> crisp data tick/pop (`digital_hud_glitch`)
+            has_conflict_boom = bool(re.search(r"\b(missile|missiles|drone|drones|strike|strikes|attack|attacks|seize|retreat|bomb|artillery|warship)\b", b_txt, flags=re.I))
+            has_number_pop = bool(re.search(r"(\$\d|\d+%|\b\d+\s*(?:million|billion|barrels|tons|miles)\b)", b_txt, flags=re.I))
+            if special_sim_mode == "TS_05_CHOKEPOINT_CORRIDOR_MAP":
                 chosen_sfx = "vinyl_stop_transition"
-            elif has_date_or_year:
+            elif has_shock_turning_point or has_conflict_boom:
+                chosen_sfx = "crisis_stat_sub_drop"
+            elif has_number_pop:
+                chosen_sfx = "digital_hud_glitch"
+            elif has_date_or_year or beat_person_popup is not None:
                 chosen_sfx = "typewriter_camera_shutter"
-            elif beat_person_popup is not None:
-                chosen_sfx = "typewriter_camera_shutter" if global_beat_idx % 2 == 0 else "camera_shutter_flash"
             else:
                 chosen_sfx = "dry_marker_squeak"
 
@@ -16184,8 +16496,8 @@ class VoiceAndSubtitleEngine:
     async def synthesize_with_word_boundaries(self, text, out_path, pillar="WORLD", is_short=False):
         """
         V30 HUMAN-LIKE MULTI-VOICE DOCUMENTARY NARRATOR:
-        - Uses Microsoft's most lifelike Gen-3 conversational & documentary voices (`AndrewMultilingualNeural`,
-          `BrianMultilingualNeural`, `GuyNeural`, `RyanNeural`, `AvaMultilingualNeural`).
+        - Uses Microsoft's most lifelike Gen-3 conversational & documentary voices (`AndrewNeural`,
+          `BrianNeural`, `GuyNeural`, `RyanNeural`, `AvaNeural`).
         - Rotates between the Lead Investigative Host Voice and the Co-Host / Analyst / Quote Voice across
           sections (`अलग-अलग वॉइस`) with natural human prosody (`+5%` to `+7%` pace, warm chest resonance)
           and studio broadcast EQ + silence tightening so it never sounds robotic!
@@ -16196,12 +16508,12 @@ class VoiceAndSubtitleEngine:
             tts_spoken_text = re.sub(pat_ph, rep_ph, tts_spoken_text, flags=re.I)
 
         long_v, short_v, dg_backup, long_rate, short_rate = CATEGORY_VOICE_CAST.get(
-            core_hub, ("en-US-AndrewMultilingualNeural", "en-US-AndrewMultilingualNeural", "aura-orion-en", "+2%", "+4%")
+            core_hub, ("en-US-ChristopherNeural", "en-US-ChristopherNeural", "aura-orion-en", "+2%", "+4%")
         )
         # V48 CATEGORY-TAILORED STUDIO NARRATOR VOICE (100% Consistent Within Each Video, Tailored Per Category!):
-        # - Geopolitics / Global Powers / Defense: `en-US-AndrewMultilingualNeural` (Deep, warm Johnny Harris / Frontline tone)
+        # - Geopolitics / Global Powers / Defense: `en-US-ChristopherNeural` (Deep, warm Johnny Harris / Frontline tone)
         # - Underrated / Mind-Blowing Mysteries: `en-GB-RyanNeural` (Crisp BBC World / Vox investigative documentary tone)
-        # - Stock Markets / Business / AI / Science: `en-US-BrianMultilingualNeural` (Sharp Bloomberg / Think School / Cleo Abram analyst tone)
+        # - Stock Markets / Business / AI / Science: `en-US-GuyNeural` (Sharp Bloomberg / Think School / Cleo Abram analyst tone)
         # - Sports / Underdog Prodigies: `en-US-GuyNeural` (Energetic ESPN / Red Bull documentary storyteller tone)
         # Clean decimals, shorthand ($4.2M), and acronyms for natural human pronunciation:
         tts_spoken_text = re.sub(r"\$(\d+(?:\.\d+)?)\s*[Mm]\b", r"\1 million dollars", tts_spoken_text)
@@ -16216,18 +16528,18 @@ class VoiceAndSubtitleEngine:
         tts_spoken_text = re.sub(r"\bQuiles\b", "Kee-les", tts_spoken_text, flags=re.I)
 
         # V53 100% GEN-3 EXPRESSIVE MULTILINGUAL HUMAN VOICE ENGINE (Zero Gen-1 Robotic Voices, Zero Artificial Pitch Warping!):
-        # Uses ONLY `en-US-AndrewMultilingualNeural` and `en-US-BrianMultilingualNeural` at natural `+0Hz` pitch and `+1%`/`+3%` conversational rate
+        # Uses ONLY `en-US-ChristopherNeural` and `en-US-GuyNeural` at natural `+0Hz` pitch and `+1%`/`+3%` conversational rate
         # so Microsoft's DragonHD emotional sentence intonation stays 100% warm, expressive, and human!
         voice_by_pillar = {
-            "STOCK_MARKETS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "BUSINESS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "AI_ROBOTICS": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "TECHNOLOGY": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "SCIENCE": ("en-US-BrianMultilingualNeural", "+1%", "+3%", "+0Hz"),
-            "VIRAL_UNDERDOG_SPORTS": ("en-US-AndrewMultilingualNeural", "+2%", "+4%", "+0Hz"),
-            "SPORTS": ("en-US-AndrewMultilingualNeural", "+2%", "+4%", "+0Hz")
+            "STOCK_MARKETS": ("en-US-GuyNeural", "+1%", "+3%", "+0Hz"),
+            "BUSINESS": ("en-US-GuyNeural", "+1%", "+3%", "+0Hz"),
+            "AI_ROBOTICS": ("en-US-GuyNeural", "+1%", "+3%", "+0Hz"),
+            "TECHNOLOGY": ("en-US-GuyNeural", "+1%", "+3%", "+0Hz"),
+            "SCIENCE": ("en-US-GuyNeural", "+1%", "+3%", "+0Hz"),
+            "VIRAL_UNDERDOG_SPORTS": ("en-US-ChristopherNeural", "+2%", "+4%", "+0Hz"),
+            "SPORTS": ("en-US-ChristopherNeural", "+2%", "+4%", "+0Hz")
         }
-        v_cfg = voice_by_pillar.get(pillar) or voice_by_pillar.get(core_hub) or ("en-US-AndrewMultilingualNeural", "+1%", "+3%", "+0Hz")
+        v_cfg = voice_by_pillar.get(pillar) or voice_by_pillar.get(core_hub) or ("en-US-ChristopherNeural", "+1%", "+3%", "+0Hz")
         edge_voice = v_cfg[0]
         rate = v_cfg[2] if is_short else v_cfg[1]
         pitch = v_cfg[3]
@@ -16235,9 +16547,9 @@ class VoiceAndSubtitleEngine:
         raw_mp3 = out_path.replace(".mp3", "_raw.mp3")
         word_timings = []
 
-        # V38 100% SINGLE-VOICE LOCK (`en-US-AndrewMultilingualNeural` ONLY — ZERO DEEPGRAM / gTTS VOICE SWITCHING!):
+        # V38 100% SINGLE-VOICE LOCK (`en-US-ChristopherNeural` ONLY — ZERO DEEPGRAM / gTTS VOICE SWITCHING!):
         # Fixes the bug where a transient WebSocket timeout on Chapter 1 caused the first 10-45 seconds of a video
-        # to fall back to Deepgram (`aura-orion-en`) or `gTTS` before switching back to `en-US-AndrewMultilingualNeural`!
+        # to fall back to Deepgram (`aura-orion-en`) or `gTTS` before switching back to `en-US-ChristopherNeural`!
         for attempt_v in range(6):
             try:
                 if os.path.exists(raw_mp3):
@@ -16272,7 +16584,7 @@ class VoiceAndSubtitleEngine:
             except Exception:
                 await asyncio.sleep(0.8 * (attempt_v + 1))
 
-        # If streaming failed, use `edge-tts` CLI with the EXACT SAME `en-US-AndrewMultilingualNeural` voice!
+        # If streaming failed, use `edge-tts` CLI with the EXACT SAME `en-US-ChristopherNeural` voice!
         if not os.path.exists(raw_mp3) or os.path.getsize(raw_mp3) <= 1500:
             try:
                 txt_f = out_path + "_tts_input.txt"
@@ -16426,14 +16738,15 @@ class VoiceAndSubtitleEngine:
 # ==============================================================================
 # 12. AI-DIRECTED SCRIPT & SCENE BUILDER
 # ==============================================================================
-def make_clean_context_headline(text, max_words=6):
-    first_clause = re.split(r"[.;:—–]", text)[0].strip()
-    words = first_clause.split()
-    dangling = {"THE", "A", "AN", "TO", "IN", "ON", "OF", "FOR", "WITH", "AND", "OR", "BY", "AS", "AT", "FROM", "THAT", "WHICH", "WHILE", "HIS", "HER", "ITS", "FOUR", "TWO"}
-    selected = words[:max_words]
-    while len(selected) > 2 and selected[-1].upper().strip(",.:;'\"") in dangling:
-        selected.pop()
-    return " ".join(selected).upper()
+def make_clean_context_headline(text, max_words=4):
+    """
+    V84 GRAMMAR-LOCKED 3-TO-4 WORD HEADLINE BUILDER:
+    Delegates to `extract_key_point_from_sentence` so chapter & card headings never slice mid-clause
+    or output broken contractions like 'HERES PROBLEM HOUTHIS DIDNT' or 'STRIKES SHIPPING DOESNT JUST'!
+    """
+    hl, _ = extract_key_point_from_sentence(text, beat_num=1, fallback_stat="")
+    words = hl.split()[:max(2, min(max_words, 4))]
+    return " ".join(words).upper()
 
 def build_short_script(dossier):
     """
@@ -17065,8 +17378,15 @@ def build_ai_directed_sections(dossier, is_short=True, top_channel_hits=None):
             })
         if not is_short and sections:
             sections = ensure_full_length_6_to_8_min_documentary(sections, dossier)
-            if "subscribe to world talk brief" not in sections[-1]["narration"].lower():
-                sections[-1]["narration"] = f"{sections[-1]['narration'].rstrip('.!?')}. Share your thoughts in the comments below, and subscribe to World Talk Brief."
+            # V84 ZERO DOUBLE-OUTRO LOCK: Strip any existing comment CTA before appending one single clean outro!
+            last_nar_clean = re.sub(
+                r"(?i)(?:now\s+tell\s+me\s+your\s+opinion\s+in\s+the\s+comments[^.!?]*[.!?]?|tell\s+me\s+what\s+you\s+think\s+in\s+the\s+comments[^.!?]*[.!?]?|share\s+your\s+(?:thoughts|perspective|verdict)\s+in\s+the\s+comments[^.!?]*[.!?]?)",
+                "",
+                sections[-1]["narration"]
+            ).strip()
+            if "subscribe to world talk brief" not in last_nar_clean.lower():
+                last_nar_clean = f"{last_nar_clean.rstrip('.!?')}. Drop your verdict in the comments below, and subscribe to World Talk Brief."
+            sections[-1]["narration"] = last_nar_clean
         elif is_short and sections:
             if "description" not in sections[-1]["narration"].lower():
                 sections[-1]["narration"] = f"{sections[-1]['narration']} Watch the full documentary via the link in the description and pinned comment!"
@@ -18661,9 +18981,7 @@ def build_v70_search_first_case_study_title(dossier, candidate_title, is_short=F
 
     c_name = ascii_transliterate_keep_vowels(str(dossier.get("country_profile", {}).get("name", "Global"))).title()
     t_anc = ascii_transliterate_keep_vowels(str(dossier.get("topic_anchor") or "")).strip()
-    if c_name.upper() not in ("INTERNATIONAL", "GLOBAL BRIEFING", "GLOBAL", "WORLD"):
-        if c_name.lower() not in clean_t.lower() and len(f"{c_name}: {clean_t}") <= 88:
-            clean_t = f"{c_name}: {clean_t}"
+    # V83: Never prepend robotic 'United States: ' or 'Saudi Arabia: ' prefixes that waste mobile's first 30 chars!
 
     low_t = clean_t.lower()
     if "case study" not in low_t and "explained" not in low_t:
