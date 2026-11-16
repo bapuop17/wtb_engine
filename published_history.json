@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-16T04:17:08.084785",
-  "last_upload_epoch": 1794802628,
-  "round_robin_idx": 16,
-  "country_rot_idx": 41,
-  "bgm_track_counter": 3516502072,
+  "updated_at": "2026-11-16T07:32:55.411445",
+  "last_upload_epoch": 1794814375,
+  "round_robin_idx": 17,
+  "country_rot_idx": 47,
+  "bgm_track_counter": 3525896024,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -721,56 +721,12 @@
     "zelensky_urges_us_and_musk_to",
     "zelensky_vs_musk_starlink_cut_threatens",
     "protesters_clash_with_police_near_asean",
-    "trump_s_asean_shock_manila_clashes"
+    "trump_s_asean_shock_manila_clashes",
+    "united_states_trump_s_asean_shock",
+    "yemeni_forces_retreat_leaves_houthis_in",
+    "yemen_s_bab_al_mandab_falls"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why UK High Streets Are Quietly Dying",
-      "tokens": [
-        "dying",
-        "high",
-        "quietly",
-        "streets"
-      ]
-    },
-    {
-      "title": "Arsenal knocked out of League Cup by fourth-tier Fleetwood Town | Geopolitics Explained",
-      "tokens": [
-        "arsenal",
-        "fleetwood",
-        "fourth",
-        "geopolitics",
-        "knocked",
-        "league",
-        "tier",
-        "town"
-      ]
-    },
-    {
-      "title": "Cowboy Space unveils 'Big Iron' rocket to launch 20,000 AI data centers | Science Explained",
-      "tokens": [
-        "centers",
-        "cowboy",
-        "data",
-        "iron",
-        "launch",
-        "rocket",
-        "science",
-        "space",
-        "unveils"
-      ]
-    },
-    {
-      "title": "Boeing says it won't significantly ramp up 737 Max production until late 2027",
-      "tokens": [
-        "boeing",
-        "late",
-        "production",
-        "ramp",
-        "significantly",
-        "until"
-      ]
-    },
     {
       "title": "Why One Word Cost Mbapp His China Empire",
       "tokens": [
@@ -8326,10 +8282,79 @@
         "trump",
         "visit"
       ]
+    },
+    {
+      "title": "United States: Trump's ASEAN Shock: Manila Clashes & US-China Tensions Explained",
+      "tokens": [
+        "asean",
+        "china",
+        "clashes",
+        "manila",
+        "shock",
+        "states",
+        "tensions",
+        "trump",
+        "united"
+      ]
+    },
+    {
+      "title": "Trump's ASEAN Shock: Manila Clashes & US-China Tensions Explained! #shorts",
+      "tokens": [
+        "asean",
+        "china",
+        "clashes",
+        "manila",
+        "shock",
+        "shorts",
+        "tensions",
+        "trump"
+      ]
+    },
+    {
+      "title": "Yemeni forces' retreat leaves Houthis in control of key Red Sea waterway",
+      "tokens": [
+        "coastal",
+        "constrained",
+        "control",
+        "counter",
+        "forces",
+        "further",
+        "houthis",
+        "leaves",
+        "middle",
+        "offensive",
+        "retake",
+        "retreat",
+        "side",
+        "signalled",
+        "strait",
+        "territory",
+        "waterway",
+        "week",
+        "whose",
+        "yemeni"
+      ]
+    },
+    {
+      "title": "Yemen's Bab al-Mandab Falls: Houthis Seize Red Sea Chokepoint as Saudi Forces Retreat",
+      "tokens": [
+        "chokepoint",
+        "control",
+        "falls",
+        "forces",
+        "houthis",
+        "leaves",
+        "mandab",
+        "retreat",
+        "saudi",
+        "seize",
+        "waterway",
+        "yemen",
+        "yemeni"
+      ]
     }
   ],
   "last_categories": [
-    "GEOPOLITICS",
     "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
     "STOCK_MARKETS",
@@ -8368,10 +8393,10 @@
     "AI_ROBOTICS",
     "GEOPOLITICS",
     "GEOPOLITICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "DW World News (Europe & Global)",
     "Global Country Wire [THAILAND \u2022 STOCK_MARKETS]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "CNBC Markets & Finance",
@@ -8410,10 +8435,10 @@
     "Global Country Wire [SOUTH KOREA \u2022 GLOBAL_POWERS]",
     "Global Superpowers Geopolitics 24h",
     "BBC World Global",
-    "Middle East, Europe, Asia & Africa Geopolitics 24h"
+    "Middle East, Europe, Asia & Africa Geopolitics 24h",
+    "Global Superpower & World Headlines Top 24h"
   ],
   "last_countries": [
-    "GLOBAL CINEMA",
     "SPACE & SCIENCE",
     "EUROPE",
     "UNITED STATES",
@@ -8462,7 +8487,8 @@
     "UNITED STATES",
     "RUSSIA",
     "UKRAINE",
-    "UNITED STATES"
+    "UNITED STATES",
+    "YEMEN"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8852,6 +8878,18 @@
       "is_short": true,
       "published_iso": "2026-11-16T04:16:47Z",
       "summary": "Manila, November 15 \u2014 the 49th ASEAN Summit was supposed to be a diplomatic photo-op with Donald Trump on stage. Instead, opening day opened with riot shields. At least eleven demonstrators were arrested and two were hurt after Philippine police blocked a prot"
+    },
+    {
+      "video_id": "CXSAksQhBxU",
+      "title": "Yemen's Bab al-Mandab Falls: Houthis Seize Red Sea Chokepoint as Saudi Forces Retreat",
+      "url": "https://www.youtube.com/watch?v=CXSAksQhBxU",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/CXSAksQhBxU.html",
+      "thumb_url": "https://i.ytimg.com/vi/CXSAksQhBxU/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Yemen",
+      "is_short": false,
+      "published_iso": "2026-11-16T07:32:32Z",
+      "summary": "In a stunning reversal, Saudi-backed Yemeni government forces have withdrawn from the Bab al-Mandab Strait after a six-week offensive, handing Iran-backed Houthi rebels full control of the Red Sea's southern gateway. This documentary breaks down why the fall o"
     }
   ]
 }
