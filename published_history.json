@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-16T11:01:17.778088",
-  "last_upload_epoch": 1794826877,
-  "round_robin_idx": 18,
-  "country_rot_idx": 53,
-  "bgm_track_counter": 3553796821,
+  "updated_at": "2026-11-16T11:28:56.774332",
+  "last_upload_epoch": 1794828536,
+  "round_robin_idx": 19,
+  "country_rot_idx": 59,
+  "bgm_track_counter": 3584763942,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -725,41 +725,10 @@
     "united_states_trump_s_asean_shock",
     "yemeni_forces_retreat_leaves_houthis_in",
     "yemen_s_bab_al_mandab_falls",
-    "ambassadors_of_eu_member_states_approve"
+    "ambassadors_of_eu_member_states_approve",
+    "uk_and_allies_call_on_israel"
   ],
   "event_fingerprints": [
-    {
-      "title": "Beyond Bad Cholesterol: Scientists Uncover a Hidden Driver of Heart Disease | Mind Blowing Fact",
-      "tokens": [
-        "beyond",
-        "blowing",
-        "cholesterol",
-        "disease",
-        "driver",
-        "fact",
-        "heart",
-        "hidden",
-        "mind",
-        "scientists",
-        "uncover"
-      ]
-    },
-    {
-      "title": "Egypt court fines journalist Lina Attalah and orders news site's closure | Global Powers Explai",
-      "tokens": [
-        "attalah",
-        "closure",
-        "court",
-        "egypt",
-        "explai",
-        "fines",
-        "journalist",
-        "lina",
-        "orders",
-        "powers",
-        "site"
-      ]
-    },
     {
       "title": "The Astronomers Secrets Discovery That Surprised Scientists",
       "tokens": [
@@ -8371,10 +8340,48 @@
         "states",
         "union"
       ]
+    },
+    {
+      "title": "Ambassadors of EU Member States Approve New Russia Sanctions! #shorts",
+      "tokens": [
+        "ambassadors",
+        "approve",
+        "member",
+        "russia",
+        "sanctions",
+        "shorts",
+        "states"
+      ]
+    },
+    {
+      "title": "UK and allies call on Israel to allow rapid humanitarian access to Gaza",
+      "tokens": [
+        "access",
+        "allies",
+        "allow",
+        "assista",
+        "call",
+        "countries",
+        "desperately",
+        "entirely",
+        "exacerbates",
+        "flooding",
+        "four",
+        "gaza",
+        "humanitarian",
+        "israel",
+        "joint",
+        "need",
+        "people",
+        "rapid",
+        "reversible",
+        "shelter",
+        "situation",
+        "statement"
+      ]
     }
   ],
   "last_categories": [
-    "VIRAL_UNDERDOG_SPORTS",
     "STOCK_MARKETS",
     "GLOBAL_POWERS",
     "AI_ROBOTICS",
@@ -8413,10 +8420,10 @@
     "GEOPOLITICS",
     "GEOPOLITICS",
     "GEOPOLITICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "Teenage Prodigies & Underdog Upsets Across Global Sports",
     "CNBC Markets & Finance",
     "Google Trends Viral [BELGIUM]",
     "TechCrunch AI",
@@ -8455,10 +8462,10 @@
     "BBC World Global",
     "Middle East, Europe, Asia & Africa Geopolitics 24h",
     "Global Superpower & World Headlines Top 24h",
-    "Google Trends Viral [NORWAY]"
+    "Google Trends Viral [NORWAY]",
+    "Global Superpower & World Headlines Top 24h"
   ],
   "last_countries": [
-    "EUROPE",
     "UNITED STATES",
     "UNITED KINGDOM",
     "CUBA",
@@ -8507,7 +8514,8 @@
     "UKRAINE",
     "UNITED STATES",
     "YEMEN",
-    "RUSSIA"
+    "RUSSIA",
+    "UNITED KINGDOM"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8933,6 +8941,30 @@
       "is_short": true,
       "published_iso": "2026-11-16T11:00:56Z",
       "summary": "EU ambassadors have just approved a sweeping sanctions package targeting Russia, adding 145 individuals and entities and freezing assets of 50 Russian banks. The move follows a high\u2011profile NATO interception of a ghost\u2011fleet oil tanker in the Mediterranean, si"
+    },
+    {
+      "video_id": "-5TDsjznXNs",
+      "title": "UK and Allies Call on Israel to Allow Rapid Humanitarian Access to Gaza Explained",
+      "url": "https://www.youtube.com/watch?v=-5TDsjznXNs",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/-5TDsjznXNs.html",
+      "thumb_url": "https://i.ytimg.com/vi/-5TDsjznXNs/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "United Kingdom",
+      "is_short": false,
+      "published_iso": "2026-11-16T11:21:26Z",
+      "summary": "World Talk Brief [GEOPOLITICS] presents an original deep-dive case study."
+    },
+    {
+      "video_id": "Zi-jLeyW1K0",
+      "title": "UK and Allies Call on Israel to Allow Rapid Humanitarian Access to Gaza",
+      "url": "https://www.youtube.com/shorts/Zi-jLeyW1K0",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/Zi-jLeyW1K0.html",
+      "thumb_url": "https://i.ytimg.com/vi/Zi-jLeyW1K0/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "United Kingdom",
+      "is_short": true,
+      "published_iso": "2026-11-16T11:28:35Z",
+      "summary": "Four Western allies just broke ranks and put Israel on the clock. In a joint statement, the foreign ministers of the United Kingdom, Canada, Italy and Australia called the Gaza humanitarian crisis \"entirely reversible\" and demanded that Israel stop the delays "
     }
   ]
 }
