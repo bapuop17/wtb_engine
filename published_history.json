@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-16T00:22:18.074998",
-  "last_upload_epoch": 1794788538,
-  "round_robin_idx": 15,
-  "country_rot_idx": 35,
-  "bgm_track_counter": 3506130537,
+  "updated_at": "2026-11-16T04:17:08.084785",
+  "last_upload_epoch": 1794802628,
+  "round_robin_idx": 16,
+  "country_rot_idx": 41,
+  "bgm_track_counter": 3516502072,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -719,47 +719,11 @@
     "united_states_lutnick_under_fire_how",
     "estonia_to_close_border_with_russia",
     "zelensky_urges_us_and_musk_to",
-    "zelensky_vs_musk_starlink_cut_threatens"
+    "zelensky_vs_musk_starlink_cut_threatens",
+    "protesters_clash_with_police_near_asean",
+    "trump_s_asean_shock_manila_clashes"
   ],
   "event_fingerprints": [
-    {
-      "title": "Trump's Midterm Nightmare: Why Polls Lie",
-      "tokens": [
-        "midterm",
-        "nightmare",
-        "polls",
-        "trump"
-      ]
-    },
-    {
-      "title": "Why Manchester United Is Structurally Broken",
-      "tokens": [
-        "broken",
-        "manchester",
-        "structurally",
-        "united"
-      ]
-    },
-    {
-      "title": "Black Holes Can Split? The Spinning Loophole",
-      "tokens": [
-        "black",
-        "holes",
-        "loophole",
-        "spinning",
-        "split"
-      ]
-    },
-    {
-      "title": "Yemen's Taiz Is Dying: The Siege Map You Need To See",
-      "tokens": [
-        "dying",
-        "need",
-        "siege",
-        "taiz",
-        "yemen"
-      ]
-    },
     {
       "title": "Why UK High Streets Are Quietly Dying",
       "tokens": [
@@ -8283,10 +8247,88 @@
         "urges",
         "zelensky"
       ]
+    },
+    {
+      "title": "Zelensky vs Musk: Starlink Cut Threatens Ukraine | Geopolitical Case Study",
+      "tokens": [
+        "case",
+        "geopolitical",
+        "musk",
+        "starlink",
+        "study",
+        "threatens",
+        "ukraine",
+        "zelensky"
+      ]
+    },
+    {
+      "title": "Zelensky vs Musk: Starlink Cut Threatens Ukraine! #shorts",
+      "tokens": [
+        "musk",
+        "shorts",
+        "starlink",
+        "threatens",
+        "ukraine",
+        "zelensky"
+      ]
+    },
+    {
+      "title": "Protesters clash with police near ASEAN summit over Trump visit, Middle East conflict",
+      "tokens": [
+        "asean",
+        "based",
+        "between",
+        "citing",
+        "city",
+        "clash",
+        "conflict",
+        "dzbb",
+        "east",
+        "hold",
+        "manny",
+        "march",
+        "middle",
+        "near",
+        "pasay",
+        "police",
+        "protesters",
+        "radyo",
+        "rally",
+        "rose",
+        "sides",
+        "summit",
+        "super",
+        "tensions",
+        "toward",
+        "tried",
+        "trump",
+        "vargas",
+        "visit"
+      ]
+    },
+    {
+      "title": "Trump's ASEAN Shock: Manila Clashes & US-China Tensions Explained",
+      "tokens": [
+        "asean",
+        "china",
+        "clash",
+        "clashes",
+        "conflict",
+        "east",
+        "manila",
+        "middle",
+        "near",
+        "police",
+        "protesters",
+        "shock",
+        "summit",
+        "tensions",
+        "trump",
+        "visit"
+      ]
     }
   ],
   "last_categories": [
-    "HEALTH",
     "GEOPOLITICS",
     "STOCK_MARKETS",
     "VIRAL_UNDERDOG_SPORTS",
@@ -8325,10 +8367,10 @@
     "GEOPOLITICS",
     "AI_ROBOTICS",
     "GEOPOLITICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "Global Country Wire [ITALY \u2022 HEALTH]",
     "DW World News (Europe & Global)",
     "Global Country Wire [THAILAND \u2022 STOCK_MARKETS]",
     "Teenage Prodigies & Underdog Upsets Across Global Sports",
@@ -8367,10 +8409,10 @@
     "Google Trends Viral [SAUDI ARABIA]",
     "Global Country Wire [SOUTH KOREA \u2022 GLOBAL_POWERS]",
     "Global Superpowers Geopolitics 24h",
-    "BBC World Global"
+    "BBC World Global",
+    "Middle East, Europe, Asia & Africa Geopolitics 24h"
   ],
   "last_countries": [
-    "GLOBAL TECH & AI",
     "GLOBAL CINEMA",
     "SPACE & SCIENCE",
     "EUROPE",
@@ -8419,7 +8461,8 @@
     "SAUDI ARABIA",
     "UNITED STATES",
     "RUSSIA",
-    "UKRAINE"
+    "UKRAINE",
+    "UNITED STATES"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8785,6 +8828,30 @@
       "is_short": true,
       "published_iso": "2026-11-16T00:21:55Z",
       "summary": "In a shocking geopolitical twist, Ukrainian President Volodymyr Zelensky has publicly urged Elon Musk and the US administration to lift Starlink restrictions, warning that slowed internet speeds are crippling Ukraine's ability to intercept Russian drones. This"
+    },
+    {
+      "video_id": "9_XEKF3ZW54",
+      "title": "United States: Trump's ASEAN Shock: Manila Clashes & US-China Tensions Explained",
+      "url": "https://www.youtube.com/watch?v=9_XEKF3ZW54",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/9_XEKF3ZW54.html",
+      "thumb_url": "https://i.ytimg.com/vi/9_XEKF3ZW54/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "United States",
+      "is_short": false,
+      "published_iso": "2026-11-16T04:07:36Z",
+      "summary": "The 49th ASEAN Summit in Manila has been marred by violent clashes between protesters and police, sending shockwaves through global diplomatic circles. As US President Donald Trump prepares to engage with Southeast Asian leaders, the street-level unrest highli"
+    },
+    {
+      "video_id": "HWhkjPuYpN4",
+      "title": "Trump's ASEAN Shock: Manila Clashes & US-China Tensions Explained",
+      "url": "https://www.youtube.com/shorts/HWhkjPuYpN4",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/HWhkjPuYpN4.html",
+      "thumb_url": "https://i.ytimg.com/vi/HWhkjPuYpN4/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "United States",
+      "is_short": true,
+      "published_iso": "2026-11-16T04:16:47Z",
+      "summary": "Manila, November 15 \u2014 the 49th ASEAN Summit was supposed to be a diplomatic photo-op with Donald Trump on stage. Instead, opening day opened with riot shields. At least eleven demonstrators were arrested and two were hurt after Philippine police blocked a prot"
     }
   ]
 }
