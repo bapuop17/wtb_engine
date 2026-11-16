@@ -22,11 +22,7 @@ on:
       - 'wtb_engine.py'
       - '.github/workflows/**'
   schedule:
-    - cron: '*/10 * * * *'
-    - cron: '7 * * * *'
-    - cron: '22 * * * *'
-    - cron: '37 * * * *'
-    - cron: '52 * * * *'
+    - cron: '0 6,18 * * *'
 
 permissions:
   contents: write
