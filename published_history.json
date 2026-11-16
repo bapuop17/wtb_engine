@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-16T11:28:56.774332",
-  "last_upload_epoch": 1794828536,
-  "round_robin_idx": 19,
-  "country_rot_idx": 59,
-  "bgm_track_counter": 3584763942,
+  "updated_at": "2026-11-16T15:30:43.367827",
+  "last_upload_epoch": 1794843043,
+  "round_robin_idx": 0,
+  "country_rot_idx": 65,
+  "bgm_track_counter": 3595416009,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -726,51 +726,11 @@
     "yemeni_forces_retreat_leaves_houthis_in",
     "yemen_s_bab_al_mandab_falls",
     "ambassadors_of_eu_member_states_approve",
-    "uk_and_allies_call_on_israel"
+    "uk_and_allies_call_on_israel",
+    "eu_chief_diplomat_kallas_blasts_russian",
+    "why_eu_chief_diplomat_kallas_blasts"
   ],
   "event_fingerprints": [
-    {
-      "title": "The Astronomers Secrets Discovery That Surprised Scientists",
-      "tokens": [
-        "astronomers",
-        "discovery",
-        "scientists",
-        "secrets",
-        "surprised"
-      ]
-    },
-    {
-      "title": "Why Meta's AI Director Just Quit To Build This",
-      "tokens": [
-        "build",
-        "director",
-        "just",
-        "meta",
-        "quit"
-      ]
-    },
-    {
-      "title": "Jailed for Reporting: The French Journalist's Silent Struggle",
-      "tokens": [
-        "french",
-        "jailed",
-        "journalist",
-        "reporting",
-        "silent",
-        "struggle"
-      ]
-    },
-    {
-      "title": "The Radio Echo That Broke Physics: 90 Years of Mystery",
-      "tokens": [
-        "broke",
-        "echo",
-        "mystery",
-        "physics",
-        "radio",
-        "years"
-      ]
-    },
     {
       "title": "What causes mysterious long delayed radio echoes in Earth's atmosphere? | Science Explained",
       "tokens": [
@@ -8379,10 +8339,77 @@
         "situation",
         "statement"
       ]
+    },
+    {
+      "title": "UK and Allies Call on Israel to Allow Rapid Humanitarian Access to Gaza Explained",
+      "tokens": [
+        "access",
+        "allies",
+        "allow",
+        "call",
+        "gaza",
+        "humanitarian",
+        "israel",
+        "rapid"
+      ]
+    },
+    {
+      "title": "UK and Allies Call on Israel to Allow Rapid Humanitarian Access to Gaza! #shorts",
+      "tokens": [
+        "access",
+        "allies",
+        "allow",
+        "call",
+        "gaza",
+        "humanitarian",
+        "israel",
+        "rapid",
+        "shorts"
+      ]
+    },
+    {
+      "title": "EU chief diplomat Kallas blasts Russian peace demands as 'absurd'",
+      "tokens": [
+        "absurd",
+        "blasts",
+        "calls",
+        "chief",
+        "clear",
+        "dealings",
+        "demands",
+        "diplomat",
+        "eyed",
+        "high",
+        "kallas",
+        "negotiating",
+        "part",
+        "participants",
+        "peace",
+        "representative",
+        "russia",
+        "russian",
+        "talks",
+        "team",
+        "their",
+        "ukraine",
+        "urged"
+      ]
+    },
+    {
+      "title": "Why EU Chief Diplomat Kallas Blasts Russian Peace Demands As 'absurd'",
+      "tokens": [
+        "absurd",
+        "blasts",
+        "chief",
+        "demands",
+        "diplomat",
+        "kallas",
+        "peace",
+        "russian"
+      ]
     }
   ],
   "last_categories": [
-    "STOCK_MARKETS",
     "GLOBAL_POWERS",
     "AI_ROBOTICS",
     "STOCK_MARKETS",
@@ -8421,10 +8448,10 @@
     "GEOPOLITICS",
     "GEOPOLITICS",
     "GEOPOLITICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "CNBC Markets & Finance",
     "Google Trends Viral [BELGIUM]",
     "TechCrunch AI",
     "DW Business & Trade",
@@ -8463,10 +8490,10 @@
     "Middle East, Europe, Asia & Africa Geopolitics 24h",
     "Global Superpower & World Headlines Top 24h",
     "Google Trends Viral [NORWAY]",
+    "Global Superpower & World Headlines Top 24h",
     "Global Superpower & World Headlines Top 24h"
   ],
   "last_countries": [
-    "UNITED STATES",
     "UNITED KINGDOM",
     "CUBA",
     "ISRAEL",
@@ -8515,7 +8542,8 @@
     "UNITED STATES",
     "YEMEN",
     "RUSSIA",
-    "UNITED KINGDOM"
+    "UNITED KINGDOM",
+    "RUSSIA"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -8965,6 +8993,30 @@
       "is_short": true,
       "published_iso": "2026-11-16T11:28:35Z",
       "summary": "Four Western allies just broke ranks and put Israel on the clock. In a joint statement, the foreign ministers of the United Kingdom, Canada, Italy and Australia called the Gaza humanitarian crisis \"entirely reversible\" and demanded that Israel stop the delays "
+    },
+    {
+      "video_id": "0NtWErrUQgA",
+      "title": "Why EU Chief Diplomat Kallas Blasts Russian Peace Demands As 'absurd' Explained",
+      "url": "https://www.youtube.com/watch?v=0NtWErrUQgA",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/0NtWErrUQgA.html",
+      "thumb_url": "https://i.ytimg.com/vi/0NtWErrUQgA/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Russia",
+      "is_short": false,
+      "published_iso": "2026-11-16T14:59:51Z",
+      "summary": "World Talk Brief [GEOPOLITICS] presents an original deep-dive case study."
+    },
+    {
+      "video_id": "uTu--LXhEg0",
+      "title": "Why EU Chief Diplomat Kallas Blasts Russian Peace Demands As 'absurd'",
+      "url": "https://www.youtube.com/shorts/uTu--LXhEg0",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/uTu--LXhEg0.html",
+      "thumb_url": "https://i.ytimg.com/vi/uTu--LXhEg0/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Russia",
+      "is_short": true,
+      "published_iso": "2026-11-16T15:30:20Z",
+      "summary": "World Talk Brief [GEOPOLITICS] original #Shorts case study."
     }
   ]
 }
