@@ -5190,7 +5190,7 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
                     hf_url,
                     headers={"Authorization": f"Bearer {hf_token}"},
                     json={"inputs": cinematic_prompt},
-                    timeout=14
+                    timeout=45
                 )
                 if r_hf.status_code == 200 and len(r_hf.content) > 18000:
                     p_hf = f"temp/{tag_id}_hfflux.jpg"
@@ -5203,24 +5203,25 @@ def fetch_huggingface_or_pollinations_1080p_scene(ai_prompt, existing_hashes, ta
             except Exception:
                 pass
 
-    # Pollinations Free 1080p Flux Documentary Scene Generator (100% Free, Zero API Key!)
-    try:
-        seed_val = abs(hash(f"{tag_id}_{scene_desc}")) % 999999 + 1
-        pol_url = (
-            f"https://image.pollinations.ai/prompt/{urllib.parse.quote(cinematic_prompt)}"
-            f"?width=1920&height=1080&model=flux&nologo=true&enhance=true&seed={seed_val}"
-        )
-        r_pol = requests.get(pol_url, headers=HEADERS_WEB, timeout=14)
-        if r_pol.status_code == 200 and len(r_pol.content) > 18000:
-            p_pol = f"temp/{tag_id}_polflux.jpg"
-            with open(p_pol, "wb") as f:
-                f.write(r_pol.content)
-            im_pol = Image.open(p_pol).convert("RGB")
-            im_pol = enhance_broadcast_color_grade(im_pol.resize((1920, 1080), getattr(Image, "Resampling", Image).LANCZOS))
-            print(f"   🎨 [Pollinations Flux Free 1080p Pin-Point Scene]: {scene_desc[:52]}", flush=True)
-            return im_pol
-    except Exception:
-        pass
+    # Pollinations Free 1080p Flux Documentary Scene Generator (3 Retries, 45s Deep-Render Timeout!)
+    for attempt_pol in range(3):
+        try:
+            seed_val = (abs(hash(f"{tag_id}_{scene_desc}")) + attempt_pol * 7919) % 999999 + 1
+            pol_url = (
+                f"https://image.pollinations.ai/prompt/{urllib.parse.quote(cinematic_prompt)}"
+                f"?width=1920&height=1080&model=flux&nologo=true&enhance=true&seed={seed_val}"
+            )
+            r_pol = requests.get(pol_url, headers=HEADERS_WEB, timeout=45)
+            if r_pol.status_code == 200 and len(r_pol.content) > 18000:
+                p_pol = f"temp/{tag_id}_polflux.jpg"
+                with open(p_pol, "wb") as f:
+                    f.write(r_pol.content)
+                im_pol = Image.open(p_pol).convert("RGB")
+                im_pol = enhance_broadcast_color_grade(im_pol.resize((1920, 1080), getattr(Image, "Resampling", Image).LANCZOS))
+                print(f"   🎨 [Pollinations Flux Free 1080p Pin-Point Scene (Attempt {attempt_pol+1})]: {scene_desc[:52]}", flush=True)
+                return im_pol
+        except Exception:
+            pass
 
     return None
 
@@ -10942,7 +10943,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
                     clean_bvq = sanitize_visual_search_query(bv["photo_query"], dossier)
                     if clean_bvq and len(clean_bvq) >= 6 and clean_bvq.lower() not in [x.lower() for x in search_angles]:
                         search_angles.append(clean_bvq)
-    search_angles = search_angles[:28]
+    search_angles = search_angles[:60]
 
     raw_candidates = []
     # V62 BELLINGCAT-OSINT & PRIMARY ARCHIVE INJECTION (DVIDS, NASA REST API, Reuters/AP Wire, Satellite Imagery):
@@ -11210,10 +11211,10 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
 
     pre_passed.sort(key=lambda x: x["relevance_score"], reverse=True)
     audit12_passed = []
-    for cand in pre_passed[:190]:
+    for cand in pre_passed[:320]:
         if cand["source_angle"] in ("multi_site_original_article", "direct_article") or ai_audit_caption_and_scene_match(cand["caption"], cand["url"], story_title, cand["source_angle"], dossier=dossier):
             audit12_passed.append(cand)
-            if len(audit12_passed) >= 140:
+            if len(audit12_passed) >= 260:
                 break
 
     verified_pool = []
@@ -11227,7 +11228,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
         for try_u in urls_to_try:
             try:
                 hdrs = HEADERS_WIKI if "wikimedia.org" in try_u or "wikipedia.org" in try_u else HEADERS_WEB
-                ir = requests.get(try_u, headers=hdrs, timeout=4.5)
+                ir = requests.get(try_u, headers=hdrs, timeout=10.0)
                 if ir.status_code == 200 and len(ir.content) > 11000:
                     p = f"temp/pool300_{hashlib.md5(cand_obj['url'].encode()).hexdigest()[:10]}.jpg"
                     with open(p, "wb") as f:
@@ -11239,7 +11240,7 @@ def harvest_200_plus_visual_candidates_for_topic(dossier, sections_list=None):
 
     downloaded_items = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=14) as ex:
-        futs2 = [ex.submit(download_candidate_bytes, c) for c in audit12_passed[:140]]
+        futs2 = [ex.submit(download_candidate_bytes, c) for c in audit12_passed[:260]]
         for ft in concurrent.futures.as_completed(futs2):
             res = ft.result()
             if res is not None:
@@ -16096,19 +16097,24 @@ def harvest_topic_video_broll_pool(dossier, sections_list, used_video_urls, used
     """
     used_vc_ids = dossier.get("_unit_used_vclips") or set()
     avail_vclips = [c for c in (dossier.get("_cached_video_broll_pool") or []) if id(c.get("vclip")) not in used_vc_ids]
-    if len(avail_vclips) >= 6:
+    if len(avail_vclips) >= 18:
         return dossier["_cached_video_broll_pool"]
 
     master_qs = extract_topic_master_queries(dossier, sections_list=sections_list)
     video_angles = []
-    for mq in master_qs[:8]:
+    for mq in master_qs[:18]:
         if mq not in video_angles:
             video_angles.append(mq)
+    if sections_list:
+        for sec_v in sections_list:
+            vbq = str(sec_v.get("video_broll_query") or "").strip()
+            if vbq and len(vbq) >= 5 and vbq not in video_angles:
+                video_angles.append(vbq)
 
     pool_clips = list(dossier.get("_cached_video_broll_pool") or [])
     vpool_start_t = time.time()
-    for idx_v, ang_q in enumerate(video_angles[:6]):
-        if len(pool_clips) >= 6 or (time.time() - vpool_start_t) > 55.0:
+    for idx_v, ang_q in enumerate(video_angles[:18]):
+        if len(pool_clips) >= 18 or (time.time() - vpool_start_t) > 420.0:
             break
         if not ang_q or len(ang_q) < 4:
             continue
@@ -16365,7 +16371,7 @@ def build_prop_driven_storyboard_1080p(
                 # Moving Video Clip guarantees Frame 0 of every Short & Long video shows the exact main subject!
                 # If no pre-pooled clip matched THIS sentence's specific entity (e.g. 'Warsaw Chopin Airport', 'Madrid-Barajas',
                 # 'Sofia Airport', 'Port of Piraeus', 'Europol'), convert THIS sentence's exact `beat_im` into a 30fps 3D Parallax Moving Video Clip!
-                if vseg is None and beat_im is not None and global_beat_idx == 0 and (not is_short):
+                if vseg is None and beat_im is not None and b_i in (0, 2) and (not is_short):
                     syn_beat_vc = synthesize_3d_parallax_broadcast_video_broll(
                         beat_im,
                         tag_id=f"{tag_prefix}_b{global_beat_idx}_syncv",
@@ -18812,7 +18818,7 @@ async def render_and_upload_long_unit(lead_long_dossier, unit_num, watermark, vo
     ))
     final_long = final_long.with_audio(CompositeAudioClip([final_long.audio, bgm_l])) if MOVIEPY_V2 else final_long.set_audio(CompositeAudioClip([final_long.audio, bgm_l]))
     out_long = "output/WTB_1080p_Long_16x9.mp4" if unit_num == 1 else f"output/WTB_1080p_Long_{unit_num}_16x9.mp4"
-    final_long.write_videofile(out_long, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="256k", bitrate="9500k", preset="faster", threads=4, logger=None)
+    final_long.write_videofile(out_long, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="320k", bitrate="12500k", preset="medium", threads=4, logger=None)
     try:
         final_long.close()
         bgm_l.close()
@@ -19287,7 +19293,7 @@ async def render_and_upload_short_unit(
     ))
     final_short = final_short.with_audio(CompositeAudioClip([final_short.audio, bgm_s])) if MOVIEPY_V2 else final_short.set_audio(CompositeAudioClip([final_short.audio, bgm_s]))
     out_short = "output/WTB_1080p_Short_9x16.mp4" if unit_num == 1 else f"output/WTB_1080p_Short_{unit_num}_9x16.mp4"
-    final_short.write_videofile(out_short, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="256k", bitrate="8500k", preset="faster", threads=4, logger=None)
+    final_short.write_videofile(out_short, fps=30, codec="libx264", audio_codec="aac", audio_fps=48000, audio_bitrate="320k", bitrate="10500k", preset="medium", threads=4, logger=None)
     try:
         final_short.close()
         bgm_s.close()
