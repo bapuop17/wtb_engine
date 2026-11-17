@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-16T20:16:45.503864",
-  "last_upload_epoch": 1794860205,
-  "round_robin_idx": 1,
-  "country_rot_idx": 71,
-  "bgm_track_counter": 3607506418,
+  "updated_at": "2026-11-17T03:03:27.079381",
+  "last_upload_epoch": 1794884607,
+  "round_robin_idx": 2,
+  "country_rot_idx": 2,
+  "bgm_track_counter": 3617911589,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -730,53 +730,11 @@
     "eu_chief_diplomat_kallas_blasts_russian",
     "why_eu_chief_diplomat_kallas_blasts",
     "france_accuses_iran_of_cyberattacks_on",
-    "france_s_barrot_blames_iran_s"
+    "france_s_barrot_blames_iran_s",
+    "israel_warns_us_of_alleged_iranian",
+    "israel_warns_us_iran_plot_to"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why SpaceX's 330-Foot Rocket Just Broke History",
-      "tokens": [
-        "broke",
-        "foot",
-        "just",
-        "rocket",
-        "spacex"
-      ]
-    },
-    {
-      "title": "Why an Alibaba AI Tried to Upload Files to Beijing \u2013 The Hidden Risks",
-      "tokens": [
-        "alibaba",
-        "beijing",
-        "files",
-        "hidden",
-        "risks",
-        "tried",
-        "upload"
-      ]
-    },
-    {
-      "title": "Why Your City Is Fighting Over These Massive Power Hogs",
-      "tokens": [
-        "city",
-        "fighting",
-        "hogs",
-        "your"
-      ]
-    },
-    {
-      "title": "Macklemore begins Free Palestine tour after Ed Sheeran fallout | Entertainment Explained",
-      "tokens": [
-        "begins",
-        "entertainment",
-        "fallout",
-        "free",
-        "macklemore",
-        "palestine",
-        "sheeran",
-        "tour"
-      ]
-    },
     {
       "title": "Why Your Spittle Might Save Your Life (Cancer Breakthrough)",
       "tokens": [
@@ -8434,10 +8392,75 @@
         "seeks",
         "supermarket"
       ]
+    },
+    {
+      "title": "France's Barrot Blames Iran's IRGC for Fridge Hack - EU Sanctions Explained",
+      "tokens": [
+        "barrot",
+        "blames",
+        "france",
+        "fridge",
+        "hack",
+        "iran",
+        "irgc",
+        "sanctions"
+      ]
+    },
+    {
+      "title": "France's Barrot Blames Iran's IRGC for Fridge Hack - EU Sanctions! #shorts",
+      "tokens": [
+        "barrot",
+        "blames",
+        "france",
+        "fridge",
+        "hack",
+        "iran",
+        "irgc",
+        "sanctions",
+        "shorts"
+      ]
+    },
+    {
+      "title": "Israel warns US of alleged Iranian plot to attack President Trump",
+      "tokens": [
+        "against",
+        "alleged",
+        "asked",
+        "assess",
+        "attack",
+        "base",
+        "drone",
+        "intelligence",
+        "intercepted",
+        "iran",
+        "iranian",
+        "israel",
+        "mossad",
+        "plot",
+        "president",
+        "reportedly",
+        "targetin",
+        "trump",
+        "warns"
+      ]
+    },
+    {
+      "title": "Israel Warns US: Iran Plot to Kill Trump",
+      "tokens": [
+        "alleged",
+        "attack",
+        "iran",
+        "iranian",
+        "israel",
+        "kill",
+        "plot",
+        "president",
+        "trump",
+        "warns"
+      ]
     }
   ],
   "last_categories": [
-    "AI_ROBOTICS",
     "STOCK_MARKETS",
     "ENTERTAINMENT",
     "UNDERRATED_GEOPOLITICS",
@@ -8476,10 +8499,10 @@
     "GEOPOLITICS",
     "GEOPOLITICS",
     "GEOPOLITICS",
-    "AI_ROBOTICS"
+    "AI_ROBOTICS",
+    "GEOPOLITICS"
   ],
   "last_sources": [
-    "TechCrunch AI",
     "DW Business & Trade",
     "Hollywood Reporter",
     "DW Global In-Depth",
@@ -8518,10 +8541,10 @@
     "Google Trends Viral [NORWAY]",
     "Global Superpower & World Headlines Top 24h",
     "Global Superpower & World Headlines Top 24h",
-    "Global Superpowers Geopolitics 24h"
+    "Global Superpowers Geopolitics 24h",
+    "Google Trends Viral [NEW ZEALAND]"
   ],
   "last_countries": [
-    "CUBA",
     "ISRAEL",
     "MALAYSIA",
     "PAKISTAN",
@@ -8570,7 +8593,8 @@
     "RUSSIA",
     "UNITED KINGDOM",
     "RUSSIA",
-    "FRANCE"
+    "FRANCE",
+    "ISRAEL"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -9068,6 +9092,30 @@
       "is_short": true,
       "published_iso": "2026-11-16T20:16:20Z",
       "summary": "France\u2019s foreign minister Jean\u2011No\u00ebl Barrot has publicly accused Iran\u2019s Islamic Revolutionary Guard Corps of launching a coordinated cyber\u2011attack that crippled refrigeration units in more than 700 French supermarkets, spoiling millions of euros worth of food an"
+    },
+    {
+      "video_id": "OZcnr4We7fM",
+      "title": "Israel Warns US: Iran Plot to Kill Trump | Geopolitical Case Study",
+      "url": "https://www.youtube.com/watch?v=OZcnr4We7fM",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/OZcnr4We7fM.html",
+      "thumb_url": "https://i.ytimg.com/vi/OZcnr4We7fM/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Israel",
+      "is_short": false,
+      "published_iso": "2026-11-17T02:51:24Z",
+      "summary": "In a shocking turn of events, Israeli intelligence has warned the United States of an alleged Iranian plot to assassinate President Donald Trump. This deep dive investigates the intercepted drone threats against US bases and the unprecedented intelligence coop"
+    },
+    {
+      "video_id": "-DJ-Rfcv3W8",
+      "title": "Israel Warns US: Iran Plot to Kill Trump",
+      "url": "https://www.youtube.com/shorts/-DJ-Rfcv3W8",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/-DJ-Rfcv3W8.html",
+      "thumb_url": "https://i.ytimg.com/vi/-DJ-Rfcv3W8/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Israel",
+      "is_short": true,
+      "published_iso": "2026-11-17T03:03:03Z",
+      "summary": "In a shocking turn of events, Israeli intelligence has warned the United States of an alleged Iranian plot to assassinate President Donald Trump. This deep dive investigates the intercepted drone threats against US bases and the unprecedented intelligence coop"
     }
   ]
 }
