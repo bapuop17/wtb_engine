@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-17T15:14:51.292378",
-  "last_upload_epoch": 1794928491,
+  "updated_at": "2026-11-17T08:45:43.729759",
+  "last_upload_epoch": 1794905143,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -737,6 +737,21 @@
     "japan_scrambles_jets_russia_s_tsushima"
   ],
   "event_fingerprints": [
+    {
+      "title": "Beyond Bad Cholesterol: Scientists Uncover a Hidden Driver of Heart Disease | Mind Blowing",
+      "tokens": [
+        "beyond",
+        "blowing",
+        "cholesterol",
+        "disease",
+        "driver",
+        "heart",
+        "hidden",
+        "mind",
+        "scientists",
+        "uncover"
+      ]
+    },
     {
       "title": "Egypt court fines journalist Lina Attalah and orders news site's closure | Global Powers E",
       "tokens": [
@@ -8471,19 +8486,6 @@
         "scrambles",
         "strait",
         "suspected",
-        "tsushima"
-      ]
-    },
-    {
-      "title": "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained! #shorts",
-      "tokens": [
-        "breach",
-        "japan",
-        "jets",
-        "russia",
-        "scrambles",
-        "shorts",
-        "strait",
         "tsushima"
       ]
     }
