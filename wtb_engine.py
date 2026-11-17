@@ -4609,7 +4609,7 @@ def synthesize_3d_parallax_broadcast_video_broll(pil_im, tag_id="parallax_vclip"
         vc = vc.with_fps(fps_v) if MOVIEPY_V2 else vc.set_fps(fps_v)
         vc.write_videofile(
             out_mp4, fps=fps_v, codec="libx264", audio=False,
-            preset="ultrafast", threads=2, logger=None
+            preset="medium", threads=4, logger=None
         )
         vc.close()
         if os.path.exists(out_mp4) and os.path.getsize(out_mp4) > 25000:
@@ -5252,7 +5252,20 @@ def fit_whole_words_limit(text_str, max_chars=26):
     return " ".join(out) if out else s[:max_chars]
 
 BANNED_HEADING_FILLER_TOKENS_V84 = {
-    "one", "two", "vs", "versus", "relies", "rely", "deploy", "deploys", "deployed", "launched",
+    "one", "two", "three", "well", "whos", "its", "onto", "can", "full", "not", "fast", "heart", "vs", "versus", "relies", "rely", "deploy", "deploys", "deployed", "launched",
+    "walk", "sit", "sits", "stepped", "glued", "accuses", "seeks", "warned", "urging", "pits",
+    "demanding", "fear", "taken", "meaning", "framed", "turning", "shows", "ignore", "travel",
+    "load", "stall", "hits", "running", "exploited", "override", "scrambling", "patch", "preparing",
+    "operates", "leveraging", "debates", "executing", "watches", "knowing", "imposes", "disrupts",
+    "cut", "cuts", "slow", "restrict", "mandates", "requires", "replacing", "supports", "push",
+    "locks", "moves", "imagine", "testing", "realizes", "accelerate", "break", "create", "fabricate",
+    "compromise", "dropped", "asked", "verify", "implies", "raises", "confirm", "missed", "suggests",
+    "developing", "using", "targeting", "changes", "engaged", "fought", "avoid", "keeps", "rising",
+    "seeing", "collapsing", "failing", "moving", "passes", "decides", "exert", "stay", "ripples",
+    "send", "impacting", "starts", "spreads", "retaliates", "connected", "trigger", "felt", "wants",
+    "argues", "sees", "punished", "maintain", "protect", "tops", "add", "balloon", "hinges", "hoping",
+    "prioritizes", "neutralize", "lands", "striking", "boils", "accept", "yet", "single", "already",
+    "reportedly", "formally", "specifically", "roughly", "normally", "eventually", "completely",
     "watching", "watch", "planners", "planner", "now", "giants", "thousands", "miles",
     "here", "heres", "there", "theres", "where", "wheres", "what", "whats", "that", "thats",
     "this", "these", "those", "when", "while", "whereas", "because", "since", "until", "unless",
@@ -5390,6 +5403,11 @@ def extract_key_point_from_sentence(sentence_text, beat_num=1, fallback_stat="")
         ("hodeidah", "HODEIDAH PORT FLASHPOINT"),
         ("sanaa", "SANAA COMMAND CENTER"),
         ("riyadh", "RIYADH MISSILE TARGET"),
+        ("three questions", "THE 3 KEY QUESTIONS"),
+        ("3 questions", "THE 3 KEY QUESTIONS"),
+        ("scenario one", "SCENARIO 1: THE FALLOUT"),
+        ("scenario two", "SCENARIO 2: ESCALATION"),
+        ("scenario three", "SCENARIO 3: AUTONOMY PUSH"),
         ("three axes", "THREE-AXIS COUNTER-ATTACK"),
         ("strait of hormuz", "STRAIT OF HORMUZ TRANSIT"),
         ("strait of gibraltar", "GIBRALTAR FLIGHT CORRIDOR"),
@@ -10161,9 +10179,12 @@ def classify_story_true_domain_v60(dossier):
 
 def lookup_v60_visual_scene_encyclopedia(beat_text, bv_dict, dossier):
     """
-    Matches the current spoken sentence (`beat_text`), its AI visual hint (`bv_dict`), and the story context (`dossier`)
-    against `GLOBAL_VISUAL_SCENE_ENCYCLOPEDIA` (284+ profiles) and `METAPHOR_TO_CAMERA_SCENE_DICTIONARY_V60`.
-    Returns `(wiki_title, exact_query, required_tokens, forbidden_tokens, profile_dict)` or `None`.
+    V89 PRECISION WORD-BOUNDARY SCENE ENCYCLOPEDIA LOOKUP:
+    - Uses strict `\b` word boundaries on ALL keys so `'intel'` NEVER matches `'intelligence'`!
+    - Removes Step 3 (`title_low` fallback) so generic title words like `'sanctions'` or `'iran'` NEVER
+      overwrite sentence-specific queries (like French supermarket fridges or Paris-to-Le-Havre ports)
+      with `'Crude oil tankers anchored offshore maritime'`!
+    - Skips generic country/sanction keys when the spoken sentence has concrete physical nouns of its own.
     """
     sent_low = str(beat_text or "").lower()
     bv_q_low = str((bv_dict or {}).get("photo_query", "")).lower()
@@ -10171,49 +10192,50 @@ def lookup_v60_visual_scene_encyclopedia(beat_text, bv_dict, dossier):
     combined_sent = f"{sent_low} {bv_q_low}"
     true_dom = classify_story_true_domain_v60(dossier)
 
-    # 1. Check direct entity / institution / landmark matches in the current sentence first!
-    # Ignore generic 'wall street' if the phrase is the metaphor 'new wall street' for India/Mumbai!
+    # Broad keys that must NOT override a sentence that has its own specific physical subject
+    broad_macro_keys = {
+        "iran", "israel", "russia", "china", "india", "united states", "france", "germany",
+        "united kingdom", "saudi arabia", "ukraine", "taiwan", "japan", "south korea",
+        "sanctions", "tariffs", "inflation", "oil", "crude oil", "supply chain", "trade war",
+        "european union", "brussels", "nato", "united nations", "pentagon", "white house"
+    }
+    sentence_specific_nouns = re.findall(
+        r"\b(supermarket|supermarkets|fridge|fridges|freezer|refrigeration|grocery|food|wheat|spice|"
+        r"truck|trucks|le havre|lyon|marseille|mossad|secret service|assassinate|assassination|"
+        r"drone|drones|podium|barrot|kallas|hansen|hospital|hospitals|solar|battery|grid|brownout|"
+        r"microcontroller|firmware|sensor|sensors|compressor|taiz|perim|berbera|assab|cape of good hope)\b",
+        combined_sent
+    )
+
     sorted_keys = sorted(GLOBAL_VISUAL_SCENE_ENCYCLOPEDIA.keys(), key=len, reverse=True)
     matched_profiles = []
     for k in sorted_keys:
         if k == "wall street" and "new wall street" in combined_sent and ("india" in combined_sent or "mumbai" in combined_sent or "india" in title_low):
             continue
-        if len(k) <= 4:
-            if re.search(rf"\b{re.escape(k)}\b", combined_sent):
-                matched_profiles.append((k, GLOBAL_VISUAL_SCENE_ENCYCLOPEDIA[k], True))
-        else:
-            if k in combined_sent:
-                matched_profiles.append((k, GLOBAL_VISUAL_SCENE_ENCYCLOPEDIA[k], True))
+        # Never match 'intel' unless 'Intel Corp' / 'Intel Foundry' / 'Intel chip' is explicitly meant (not 'intelligence'!)
+        if k == "intel" and not re.search(r"\bintel\s+(?:corp|corporation|foundry|chip|chips|processor|processors|ceo|stock|fab)\b", combined_sent):
+            continue
+        if k in broad_macro_keys and sentence_specific_nouns:
+            continue
+        if re.search(rf"\b{re.escape(k)}\b", sent_low):
+            matched_profiles.append((k, GLOBAL_VISUAL_SCENE_ENCYCLOPEDIA[k], True))
 
-    # 2. If the sentence uses an abstract metaphor ('new wall street', 'bet big', 'shock win', 'crown jewel'),
-    # translate it to a concrete camera scene grounded in the story's true domain!
     if not matched_profiles:
         for met_k, dom_map in METAPHOR_TO_CAMERA_SCENE_DICTIONARY_V60.items():
-            if met_k in sent_low:
+            if re.search(rf"\b{re.escape(met_k)}\b", sent_low):
                 w_t, cam_q, req_t = dom_map.get(true_dom) or dom_map["DEFAULT"]
                 t_anc = str(dossier.get("topic_anchor") or "").strip()
                 full_q = f"{t_anc} {cam_q}".strip() if (t_anc and t_anc.lower() not in cam_q.lower()) else cam_q
                 return (w_t, full_q, set(req_t), {"cartoon", "meme", "king charles"}, None)
 
-    # 3. Also check if the main headline/topic matches an encyclopedia entry when the sentence has no explicit proper noun
-    if not matched_profiles:
-        for k in sorted_keys:
-            if len(k) <= 4:
-                if re.search(rf"\b{re.escape(k)}\b", title_low):
-                    matched_profiles.append((k, GLOBAL_VISUAL_SCENE_ENCYCLOPEDIA[k], False))
-            else:
-                if k in title_low:
-                    matched_profiles.append((k, GLOBAL_VISUAL_SCENE_ENCYCLOPEDIA[k], False))
-
     if not matched_profiles:
         return None
 
-    best_k, best_prof, is_direct_sent_match = matched_profiles[0]
+    best_k, best_prof, _ = matched_profiles[0]
     exact_qs = best_prof.get("exact_queries") or []
     q_idx = abs(hash(beat_text or best_k)) % max(1, len(exact_qs))
     chosen_q = exact_qs[q_idx] if exact_qs else best_k
 
-    # If the sentence also mentions a secondary encyclopedia entity (e.g. 'HSBC' AND 'India' or 'Citigroup'), blend its lead token
     if len(matched_profiles) >= 2 and matched_profiles[1][2]:
         sec_k = matched_profiles[1][0]
         if sec_k.lower() not in chosen_q.lower():
@@ -10320,6 +10342,16 @@ def extract_sentence_proper_entities_and_query(beat_text, bv_dict, dossier):
 
     ner = extract_sentence_ner_and_context(beat_text, bv_dict, dossier)
     dossier["_last_beat_ner"] = ner
+
+    # 0A. V89 AI-DIRECTED PINPOINT SENTENCE QUERY PRIORITY:
+    # If `bv_dict["photo_query"]` was explicitly authored for this sentence and contains concrete nouns, use it directly!
+    bv_pq_raw = str((bv_dict or {}).get("photo_query") or "").strip()
+    if len(bv_pq_raw.split()) >= 3 and not any(g_bad in bv_pq_raw.lower() for g_bad in ["editorial photojournalism", "real editorial press photo"]):
+        clean_bvpq = sanitize_visual_search_query(bv_pq_raw, dossier)
+        if len(clean_bvpq.split()) >= 3:
+            req_bvpq = {w.lower() for w in re.findall(r"[A-Za-z0-9]{4,}", clean_bvpq) if w.lower() not in HEADLINE_STOP_VERBS_ADJS}
+            lead_ent = ner["persons"][0] if ner.get("persons") else (ner["specific_entities"][0] if ner.get("specific_entities") else topic_anchor)
+            return lead_ent, clean_bvpq, req_bvpq
 
     # 0. V60 ENCYCLOPEDIA & METAPHOR SCENE LOOKUP:
     # Check if this sentence (or its metaphor) maps to a curated profile in `GLOBAL_VISUAL_SCENE_ENCYCLOPEDIA`!
@@ -12764,53 +12796,68 @@ def _does_category_allow_group(pillar_str, story_low, group_code):
 
 def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_last_beat=False, sec_idx=0, beat_in_sec=0, is_short=False):
     """
-    V82 POINT-TO-POINT DOCUMENTARY SCENE & GRAPHIC DIRECTOR:
-    - Eliminates the robotic 4-template box loop seen in `hBViBpjipkM` (where Map/Dossier/Bento/Firepower repeated 7 times)!
-    - Uses 5 Full-Screen 1080p Point-to-Point Cinema Modes (`V82_CINEMA_01`..`05`) as the primary narrative canvas
-      so the viewer sees the real, full-bleed moving event visual for each spoken sentence.
-    - Triggers specialized 3D graphics (Map, Evidence Cutout, Data Spec Card, VS Split, Radar, 3-Step Chain, 3-Photo Trio)
-      STRICTLY when the spoken words in `beat_text` explicitly demand that graphic, AND caps each graphic archetype at
-      at most 1 use in a Short (or 2 uses in a Long video) so no graphic box ever feels repetitive!
+    V89 TRUE THINK SCHOOL CONVERSATIONAL-CUE & SEMANTIC VISUAL ROUTER:
+    Synchronizes every specialized graphic mode with the exact spoken cues in `beat_text`:
+    1. 'look at this picture / statement / report / post / article' -> `TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT`
+    2. 'walk the map / look at this map / strait / hormuz / bab al-mandab / red sea / persian gulf / ports of / Paris, Lyon, Marseille' -> `TS_05_CHOKEPOINT_CORRIDOR_MAP`
+    3. 'three questions / 3 questions / scenario one / scenario two / scenario three / three scenarios' -> `TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD`
+    4. 'domino chain / domino effect / chain reaction / downstream effect / ripple effect / cause and effect' -> `TS_04_DOMINO_CHAIN_FLOWCHART`
+    5. 'on one side / on the other / core rivalry / head-to-head / versus / vs.' -> `TS_02_HEAD_TO_HEAD_VS_SPLIT`
+    6. 'simple math / out of every / $800 billion / $150,000 / 700 stores / 7% dip / million / billion / %' -> `TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD`
+    7. 'radar / surveillance / air defense / missile range / cyber perimeter / microcontroller / firmware' -> `GEO_08_MILITARY_FIREPOWER_RADAR`
     """
     low = str(beat_text or "").lower()
-    if "subscribe to world talk brief" in low or "watch the full documentary" in low:
+    if "subscribe to world talk brief" in low or "watch the full documentary" in low or "drop your verdict" in low:
         return "V82_CINEMA_01_KINETIC_LOWER_THIRD"
 
-    last_mode_key = "_v82_last_mode_short" if is_short else "_v82_last_mode_long"
-    used_seq_key = "_v82_used_seq_short" if is_short else "_v82_used_seq_long"
-    counts_key = "_v82_mode_counts_short" if is_short else "_v82_mode_counts_long"
+    last_mode_key = "_v89_last_mode_short" if is_short else "_v89_last_mode_long"
+    used_seq_key = "_v89_used_seq_short" if is_short else "_v89_used_seq_long"
+    counts_key = "_v89_mode_counts_short" if is_short else "_v89_mode_counts_long"
     last_mode = dossier.get(last_mode_key)
     used_seq = dossier.setdefault(used_seq_key, [])
     mode_counts = dossier.setdefault(counts_key, {})
-    max_graphic_uses = 1
 
-    # 1. Check if the exact spoken sentence calls for a specialized full-screen 3D graphic
-    #    (strictly capped at `max_graphic_uses = 1` per video so no graphic box EVER repeats!)
+    # Per-video caps so graphics appear whenever the script calls for them (up to 3 times in a 7-min Long doc),
+    # but NEVER repeat on consecutive beats (`semantic_graphic != last_mode`)!
+    max_caps = {
+        "TS_05_CHOKEPOINT_CORRIDOR_MAP": 1 if is_short else 4,
+        "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT": 1 if is_short else 3,
+        "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD": 1 if is_short else 3,
+        "TS_02_HEAD_TO_HEAD_VS_SPLIT": 1 if is_short else 3,
+        "TS_04_DOMINO_CHAIN_FLOWCHART": 1 if is_short else 3,
+        "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD": 1 if is_short else 2,
+        "GEO_08_MILITARY_FIREPOWER_RADAR": 1 if is_short else 2,
+    }
+
     semantic_graphic = None
-    if re.search(r"\b(on one side|on the other side|versus|vs\.?|while\s+[a-z]+\s+deploys|compared to|rivalry|clash between)\b", low):
-        semantic_graphic = "TS_02_HEAD_TO_HEAD_VS_SPLIT"
-    elif re.search(r"\b(press\s+release|official\s+dispatch|declassified|dossier|document\s+reveals|investigation\s+found|quietly\s+landed)\b", low):
+    # Priority 1: Explicit Think School 'Look at this picture / statement / headline' cue
+    if re.search(r"\b(look at this (?:picture|statement|report|headline|photo|post|document)|press\s+release|official\s+dispatch|declassified|dossier|document\s+reveals|quietly\s+landed)\b", low):
         semantic_graphic = "TS_01_LOOK_AT_THIS_PICTURE_HIGHLIGHT"
-    elif re.search(r"\b(flew|flight path|strait|gibraltar|hormuz|bab al-mandab|mandab|perim|cape of good hope|rerout|assab|berbera|red sea|suez|three axes|3 axes|counter-attack|counterattack|across\s+the\s+border|from\s+[a-z]+\s+to\s+[a-z]+|maritime\s+route|chokepoint)\b", low):
-        semantic_graphic = "TS_05_CHOKEPOINT_CORRIDOR_MAP"
-    elif re.search(r"\b(corridor|imec|deep-water port|rail network|links\s+india|three\s+pillars|three\s+scenarios|three\s+regions)\b", low):
+    # Priority 2: Explicit Think School '3 Questions' or '3 Scenarios' structural cue
+    elif re.search(r"\b(three\s+questions|3\s+questions|three\s+scenarios|3\s+scenarios|scenario\s+(?:one|two|three|1|2|3)|three\s+pillars|three\s+regions|three\s+strategic)\b", low):
         semantic_graphic = "TS_07_THREE_QUESTIONS_OR_SCENARIOS_BOARD"
-    elif re.search(r"\b(radar|surveillance|patrol\s+range|airspace|45%|reconnaissance|electronic\s+warfare|sonar)\b", low):
-        semantic_graphic = "GEO_08_MILITARY_FIREPOWER_RADAR"
-    elif re.search(r"\b(\d+\s+tons|payload|cargo|capacity|unpaved\s+runway|technical\s+spec|billion|million\s+barrels)\b", low):
-        semantic_graphic = "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD"
-    elif re.search(r"\b(domino|chain\s+reaction|balance\s+of\s+power|step\s+by\s+step|three\s+stages|strategic\s+outcome)\b", low):
+    # Priority 3: Explicit Domino Chain / Ripple Effect / Downstream Chain Reaction cue (unless sentence says "walk the map")
+    elif re.search(r"\b(domino\s+chain|domino\s+effect|chain\s+reaction|downstream\s+effect|ripple\s+effect|cause\s+and\s+effect|step\s+by\s+step|three\s+stages)\b", low) and "map" not in low:
         semantic_graphic = "TS_04_DOMINO_CHAIN_FLOWCHART"
+    # Priority 4: Explicit Think School 'Walk the map' or Chokepoint / Port / Corridor geography cue
+    elif re.search(r"\b(walk\s+the\s+map|look\s+at\s+this\s+map|on\s+the\s+map|flew|flight\s+path|strait|gibraltar|hormuz|bab\s+al-mandab|mandab|perim|cape\s+of\s+good\s+hope|rerout|assab|berbera|red\s+sea|suez|persian\s+gulf|mediterranean|ports?\s+of|le\s+havre|marseille|three\s+axes|3\s+axes|counter-attack|counterattack|across\s+the\s+border|shipping\s+lanes|maritime\s+route|chokepoint|choke\s+point)\b", low):
+        semantic_graphic = "TS_05_CHOKEPOINT_CORRIDOR_MAP"
+    # Priority 5: Explicit Head-to-Head Rivalry / 'On one side... on the other' cue
+    elif re.search(r"\b(on\s+one\s+side|on\s+the\s+other|core\s+rivalry|head-to-head|head\s+to\s+head|versus|vs\.?|while\s+[a-z]+\s+(?:deploys|debates|wants)|compared\s+to|clash\s+between)\b", low):
+        semantic_graphic = "TS_02_HEAD_TO_HEAD_VS_SPLIT"
+    # Priority 6: Explicit 'Simple Math' / Percentage / Dollar / Store Count Data cue
+    elif re.search(r"(\b(?:simple\s+math|out\s+of\s+every|out\s+of\s+100|out\s+of\s+1,000|price\s+tag|defense\s+budget)\b|\$\d|\b\d+(?:\.\d+)?%|\b\d+\s+(?:million|billion|trillion|tons|stores|supermarkets|drones|missiles|barrels)\b)", low):
+        semantic_graphic = "TS_08_PINPOINT_SCENE_INFOGRAPHIC_CARD"
+    # Priority 7: Radar / Air Defense / Technical Vulnerability Matrix cue
+    elif re.search(r"\b(radar|surveillance|patrol\s+range|airspace|air\s+defense|reconnaissance|electronic\s+warfare|sonar|microcontroller|firmware\s+update)\b", low):
+        semantic_graphic = "GEO_08_MILITARY_FIREPOWER_RADAR"
 
-    max_allowed = (4 if (not is_short and semantic_graphic == 'TS_05_CHOKEPOINT_CORRIDOR_MAP') else max_graphic_uses)
-    if semantic_graphic and mode_counts.get(semantic_graphic, 0) < max_allowed and semantic_graphic != last_mode:
+    if semantic_graphic and mode_counts.get(semantic_graphic, 0) < max_caps.get(semantic_graphic, 2) and semantic_graphic != last_mode:
         mode_counts[semantic_graphic] = mode_counts.get(semantic_graphic, 0) + 1
         dossier[last_mode_key] = semantic_graphic
         used_seq.append(semantic_graphic)
         return semantic_graphic
 
-    # 2. Otherwise, select a Point-to-Point Full-Screen 1080p Cinema Mode matched to the sentence's cadence,
-    #    ensuring zero back-to-back repetition so every single cut feels fresh and human-edited!
     cinema_modes = [
         "V82_CINEMA_01_KINETIC_LOWER_THIRD",
         "V82_CINEMA_02_GLASS_STORY_SIDEBAR",
@@ -12820,9 +12867,9 @@ def classify_special_visual_simulation_mode(beat_text, dossier, beat_idx=0, is_l
         "DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD",
     ]
     preferred_cinema = []
-    if re.search(r"\b(said|warned|stated|confirmed|according to|quoted|spokesperson|officials)\b", low):
+    if re.search(r"\b(said|warned|declared|stated|confirmed|according to|quoted|spokesperson|officials|framed)\b", low):
         preferred_cinema.append("V82_CINEMA_05_EDITORIAL_QUOTE_SPOTLIGHT")
-    if re.search(r"\b(built|assembled|hangar|factory|facility|base|airport|port|server|headquarters)\b", low):
+    if re.search(r"\b(built|assembled|hangar|factory|facility|base|airport|port|server|headquarters|podium|agency|mossad|secret service)\b", low):
         preferred_cinema.append("V82_CINEMA_03_OPTICAL_TARGET_CALLOUT")
         preferred_cinema.append("DESIGN_01_INDUSTRIAL_BLUEPRINT_HUD")
     if re.search(r"\b(meanwhile|both|across|between|while|and)\b", low) and len(low.split()) >= 14:
@@ -13963,7 +14010,7 @@ def _to_3_word_badge_v84(text_frag, default_lbl="STRATEGIC SHIFT"):
         and w.lower() not in {"the", "and", "for", "with", "from", "into", "over", "under", "after", "before"}
     ]
     if len(clean_t) >= 2:
-        return " ".join(clean_t[:3])[:26]
+        return fit_whole_words_limit(" ".join(clean_t[:3]), 28)
     elif len(clean_t) == 1:
         return f"{clean_t[0]} IMPACT"[:26]
     return default_lbl[:26]
@@ -14004,7 +14051,7 @@ def _extract_dynamic_phrases_v80(b_txt, fallback_hl=""):
     if len(badges) < 3 and len(all_content_w) >= 6:
         step = max(2, len(all_content_w) // 3)
         for chunk in [all_content_w[:step], all_content_w[step:2*step], all_content_w[2*step:]]:
-            b_cand = " ".join(chunk[:3])[:26]
+            b_cand = fit_whole_words_limit(" ".join(chunk[:3]), 28)
             if b_cand and b_cand not in badges and not any(w in " ".join(badges) for w in b_cand.split()[:1]):
                 badges.append(b_cand)
 
@@ -14102,6 +14149,20 @@ def render_v78_pycairo_geopolitical_map_frame(beat, local_t, W, H, is_short=True
                 break
 
     STRATEGIC_CITY_ATLAS = {
+        "paris": ("PARIS, FRANCE", "FRANCE", "FR", 48.856, 2.352),
+        "lyon": ("LYON, FRANCE", "FRANCE", "FR", 45.764, 4.835),
+        "lion": ("LYON, FRANCE", "FRANCE", "FR", 45.764, 4.835),
+        "marseille": ("MARSEILLE PORT", "FRANCE", "FR", 43.296, 5.369),
+        "marseilles": ("MARSEILLE PORT", "FRANCE", "FR", 43.296, 5.369),
+        "le havre": ("PORT OF LE HAVRE", "FRANCE", "FR", 49.494, 0.107),
+        "lu hav": ("PORT OF LE HAVRE", "FRANCE", "FR", 49.494, 0.107),
+        "brussels": ("BRUSSELS, EU", "BELGIUM", "BE", 50.850, 4.351),
+        "berlin": ("BERLIN, GERMANY", "GERMANY", "DE", 52.520, 13.405),
+        "london": ("LONDON, UK", "UNITED KINGDOM", "GB", 51.507, -0.127),
+        "geneva": ("GENEVA, SWITZERLAND", "SWITZERLAND", "CH", 46.204, 6.143),
+        "beirut": ("BEIRUT, LEBANON", "LEBANON", "LB", 33.893, 35.501),
+        "damascus": ("DAMASCUS, SYRIA", "SYRIA", "SY", 33.513, 36.276),
+        "baghdad": ("BAGHDAD, IRAQ", "IRAQ", "IQ", 33.315, 44.366),
         "bab al-mandab": ("BAB AL-MANDAB STRAIT", "YEMEN", "YE", 12.585, 43.333),
         "perim": ("PERIM ISLAND", "YEMEN", "YE", 12.656, 43.415),
         "cape of good hope": ("CAPE OF GOOD HOPE", "SOUTH AFRICA", "ZA", -34.356, 18.474),
@@ -14608,7 +14669,20 @@ def render_v78_claude_2026_ui_archetype_frame(mode, beat, local_t, W, H, is_shor
     sec_idx_m = int(beat.get("section_idx", 0))
 
     resample_l = getattr(Image, "Resampling", Image).LANCZOS
-    raw_src_im = beat.get("primary_im") or extract_supporting_background_frame(beat, local_t, W, H, darken_factor=1.0, blur_radius=0)
+    raw_src_im = None
+    _vseg_live = beat.get("vseg")
+    if beat.get("beat_type") == "VIDEO_BROLL_BEAT" and _vseg_live is not None and _vseg_live.get("vclip") is not None:
+        try:
+            _vc_live = _vseg_live["vclip"]
+            _u_dur = max(_vc_live.duration - 0.15, 0.5)
+            _cyc = int(local_t // _u_dur)
+            _rem = local_t % _u_dur
+            _tv = (_u_dur - _rem) if (_cyc % 2 == 1) else _rem
+            raw_src_im = Image.fromarray(_vc_live.get_frame(_tv)).convert("RGB")
+        except Exception:
+            raw_src_im = None
+    if raw_src_im is None:
+        raw_src_im = beat.get("primary_im") or extract_supporting_background_frame(beat, local_t, W, H, darken_factor=1.0, blur_radius=0)
     raw_sec_im = beat.get("secondary_im") or raw_src_im
     raw_tert_im = beat.get("tertiary_im") or raw_sec_im
 
@@ -16364,7 +16438,7 @@ def build_prop_driven_storyboard_1080p(
             v_pool = dossier.get("_cached_video_broll_pool") or []
             bg_support_vseg = v_pool[(global_beat_idx + b_i) % len(v_pool)] if v_pool else None
             vseg = None
-            if videos_in_section < 2 and b_i in (0, 2):
+            if videos_in_section < 4 and b_i in (0, 1, 2, 3):
                 unit_used_vclips = dossier.setdefault("_unit_used_vclips", set())
                 cur_ner = dossier.get("_last_beat_ner") or {}
                 pref_ent_words = {
@@ -16387,7 +16461,15 @@ def build_prop_driven_storyboard_1080p(
                 # Moving Video Clip guarantees Frame 0 of every Short & Long video shows the exact main subject!
                 # If no pre-pooled clip matched THIS sentence's specific entity (e.g. 'Warsaw Chopin Airport', 'Madrid-Barajas',
                 # 'Sofia Airport', 'Port of Piraeus', 'Europol'), convert THIS sentence's exact `beat_im` into a 30fps 3D Parallax Moving Video Clip!
-                if vseg is None and beat_im is not None and ((b_i in (0, 2) and not is_short) or (is_short and b_i == 0)):
+                if vseg is None:
+                    for cand_vp in v_pool:
+                        vc_id = id(cand_vp.get("vclip"))
+                        if vc_id not in unit_used_vclips and not cand_vp.get("is_parallax"):
+                            vseg = cand_vp
+                            unit_used_vclips.add(vc_id)
+                            videos_in_section += 1
+                            break
+                if vseg is None and beat_im is not None and ((b_i in (0, 1, 2, 3) and not is_short) or (is_short and b_i in (0, 1))):
                     syn_beat_vc = synthesize_3d_parallax_broadcast_video_broll(
                         beat_im,
                         tag_id=f"{tag_prefix}_b{global_beat_idx}_syncv",
@@ -17336,18 +17418,9 @@ def ensure_full_length_6_to_8_min_documentary(sections, dossier):
             "claim_meta": cl_item
         })
 
-    # V88 6.5 TO 8.5 MINUTE LONG DOCUMENTARY DURATION LOCK (Minimum 920 words = ~6.5 mins!):
-    # 1. Pack any remaining real `unused_claims` into short chapters (< 95 words) so no verified fact is wasted!
-    for sec in sections:
-        if not unused_claims:
-            break
-        cur_nar = str(sec.get("narration", "")).strip()
-        while unused_claims and len(cur_nar.split()) < 95:
-            cl_extra = unused_claims.pop(0)
-            add_txt = paraphrase_into_original_creator_voice(cl_extra["text"], len(sections), dossier=dossier)
-            if add_txt and add_txt[:24].lower() not in cur_nar.lower():
-                cur_nar = f"{cur_nar.rstrip('.!?')}. {add_txt}"
-        sec["narration"] = cur_nar
+    # V89 ZERO RAW-HEADLINE PASTING LOCK:
+    # Never append raw `unused_claims` strings onto the end of AI-written chapters (which previously pasted
+    # raw RSS headlines like 'france accuses Iran of cyber attacks... the Jerusalem post' mid-paragraph!).
 
     # 2. If total script is still under 920 words (~6.5 mins), expand short chapters via LLM grounded in `raw_facts`!
     total_doc_words = sum(len(str(s.get("narration", "")).split()) for s in sections)
