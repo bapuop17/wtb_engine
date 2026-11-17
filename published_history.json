@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-17T03:03:27.079381",
-  "last_upload_epoch": 1794884607,
-  "round_robin_idx": 2,
-  "country_rot_idx": 2,
-  "bgm_track_counter": 3617911589,
+  "updated_at": "2026-11-17T08:45:43.729759",
+  "last_upload_epoch": 1794905143,
+  "round_robin_idx": 3,
+  "country_rot_idx": 8,
+  "bgm_track_counter": 3619682686,
   "last_mega_24h_date": "2026-10-31",
   "published_keys": [
     "academy_ceo_bill_kramer_makes_the",
@@ -732,52 +732,11 @@
     "france_accuses_iran_of_cyberattacks_on",
     "france_s_barrot_blames_iran_s",
     "israel_warns_us_of_alleged_iranian",
-    "israel_warns_us_iran_plot_to"
+    "israel_warns_us_iran_plot_to",
+    "japan_scrambles_fighters_after_suspected_russian",
+    "japan_scrambles_jets_russia_s_tsushima"
   ],
   "event_fingerprints": [
-    {
-      "title": "Why Your Spittle Might Save Your Life (Cancer Breakthrough)",
-      "tokens": [
-        "breakthrough",
-        "cancer",
-        "life",
-        "might",
-        "save",
-        "spittle",
-        "your"
-      ]
-    },
-    {
-      "title": "Why The October Moon Looked Giant And Orange Tonight",
-      "tokens": [
-        "giant",
-        "looked",
-        "moon",
-        "october",
-        "orange",
-        "tonight"
-      ]
-    },
-    {
-      "title": "Anthropic's IPO: Why The AI Risk Warning Is Terrifying Investors",
-      "tokens": [
-        "anthropic",
-        "investors",
-        "risk",
-        "terrifying",
-        "warning"
-      ]
-    },
-    {
-      "title": "Why Chris Brown Didn't Go To Jail For This Attack",
-      "tokens": [
-        "attack",
-        "brown",
-        "chris",
-        "didn",
-        "jail"
-      ]
-    },
     {
       "title": "Beyond Bad Cholesterol: Scientists Uncover a Hidden Driver of Heart Disease | Mind Blowing",
       "tokens": [
@@ -8458,10 +8417,80 @@
         "trump",
         "warns"
       ]
+    },
+    {
+      "title": "Israel Warns US: Iran Plot to Kill Trump | Geopolitical Case Study",
+      "tokens": [
+        "case",
+        "geopolitical",
+        "iran",
+        "israel",
+        "kill",
+        "plot",
+        "study",
+        "trump",
+        "warns"
+      ]
+    },
+    {
+      "title": "Israel Warns US: Iran Plot to Kill Trump! #shorts",
+      "tokens": [
+        "iran",
+        "israel",
+        "kill",
+        "plot",
+        "shorts",
+        "trump",
+        "warns"
+      ]
+    },
+    {
+      "title": "Japan scrambles fighters after suspected Russian military planes enter airspace",
+      "tokens": [
+        "airspace",
+        "defense",
+        "delivered",
+        "enter",
+        "entered",
+        "fighters",
+        "fukuoka",
+        "japan",
+        "japanese",
+        "military",
+        "moscow",
+        "planes",
+        "prefecture",
+        "prompting",
+        "protest",
+        "russian",
+        "scrambles",
+        "self",
+        "strong",
+        "suspected",
+        "tuesday"
+      ]
+    },
+    {
+      "title": "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
+      "tokens": [
+        "airspace",
+        "breach",
+        "enter",
+        "fighters",
+        "japan",
+        "jets",
+        "military",
+        "planes",
+        "russia",
+        "russian",
+        "scrambles",
+        "strait",
+        "suspected",
+        "tsushima"
+      ]
     }
   ],
   "last_categories": [
-    "STOCK_MARKETS",
     "ENTERTAINMENT",
     "UNDERRATED_GEOPOLITICS",
     "SCIENCE",
@@ -8500,10 +8529,10 @@
     "GEOPOLITICS",
     "GEOPOLITICS",
     "AI_ROBOTICS",
+    "GEOPOLITICS",
     "GEOPOLITICS"
   ],
   "last_sources": [
-    "DW Business & Trade",
     "Hollywood Reporter",
     "DW Global In-Depth",
     "Space.com Breaking",
@@ -8542,10 +8571,10 @@
     "Global Superpower & World Headlines Top 24h",
     "Global Superpower & World Headlines Top 24h",
     "Global Superpowers Geopolitics 24h",
-    "Google Trends Viral [NEW ZEALAND]"
+    "Google Trends Viral [NEW ZEALAND]",
+    "Global Country Wire [JAPAN \u2022 DEFENSE_MILITARY]"
   ],
   "last_countries": [
-    "ISRAEL",
     "MALAYSIA",
     "PAKISTAN",
     "SOUTH AFRICA",
@@ -8594,7 +8623,8 @@
     "UNITED KINGDOM",
     "RUSSIA",
     "FRANCE",
-    "ISRAEL"
+    "ISRAEL",
+    "JAPAN"
   ],
   "v63_healed_video_ids": [],
   "v65_rehab_next_page_token": "",
@@ -9116,6 +9146,30 @@
       "is_short": true,
       "published_iso": "2026-11-17T03:03:03Z",
       "summary": "In a shocking turn of events, Israeli intelligence has warned the United States of an alleged Iranian plot to assassinate President Donald Trump. This deep dive investigates the intercepted drone threats against US bases and the unprecedented intelligence coop"
+    },
+    {
+      "video_id": "MS7Q9it5qWo",
+      "title": "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
+      "url": "https://www.youtube.com/watch?v=MS7Q9it5qWo",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/MS7Q9it5qWo.html",
+      "thumb_url": "https://i.ytimg.com/vi/MS7Q9it5qWo/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Japan",
+      "is_short": false,
+      "published_iso": "2026-11-17T08:06:34Z",
+      "summary": "Two suspected Russian military aircraft have just breached Japanese airspace off Fukuoka Prefecture, forcing the Air Self-Defense Force to scramble fighters for the fourth consecutive day. This isn't just a routine drill; it's a calculated probe of Japan's sou"
+    },
+    {
+      "video_id": "0HgtSavdBRI",
+      "title": "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
+      "url": "https://www.youtube.com/shorts/0HgtSavdBRI",
+      "article_url": "https://bapuop17.github.io/wtb_engine/articles/0HgtSavdBRI.html",
+      "thumb_url": "https://i.ytimg.com/vi/0HgtSavdBRI/maxresdefault.jpg",
+      "pillar": "GEOPOLITICS",
+      "country": "Japan",
+      "is_short": true,
+      "published_iso": "2026-11-17T08:45:21Z",
+      "summary": "Two suspected Russian military aircraft have just breached Japanese airspace off Fukuoka Prefecture, forcing the Air Self-Defense Force to scramble fighters for the fourth consecutive day. This isn't just a routine drill; it's a calculated probe of Japan's sou"
     }
   ]
 }
