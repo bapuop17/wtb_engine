@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-18T11:23:12.866391+00:00",
-  "last_upload_epoch": 1795000992,
+  "updated_at": "2026-11-18T15:54:18.056112+00:00",
+  "last_upload_epoch": 1795017258,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9176,6 +9176,12 @@
       "title": "Putin's Crimean Bridge partly collapses as Zelensky hails 'unprecedented' attack by Ukrain",
       "topic": "Putin's Crimean Bridge partly collapses as Zelensky hails 'unprecedented' attack by Ukraine",
       "published_at": "2026-11-18T11:23:12.866391+00:00"
+    },
+    {
+      "video_id": "QYYMqcxVmbw",
+      "title": "Palestinians flee refugee camp as Israel begins operation in central Gaza",
+      "topic": "Palestinians flee refugee camp as Israel begins operation in central Gaza",
+      "published_at": "2026-11-18T15:54:18.056112+00:00"
     }
   ]
 }
