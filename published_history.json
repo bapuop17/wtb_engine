@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-18T15:54:18.056112+00:00",
-  "last_upload_epoch": 1795017258,
+  "updated_at": "2026-11-19T00:31:49.736165+00:00",
+  "last_upload_epoch": 1795048309,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9182,6 +9182,12 @@
       "title": "Palestinians flee refugee camp as Israel begins operation in central Gaza",
       "topic": "Palestinians flee refugee camp as Israel begins operation in central Gaza",
       "published_at": "2026-11-18T15:54:18.056112+00:00"
+    },
+    {
+      "video_id": "uhc2Pt2zAcc",
+      "title": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
+      "topic": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
+      "published_at": "2026-11-19T00:31:49.736165+00:00"
     }
   ]
 }

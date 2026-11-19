@@ -13,6 +13,13 @@
       "title": "Palestinians flee refugee camp as Israel begins operation in central Gaza",
       "style": "bbc_dispatch",
       "utc": "2026-11-18T15:54:18.055548+00:00"
+    },
+    {
+      "topic": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
+      "long_id": "uhc2Pt2zAcc",
+      "title": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
+      "style": "think_school",
+      "utc": "2026-11-19T00:31:49.735543+00:00"
     }
   ],
   "uploads": {
@@ -39,6 +46,18 @@
       "video_id": "MwJTnHl7E7Y",
       "title": "Palestinians flee refugee camp as Israel begins operation in central Gaza #Shorts",
       "uploaded_utc": "2026-11-18T15:54:19.669993+00:00"
+    },
+    "0bb77ca0c0814397914c-long": {
+      "status": "uploaded",
+      "video_id": "uhc2Pt2zAcc",
+      "title": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
+      "uploaded_utc": "2026-11-19T00:31:47.311703+00:00"
+    },
+    "0bb77ca0c0814397914c-short": {
+      "status": "uploaded",
+      "video_id": "5zaYaqk3eyU",
+      "title": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres #Shorts",
+      "uploaded_utc": "2026-11-19T00:31:51.699647+00:00"
     }
   },
   "legacy_titles": [
@@ -87,6 +106,7 @@
     "Israel Warns US: Iran Plot to Kill Trump",
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
-    "Putin's Crimean Bridge partly collapses as Zelensky hails 'unprecedented' attack by Ukrain"
+    "Putin's Crimean Bridge partly collapses as Zelensky hails 'unprecedented' attack by Ukrain",
+    "Palestinians flee refugee camp as Israel begins operation in central Gaza"
   ]
 }
