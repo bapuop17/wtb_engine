@@ -20,6 +20,13 @@
       "title": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
       "style": "think_school",
       "utc": "2026-11-19T00:31:49.735543+00:00"
+    },
+    {
+      "topic": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
+      "long_id": "KpFwDDo40Gw",
+      "title": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
+      "style": "think_school",
+      "utc": "2026-11-19T15:57:25.643001+00:00"
     }
   ],
   "uploads": {
@@ -58,6 +65,18 @@
       "video_id": "5zaYaqk3eyU",
       "title": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres #Shorts",
       "uploaded_utc": "2026-11-19T00:31:51.699647+00:00"
+    },
+    "b3cbccca522a91158d94-long": {
+      "status": "uploaded",
+      "video_id": "KpFwDDo40Gw",
+      "title": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
+      "uploaded_utc": "2026-11-19T15:57:22.919753+00:00"
+    },
+    "b3cbccca522a91158d94-short": {
+      "status": "uploaded",
+      "video_id": "TzMjVuwY_H0",
+      "title": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast #Shorts",
+      "uploaded_utc": "2026-11-19T15:57:27.525771+00:00"
     }
   },
   "legacy_titles": [
@@ -107,6 +126,7 @@
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
     "Putin's Crimean Bridge partly collapses as Zelensky hails 'unprecedented' attack by Ukrain",
-    "Palestinians flee refugee camp as Israel begins operation in central Gaza"
+    "Palestinians flee refugee camp as Israel begins operation in central Gaza",
+    "Myanmar faces historic genocide verdict at UN court over Rohingya massacres"
   ]
 }

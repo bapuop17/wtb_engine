@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-19T00:31:49.736165+00:00",
-  "last_upload_epoch": 1795048309,
+  "updated_at": "2026-11-19T15:57:25.643595+00:00",
+  "last_upload_epoch": 1795103845,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9188,6 +9188,12 @@
       "title": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
       "topic": "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
       "published_at": "2026-11-19T00:31:49.736165+00:00"
+    },
+    {
+      "video_id": "KpFwDDo40Gw",
+      "title": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
+      "topic": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
+      "published_at": "2026-11-19T15:57:25.643595+00:00"
     }
   ]
 }
