@@ -482,8 +482,8 @@ def create_plan(dossier, brain, out, requested_style="auto"):
 
     act1 = brain.json(act1_prompt, {"topic": dossier["topic"], "facts": facts[:mid + 4], "open_questions": dossier.get("open_questions", [])})
     act1_beats = act1.get("beats") or []
-    prev_summary = " ".join(b.get("narration", "") for b in act1_beats[-3:])
-    act2 = brain.json(act2_prompt, {"topic": dossier["topic"], "previous_ending": prev_summary, "facts": facts[mid:] or facts, "open_questions": dossier.get("open_questions", [])})
+    prev_summary = " | ".join(f"{b.get('chapter', '')}: {b.get('narration', '')[:120]}" for b in act1_beats)
+    act2 = brain.json(act2_prompt + " DO NOT re-introduce the topic or repeat anything already covered in act1_already_covered.", {"topic": dossier["topic"], "act1_already_covered": prev_summary, "facts": facts[mid:] or facts, "open_questions": dossier.get("open_questions", [])})
     act2_beats = act2.get("beats") or []
 
     combined_beats = list(act1_beats) + list(act2_beats)

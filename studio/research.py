@@ -301,3 +301,22 @@ def research(topic, sources, brain):
         "open_questions": result.get("open_questions", ["What happens next as key global actors respond?"]),
         "audit": audit,
     }
+
+
+def classify_story_format(topic, facts=None):
+    """
+    Intelligently routes a global story to the optimal YouTube format:
+    - DOCUMENTARY (6-8 min deep dive: think_school or nitish_rajput)
+    - NEWS_EXPLAINER (4-5 min crisp global update: bbc_dispatch or abhi_niyu)
+    - SHORT_ONLY (40-48s high-retention vertical Short)
+    """
+    text = (str(topic or "") + " " + " ".join(f.get("claim", "") for f in (facts or [])[:8])).lower()
+    fact_count = len(facts or [])
+    if re.search(r"\b(investigation|covert|secret|plot|espionage|cyber|hack|breach|pipeline|underground|war|sanctions|chokepoint|corridor|cable|semiconductor|nuclear)\b", text):
+        style = "nitish_rajput" if re.search(r"\b(secret|plot|espionage|cyber|hack|breach|investigation|covert|mossad|cia)\b", text) else "think_school"
+        return {"format": "DOCUMENTARY", "style": style, "make_short": True, "reason": "High strategic depth warrants a full documentary + companion Short."}
+    if re.search(r"\b(price|inflation|consumer|food|climate|health|jobs|household|energy|bill|supermarket)\b", text):
+        return {"format": "NEWS_EXPLAINER", "style": "abhi_niyu", "make_short": True, "reason": "Direct human/economic impact suits an Abhi & Niyu style explainer + Short."}
+    if fact_count and fact_count < 10:
+        return {"format": "SHORT_ONLY", "style": "bbc_dispatch", "make_short": True, "reason": "Breaking fast-moving update best delivered as a high-retention Short."}
+    return {"format": "NEWS_EXPLAINER", "style": "bbc_dispatch", "make_short": True, "reason": "Global breaking event suited for a BBC Dispatch explainer + Short."}

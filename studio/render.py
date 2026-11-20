@@ -54,7 +54,10 @@ STYLE_THEMES = {
 def font(size, bold=False):
     choices = [
         os.getenv("WTB_FONT_BOLD" if bold else "WTB_FONT", ""),
+        "/usr/share/fonts/opentype/inter/InterDisplay-" + ("ExtraBold" if bold else "Medium") + ".otf",
+        "/usr/share/fonts/truetype/inter/InterDisplay-" + ("ExtraBold" if bold else "Medium") + ".ttf",
         "/usr/share/fonts/truetype/inter/Inter-" + ("Bold" if bold else "Regular") + ".ttf",
+        "/usr/share/fonts/opentype/inter/Inter-" + ("Bold" if bold else "Regular") + ".otf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSans" + ("-Bold" if bold else "") + ".ttf",
         "C:/Windows/Fonts/" + ("arialbd.ttf" if bold else "arial.ttf"),
     ]
@@ -133,9 +136,18 @@ class Canvas:
         for y in range(0, height, step):
             d.line((0, y, width, y), fill=(self.ink[0] + 12, self.ink[1] + 16, self.ink[2] + 22))
         self.still = None
+        self.extra_stills = []
         self.secondary_still = None
         if beat.get("asset") and beat["asset"]["kind"] == "photo" and Path(beat["asset"]["path"]).exists():
             self.still = Image.open(beat["asset"]["path"]).convert("RGB")
+            self.extra_stills.append(self.still)
+        for ea in beat.get("extra_assets", []):
+            if ea.get("kind") == "photo" and ea.get("path") and Path(ea["path"]).exists():
+                try:
+                    self.extra_stills.append(Image.open(ea["path"]).convert("RGB"))
+                except Exception:
+                    pass
+        self.beat_num = int("".join(ch for ch in str(beat.get("id", "1")) if ch.isdigit()) or 1)
         sec_path = beat["visual"].get("data", {}).get("secondary_photo_path")
         if sec_path and Path(sec_path).exists():
             self.secondary_still = Image.open(sec_path).convert("RGB")
@@ -146,7 +158,7 @@ class Canvas:
         layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(layer)
         kind = self.beat["visual"]["kind"]
-        media = kind in {"photo", "footage"} and (self.beat.get("asset") or self.still is not None)
+        media = (kind in {"photo", "footage"} and (self.beat.get("asset") or self.still is not None)) or kind == "globe"
         if media:
             # 100% Full-Screen Cinema Footage/Photo: only a light bottom gradient for crisp captions!
             top_h = int(h * 0.12)
@@ -184,7 +196,7 @@ class Canvas:
         )
 
         # Only draw top headline on graphic beats; on full-screen footage/photo beats keep the picture 100% unobstructed!
-        if not media:
+        if not media or kind == "globe":
             hl_size = 54 * s if not self.portrait else 44 * s
             hl_y = int(h * 0.095)
             hl_h = int(h * 0.145)
@@ -222,28 +234,80 @@ class Canvas:
             text_block(layer, credit, (p, int(h * 0.895), w - p * 2, int(h * 0.035)), 16 * s, MUTED, False, 1)
         return layer
 
+    def _camera_shot(self, img_src, local_t, shot_dur, shot_idx):
+        w, h = self.w, self.h
+        prog = min(1.0, max(0.0, local_t / max(0.2, shot_dur)))
+        mode = (self.beat_num + shot_idx) % 4
+        if mode == 0:  # Dramatic push-in zoom
+            z = 1.03 + 0.11 * ease(prog)
+            px_r, py_r = 0.5, 0.45
+        elif mode == 1:  # Smooth pull-out reveal
+            z = 1.14 - 0.09 * ease(prog)
+            px_r, py_r = 0.45 + 0.1 * prog, 0.45
+        elif mode == 2:  # Left-to-right documentary pan
+            z = 1.10
+            px_r, py_r = 0.20 + 0.60 * ease(prog), 0.45
+        else:  # Right-to-left pan + slight zoom
+            z = 1.06 + 0.06 * prog
+            px_r, py_r = 0.80 - 0.60 * ease(prog), 0.42
+        fitted = ImageOps.fit(img_src, (int(w * z), int(h * z)), method=Image.Resampling.BICUBIC, centering=(0.5, 0.45))
+        pan_x = max(0, min(fitted.width - w, int((fitted.width - w) * px_r)))
+        pan_y = max(0, min(fitted.height - h, int((fitted.height - h) * py_r)))
+        shot = fitted.crop((pan_x, pan_y, pan_x + w, pan_y + h))
+        # V94 Cinematic Color Grade: crisp film contrast + subtle teal/amber editorial balance
+        arr = np.asarray(shot, dtype=np.float32)
+        arr = (arr - 128.0) * 1.08 + 128.0
+        arr[..., 0] = np.clip(arr[..., 0] * 1.02, 0, 255)
+        arr[..., 2] = np.clip(arr[..., 2] * 1.03, 0, 255)
+        return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), mode="RGB")
+
     def _render_full_bleed_still(self, img_src, t, duration):
         w, h, s, p = self.w, self.h, self.s, self.pad
-        prog = min(1.0, max(0.0, t / max(0.1, duration)))
-        z = 1.04 + 0.085 * ease(prog)
-        # Full-bleed cover crop with subtle pan so there are zero ugly black sidebars
-        fitted = ImageOps.fit(img_src, (int(w * z), int(h * z)), method=Image.Resampling.BICUBIC, centering=(0.5, 0.45))
-        pan_x = int((fitted.width - w) * (0.35 + 0.3 * prog))
-        pan_y = int((fitted.height - h) * 0.45)
-        cropped = fitted.crop((pan_x, pan_y, pan_x + w, pan_y + h))
-        # If data has a callout pill (e.g., location or key metric), draw a sleek floating glass card on bottom-left
+        stills = self.extra_stills if self.extra_stills else [img_src]
+        n_shots = len(stills)
+        shot_dur = max(3.2, duration / max(1, n_shots))
+        shot_idx = min(n_shots - 1, int(t / shot_dur))
+        local_t = t - shot_idx * shot_dur
+        cropped = self._camera_shot(stills[shot_idx], local_t, shot_dur, shot_idx)
+
+        # Crisp 0.28s Documentary Transition between sub-shots (Whip-Pan Blur or Optical Light-Leak Flash)
+        if shot_idx > 0 and local_t < 0.28:
+            prev_im = self._camera_shot(stills[shot_idx - 1], shot_dur, shot_dur, shot_idx - 1)
+            alpha = ease(local_t / 0.28)
+            if shot_idx % 2 == 1:
+                # Whip-Pan Slide Transition
+                shift = int(w * (1.0 - alpha))
+                comp = Image.new("RGB", (w, h), self.ink)
+                comp.paste(prev_im, (shift - w, 0))
+                comp.paste(cropped, (shift, 0))
+                cropped = comp.filter(ImageFilter.GaussianBlur(radius=max(0.5, (1.0 - abs(alpha - 0.5) * 2) * 5.0)))
+            else:
+                # Optical Zoom-Flash Blend
+                blended = Image.blend(prev_im, cropped, alpha)
+                flash = int(90 * (1.0 - abs(alpha - 0.5) * 2))
+                if flash > 5:
+                    fl_layer = Image.new("RGBA", (w, h), (255, 240, 200, flash))
+                    blended = Image.alpha_composite(blended.convert("RGBA"), fl_layer).convert("RGB")
+                cropped = blended
+
+        # Kinetic 3-Word Impact Callout Pop-Up (Think School / Nitish Rajput style) during first 3.5s
         data = self.beat["visual"].get("data", {})
         callout = data.get("callout") or data.get("metric_badge")
-        if callout:
+        if not callout and t >= 0.4 and t <= min(4.2, duration - 0.4):
+            hl_words = [w_s for w_s in str(self.beat["visual"].get("headline", "")).split() if len(w_s) > 2][:4]
+            callout = " ".join(hl_words) if hl_words else ""
+        if callout and t >= 0.35:
+            pop = ease(min(1.0, (t - 0.35) / 0.45))
             layer = cropped.convert("RGBA")
             d = ImageDraw.Draw(layer)
-            cw, ch = int(w * 0.34), int(86 * s)
-            cx, cy = p, int(h * 0.61)
-            d.rounded_rectangle((cx, cy, cx + cw, cy + ch), radius=int(10 * s), fill=(*self.ink, 215), outline=(*self.accent, 230), width=max(1, int(2 * s)))
-            d.rectangle((cx, cy, cx + int(8 * s), cy + ch), fill=self.accent)
-            text_block(layer, str(callout).upper(), (cx + int(22 * s), cy + int(12 * s), cw - int(32 * s), int(34 * s)), 24 * s, self.secondary, True, 1)
-            sub = data.get("callout_sub") or self.beat["visual"].get("reason", "")[:68]
-            text_block(layer, sub, (cx + int(22 * s), cy + int(44 * s), cw - int(32 * s), int(34 * s)), 18 * s, WHITE, False, 1)
+            cw, ch = int(w * (0.62 if self.portrait else 0.34)), int(78 * s)
+            cx = int(p - (1.0 - pop) * 90 * s)
+            cy = int(h * (0.115 if self.portrait else 0.62))
+            d.rounded_rectangle((cx, cy, cx + cw, cy + ch), radius=int(8 * s), fill=(*self.ink, int(218 * pop)), outline=(*self.accent, int(235 * pop)), width=max(1, int(2.5 * s)))
+            d.rectangle((cx, cy, cx + int(8 * s), cy + ch), fill=(*self.accent, int(255 * pop)))
+            text_block(layer, str(callout).upper(), (cx + int(20 * s), cy + int(12 * s), cw - int(28 * s), int(32 * s)), 23 * s, (254, 240, 138), True, 1)
+            sub = (data.get("callout_sub") or self.beat.get("chapter", "WORLD TALK BRIEF")).upper()[:54]
+            text_block(layer, sub, (cx + int(20 * s), cy + int(44 * s), cw - int(28 * s), int(26 * s)), 16 * s, WHITE, False, 1)
             return layer.convert("RGB")
         return cropped
 
@@ -258,7 +322,7 @@ class Canvas:
             im = self._render_full_bleed_still(self.still, t, duration)
         else:
             d = ImageDraw.Draw(im)
-            top, bottom = int(h * 0.285), int(h * 0.775)
+            top, bottom = (int(h * 0.24), int(h * 0.60)) if self.portrait else (int(h * 0.285), int(h * 0.775))
             if kind == "chart":
                 self.draw_chart(im, d, t, top, bottom, data)
             elif kind == "stat_callout":
@@ -280,6 +344,18 @@ class Canvas:
         d = ImageDraw.Draw(im)
         d.rectangle((0, h - int(5 * s), int(w * min(1.0, t / max(0.1, duration))), h), fill=self.accent)
         return im.convert("RGB")
+
+    def _paint_cinema_backdrop(self, im, blur_radius=18, tint_alpha=188):
+        """Paints a rich blurred cinema image behind graphic cards so nothing ever looks like a flat PowerPoint slide."""
+        w, h = self.w, self.h
+        src = self.still or self.secondary_still
+        if src is not None:
+            bg_blur = ImageOps.fit(src, (w, h), method=Image.Resampling.BICUBIC).filter(ImageFilter.GaussianBlur(radius=blur_radius))
+            tint = Image.new("RGBA", (w, h), (*self.ink, tint_alpha))
+            comp = Image.alpha_composite(bg_blur.convert("RGBA"), tint).convert("RGB")
+            im.paste(comp, (0, 0))
+            return ImageDraw.Draw(im)
+        return ImageDraw.Draw(im)
 
     def draw_chart(self, im, d, t, top, bottom, data):
         w, h, s, p = self.w, self.h, self.s, self.pad
@@ -315,28 +391,66 @@ class Canvas:
             )
 
     def draw_stat_callout(self, im, d, t, top, bottom, data):
+        import re as _re
+        d = self._paint_cinema_backdrop(im, blur_radius=16, tint_alpha=182)
         w, h, s, p = self.w, self.h, self.s, self.pad
         metrics = data.get("metrics", [{"value": "100%", "label": "Verified Metric"}])
         n = len(metrics)
         gap = int(24 * s)
+
+        def _animate_val(raw_val, frac):
+            m = _re.match(r"^([^0-9.-]*)([0-9]+(?:\.[0-9]+)?)(.*)$", str(raw_val).strip())
+            if not m:
+                return str(raw_val)
+            pref, num_s, suff = m.groups()
+            target_n = float(num_s)
+            cur_n = target_n * frac
+            if "." in num_s:
+                return f"{pref}{cur_n:.1f}{suff}"
+            return f"{pref}{int(round(cur_n)):,}{suff}"
+
+        if self.portrait:
+            # Vertical stacked glassmorphism impact cards filling the safe portrait frame cleanly!
+            card_h = min(int(265 * s), int((bottom - top - gap * (n - 1)) / max(1, n)))
+            total_stack = n * card_h + (n - 1) * gap
+            start_y = top + max(0, (bottom - top - total_stack) // 2)
+            for i, m in enumerate(metrics):
+                frac = ease(max(0.0, t - i * 0.20) / 0.95)
+                y = start_y + i * (card_h + gap) + int(16 * s * (1.0 - frac))
+                col = self.accent if i == 0 else self.secondary
+                d.rounded_rectangle((p, y, w - p, y + card_h), radius=int(16 * s), fill=(*self.panel, 235), outline=col, width=max(2, int(3 * s)))
+                d.rectangle((p, y, p + int(12 * s), y + card_h), fill=col)
+                anim_v = _animate_val(m.get("value", ""), frac)
+                text_block(im, anim_v, (p + int(34 * s), y + int(24 * s), int((w - p * 2) * 0.44), int(120 * s)), 84 * s, WHITE, True, 1)
+                rx = p + int((w - p * 2) * 0.46)
+                rw = w - p - rx - int(22 * s)
+                text_block(im, str(m.get("label", "")).upper(), (rx, y + int(34 * s), rw, int(74 * s)), 30 * s, col, True, 2)
+                if m.get("sub"):
+                    text_block(im, str(m["sub"]), (rx, y + int(116 * s), rw, int(72 * s)), 22 * s, MUTED, False, 2)
+                bar_w = int((w - p * 2 - 68 * s) * frac)
+                d.rounded_rectangle((p + int(34 * s), y + card_h - int(28 * s), p + int(34 * s) + bar_w, y + card_h - int(14 * s)), radius=int(5 * s), fill=col)
+            return
+
         cw = (w - p * 2 - gap * (n - 1)) / n
         ch = bottom - top
         for i, m in enumerate(metrics):
-            frac = ease(max(0.0, t - i * 0.18) / 0.85)
+            frac = ease(max(0.0, t - i * 0.18) / 0.95)
             x = p + i * (cw + gap)
             y = top + int(18 * s * (1.0 - frac))
-            d.rounded_rectangle((x, y, x + cw, y + ch), radius=int(14 * s), fill=self.panel, outline=self.accent if i == 0 else self.secondary, width=max(1, int(3 * s)))
-            d.rectangle((x, y, x + cw, y + int(10 * s)), fill=self.accent if i == 0 else self.secondary)
-            text_block(im, f"METRIC 0{i+1}", (x + int(24 * s), y + int(26 * s), cw - int(48 * s), int(34 * s)), 20 * s, MUTED, True, 1)
-            text_block(im, str(m.get("value", "")), (x + int(24 * s), y + int(72 * s), cw - int(48 * s), int(115 * s)), 64 * s, WHITE, True, 1)
-            text_block(im, str(m.get("label", "")).upper(), (x + int(24 * s), y + int(195 * s), cw - int(48 * s), int(80 * s)), 26 * s, self.secondary if i == 0 else WHITE, True, 2)
+            col = self.accent if i == 0 else self.secondary
+            d.rounded_rectangle((x, y, x + cw, y + ch), radius=int(16 * s), fill=self.panel, outline=col, width=max(2, int(3 * s)))
+            d.rectangle((x, y, x + cw, y + int(10 * s)), fill=col)
+            text_block(im, f"KEY METRIC 0{i+1}", (x + int(26 * s), y + int(28 * s), cw - int(52 * s), int(34 * s)), 19 * s, MUTED, True, 1)
+            anim_v = _animate_val(m.get("value", ""), frac)
+            text_block(im, anim_v, (x + int(26 * s), y + int(76 * s), cw - int(52 * s), int(125 * s)), 74 * s, WHITE, True, 1)
+            text_block(im, str(m.get("label", "")).upper(), (x + int(26 * s), y + int(212 * s), cw - int(52 * s), int(80 * s)), 26 * s, col, True, 2)
             if m.get("sub"):
-                text_block(im, str(m["sub"]), (x + int(24 * s), y + int(275 * s), cw - int(48 * s), int(75 * s)), 20 * s, MUTED, False, 2)
-            # Animated gauge bar at bottom of card
-            bar_w = int((cw - 48 * s) * frac)
-            d.rounded_rectangle((x + int(24 * s), y + ch - int(36 * s), x + int(24 * s) + bar_w, y + ch - int(22 * s)), radius=int(4 * s), fill=self.accent if i == 0 else self.secondary)
+                text_block(im, str(m["sub"]), (x + int(26 * s), y + int(294 * s), cw - int(52 * s), int(75 * s)), 20 * s, MUTED, False, 2)
+            bar_w = int((cw - 52 * s) * frac)
+            d.rounded_rectangle((x + int(26 * s), y + ch - int(36 * s), x + int(26 * s) + bar_w, y + ch - int(22 * s)), radius=int(5 * s), fill=col)
 
     def draw_actor_split(self, im, d, t, top, bottom, data):
+        d = self._paint_cinema_backdrop(im, blur_radius=20, tint_alpha=198)
         w, h, s, p = self.w, self.h, self.s, self.pad
         gap = int(64 * s)
         cw = (w - p * 2 - gap) / 2
@@ -430,30 +544,46 @@ class Canvas:
                 d.line((ax1, ay, ax2, ay), fill=self.accent, width=max(2, int(4 * s)))
 
     def draw_evidence_card(self, im, d, t, top, bottom, data):
+        """Nitish Rajput / Abhi & Niyu style Newspaper Clipping with animated yellow highlighter sweep!"""
         w, h, s, p = self.w, self.h, self.s, self.pad
         fid = data.get("fact_id", self.beat["fact_ids"][0])
         fact = self.facts.get(fid, {"claim": self.beat["narration"], "status": "reported"})
-        card_w = int((w - p * 2) * (0.58 if self.still is not None and not self.portrait else 1.0))
-        d.rounded_rectangle((p, top, p + card_w, bottom), radius=int(14 * s), fill=self.panel, outline=(*self.secondary, 120), width=max(1, int(2 * s)))
-        d.rectangle((p, top, p + int(10 * s), bottom), fill=self.accent)
-        status_tag = f"VERIFIED RECORD ({str(fact.get('status', 'reported')).upper()})  •  FACT {fid}"
-        text_block(im, status_tag, (p + int(34 * s), top + int(24 * s), card_w - int(60 * s), int(34 * s)), 20 * s, self.secondary, True, 1)
+        # Subtle blurred photo backdrop if available
+        if self.still is not None:
+            bg_blur = ImageOps.fit(self.still, (w, h), method=Image.Resampling.BICUBIC).filter(ImageFilter.GaussianBlur(radius=14))
+            dark_tint = Image.new("RGBA", (w, h), (*self.ink, 195))
+            im.paste(Image.alpha_composite(bg_blur.convert("RGBA"), dark_tint).convert("RGB"), (0, 0))
+            d = ImageDraw.Draw(im)
+        card_w = int((w - p * 2) * (0.58 if self.still is not None and not self.portrait else 0.94))
+        cx1 = p if (self.still is not None and not self.portrait) else int((w - card_w) // 2)
+        cx2 = cx1 + card_w
+        # Off-white editorial newspaper clipping paper with drop shadow
+        d.rounded_rectangle((cx1 + int(8 * s), top + int(10 * s), cx2 + int(8 * s), bottom + int(10 * s)), radius=int(10 * s), fill=(4, 8, 14))
+        d.rounded_rectangle((cx1, top, cx2, bottom), radius=int(10 * s), fill=(244, 241, 232), outline=self.accent, width=max(2, int(3 * s)))
+        d.rectangle((cx1, top, cx2, top + int(48 * s)), fill=(22, 30, 44))
+        status_tag = f"DOCUMENTED REPORT  •  {str(fact.get('status', 'verified')).upper()} RECORD"
+        text_block(im, status_tag, (cx1 + int(24 * s), top + int(12 * s), card_w - int(48 * s), int(30 * s)), 19 * s, (254, 240, 138), True, 1)
+        # Animated yellow highlighter bar sweeping across the top two lines of the quote!
+        sweep = ease(min(1.0, max(0.0, (t - 0.3) / 1.1)))
+        hl_w = int((card_w - int(68 * s)) * sweep)
+        if hl_w > 4:
+            d.rectangle((cx1 + int(28 * s), top + int(76 * s), cx1 + int(28 * s) + hl_w, top + int(122 * s)), fill=(253, 224, 71))
         text_block(
             im,
             f"“{fact['claim']}”",
-            (p + int(34 * s), top + int(72 * s), card_w - int(68 * s), bottom - top - int(110 * s)),
-            36 * s if not self.portrait else 32 * s,
-            WHITE,
+            (cx1 + int(32 * s), top + int(76 * s), card_w - int(64 * s), bottom - top - int(100 * s)),
+            34 * s if not self.portrait else 30 * s,
+            (15, 23, 42),
             True,
             6,
         )
         if self.still is not None and not self.portrait:
-            rx = p + card_w + int(24 * s)
+            rx = cx2 + int(24 * s)
             rw = w - p - rx
             rh = bottom - top
             fit_im = ImageOps.fit(self.still, (rw, rh), method=Image.Resampling.BICUBIC)
             im.paste(fit_im, (rx, top))
-            d.rounded_rectangle((rx, top, rx + rw, bottom), radius=int(12 * s), outline=self.accent, width=max(2, int(3 * s)))
+            d.rounded_rectangle((rx, top, rx + rw, bottom), radius=int(10 * s), outline=self.accent, width=max(2, int(3 * s)))
 
     def container(self, im, t, top, bottom):
         w, h, s = self.w, self.h, self.s
@@ -490,7 +620,12 @@ class Canvas:
         text_block(im, "3D TELEMETRY MODEL • LOGISTICS PAYLOAD", (self.pad, bottom + 12 * s, w - self.pad * 2, 40 * s), 22 * s, self.secondary, True, 1)
 
     def globe(self, im, t, top, bottom, places):
-        """Renders a 208-Country Natural Earth 3D Orthographic Globe + Zoomed Regional Tactical Map."""
+        """
+        V95 FULL-FRAME ZOOMED TACTICAL ROUTE MAP + CORNER MINI-GLOBE PiP:
+        Fills the canvas in BOTH 16:9 Long-Form and 9:16 Shorts, tightly zoomed onto the exact
+        route bounding box so the complete route line, country borders, and chokepoints are huge,
+        crystal-clear, and continuously animated with a glowing traveling pulse!
+        """
         d = ImageDraw.Draw(im)
         w, h, s, p = self.w, self.h, self.s, self.pad
         polys = load_world_polygons()
@@ -500,166 +635,169 @@ class Canvas:
             if gz and gz.get("country"):
                 target_countries.add(gz["country"].upper())
 
-        # Center lat/lon from resolved places
-        mean_lat = sum(pl["lat"] for pl in places) / len(places)
-        mean_lon = sum(pl["lon"] for pl in places) / len(places)
-        r = min(w * 0.19, (bottom - top) * 0.48)
-        cx = w * 0.25 if not self.portrait else w * 0.5
-        cy = (top + bottom) * 0.5
-        lon0 = mean_lon + 6.0 * math.sin(t * 0.25)
-        lat0 = max(-55.0, min(55.0, mean_lat * 0.85))
-
-        def project_ortho(lat, lon):
-            a, b, c = map(math.radians, [lat, lon - lon0, lat0])
-            x = math.cos(a) * math.sin(b)
-            y = math.cos(c) * math.sin(a) - math.sin(c) * math.cos(a) * math.cos(b)
-            z = math.sin(c) * math.sin(a) + math.cos(c) * math.cos(a) * math.cos(b)
-            return cx + r * x, cy - r * y, z
-
-        # Ocean sphere + outer atmospheric glow
-        d.ellipse((cx - r - 6 * s, cy - r - 6 * s, cx + r + 6 * s, cy + r + 6 * s), fill=(16, 36, 56), outline=(*self.secondary, 120), width=max(1, int(2 * s)))
-        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(14, 34, 52), outline=self.secondary, width=max(2, int(2.5 * s)))
-
-        # Graticule lines
-        for axis in (0, 1):
-            for fixed in range(-150, 180, 30) if axis else range(-60, 90, 30):
-                seg = []
-                for moving in range(-180, 181, 6) if not axis else range(-90, 91, 6):
-                    x, y, z = project_ortho(fixed, moving) if not axis else project_ortho(moving, fixed)
-                    if z > 0:
-                        seg.append((x, y))
-                    elif len(seg) > 1:
-                        d.line(seg, fill=(28, 62, 84), width=max(1, int(s)))
-                        seg = []
-                    else:
-                        seg = []
-                if len(seg) > 1:
-                    d.line(seg, fill=(28, 62, 84), width=max(1, int(s)))
-
-        # Real 208-Country Natural Earth Landmasses on the 3D Globe!
-        for cname, rings in polys.items():
-            if cname.startswith("ISO_") or cname == "_LOADED":
-                continue
-            is_target = cname in target_countries or any(cname in pl["name"].upper() for pl in places)
-            fill_col = self.accent if is_target else (34, 74, 96)
-            out_col = WHITE if is_target else (64, 118, 142)
-            for ring in rings:
-                pts_2d = []
-                for lat, lon in ring[::2] if len(ring) > 40 else ring:
-                    px, py, pz = project_ortho(lat, lon)
-                    if pz > 0.02:
-                        pts_2d.append((px, py))
-                if len(pts_2d) >= 3:
-                    d.polygon(pts_2d, fill=fill_col, outline=out_col)
-
-        # Great-circle arc & pins on 3D Globe
-        if len(places) >= 2:
-            for idx in range(len(places) - 1):
-                p1, p2 = places[idx], places[idx + 1]
-                arc_pts = []
-                steps = 28
-                active_steps = max(2, int(steps * ease(min(1.0, t / 1.2))))
-                for k in range(active_steps + 1):
-                    u = k / steps
-                    lat_i = p1["lat"] + (p2["lat"] - p1["lat"]) * u + 3.5 * math.sin(math.pi * u)
-                    lon_i = p1["lon"] + (p2["lon"] - p1["lon"]) * u
-                    px, py, pz = project_ortho(lat_i, lon_i)
-                    if pz > 0:
-                        arc_pts.append((px, py))
-                if len(arc_pts) >= 2:
-                    d.line(arc_pts, fill=self.secondary, width=max(2, int(3.5 * s)))
-
-        for place in places:
-            x, y, z = project_ortho(place["lat"], place["lon"])
-            if z > 0:
-                rr = (7 + 3 * math.sin(t * 3.0)) * s
-                d.ellipse((x - rr * 1.8, y - rr * 1.8, x + rr * 1.8, y + rr * 1.8), outline=self.secondary, width=max(1, int(2 * s)))
-                d.ellipse((x - rr, y - rr, x + rr, y + rr), fill=self.accent, outline=WHITE, width=max(1, int(2 * s)))
-
-        if self.portrait:
-            for i, place in enumerate(places):
-                y0 = bottom - int((len(places) - i) * 44 * s)
-                text_block(im, f"• {place['name'].upper()} ({place['lat']:.2f}°, {place['lon']:.2f}°)", (p, y0, w - p * 2, 42 * s), 24 * s, WHITE, True, 1)
-            return
-
-        # RIGHT PANEL: Zoomed Regional Tactical Map with Real Country Borders & Telemetry Cards
-        map_x1 = int(w * 0.46)
-        map_x2 = w - p
-        map_y1 = top
-        map_y2 = bottom
-        mw, mh = map_x2 - map_x1, map_y2 - map_y1
-        d.rounded_rectangle((map_x1, map_y1, map_x2, map_y2), radius=int(14 * s), fill=(11, 26, 42), outline=self.secondary, width=max(2, int(2.5 * s)))
+        # Full-bleed tactical map area (filling the entire frame cleanly in both 16:9 and 9:16!)
+        map_x1, map_y1 = (0, 0)
+        map_x2, map_y2 = (w, h)
+        mw, mh = w, h
 
         lats = [pl["lat"] for pl in places]
         lons = [pl["lon"] for pl in places]
-        span_lat = max(8.0, (max(lats) - min(lats)) * 2.2)
-        span_lon = max(12.0, (max(lons) - min(lons)) * 2.4)
-        span_lon = max(span_lon, span_lat * (mw / max(1, mh)))
-        span_lat = span_lon * (mh / max(1, mw))
-        lat_min, lat_max = mean_lat - span_lat / 2, mean_lat + span_lat / 2
-        lon_min, lon_max = mean_lon - span_lon / 2, mean_lon + span_lon / 2
+        mean_lat = (min(lats) + max(lats)) / 2.0
+        mean_lon = (min(lons) + max(lons)) / 2.0
+        # Shift center slightly upward in portrait so the complete route sits cleanly above Shorts captions!
+        if self.portrait:
+            mean_lat -= 3.5
+        else:
+            mean_lat -= 2.2
 
-        def project_reg(lat, lon):
+        raw_dlat = max(6.0, max(lats) - min(lats))
+        raw_dlon = max(8.0, max(lons) - min(lons))
+        # Subtle smooth cinematic zoom-in over the beat duration (1.0x -> 1.14x closer!)
+        zoom_factor = 1.0 + 0.14 * ease(min(1.0, t / 5.5))
+        pad_mult = (1.85 if self.portrait else 2.55) / zoom_factor
+        span_lat = raw_dlat * pad_mult
+        span_lon = raw_dlon * pad_mult
+
+        # Maintain geographic aspect ratio (accounting for cos(lat) foreshortening)
+        cos_lat = max(0.35, math.cos(math.radians(mean_lat)))
+        target_ratio = mw / max(1.0, mh)
+        if (span_lon * cos_lat) / max(0.1, span_lat) < target_ratio:
+            span_lon = (span_lat * target_ratio) / cos_lat
+        else:
+            span_lat = (span_lon * cos_lat) / target_ratio
+
+        lat_min, lat_max = mean_lat - span_lat / 2.0, mean_lat + span_lat / 2.0
+        lon_min, lon_max = mean_lon - span_lon / 2.0, mean_lon + span_lon / 2.0
+
+        def project_map(lat, lon):
             rx = map_x1 + (lon - lon_min) / max(0.01, lon_max - lon_min) * mw
             ry = map_y2 - (lat - lat_min) / max(0.01, lat_max - lat_min) * mh
             return rx, ry
 
-        # Clip regional map to panel
-        reg_layer = Image.new("RGBA", (mw, mh), (11, 26, 42, 255))
-        rd = ImageDraw.Draw(reg_layer)
-        for gx in range(0, mw, max(24, int(64 * s))):
-            rd.line((gx, 0, gx, mh), fill=(22, 46, 68, 255), width=1)
-        for gy in range(0, mh, max(24, int(64 * s))):
-            rd.line((0, gy, mw, gy), fill=(22, 46, 68, 255), width=1)
+        # Deep bathymetric ocean base + glowing latitude/longitude tactical grid
+        map_layer = Image.new("RGBA", (mw, mh), (8, 22, 38, 255))
+        md = ImageDraw.Draw(map_layer)
+        for gy in range(0, mh, max(36, int(72 * s))):
+            md.line((0, gy, mw, gy), fill=(17, 42, 66, 255), width=1)
+        for gx in range(0, mw, max(36, int(72 * s))):
+            md.line((gx, 0, gx, mh), fill=(17, 42, 66, 255), width=1)
 
+        # Draw crisp 208-Country Natural Earth Landmasses
         for cname, rings in polys.items():
             if cname.startswith("ISO_") or cname == "_LOADED":
                 continue
             is_target = cname in target_countries or any(cname in pl["name"].upper() for pl in places)
-            fill_col = (*self.accent, 115) if is_target else (29, 58, 82, 255)
-            out_col = (*WHITE, 235) if is_target else (78, 128, 158, 200)
+            fill_col = (*self.accent, 155) if is_target else (24, 52, 76, 255)
+            out_col = (*WHITE, 245) if is_target else (72, 126, 158, 215)
             for ring in rings:
-                if not any(lat_min - 15 <= lat <= lat_max + 15 and lon_min - 20 <= lon <= lon_max + 20 for lat, lon in ring[::3]):
+                if not any(lat_min - 25 <= lat <= lat_max + 25 and lon_min - 35 <= lon <= lon_max + 35 for lat, lon in ring[::2]):
                     continue
-                pts_reg = []
-                for lat, lon in ring:
-                    rx, ry = project_reg(lat, lon)
-                    pts_reg.append((rx - map_x1, ry - map_y1))
-                if len(pts_reg) >= 3:
-                    rd.polygon(pts_reg, fill=fill_col, outline=out_col)
+                pts_2d = [project_map(lat, lon) for lat, lon in ring]
+                if len(pts_2d) >= 3:
+                    md.polygon(pts_2d, fill=fill_col, outline=out_col)
 
-        # Animated trajectory vector on regional map
+        # Glowing Animated Multi-Segment Route Arc + Traveling Signal Pulse!
         if len(places) >= 2:
-            for idx in range(len(places) - 1):
+            route_pts = []
+            segs = len(places) - 1
+            for idx in range(segs):
                 p1, p2 = places[idx], places[idx + 1]
-                x1, y1 = project_reg(p1["lat"], p1["lon"])
-                x2, y2 = project_reg(p2["lat"], p2["lon"])
-                x1 -= map_x1; y1 -= map_y1; x2 -= map_x1; y2 -= map_y1
-                prog = ease(min(1.0, max(0.0, (t - idx * 0.25) / 1.0)))
-                cx_end = x1 + (x2 - x1) * prog
-                cy_end = y1 + (y2 - y1) * prog
-                rd.line((x1, y1, cx_end, cy_end), fill=(*self.secondary, 255), width=max(3, int(4 * s)))
+                steps = 40
+                for k in range(steps + 1):
+                    u = k / steps
+                    # Smooth curved maritime/flight arc
+                    bend = (1.6 if idx % 2 == 0 else -1.4) * math.sin(math.pi * u)
+                    lat_i = p1["lat"] + (p2["lat"] - p1["lat"]) * u + bend
+                    lon_i = p1["lon"] + (p2["lon"] - p1["lon"]) * u
+                    route_pts.append(project_map(lat_i, lon_i))
 
-        # Pins & labels on regional map
+            draw_prog = ease(min(1.0, max(0.05, t / 2.2)))
+            n_active = max(2, int(len(route_pts) * draw_prog))
+            active_pts = route_pts[:n_active]
+            # Outer neon glow + bright core route line
+            md.line(active_pts, fill=(*self.secondary, 110), width=max(8, int(14 * s)))
+            md.line(active_pts, fill=(254, 240, 138, 255), width=max(4, int(6 * s)))
+            md.line(active_pts, fill=(255, 255, 255, 240), width=max(2, int(2.5 * s)))
+
+            # Continuously traveling glowing data/flight pulse along the complete route!
+            pulse_idx = int(((t * 0.45) % 1.0) * (len(active_pts) - 1))
+            px_p, py_p = active_pts[pulse_idx]
+            pr = int(10 * s)
+            md.ellipse((px_p - pr * 2.2, py_p - pr * 2.2, px_p + pr * 2.2, py_p + pr * 2.2), fill=(250, 204, 21, 95))
+            md.ellipse((px_p - pr, py_p - pr, px_p + pr, py_p + pr), fill=(255, 255, 255, 255), outline=(*self.accent, 255), width=max(2, int(3 * s)))
+
+        # Crisp Pulsing City / Chokepoint Pins & Non-Overlapping Labels
+        placed_boxes = []
         for i, place in enumerate(places):
-            rx, ry = project_reg(place["lat"], place["lon"])
-            lx, ly = rx - map_x1, ry - map_y1
-            pulse = (10 + 5 * math.sin(t * 3.5 + i)) * s
-            rd.ellipse((lx - pulse, ly - pulse, lx + pulse, ly + pulse), outline=(*self.secondary, 220), width=max(1, int(2 * s)))
-            rd.ellipse((lx - int(6 * s), ly - int(6 * s), lx + int(6 * s), ly + int(6 * s)), fill=(*self.accent, 255), outline=(*WHITE, 255), width=max(1, int(2 * s)))
-            lbl = f"{place['name'].upper()} ({place['lat']:.1f}°, {place['lon']:.1f}°)"
-            lf = font(int(18 * s), True)
-            tw = int(rd.textlength(lbl, font=lf))
-            bx = max(int(10 * s), min(mw - tw - int(24 * s), int(lx + 12 * s)))
-            by = max(int(44 * s), min(mh - int(42 * s), int(ly - 18 * s + (i % 2) * 28 * s)))
-            rd.rounded_rectangle((bx, by, bx + tw + int(16 * s), by + int(28 * s)), radius=int(5 * s), fill=(*self.ink, 225), outline=(*self.secondary, 190), width=1)
-            rd.text((bx + int(8 * s), by + int(4 * s)), lbl, font=lf, fill=WHITE)
+            lx, ly = project_map(place["lat"], place["lon"])
+            pulse = (14 + 7 * math.sin(t * 4.0 + i)) * s
+            md.ellipse((lx - pulse, ly - pulse, lx + pulse, ly + pulse), outline=(254, 240, 138, 220), width=max(2, int(2.5 * s)))
+            md.ellipse((lx - int(8 * s), ly - int(8 * s), lx + int(8 * s), ly + int(8 * s)), fill=(*self.accent, 255), outline=WHITE, width=max(2, int(2.5 * s)))
 
-        # Header strip inside regional map
-        rd.rectangle((0, 0, mw, int(38 * s)), fill=(*self.ink, 225))
-        rd.text((int(16 * s), int(8 * s)), "TACTICAL REGIONAL SECTOR  •  NATURAL EARTH 208-COUNTRY VECTOR ATLAS", font=font(int(17 * s), True), fill=self.secondary)
-        im.paste(reg_layer.convert("RGB"), (map_x1, map_y1))
-        d.rounded_rectangle((map_x1, map_y1, map_x2, map_y2), radius=int(14 * s), outline=self.secondary, width=max(2, int(2.5 * s)))
+            lbl = f"{place['name'].upper()}"
+            coord_lbl = f"{place['lat']:.1f}°N, {place['lon']:.1f}°E"
+            lf = font(int((24 if self.portrait else 22) * s), True)
+            cf = font(int((16 if self.portrait else 15) * s), False)
+            tw = max(int(md.textlength(lbl, font=lf)), int(md.textlength(coord_lbl, font=cf)))
+            bw = tw + int(24 * s)
+            bh = int(54 * s)
+
+            # Smart offset so labels never collide with pins or screen edges
+            bx = int(lx + 16 * s) if lx < mw * 0.58 else int(lx - bw - 16 * s)
+            by = int(ly - bh / 2)
+            bx = max(p, min(mw - p - bw, bx))
+            by = max(int(h * 0.22), min(int(h * (0.64 if self.portrait else 0.76)) - bh, by))
+            for ox1, oy1, ox2, oy2 in placed_boxes:
+                if not (bx + bw < ox1 or bx > ox2 or by + bh < oy1 or by > oy2):
+                    by = min(int(h * (0.65 if self.portrait else 0.78)) - bh, oy2 + int(10 * s))
+            placed_boxes.append((bx, by, bx + bw, by + bh))
+
+            md.rounded_rectangle((bx, by, bx + bw, by + bh), radius=int(8 * s), fill=(8, 15, 26, 232), outline=(*self.secondary, 225), width=max(2, int(2 * s)))
+            md.rectangle((bx, by, bx + int(6 * s), by + bh), fill=self.accent)
+            md.text((bx + int(14 * s), by + int(7 * s)), lbl, font=lf, fill=WHITE)
+            md.text((bx + int(14 * s), by + int(32 * s)), coord_lbl, font=cf, fill=(254, 240, 138))
+
+        # Sleek Corner Mini-Globe PiP (Top-Right in 16:9, Bottom-Right above captions in 9:16) for Global Context!
+        gr = int((76 if not self.portrait else 68) * s)
+        gcx = w - p - gr - int(10 * s)
+        gcy = int(h * 0.34) if not self.portrait else int(h * 0.25)
+        md.ellipse((gcx - gr - 4 * s, gcy - gr - 4 * s, gcx + gr + 4 * s, gcy + gr + 4 * s), fill=(8, 16, 28, 225), outline=(*self.secondary, 190), width=max(2, int(2 * s)))
+        lon0 = mean_lon + 6.0 * math.sin(t * 0.3)
+        lat0 = max(-45.0, min(45.0, mean_lat * 0.8))
+
+        def proj_mini(lat, lon):
+            a, b, c = map(math.radians, [lat, lon - lon0, lat0])
+            x = math.cos(a) * math.sin(b)
+            y = math.cos(c) * math.sin(a) - math.sin(c) * math.cos(a) * math.cos(b)
+            z = math.sin(c) * math.sin(a) + math.cos(c) * math.cos(a) * math.cos(b)
+            return gcx + gr * x, gcy - gr * y, z
+
+        for cname, rings in polys.items():
+            if cname.startswith("ISO_") or cname == "_LOADED":
+                continue
+            is_t = cname in target_countries
+            fc = (*self.accent, 230) if is_t else (38, 76, 102, 230)
+            for ring in rings:
+                pts_m = []
+                for lat, lon in ring[::4] if len(ring) > 24 else ring:
+                    mx, my, mz = proj_mini(lat, lon)
+                    if mz > 0.05:
+                        pts_m.append((mx, my))
+                if len(pts_m) >= 3:
+                    md.polygon(pts_m, fill=fc)
+        mx0, my0, mz0 = proj_mini(mean_lat, mean_lon)
+        if mz0 > 0:
+            md.ellipse((mx0 - 5 * s, my0 - 5 * s, mx0 + 5 * s, my0 + 5 * s), fill=(254, 240, 138, 255))
+
+        # Subtle top/bottom gradient vignette so header & captions stay ultra-legible over full-bleed map
+        for y in range(int(h * 0.22)):
+            a = int(195 * max(0.0, 1.0 - y / max(1.0, h * 0.22)) ** 1.3)
+            md.line((0, y, mw, y), fill=(*self.ink, a))
+        for y in range(int(h * 0.72), mh):
+            a = int(215 * max(0.0, (y - h * 0.72) / max(1.0, h * 0.28)) ** 1.2)
+            md.line((0, y, mw, y), fill=(*self.ink, a))
+
+        im.paste(map_layer.convert("RGB"), (0, 0))
 
 
 def caption_frame(im, cues, t, portrait=False):
@@ -675,10 +813,22 @@ def caption_frame(im, cues, t, portrait=False):
     bh = len(lines) * 42 * s + 24 * s
     y = h * 0.875 - bh
     d.rounded_rectangle((w * 0.10, y, w * 0.90, y + bh), radius=int(10 * s), fill=(6, 10, 18, 210), outline=(250, 204, 21, 90), width=max(1, int(2 * s)))
+    all_words = str(cue["text"]).split()
+    dur_c = max(0.15, cue["end"] - cue["start"])
+    active_w_idx = min(max(0, len(all_words) - 1), int(max(0.0, min(0.999, (t - cue["start"]) / dur_c)) * len(all_words)))
+    w_cursor = 0
+    sp_w = d.textlength(" ", font=f)
     for line in lines:
+        l_words = line.split()
         tw = d.textlength(line, font=f)
-        d.text(((w - tw) / 2 + 2, y + 12 * s), line, font=f, fill=(0, 0, 0, 220))
-        d.text(((w - tw) / 2, y + 10 * s), line, font=f, fill=(254, 240, 138))
+        lx = (w - tw) / 2
+        for wd in l_words:
+            ww = d.textlength(wd, font=f)
+            is_act = (w_cursor == active_w_idx)
+            d.text((lx + 2, y + 12 * s), wd, font=f, fill=(0, 0, 0, 230))
+            d.text((lx, y + 10 * s), wd, font=f, fill=(250, 204, 21) if is_act else (248, 250, 252))
+            lx += ww + sp_w
+            w_cursor += 1
         y += 42 * s
     return Image.alpha_composite(im.convert("RGBA"), layer).convert("RGB")
 
@@ -722,8 +872,12 @@ def render_beat(beat, dossier, audio, out, cfg, portrait=False):
                     data = decoder.stdout.read(frame_bytes)
                     if len(data) != frame_bytes:
                         raise StudioError("Footage decode ended unexpectedly")
-                im = canvas.frame(frame / fps, duration, data)
-                im = caption_frame(im, cues, frame / fps, portrait)
+                t_now = frame / fps
+                im = canvas.frame(t_now, duration, data)
+                im = caption_frame(im, cues, t_now, portrait)
+                if t_now < 0.18:
+                    fade_a = t_now / 0.18
+                    im = Image.blend(Image.new("RGB", (w, h), canvas.ink), im, fade_a)
                 encoder.stdin.write(im.tobytes())
             encoder.stdin.close()
             if encoder.wait(timeout=180):
@@ -740,8 +894,13 @@ def render_beat(beat, dossier, audio, out, cfg, portrait=False):
     return duration
 
 
-def ensure_studio_soundtrack(path, duration_sec=60.0, style="think_school"):
-    """Synthesizes a warm, broadcast-grade 48kHz atmospheric documentary score with subtle pulse."""
+def ensure_studio_soundtrack(path, duration_sec=60.0, style="think_school", sfx_events=None, is_short=False):
+    """Generates V94 multi-layer stereo musical documentary score with scene-synced SFX."""
+    from .audio_engine import generate_documentary_score
+    return generate_documentary_score(path, duration_sec, style=style, sfx_events=sfx_events, is_short=is_short)
+
+
+def _legacy_sine_soundtrack_unused(path, duration_sec=60.0, style="think_school"):
     path = Path(path)
     if path.exists() and path.stat().st_size > 1000:
         return path

@@ -65,14 +65,16 @@ def build(args):
             kind = beat["visual"]["kind"]
             asset = None
             if kind in {"footage", "photo"}:
-                asset = media.find(beat)
-                if not asset and kind == "footage":
+                assets_found = media.find_multi(beat, count=3) if hasattr(media, "find_multi") else ([a] if (a := media.find(beat)) else [])
+                if not assets_found and kind == "footage":
                     beat["visual"]["kind"] = "photo"
-                    asset = media.find(beat)
-                    if asset:
-                        report["warnings"].append(beat["id"] + ": video unavailable; used relevant archival photo")
-                if asset:
-                    beat["asset"] = asset
+                    assets_found = media.find_multi(beat, count=3) if hasattr(media, "find_multi") else ([a] if (a := media.find(beat)) else [])
+                    if assets_found:
+                        report["warnings"].append(beat["id"] + ": video unavailable; used multi-shot event photos")
+                if assets_found:
+                    beat["asset"] = assets_found[0]
+                    if len(assets_found) > 1:
+                        beat["extra_assets"] = assets_found
                 else:
                     beat["fallback"] = True
                     beat["visual"].update(kind="evidence", data={"fact_id": beat["fact_ids"][0]})
@@ -205,7 +207,26 @@ def build(args):
             if not music.is_file() or not cfg.get("music_credit"):
                 raise StudioError("Music needs an existing file and rights/credit entry")
         elif cfg.get("auto_soundtrack"):
-            music = ensure_studio_soundtrack(cache / f"score_{plan.get('style', 'think_school')}.wav", 60.0, plan.get("style", "think_school"))
+            sfx_events = [{"time": 0.08, "kind": "impact_boom", "gain": 0.75}]
+            t_sfx = 0.0
+            for idx_b, b in enumerate(plan["beats"]):
+                if idx_b > 0:
+                    sfx_events.append({"time": t_sfx, "kind": "whoosh", "gain": 0.65})
+                vk = b["visual"]["kind"]
+                if vk in {"stat_callout", "chart"}:
+                    sfx_events.append({"time": t_sfx + 0.35, "kind": "data_tick", "gain": 0.72})
+                elif vk == "evidence":
+                    sfx_events.append({"time": t_sfx + 0.35, "kind": "highlighter", "gain": 0.75})
+                elif vk == "globe":
+                    sfx_events.append({"time": t_sfx + 0.25, "kind": "riser", "gain": 0.55})
+                t_sfx += float(b["duration"])
+            music = ensure_studio_soundtrack(
+                out / f"score_{plan.get('style', 'think_school')}.wav",
+                max(30.0, t_sfx + 2.0),
+                plan.get("style", "think_school"),
+                sfx_events=sfx_events,
+                is_short=False,
+            )
         concatenate(segments, final, music)
         make_thumbnail(plan, dossier, out / "thumbnail.jpg")
         qc = check_video(final, plan["beats"], cfg, out / "quality_report.json")
@@ -215,14 +236,9 @@ def build(args):
         short_path = None
         short_qc = None
         if cfg["make_short"] and 25 <= sum(b["duration"] for b in short_beats) <= 65:
-            short_segments = []
-            for b in short_beats:
-                budget.check()
-                path = out / (b["id"] + "_vertical.mp4")
-                render_beat(b, dossier, audio_by_id[b["id"]], path, cfg, portrait=True)
-                short_segments.append(path)
+            from .shorts import render_dedicated_short
             short_path = out / "short.mp4"
-            concatenate(short_segments, short_path, music)
+            render_dedicated_short(short_beats, dossier, audio_by_id, short_path, cfg, style=plan.get("style", "think_school"))
             short_qc = check_video(short_path, short_beats, cfg, out / "short_quality_report.json", short=True)
             if not short_qc["passed"]:
                 report["warnings"].append("Short failed QC and will not upload")
