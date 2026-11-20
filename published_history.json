@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-19T15:57:25.643595+00:00",
-  "last_upload_epoch": 1795103845,
+  "updated_at": "2026-11-20T00:57:34.208088+00:00",
+  "last_upload_epoch": 1795136254,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9194,6 +9194,12 @@
       "title": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
       "topic": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
       "published_at": "2026-11-19T15:57:25.643595+00:00"
+    },
+    {
+      "video_id": "pfIouMB4ZKA",
+      "title": "Myanmar committed genocide against Rohingya minority, top UN court rules",
+      "topic": "Myanmar committed genocide against Rohingya minority, top UN court rules",
+      "published_at": "2026-11-20T00:57:34.208088+00:00"
     }
   ]
 }

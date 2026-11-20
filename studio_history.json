@@ -27,6 +27,13 @@
       "title": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
       "style": "think_school",
       "utc": "2026-11-19T15:57:25.643001+00:00"
+    },
+    {
+      "topic": "Myanmar committed genocide against Rohingya minority, top UN court rules",
+      "long_id": "pfIouMB4ZKA",
+      "title": "Myanmar committed genocide against Rohingya minority, top UN court rules",
+      "style": "think_school",
+      "utc": "2026-11-20T00:57:34.207547+00:00"
     }
   ],
   "uploads": {
@@ -77,6 +84,18 @@
       "video_id": "TzMjVuwY_H0",
       "title": "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast #Shorts",
       "uploaded_utc": "2026-11-19T15:57:27.525771+00:00"
+    },
+    "6c52701139517d5483ee-long": {
+      "status": "uploaded",
+      "video_id": "pfIouMB4ZKA",
+      "title": "Myanmar committed genocide against Rohingya minority, top UN court rules",
+      "uploaded_utc": "2026-11-20T00:57:27.675038+00:00"
+    },
+    "6c52701139517d5483ee-short": {
+      "status": "uploaded",
+      "video_id": "nIP7LzY4eCM",
+      "title": "Myanmar committed genocide against Rohingya minority, top UN court rules #Shorts",
+      "uploaded_utc": "2026-11-20T00:57:35.454021+00:00"
     }
   },
   "legacy_titles": [
@@ -127,6 +146,7 @@
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
     "Putin's Crimean Bridge partly collapses as Zelensky hails 'unprecedented' attack by Ukrain",
     "Palestinians flee refugee camp as Israel begins operation in central Gaza",
-    "Myanmar faces historic genocide verdict at UN court over Rohingya massacres"
+    "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
+    "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast"
   ]
 }
