@@ -148,14 +148,14 @@ class Canvas:
         kind = self.beat["visual"]["kind"]
         media = kind in {"photo", "footage"} and (self.beat.get("asset") or self.still is not None)
         if media:
-            # Sleek top & bottom cinema gradient leaving 78% of the middle crystal-clear
-            top_h = int(h * 0.24)
-            bot_y = int(h * 0.74)
+            # 100% Full-Screen Cinema Footage/Photo: only a light bottom gradient for crisp captions!
+            top_h = int(h * 0.12)
+            bot_y = int(h * 0.76)
             for y in range(top_h):
-                alpha = int(205 * max(0.0, 1.0 - y / top_h) ** 1.35)
+                alpha = int(125 * max(0.0, 1.0 - y / top_h) ** 1.5)
                 d.line((0, y, w, y), fill=(*self.ink, alpha))
             for y in range(bot_y, h):
-                alpha = int(225 * ((y - bot_y) / max(1, h - bot_y)) ** 1.2)
+                alpha = int(205 * ((y - bot_y) / max(1, h - bot_y)) ** 1.3)
                 d.line((0, y, w, y), fill=(*self.ink, alpha))
         else:
             # Clean top header bar for graphic beats
@@ -183,11 +183,12 @@ class Canvas:
             1,
         )
 
-        # Concise headline (smaller and cleaner on media beats so the photo shines)
-        hl_size = (46 if media else 54) * s if not self.portrait else 44 * s
-        hl_y = int(h * 0.095)
-        hl_h = int(h * (0.12 if media else 0.145))
-        text_block(layer, self.beat["visual"]["headline"], (p, hl_y, w - p * 2, hl_h), hl_size, WHITE, True, 2)
+        # Only draw top headline on graphic beats; on full-screen footage/photo beats keep the picture 100% unobstructed!
+        if not media:
+            hl_size = 54 * s if not self.portrait else 44 * s
+            hl_y = int(h * 0.095)
+            hl_h = int(h * 0.145)
+            text_block(layer, self.beat["visual"]["headline"], (p, hl_y, w - p * 2, hl_h), hl_size, WHITE, True, 2)
 
         # Bottom attribution & source bar
         source_ids = []
@@ -224,7 +225,7 @@ class Canvas:
     def _render_full_bleed_still(self, img_src, t, duration):
         w, h, s, p = self.w, self.h, self.s, self.pad
         prog = min(1.0, max(0.0, t / max(0.1, duration)))
-        z = 1.02 + 0.055 * ease(prog)
+        z = 1.04 + 0.085 * ease(prog)
         # Full-bleed cover crop with subtle pan so there are zero ugly black sidebars
         fitted = ImageOps.fit(img_src, (int(w * z), int(h * z)), method=Image.Resampling.BICUBIC, centering=(0.5, 0.45))
         pan_x = int((fitted.width - w) * (0.35 + 0.3 * prog))
@@ -673,10 +674,11 @@ def caption_frame(im, cues, t, portrait=False):
     lines = wrap(d, cue["text"], f, w * 0.80)
     bh = len(lines) * 42 * s + 24 * s
     y = h * 0.875 - bh
-    d.rounded_rectangle((w * 0.08, y, w * 0.92, y + bh), radius=int(10 * s), fill=(6, 12, 20, 218), outline=(255, 255, 255, 45), width=1)
+    d.rounded_rectangle((w * 0.10, y, w * 0.90, y + bh), radius=int(10 * s), fill=(6, 10, 18, 210), outline=(250, 204, 21, 90), width=max(1, int(2 * s)))
     for line in lines:
         tw = d.textlength(line, font=f)
-        d.text(((w - tw) / 2, y + 10 * s), line, font=f, fill=WHITE)
+        d.text(((w - tw) / 2 + 2, y + 12 * s), line, font=f, fill=(0, 0, 0, 220))
+        d.text(((w - tw) / 2, y + 10 * s), line, font=f, fill=(254, 240, 138))
         y += 42 * s
     return Image.alpha_composite(im.convert("RGBA"), layer).convert("RGB")
 

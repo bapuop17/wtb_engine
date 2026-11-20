@@ -4,6 +4,7 @@ numpy>=2,<3
 feedparser>=6,<7
 trafilatura>=2,<3
 ddgs>=9,<10
+yt-dlp>=2025.1.15
 edge-tts>=7.2,<8
 imageio-ffmpeg>=0.6,<0.7
 google-api-python-client>=2.170,<3

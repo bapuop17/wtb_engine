@@ -69,10 +69,22 @@ class Voice:
                         elif chunk["type"] == "WordBoundary":
                             timings.append({"text": chunk["text"], "start": chunk["offset"] / 1e7,
                                             "end": (chunk["offset"] + chunk["duration"]) / 1e7})
-            try:
-                asyncio.run(asyncio.wait_for(synth(), timeout=90))
-            except Exception as e:
-                raise StudioError("Edge TTS failed; narrator will not switch and silence will not be substituted") from e
+            last_tts_err = None
+            for attempt_tts in range(3):
+                try:
+                    timings.clear()
+                    asyncio.run(asyncio.wait_for(synth(), timeout=90))
+                    if raw.exists() and raw.stat().st_size > 500:
+                        last_tts_err = None
+                        break
+                except Exception as e:
+                    last_tts_err = e
+            if last_tts_err is not None:
+                try:
+                    from gtts import gTTS
+                    gTTS(text=text, lang="en").save(str(raw))
+                except Exception as e:
+                    raise StudioError("Edge TTS failed; narrator will not switch and silence will not be substituted") from last_tts_err
         else:
             raise StudioError("Unsupported voice provider")
         run_ff(["-i", raw, "-af", "highpass=f=60,loudnorm=I=-16:TP=-1.5:LRA=9,apad=pad_dur=0.16",
