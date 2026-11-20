@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-20T00:57:34.208088+00:00",
-  "last_upload_epoch": 1795136254,
+  "updated_at": "2026-11-20T04:12:45.375200+00:00",
+  "last_upload_epoch": 1795147965,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9200,6 +9200,12 @@
       "title": "Myanmar committed genocide against Rohingya minority, top UN court rules",
       "topic": "Myanmar committed genocide against Rohingya minority, top UN court rules",
       "published_at": "2026-11-20T00:57:34.208088+00:00"
+    },
+    {
+      "video_id": "tVvAv-j7SDA",
+      "title": "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe",
+      "topic": "Inside the old gas pipeline where Ukraine is fighting an underground war with Russia",
+      "published_at": "2026-11-20T04:12:45.375200+00:00"
     }
   ]
 }

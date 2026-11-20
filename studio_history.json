@@ -34,6 +34,13 @@
       "title": "Myanmar committed genocide against Rohingya minority, top UN court rules",
       "style": "think_school",
       "utc": "2026-11-20T00:57:34.207547+00:00"
+    },
+    {
+      "topic": "Inside the old gas pipeline where Ukraine is fighting an underground war with Russia",
+      "long_id": "tVvAv-j7SDA",
+      "title": "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe",
+      "style": "think_school",
+      "utc": "2026-11-20T04:12:45.374678+00:00"
     }
   ],
   "uploads": {
@@ -96,6 +103,18 @@
       "video_id": "nIP7LzY4eCM",
       "title": "Myanmar committed genocide against Rohingya minority, top UN court rules #Shorts",
       "uploaded_utc": "2026-11-20T00:57:35.454021+00:00"
+    },
+    "8b90b1e1f20c36a732ad-long": {
+      "status": "uploaded",
+      "video_id": "tVvAv-j7SDA",
+      "title": "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe",
+      "uploaded_utc": "2026-11-20T04:12:43.239319+00:00"
+    },
+    "8b90b1e1f20c36a732ad-short": {
+      "status": "uploaded",
+      "video_id": "HUeiuZtSTIg",
+      "title": "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe #Shorts",
+      "uploaded_utc": "2026-11-20T04:12:46.899920+00:00"
     }
   },
   "legacy_titles": [
@@ -147,6 +166,7 @@
     "Putin's Crimean Bridge partly collapses as Zelensky hails 'unprecedented' attack by Ukrain",
     "Palestinians flee refugee camp as Israel begins operation in central Gaza",
     "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
-    "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast"
+    "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
+    "Myanmar committed genocide against Rohingya minority, top UN court rules"
   ]
 }
