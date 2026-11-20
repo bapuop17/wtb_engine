@@ -161,6 +161,29 @@ def _install_v95_research_shield():
         pipeline.collect_sources = shielded_collect
         research.research = shielded_research
         pipeline.research = shielded_research
+
+        from studio import publish
+        orig_credits = publish.credits_page
+
+        def shielded_credits_page(plan, dossier, assets, slug, video_id=None, music_credit=""):
+            safe_assets = []
+            for idx_a, a in enumerate(assets or []):
+                if isinstance(a, dict):
+                    item = dict(a)
+                    item.setdefault("url", f"https://bapuop17.github.io/wtb_engine/#asset-{idx_a}")
+                    item.setdefault("page_url", item["url"])
+                    item.setdefault("caption", "Broadcast visual")
+                    item.setdefault("creator", "World Talk Brief Studio")
+                    item.setdefault("license", "Editorial")
+                    item.setdefault("license_url", item["page_url"])
+                    item.setdefault("changes", "1080p broadcast formatting")
+                    item.setdefault("label", "CONTEXT")
+                    safe_assets.append(item)
+            return orig_credits(plan, dossier, safe_assets, slug, video_id=video_id, music_credit=music_credit)
+
+        publish.credits_page = shielded_credits_page
+        pipeline.credits_page = shielded_credits_page
+
     except Exception as exc:
         print(f"Shield note: {exc}", flush=True)
 
