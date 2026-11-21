@@ -2,23 +2,65 @@ import asyncio
 import base64
 import os
 import wave
+from pathlib import Path
 import numpy as np
 from .common import StudioError, digest, load_json, request, run_ff, save_json
 
 
+def _kokoro_available():
+    """Returns (model_path, voices_path) if Kokoro-82M ONNX weights & package are installed locally."""
+    try:
+        import kokoro_onnx  # noqa: F401
+        import soundfile  # noqa: F401
+    except Exception:
+        return None
+    candidates = [
+        Path(os.getenv("WTB_KOKORO_DIR", "cache/kokoro")),
+        Path("cache/kokoro"),
+        Path.home() / ".cache" / "kokoro",
+    ]
+    for d in candidates:
+        m = d / "kokoro-v1.0.onnx"
+        v = d / "voices-v1.0.bin"
+        if m.exists() and v.exists() and m.stat().st_size > 1_000_000:
+            return (m, v)
+    return None
+
+
 class Voice:
+    _kokoro_engine = None
+
     def __init__(self, cfg, directory):
         self.cfg, self.dir = cfg, directory
         directory.mkdir(parents=True, exist_ok=True)
         self.provider = cfg["voice_provider"]
         if self.provider == "auto":
-            self.provider = ("elevenlabs" if os.getenv("ELEVENLABS_API_KEY") and os.getenv("ELEVENLABS_VOICE_ID")
-                             else "deepgram" if os.getenv("DEEPGRAM_API_KEY") else "edge")
-        self.voice = cfg.get("voice") or {"elevenlabs": os.getenv("ELEVENLABS_VOICE_ID", ""),
-            "deepgram": "aura-2-odysseus-en", "edge": "en-US-AndrewNeural"}.get(self.provider, "")
+            if os.getenv("ELEVENLABS_API_KEY") and os.getenv("ELEVENLABS_VOICE_ID"):
+                self.provider = "elevenlabs"
+            elif os.getenv("DEEPGRAM_API_KEY"):
+                self.provider = "deepgram"
+            elif _kokoro_available() is not None:
+                self.provider = "kokoro"
+            else:
+                self.provider = "edge"
+        self.voice = cfg.get("voice") or {
+            "elevenlabs": os.getenv("ELEVENLABS_VOICE_ID", ""),
+            "deepgram": "aura-2-odysseus-en",
+            "kokoro": os.getenv("WTB_KOKORO_VOICE", "am_michael"),
+            "edge": "en-US-AndrewNeural",
+        }.get(self.provider, "")
         if not self.voice:
             raise StudioError("Invalid voice provider/voice configuration")
         self.characters = 0
+
+    def _get_kokoro(self):
+        if Voice._kokoro_engine is None:
+            paths = _kokoro_available()
+            if not paths:
+                raise StudioError("Kokoro-82M ONNX weights not found in cache/kokoro/")
+            from kokoro_onnx import Kokoro
+            Voice._kokoro_engine = Kokoro(str(paths[0]), str(paths[1]))
+        return Voice._kokoro_engine
 
     def synthesize(self, text):
         self.characters += len(text)
@@ -59,6 +101,14 @@ class Voice:
                 params={"model": self.voice, "encoding": "mp3"},
                 headers={"Authorization": "Token " + os.environ["DEEPGRAM_API_KEY"]}, json={"text": text})
             raw.write_bytes(r.content)
+        elif self.provider == "kokoro":
+            import soundfile as sf
+            kokoro = self._get_kokoro()
+            voice_id = self.voice if self.voice in {"am_michael", "am_adam", "am_fenrir", "bm_george", "bm_lewis", "af_heart", "af_bella", "bf_emma"} else "am_michael"
+            lang = "en-gb" if voice_id.startswith("b") else "en-us"
+            samples, sr = kokoro.create(text, voice=voice_id, speed=1.02, lang=lang)
+            raw = self.dir / (key + "_raw.wav")
+            sf.write(str(raw), samples, sr)
         elif self.provider == "edge":
             async def synth():
                 import edge_tts
@@ -83,7 +133,7 @@ class Voice:
                 try:
                     from gtts import gTTS
                     gTTS(text=text, lang="en").save(str(raw))
-                except Exception as e:
+                except Exception:
                     raise StudioError("Edge TTS failed; narrator will not switch and silence will not be substituted") from last_tts_err
         else:
             raise StudioError("Unsupported voice provider")

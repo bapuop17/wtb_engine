@@ -1,0 +1,15 @@
+{
+  "name": "wtb-remotion-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "World Talk Brief V98 React/Remotion Programmatic Documentary Video Engine",
+  "scripts": {
+    "render": "remotion render src/index.ts WTBDocumentary ../output/remotion_documentary.mp4 --props=../output/latest_storyboard.json"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.240",
+    "@remotion/cli": "^4.0.240"
+  }
+}

@@ -32,10 +32,10 @@ def credits_page(plan,dossier,assets,slug,video_id=None,music_credit=""):
     path=ROOT/"docs"/"articles"/(slug+".html")
     e=html.escape
     sources="".join(f'<li><a href="{e(s["url"],quote=True)}">{e(s["title"])}</a> — {e(s["published"])}</li>' for s in dossier["sources"])
-    unique={a["url"]:a for a in assets}
-    credits="".join(f'<li><a href="{e(a["page_url"],quote=True)}">{e(a["caption"][:180])}</a><br>'
-        f'{e(a["creator"])} · <a href="{e(a["license_url"],quote=True)}">{e(a["license"])}</a>'
-        f'<br>Changes: {e(a["changes"])}. Context label: {e(a["label"])}.</li>' for a in unique.values())
+    unique={a.get("url", f"asset-{i}"):a for i,a in enumerate(assets)}
+    credits="".join(f'<li><a href="{e(str(a.get("page_url", a.get("url", ""))),quote=True)}">{e(str(a.get("caption","Context visual"))[:180])}</a><br>'
+        f'{e(str(a.get("creator","World Talk Brief")))} · <a href="{e(str(a.get("license_url","")),quote=True)}">{e(str(a.get("license","Editorial")))}</a>'
+        f'<br>Changes: {e(str(a.get("changes","1080p broadcast formatting")))}. Context label: {e(str(a.get("label","CONTEXT")))}.</li>' for a in unique.values())
     paragraphs="".join(f'<p>{e(b["narration"])}</p>' for b in plan["beats"])
     video=f'<p><a href="https://youtu.be/{e(video_id,quote=True)}">Watch on YouTube</a></p>' if video_id else "<p>Production credits; video publication pending.</p>"
     page=f'''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">

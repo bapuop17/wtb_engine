@@ -10,6 +10,12 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 from .common import StudioError, ffmpeg, run_ff
 from .voice import captions
 from .world_atlas import load_world_polygons, lookup_gazetteer
+from .v98_cinema_fx import (
+    anamorphic_light_leak_transition,
+    apply_cinema_film_finish,
+    directional_whip_pan,
+    spring_ease,
+)
 
 INK = (12, 19, 30)
 PANEL = (23, 34, 49)
@@ -254,12 +260,9 @@ class Canvas:
         pan_x = max(0, min(fitted.width - w, int((fitted.width - w) * px_r)))
         pan_y = max(0, min(fitted.height - h, int((fitted.height - h) * py_r)))
         shot = fitted.crop((pan_x, pan_y, pan_x + w, pan_y + h))
-        # V94 Cinematic Color Grade: crisp film contrast + subtle teal/amber editorial balance
-        arr = np.asarray(shot, dtype=np.float32)
-        arr = (arr - 128.0) * 1.08 + 128.0
-        arr[..., 0] = np.clip(arr[..., 0] * 1.02, 0, 255)
-        arr[..., 2] = np.clip(arr[..., 2] * 1.03, 0, 255)
-        return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), mode="RGB")
+        # V98 Cinema Film Finish: S-curve contrast + teal/amber grade + radial vignette + 35mm grain
+        seed = int(self.beat_num * 1000 + shot_idx * 100 + local_t * 24)
+        return apply_cinema_film_finish(shot, frame_seed=seed, grain_amount=3.8, vignette_strength=0.28)
 
     def _render_full_bleed_still(self, img_src, t, duration):
         w, h, s, p = self.w, self.h, self.s, self.pad
@@ -270,25 +273,14 @@ class Canvas:
         local_t = t - shot_idx * shot_dur
         cropped = self._camera_shot(stills[shot_idx], local_t, shot_dur, shot_idx)
 
-        # Crisp 0.28s Documentary Transition between sub-shots (Whip-Pan Blur or Optical Light-Leak Flash)
-        if shot_idx > 0 and local_t < 0.28:
+        # V98 After-Effects-Grade 0.30s Transition: OpenCV 1D Motion-Blur Whip-Pan or Anamorphic Light-Leak
+        if shot_idx > 0 and local_t < 0.30:
             prev_im = self._camera_shot(stills[shot_idx - 1], shot_dur, shot_dur, shot_idx - 1)
-            alpha = ease(local_t / 0.28)
+            alpha = local_t / 0.30
             if shot_idx % 2 == 1:
-                # Whip-Pan Slide Transition
-                shift = int(w * (1.0 - alpha))
-                comp = Image.new("RGB", (w, h), self.ink)
-                comp.paste(prev_im, (shift - w, 0))
-                comp.paste(cropped, (shift, 0))
-                cropped = comp.filter(ImageFilter.GaussianBlur(radius=max(0.5, (1.0 - abs(alpha - 0.5) * 2) * 5.0)))
+                cropped = directional_whip_pan(prev_im, cropped, alpha)
             else:
-                # Optical Zoom-Flash Blend
-                blended = Image.blend(prev_im, cropped, alpha)
-                flash = int(90 * (1.0 - abs(alpha - 0.5) * 2))
-                if flash > 5:
-                    fl_layer = Image.new("RGBA", (w, h), (255, 240, 200, flash))
-                    blended = Image.alpha_composite(blended.convert("RGBA"), fl_layer).convert("RGB")
-                cropped = blended
+                cropped = anamorphic_light_leak_transition(prev_im, cropped, alpha)
 
         # Kinetic 3-Word Impact Callout Pop-Up (Think School / Nitish Rajput style) during first 3.5s
         data = self.beat["visual"].get("data", {})
@@ -297,7 +289,7 @@ class Canvas:
             hl_words = [w_s for w_s in str(self.beat["visual"].get("headline", "")).split() if len(w_s) > 2][:4]
             callout = " ".join(hl_words) if hl_words else ""
         if callout and t >= 0.35:
-            pop = ease(min(1.0, (t - 0.35) / 0.45))
+            pop = max(0.0, min(1.05, spring_ease(min(1.0, (t - 0.35) / 0.52))))
             layer = cropped.convert("RGBA")
             d = ImageDraw.Draw(layer)
             cw, ch = int(w * (0.62 if self.portrait else 0.34)), int(78 * s)
@@ -942,25 +934,56 @@ def concatenate(paths, output, music=None):
 
 
 def make_thumbnail(plan, dossier, path):
+    """V96 High-CTR YouTube Thumbnail: Full-bleed high-contrast visual + bold 3-word yellow/white focal text, zero clutter."""
     style_key = plan.get("style") or dossier.get("style") or "think_school"
     theme = STYLE_THEMES.get(style_key, STYLE_THEMES["think_school"])
-    beat = next((b for b in plan["beats"] if b.get("asset", {}).get("kind") == "photo"), plan["beats"][0])
+    beat = next((b for b in plan["beats"] if b.get("asset", {}).get("kind") == "photo" and Path(b["asset"]["path"]).exists()), plan["beats"][0])
+    try:
+        from .html_gfx import render_v97_high_ctr_thumbnail
+        bg_p = beat["asset"]["path"] if beat.get("asset", {}).get("kind") == "photo" else ""
+        acc_hex = "#%02x%02x%02x" % theme["accent"]
+        html_im = render_v97_high_ctr_thumbnail(plan.get("thumbnail_text", "WORLD BRIEF"), bg_p, accent_hex=acc_hex, badge_text=theme["badge"])
+        if html_im is not None:
+            html_im.save(path, quality=95, optimize=True)
+            return
+    except Exception:
+        pass
     im = Image.new("RGB", (1280, 720), theme["ink"])
     if beat.get("asset", {}).get("kind") == "photo" and Path(beat["asset"]["path"]).exists():
         photo = Image.open(beat["asset"]["path"]).convert("RGB")
-        im.paste(ImageOps.fit(photo, (760, 720)), (520, 0))
+        # Boost contrast slightly for mobile thumbnail pop
+        arr = np.asarray(ImageOps.fit(photo, (1280, 720), method=Image.Resampling.BICUBIC), dtype=np.float32)
+        arr = np.clip((arr - 128.0) * 1.15 + 128.0, 0, 255).astype(np.uint8)
+        im = Image.fromarray(arr, mode="RGB")
     else:
         c = Canvas(beat, dossier, 1280, 720)
         im = c.frame(2, 5)
+
+    # Strong left-to-right cinematic vignette so bold 3-word hook pops on mobile screens
     overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(overlay)
-    for x in range(1280):
-        alpha = int(252 * max(0.0, 1.0 - max(0, x - 440) / 680))
-        d.line((x, 0, x, 720), fill=(*theme["ink"], alpha))
+    for x in range(900):
+        alpha = int(242 * max(0.0, 1.0 - x / 900.0) ** 1.15)
+        d.line((x, 0, x, 720), fill=(8, 12, 22, alpha))
     im = Image.alpha_composite(im.convert("RGBA"), overlay)
     d = ImageDraw.Draw(im)
-    d.rounded_rectangle((65, 52, 420, 92), radius=8, fill=theme["accent"])
-    text_block(im, theme["badge"], (80, 60, 330, 32), 20, WHITE, True, 1)
-    text_block(im, plan["thumbnail_text"].upper(), (65, 155, 760, 420), 94, WHITE, True, 4)
-    d.rectangle((65, 635, 320, 647), fill=theme["secondary"])
-    im.convert("RGB").save(path, quality=94, optimize=True)
+
+    # High-CTR accent bar on left edge
+    d.rectangle((0, 0, 18, 720), fill=theme["accent"])
+
+    # Giant 2-to-4 word hook (top line bright yellow, remaining lines stark white with heavy drop shadow)
+    hook_words = str(plan.get("thumbnail_text") or "BREAKING SHIFT").upper().split()[:4]
+    line1 = " ".join(hook_words[:2])
+    line2 = " ".join(hook_words[2:]) if len(hook_words) > 2 else ""
+
+    f_big = font(118, True)
+    y_txt = 190 if line2 else 260
+    for ox, oy in [(-4, -4), (4, -4), (-4, 4), (4, 4), (0, 8)]:
+        d.text((62 + ox, y_txt + oy), line1, font=f_big, fill=(0, 0, 0, 240))
+    d.text((62, y_txt), line1, font=f_big, fill=(250, 204, 21, 255))
+    if line2:
+        for ox, oy in [(-4, -4), (4, -4), (-4, 4), (4, 4), (0, 8)]:
+            d.text((62 + ox, y_txt + 135 + oy), line2, font=f_big, fill=(0, 0, 0, 240))
+        d.text((62, y_txt + 135), line2, font=f_big, fill=(255, 255, 255, 255))
+
+    im.convert("RGB").save(path, quality=95, optimize=True)
