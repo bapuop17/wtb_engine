@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-20T04:12:45.375200+00:00",
-  "last_upload_epoch": 1795147965,
+  "updated_at": "2026-11-21T00:20:11.406067+00:00",
+  "last_upload_epoch": 1795220411,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9206,6 +9206,12 @@
       "title": "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe",
       "topic": "Inside the old gas pipeline where Ukraine is fighting an underground war with Russia",
       "published_at": "2026-11-20T04:12:45.375200+00:00"
+    },
+    {
+      "video_id": "3mHlxlY_4NQ",
+      "title": "South Africa's Silent Crisis: 600 Women Lost in Three Months?",
+      "topic": "Nearly 600 women killed in South Africa within three months",
+      "published_at": "2026-11-21T00:20:11.406067+00:00"
     }
   ]
 }

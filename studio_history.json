@@ -41,6 +41,13 @@
       "title": "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe",
       "style": "think_school",
       "utc": "2026-11-20T04:12:45.374678+00:00"
+    },
+    {
+      "topic": "Nearly 600 women killed in South Africa within three months",
+      "long_id": "3mHlxlY_4NQ",
+      "title": "South Africa's Silent Crisis: 600 Women Lost in Three Months?",
+      "style": "think_school",
+      "utc": "2026-11-21T00:20:11.405545+00:00"
     }
   ],
   "uploads": {
@@ -115,6 +122,18 @@
       "video_id": "HUeiuZtSTIg",
       "title": "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe #Shorts",
       "uploaded_utc": "2026-11-20T04:12:46.899920+00:00"
+    },
+    "16ece59c8f00f8fe50d6-long": {
+      "status": "uploaded",
+      "video_id": "3mHlxlY_4NQ",
+      "title": "South Africa's Silent Crisis: 600 Women Lost in Three Months?",
+      "uploaded_utc": "2026-11-21T00:20:08.228293+00:00"
+    },
+    "16ece59c8f00f8fe50d6-short": {
+      "status": "uploaded",
+      "video_id": "HV5RZgQV_VM",
+      "title": "South Africa's Silent Crisis: 600 Women Lost in Three Months? #Shorts",
+      "uploaded_utc": "2026-11-21T00:20:13.241809+00:00"
     }
   },
   "legacy_titles": [
@@ -167,6 +186,7 @@
     "Palestinians flee refugee camp as Israel begins operation in central Gaza",
     "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
     "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
-    "Myanmar committed genocide against Rohingya minority, top UN court rules"
+    "Myanmar committed genocide against Rohingya minority, top UN court rules",
+    "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe"
   ]
 }
