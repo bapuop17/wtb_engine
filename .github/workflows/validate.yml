@@ -1,0 +1,23 @@
+name: WTB Studio - Code Checks
+on:
+  push:
+    paths: ['studio/**', 'tests/**', 'wtb_engine.py', 'requirements.txt', '.github/workflows/**', 'studio_config.json']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
+      - run: python -m compileall -q studio wtb_engine.py
+      - run: python -m unittest discover -s tests -v
+      - run: python -m unittest discover -s tests -p integration_render.py -v
