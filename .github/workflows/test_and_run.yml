@@ -1,4 +1,4 @@
-name: WTB Studio V91 - 4-Format Global News & Documentary Production
+name: WTB Studio V98 (Kokoro-82M Human Voice + Remotion React Engine + OpenCV Cinema FX) - Global News & Documentary Automation
 
 on:
   workflow_dispatch:
@@ -13,6 +13,11 @@ on:
         type: choice
         options: [auto, bbc_dispatch, think_school, nitish_rajput, abhi_niyu]
         default: auto
+      renderer:
+        description: 'Video renderer engine (python_v98 = OpenCV Cinema FX + 208-Country Atlas; remotion_react = React/Remotion studio)'
+        type: choice
+        options: [python_v98, remotion_react]
+        default: python_v98
       topic:
         description: 'Optional custom topic; leave blank for automatic global news discovery'
         type: string
@@ -31,7 +36,7 @@ concurrency:
 jobs:
   documentary:
     runs-on: ubuntu-24.04
-    timeout-minutes: 360
+    timeout-minutes: 170
     env:
       PYTHONUNBUFFERED: '1'
     steps:
@@ -45,23 +50,50 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Unpack V91 4-Format Studio Modules from wtb_engine.py
+      - name: Set up Node.js 20 (for optional Remotion React Studio)
+        if: ${{ inputs.renderer == 'remotion_react' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Unpack V98 Studio Modules from wtb_engine.py
         run: |
           python3 wtb_engine.py --bootstrap
 
-      - name: Install Renderer, Fonts & Studio Dependencies
+      - name: Cache Kokoro-82M Open-Source Human Voice Weights
+        uses: actions/cache@v4
+        with:
+          path: cache/kokoro
+          key: kokoro-82m-v1.0-onnx
+
+      - name: Install Renderer, Fonts, OpenCV Cinema FX & Kokoro-82M Human Voice
         run: |
           sudo apt-get update -qq || true
-          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-inter libcairo2-dev pkg-config || true
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-inter libcairo2-dev pkg-config espeak-ng libsndfile1 || true
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
+          python3 -m pip install -U yt-dlp
+          python3 -m pip install kokoro-onnx || true
+          mkdir -p cache/kokoro
+          if [ ! -f cache/kokoro/kokoro-v1.0.onnx ]; then
+            curl -L --fail --retry 3 -o cache/kokoro/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx || true
+          fi
+          if [ ! -f cache/kokoro/voices-v1.0.bin ]; then
+            curl -L --fail --retry 3 -o cache/kokoro/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin || true
+          fi
+
+      - name: Install Remotion React Studio Dependencies (when remotion_react selected)
+        if: ${{ inputs.renderer == 'remotion_react' }}
+        working-directory: remotion_studio
+        run: |
+          npm install --no-audit --no-fund
 
       - name: Run Offline Regression & Render Checks (37 Tests)
         run: |
           python3 -m unittest discover -s tests -v
           python3 -m unittest discover -s tests -p integration_render.py -v
 
-      - name: Build & Publish 4-Format Documentary (1080p Long + Vertical Short)
+      - name: Build & Publish V98 Documentary (1080p Long + Vertical Short)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -70,6 +102,8 @@ jobs:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
           YOUTUBE_TOKEN_JSON_B64_3: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_3 }}
@@ -79,6 +113,8 @@ jobs:
           WTB_LLM_MODEL: ${{ vars.WTB_LLM_MODEL }}
           WTB_VOICE_PROVIDER: ${{ vars.WTB_VOICE_PROVIDER }}
           WTB_VOICE: ${{ vars.WTB_VOICE }}
+          WTB_KOKORO_VOICE: ${{ vars.WTB_KOKORO_VOICE }}
+          WTB_RENDERER: ${{ inputs.renderer }}
           WTB_PRIVACY: ${{ vars.WTB_PRIVACY }}
           WTB_TOPIC: ${{ inputs.topic }}
           WTB_STYLE: ${{ inputs.style }}
@@ -105,7 +141,7 @@ jobs:
           test ! -f published_history.json || git add published_history.json
           test ! -d docs/articles || git add docs/articles/
           if ! git diff --cached --quiet; then
-            git commit -m 'Save WTB Studio V91 receipts and credits [skip ci]' || true
+            git commit -m 'Save WTB Studio V98 (Kokoro-82M + Remotion + OpenCV Cinema FX) receipts and credits [skip ci]' || true
             git pull --rebase -X theirs origin "$GITHUB_REF_NAME" || true
             git push origin "HEAD:$GITHUB_REF_NAME" || true
           fi
@@ -114,7 +150,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: WTB-Studio-V91-${{ github.run_number }}
+          name: WTB-Studio-V98-${{ github.run_number }}
           path: |
             output/**/documentary.mp4
             output/**/short.mp4
