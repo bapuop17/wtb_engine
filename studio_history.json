@@ -48,6 +48,13 @@
       "title": "South Africa's Silent Crisis: 600 Women Lost in Three Months?",
       "style": "think_school",
       "utc": "2026-11-21T00:20:11.405545+00:00"
+    },
+    {
+      "topic": "Russia targets Kyiv crossings days after Ukraine hits Crimean Bridge",
+      "long_id": "19fvUpgg61w",
+      "title": "Bridge War: Kyiv Crossings vs. Crimea",
+      "style": "think_school",
+      "utc": "2026-11-21T04:14:49.014517+00:00"
     }
   ],
   "uploads": {
@@ -134,6 +141,18 @@
       "video_id": "HV5RZgQV_VM",
       "title": "South Africa's Silent Crisis: 600 Women Lost in Three Months? #Shorts",
       "uploaded_utc": "2026-11-21T00:20:13.241809+00:00"
+    },
+    "a27fb198abc1791b8849-long": {
+      "status": "uploaded",
+      "video_id": "19fvUpgg61w",
+      "title": "Bridge War: Kyiv Crossings vs. Crimea",
+      "uploaded_utc": "2026-11-21T04:14:43.805738+00:00"
+    },
+    "a27fb198abc1791b8849-short": {
+      "status": "uploaded",
+      "video_id": "lCpss_YJfro",
+      "title": "Bridge War: Kyiv Crossings vs. Crimea #Shorts",
+      "uploaded_utc": "2026-11-21T04:14:50.941478+00:00"
     }
   },
   "legacy_titles": [
@@ -187,6 +206,7 @@
     "Myanmar faces historic genocide verdict at UN court over Rohingya massacres",
     "Dozens missing after boat carrying 100 migrants sinks off Senegal's coast",
     "Myanmar committed genocide against Rohingya minority, top UN court rules",
-    "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe"
+    "Underground Frontline: Ukraine’s Hidden War in a Soviet Gas Pipe",
+    "South Africa's Silent Crisis: 600 Women Lost in Three Months?"
   ]
 }

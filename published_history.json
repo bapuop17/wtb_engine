@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-21T00:20:11.406067+00:00",
-  "last_upload_epoch": 1795220411,
+  "updated_at": "2026-11-21T04:14:49.015063+00:00",
+  "last_upload_epoch": 1795234489,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9212,6 +9212,12 @@
       "title": "South Africa's Silent Crisis: 600 Women Lost in Three Months?",
       "topic": "Nearly 600 women killed in South Africa within three months",
       "published_at": "2026-11-21T00:20:11.406067+00:00"
+    },
+    {
+      "video_id": "19fvUpgg61w",
+      "title": "Bridge War: Kyiv Crossings vs. Crimea",
+      "topic": "Russia targets Kyiv crossings days after Ukraine hits Crimean Bridge",
+      "published_at": "2026-11-21T04:14:49.015063+00:00"
     }
   ]
 }
