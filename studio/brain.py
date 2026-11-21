@@ -153,10 +153,19 @@ class Brain:
                 raise StudioError("Gemini returned no usable content") from e
             return parse_json(raw)
         if provider == "groq":
-            res = request("POST", "https://api.groq.com/openai/v1/chat/completions",
-                          headers={"Authorization": "Bearer " + key}, retries=1,
-                          json={"model": model, "temperature": 0.35, "max_tokens": 8000, "response_format": {"type": "json_object"},
-                                "messages": [{"role": "system", "content": system}, {"role": "user", "content": payload_text[:36000]}]}).json()
+            body = {"model": model, "temperature": 0.35, "max_tokens": 8000, "response_format": {"type": "json_object"},
+                    "messages": [{"role": "system", "content": system + " Respond ONLY with a valid JSON object."}, {"role": "user", "content": payload_text[:36000]}]}
+            try:
+                res = request("POST", "https://api.groq.com/openai/v1/chat/completions",
+                              headers={"Authorization": "Bearer " + key}, retries=1, json=body).json()
+            except Exception as exc:
+                if "HTTP 400" in str(exc):
+                    body.pop("response_format", None)
+                    body["max_tokens"] = 6000
+                    res = request("POST", "https://api.groq.com/openai/v1/chat/completions",
+                                  headers={"Authorization": "Bearer " + key}, retries=1, json=body).json()
+                else:
+                    raise
             return parse_json(res["choices"][0]["message"]["content"])
         res = request("POST", "https://openrouter.ai/api/v1/chat/completions",
                       headers={"Authorization": "Bearer " + key, "HTTP-Referer": "https://github.com/bapuop17/wtb_engine", "X-Title": "World Talk Brief Studio"},

@@ -42,29 +42,80 @@ def _install_v95_research_shield():
                 sources = common.load_json(cache / "sources.json", []) or []
 
             domains = {s.get("domain") for s in sources if isinstance(s, dict)}
-            try:
-                from ddgs import DDGS
-                for q in (clean_q, f"{clean_q} news report", f"{' '.join(clean_q.split()[:4])} latest"):
-                    if len(domains) >= 4:
-                        break
-                    for r in DDGS(timeout=15).text(q, max_results=12) or []:
-                        href = r.get("href") or ""
-                        dom = urlparse(href).hostname or ""
-                        body = str(r.get("body") or "").strip()
-                        title = str(r.get("title") or topic).strip()
-                        if dom and dom not in domains and len(body.split()) >= 8:
-                            para = f"{title}. {body}"
+            stop_w = {"the", "and", "for", "with", "from", "that", "this", "over", "into", "after", "amid", "says", "said", "will", "have", "been", "were", "about", "their", "what", "when", "where"}
+            topic_kws = [w.lower() for w in re.findall(r"[A-Za-z]{4,}", clean_q) if w.lower() not in stop_w]
+
+            def _is_relevant(txt):
+                if not topic_kws:
+                    return True
+                tl = txt.lower()
+                hits = sum(1 for k in topic_kws if k in tl)
+                return hits >= min(2, len(topic_kws))
+
+            # 1) Google News RSS (fast, zero-key, never returns off-topic spam on GitHub Actions)
+            if len(domains) < 4:
+                try:
+                    import urllib.parse, xml.etree.ElementTree as ET
+                    gurl = "https://news.google.com/rss/search?q=" + urllib.parse.quote(clean_q) + "&hl=en-US&gl=US&ceid=US:en"
+                    resp = common.request("GET", gurl, timeout=15, retries=1)
+                    root = ET.fromstring(resp.text)
+                    for item in root.findall(".//item")[:15]:
+                        it_title = (item.findtext("title") or "").strip()
+                        it_link = (item.findtext("link") or "").strip()
+                        it_src = item.find("source")
+                        it_dom = urlparse(it_src.attrib.get("url", "")).hostname if (it_src is not None and it_src.attrib.get("url")) else ""
+                        if not it_dom:
+                            it_dom = (it_src.text or "").lower().replace(" ", "") + ".news" if it_src is not None else "news.google.com"
+                        desc_raw = re.sub(r"<[^>]+>", " ", item.findtext("description") or "")
+                        desc_clean = " ".join(desc_raw.split())
+                        para = f"{it_title}. {desc_clean}".strip()
+                        if it_dom and it_dom not in domains and len(para.split()) >= 8 and _is_relevant(para):
                             sources.append({
-                                "id": f"S{len(sources) + 1}", "url": href, "title": title,
-                                "published": "recent", "domain": dom,
+                                "id": f"S{len(sources) + 1}", "url": it_link, "title": it_title,
+                                "published": (item.findtext("pubDate") or "recent"), "domain": it_dom,
                                 "retrieved_utc": datetime.now(timezone.utc).isoformat(),
                                 "text": para,
                             })
-                            domains.add(dom)
+                            domains.add(it_dom)
                             if len(domains) >= 5:
                                 break
-            except Exception:
-                pass
+                except Exception:
+                    pass
+
+            # 2) DDGS News first, then DDGS Text, strictly filtered by topic relevance
+            if len(domains) < 4:
+                try:
+                    from ddgs import DDGS
+                    for q in (clean_q, f"{clean_q} news"):
+                        if len(domains) >= 4:
+                            break
+                        candidates = []
+                        try:
+                            candidates.extend(DDGS(timeout=15).news(q, max_results=10) or [])
+                        except Exception:
+                            pass
+                        try:
+                            candidates.extend(DDGS(timeout=15).text(q, max_results=10) or [])
+                        except Exception:
+                            pass
+                        for r in candidates:
+                            href = r.get("url") or r.get("href") or ""
+                            dom = urlparse(href).hostname or ""
+                            body = str(r.get("body") or r.get("excerpt") or "").strip()
+                            title = str(r.get("title") or "").strip()
+                            para = f"{title}. {body}".strip()
+                            if dom and dom not in domains and len(body.split()) >= 8 and _is_relevant(para):
+                                sources.append({
+                                    "id": f"S{len(sources) + 1}", "url": href, "title": title or topic,
+                                    "published": "recent", "domain": dom,
+                                    "retrieved_utc": datetime.now(timezone.utc).isoformat(),
+                                    "text": para,
+                                })
+                                domains.add(dom)
+                                if len(domains) >= 5:
+                                    break
+                except Exception:
+                    pass
 
             # Supplement from cached RSS feed entries if still <3 domains
             for idx_f, (dom, feed_url) in enumerate([

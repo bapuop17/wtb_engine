@@ -467,6 +467,37 @@ def create_plan(dossier, brain, out, requested_style="auto"):
         single_pass_prompt,
         {"topic": dossier["topic"], "facts": facts[:24], "open_questions": dossier.get("open_questions", [])},
     )
+    raw_beats = raw_plan.get("beats") or raw_plan.get("scenes") or raw_plan.get("storyboard") or []
+    if len(raw_beats) < 6:
+        retry_prompt = (
+            "Return ONLY a JSON object with keys title, thumbnail_text, summary, tags, and beats (a list of 14 documentary scenes). "
+            "Each beat in beats MUST have: id (B01..B14), chapter, narration (32-44 words, complete sentences, zero fact IDs), "
+            "fact_ids (list of valid IDs from facts), and visual ({kind: 'footage' or 'photo', headline, query, must_include, data: {}})."
+        )
+        try:
+            raw_plan2 = brain.json(retry_prompt, {"topic": dossier["topic"], "facts": facts[:18]})
+            cand = raw_plan2.get("beats") or raw_plan2.get("scenes") or raw_plan2.get("storyboard") or []
+            if len(cand) >= len(raw_beats):
+                raw_plan, raw_beats = raw_plan2, cand
+        except Exception:
+            pass
+    if len(raw_beats) < 4 and facts:
+        # Deterministic verified fallback beats from dossier facts so a run NEVER crashes on empty LLM beats
+        q_base = " ".join(re.findall(r"[A-Za-z]{4,}", dossier.get("topic", "Global News"))[:4]) or "World News"
+        raw_beats = []
+        for idx_f in range(0, min(len(facts), 18), 2):
+            chunk = facts[idx_f:idx_f + 2]
+            fids = [c["id"] for c in chunk]
+            joined = " ".join(c["claim"].rstrip(".") + "." for c in chunk)
+            if len(joined.split()) < 16:
+                joined = f"{dossier['topic']}. {joined} Analysts are closely watching how this development unfolds next."
+            raw_beats.append({
+                "id": f"B{len(raw_beats) + 1:02d}",
+                "chapter": "KEY DEVELOPMENTS" if idx_f else "THE BIG STORY",
+                "narration": " ".join(joined.split()[:46]),
+                "fact_ids": fids,
+                "visual": {"kind": "footage" if len(raw_beats) % 2 == 0 else "photo", "headline": dossier["topic"][:48], "query": q_base, "must_include": q_base.split()[:2], "data": {}},
+            })
     plan = {
         "style": style_key,
         "title": raw_plan.get("title") or dossier["topic"][:80],
@@ -474,7 +505,7 @@ def create_plan(dossier, brain, out, requested_style="auto"):
         "thumbnail_text": raw_plan.get("thumbnail_text") or " ".join(dossier["topic"].split()[:3]).upper(),
         "summary": raw_plan.get("summary") or f"Deep breakdown of {dossier['topic']}.",
         "tags": raw_plan.get("tags") or ["WorldTalkBrief", "Geopolitics", "Explained"],
-        "beats": raw_plan.get("beats") or [],
+        "beats": raw_beats,
         "short_beat_ids": [],
     }
     min_w = 480
