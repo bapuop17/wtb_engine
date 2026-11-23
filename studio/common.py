@@ -74,7 +74,8 @@ def request(method, url, *, retries=2, **kwargs):
     last = "connection failed"
     for attempt in range(retries + 1):
         try:
-            r = requests.request(method, url, timeout=(12, 90), **kwargs)
+            _to = kwargs.pop("timeout", (12, 90))
+            r = requests.request(method, url, timeout=_to, **kwargs)
             if r.status_code in (408, 429, 500, 502, 503, 504):
                 last = f"HTTP {r.status_code}"
                 r.close()

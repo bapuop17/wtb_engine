@@ -1,5 +1,6 @@
 """4-Format Auto-Director: BBC Dispatch, Think School Case Study, Nitish Rajput Investigation & Abhi-Niyu Impact Explainer."""
 import json
+import os
 import math
 import re
 from .common import StudioError, save_json
