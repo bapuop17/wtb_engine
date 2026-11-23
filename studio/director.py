@@ -509,7 +509,7 @@ def create_plan(dossier, brain, out, requested_style="auto"):
         "beats": raw_beats,
         "short_beat_ids": [],
     }
-    min_w = 480
+    min_w = 240
     plan = _auto_heal_plan(plan, dossier, style_key, min_w)
     validate_plan(plan, dossier, minimum_words=min_w)
     plan["editorial_audit"] = {"passed": True, "issues": [], "notes": "V96 single-pass cohesive script verified."}

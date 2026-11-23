@@ -120,6 +120,11 @@ class Brain:
 
     def _routes(self):
         routes = []
+        if "nvidia" not in self._dead_providers and os.getenv("NVIDIA_API_KEY", "").strip():
+            nk = os.getenv("NVIDIA_API_KEY", "").strip()
+            for nm in ("meta/llama-3.3-70b-instruct", "google/gemma-4-31b-it", "minimaxai/minimax-m2.7", "stepfun/step-3.5-flash"):
+                if ("nvidia", nm) not in self._dead_routes:
+                    routes.append(("nvidia", nm, nk))
         if "groq" not in self._dead_providers and os.getenv("GROQ_API_KEY", "").strip():
             k = os.getenv("GROQ_API_KEY", "").strip()
             for m in self._discover_groq_models(k):
@@ -152,16 +157,36 @@ class Brain:
             except (KeyError, IndexError) as e:
                 raise StudioError("Gemini returned no usable content") from e
             return parse_json(raw)
+        if provider == "nvidia":
+            res = request(
+                "POST",
+                "https://integrate.api.nvidia.com/v1/chat/completions",
+                headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
+                retries=1,
+                timeout=65,
+                json={
+                    "model": model,
+                    "temperature": 0.35,
+                    "max_tokens": 4096,
+                    "messages": [
+                        {"role": "system", "content": system + " Respond ONLY with a valid JSON object."},
+                        {"role": "user", "content": payload_text[:28000]},
+                    ],
+                },
+            ).json()
+            return parse_json(res["choices"][0]["message"]["content"])
         if provider == "groq":
-            body = {"model": model, "temperature": 0.35, "max_tokens": 8000, "response_format": {"type": "json_object"},
-                    "messages": [{"role": "system", "content": system + " Respond ONLY with a valid JSON object."}, {"role": "user", "content": payload_text[:36000]}]}
+            body = {"model": model, "temperature": 0.35, "max_tokens": 4500, "response_format": {"type": "json_object"},
+                    "messages": [{"role": "system", "content": system + " Respond ONLY with a valid JSON object."}, {"role": "user", "content": payload_text[:13500]}]}
             try:
                 res = request("POST", "https://api.groq.com/openai/v1/chat/completions",
                               headers={"Authorization": "Bearer " + key}, retries=1, json=body).json()
             except Exception as exc:
-                if "HTTP 400" in str(exc):
+                es = str(exc)
+                if "HTTP 400" in es or "HTTP 413" in es:
                     body.pop("response_format", None)
-                    body["max_tokens"] = 6000
+                    body["max_tokens"] = 3500
+                    body["messages"][1]["content"] = payload_text[:7500]
                     res = request("POST", "https://api.groq.com/openai/v1/chat/completions",
                                   headers={"Authorization": "Bearer " + key}, retries=1, json=body).json()
                 else:
@@ -172,7 +197,7 @@ class Brain:
                       retries=1,
                       json={"model": model, "temperature": 0.35, "max_tokens": 8000,
                             "messages": [{"role": "system", "content": system + " Respond ONLY with a valid JSON object."},
-                                         {"role": "user", "content": payload_text[:36000]}]}).json()
+                                         {"role": "user", "content": payload_text[:18000]}]}).json()
         return parse_json(res["choices"][0]["message"]["content"])
 
     def _fallback(self, task, data):
