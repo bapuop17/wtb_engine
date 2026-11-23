@@ -1,4 +1,4 @@
-name: WTB Studio V99 (Serper Google Images + AI Vision Match + Face-Focus Zoom + Kokoro-82M) - Global News & Documentary Automation
+name: WTB Studio V101 (Serper Google Images + AI Vision Match + Face-Focus Zoom + Kokoro-82M) - Global News & Documentary Automation
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ on:
         type: string
         default: ''
   schedule:
-    - cron: '0 6,18 * * *'
+    - cron: '0 */2 * * *'
 
 permissions:
   contents: write
@@ -152,7 +152,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: WTB-Logs-V99-${{ github.run_number }}
+          name: WTB-Logs-V101-${{ github.run_number }}
           path: |
             output/**/quality_report.json
             output/**/short_quality_report.json
