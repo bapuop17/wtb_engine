@@ -62,6 +62,13 @@
       "title": "Why the World's Longest Climate Summit Just Failed",
       "style": "abhi_niyu",
       "utc": "2026-11-23T14:43:23.377453+00:00"
+    },
+    {
+      "topic": "Deadly Fire Rips Through Candy Factory in Indonesia",
+      "long_id": "R4hSviBBkeg",
+      "title": "Why 24 Workers Died in This Indonesian Factory",
+      "style": "abhi_niyu",
+      "utc": "2026-11-23T16:13:52.726931+00:00"
     }
   ],
   "uploads": {
@@ -172,6 +179,18 @@
       "video_id": "O1y9QZnZjyI",
       "title": "Why the World's Longest Climate Summit Just Failed #Shorts",
       "uploaded_utc": "2026-11-23T14:43:25.030602+00:00"
+    },
+    "9a07b4b278019993faa1-long": {
+      "status": "uploaded",
+      "video_id": "R4hSviBBkeg",
+      "title": "Why 24 Workers Died in This Indonesian Factory",
+      "uploaded_utc": "2026-11-23T16:13:50.770311+00:00"
+    },
+    "9a07b4b278019993faa1-short": {
+      "status": "uploaded",
+      "video_id": "erN3MTtzc-A",
+      "title": "Why 24 Workers Died in This Indonesian Factory #Shorts",
+      "uploaded_utc": "2026-11-23T16:13:55.495383+00:00"
     }
   },
   "legacy_titles": [
@@ -219,6 +238,7 @@
     "Israel Warns US: Iran Plot to Kill Trump | Geopolitical Case Study",
     "Israel Warns US: Iran Plot to Kill Trump",
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
-    "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained"
+    "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
+    "Why the World's Longest Climate Summit Just Failed"
   ]
 }

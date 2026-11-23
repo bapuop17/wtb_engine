@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-23T14:43:23.378001+00:00",
-  "last_upload_epoch": 1795445003,
+  "updated_at": "2026-11-23T16:13:52.727759+00:00",
+  "last_upload_epoch": 1795450432,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9176,6 +9176,12 @@
       "title": "Why the World's Longest Climate Summit Just Failed",
       "topic": "Longest-ever UN climate talks end with no deal as deep divisions exposed",
       "published_at": "2026-11-23T14:43:23.378001+00:00"
+    },
+    {
+      "video_id": "R4hSviBBkeg",
+      "title": "Why 24 Workers Died in This Indonesian Factory",
+      "topic": "Deadly Fire Rips Through Candy Factory in Indonesia",
+      "published_at": "2026-11-23T16:13:52.727759+00:00"
     }
   ]
 }
