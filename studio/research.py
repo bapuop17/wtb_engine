@@ -4,6 +4,62 @@ from urllib.parse import urlparse
 from .common import ROOT, StudioError, download, digest, save_json
 
 
+
+CATEGORY_FEEDS = {
+    "geopolitics": {
+        "label": "Geopolitics & World Affairs",
+        "voice": "am_michael",
+        "feeds": [
+            "https://feeds.bbci.co.uk/news/world/rss.xml",
+            "https://www.aljazeera.com/xml/rss/all.xml",
+            "https://www.theguardian.com/world/rss",
+        ],
+    },
+    "business_economy": {
+        "label": "Global Business & Economy",
+        "voice": "bm_george",
+        "feeds": [
+            "https://feeds.bbci.co.uk/news/business/rss.xml",
+            "https://www.theguardian.com/uk/business/rss",
+            "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+        ],
+    },
+    "science_climate": {
+        "label": "Science, Space & Energy",
+        "voice": "am_adam",
+        "feeds": [
+            "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+            "https://www.theguardian.com/science/rss",
+            "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml",
+        ],
+    },
+    "tech_ai": {
+        "label": "Technology, AI & Cyber",
+        "voice": "am_fenrir",
+        "feeds": [
+            "https://feeds.bbci.co.uk/news/technology/rss.xml",
+            "https://www.theguardian.com/uk/technology/rss",
+            "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+        ],
+    },
+    "global_society": {
+        "label": "Global Investigations & Society",
+        "voice": "bf_emma",
+        "feeds": [
+            "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+            "https://www.theguardian.com/world/rss",
+            "https://feeds.bbci.co.uk/news/world/rss.xml",
+        ],
+    },
+}
+CATEGORY_ORDER = ["geopolitics", "business_economy", "science_climate", "tech_ai", "global_society"]
+
+
+def pick_rotating_category(history):
+    idx = len(history.get("videos", [])) % len(CATEGORY_ORDER)
+    key = CATEGORY_ORDER[idx]
+    return key, CATEGORY_FEEDS[key]
+
 FEEDS = [
     "https://feeds.bbci.co.uk/news/world/rss.xml",
     "https://feeds.bbci.co.uk/news/business/rss.xml",
@@ -31,7 +87,10 @@ def discover(brain, history, cache):
     all_entries = []
     previous = [x.get("topic", "") for x in history.get("videos", [])][-80:]
     previous += history.get("legacy_titles", [])
-    for i, url in enumerate(FEEDS):
+    cat_key, cat_meta = pick_rotating_category(history)
+    print(f'Category Rotation: {cat_meta["label"]} ({cat_key}) | Voice: {cat_meta["voice"]}', flush=True)
+    active_feeds = list(dict.fromkeys(cat_meta['feeds'] + FEEDS))
+    for i, url in enumerate(active_feeds):
         try:
             path = download(url, cache / f"feed_{i}.xml", 3_000_000)
             for item in feedparser.parse(path.read_bytes()).entries[:20]:

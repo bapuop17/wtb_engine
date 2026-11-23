@@ -224,8 +224,8 @@ def validate_plan(plan, dossier, minimum_words=760):
                 raise StudioError("stat_callout requires 1-4 metrics")
         elif v["kind"] == "evidence" and data.get("fact_id") not in b["fact_ids"]:
             raise StudioError("Evidence graphic references an unrelated fact")
-    if not minimum_words <= total <= 1700:
-        raise StudioError(f"Script has {total} words; required {minimum_words}-1700. No padding permitted.")
+    if not minimum_words <= total <= 2600:
+        raise StudioError(f"Script has {total} words; required {minimum_words}-2600. No padding permitted.")
     short = plan.get("short_beat_ids", [])
     indexes = [i for i, b in enumerate(beats) if b["id"] in short]
     if not short or not indexes or len(set(short)) != len(short) or not set(short) <= ids or indexes != list(range(min(indexes), max(indexes) + 1)):
@@ -431,6 +431,35 @@ def _auto_heal_plan(plan, dossier, style_key, min_words):
         b["visual"] = v
         healed_beats.append(b)
 
+    # V100 Visual Quality Guardrails:
+    # 1) Beat 1 (the 0-10s hook!) MUST ALWAYS be full-bleed photo/footage — NEVER a static beige evidence card or diagram!
+    # 2) At most 1 'evidence' card per entire documentary (never 3 giant beige boxes!).
+    # 3) Never allow generic placeholder diagram labels like 'Initial Catalyst' / 'Immediate Response'.
+    ev_count = 0
+    topic_q = " ".join(re.findall(r"[A-Za-z0-9]{3,}", str(dossier.get("topic", "Global News")))[:5]) or "World News"
+    for idx_b, b in enumerate(healed_beats):
+        v = b.get("visual") or {}
+        k = v.get("kind", "photo")
+        if idx_b == 0 and k not in {"photo", "footage"}:
+            v["kind"] = "photo"
+            v["query"] = topic_q
+            v["must_include"] = topic_q.split()[:2]
+            v["data"] = {}
+        elif k == "evidence":
+            ev_count += 1
+            if ev_count > 1:
+                v["kind"] = "photo"
+                v["query"] = f"{topic_q} {v.get('headline', '')}".strip()[:60]
+                v["data"] = {}
+        elif k == "diagram":
+            steps = (v.get("data") or {}).get("steps") or []
+            joined_s = " ".join(str(x) for x in steps).lower()
+            if not steps or "initial catalyst" in joined_s or "immediate response" in joined_s:
+                v["kind"] = "photo"
+                v["query"] = f"{topic_q} {v.get('headline', '')}".strip()[:60]
+                v["data"] = {}
+        b["visual"] = v
+
     plan["beats"] = healed_beats
     if len(healed_beats) >= 3:
         plan["short_beat_ids"] = [b["id"] for b in healed_beats[:3]]
@@ -499,6 +528,43 @@ def create_plan(dossier, brain, out, requested_style="auto"):
                 "fact_ids": fids,
                 "visual": {"kind": "footage" if len(raw_beats) % 2 == 0 else "photo", "headline": dossier["topic"][:48], "query": q_base, "must_include": q_base.split()[:2], "data": {}},
             })
+    # V101: Seamless Part 2 continuation for full 8-10 minute documentaries (~30-34 beats, ~1,350-1,550 words)
+    if len(raw_beats) >= 12 and (os.getenv("NVIDIA_API_KEY") or os.getenv("GROQ_API_KEY") or os.getenv("GEMINI_API_KEY")):
+        try:
+            last_nar = str(raw_beats[-1].get("narration", ""))[:220]
+            covered_chapters = [str(b.get("chapter", "")) for b in raw_beats]
+            part2_prompt = (
+                f"Write PART 2 (14 to 16 MORE beats, IDs B{len(raw_beats)+1:02d} to B{len(raw_beats)+16:02d}, ~620-750 additional words) "
+                f"continuing this {style_meta['label']} documentary seamlessly from the last beat.\n"
+                "CRITICAL RULES:\n"
+                "1. NEVER re-introduce the topic or repeat Act 1! Continue directly from the last beat.\n"
+                "2. Focus Part 2 on: Deeper global economic/human fallout, hidden winners & losers, historical parallels, what happens next, and a sharp closing verdict.\n"
+                "3. EXACT VISUAL-TO-SCRIPT MATCHING: Every photo/footage beat query MUST be 2-4 concrete words naming the exact person, place, or event + story context.\n"
+                "4. ZERO fact IDs in narration, complete sentences only (34-48 words per beat).\n"
+                "Return JSON object with key: beats (list of beat objects matching the exact same schema)."
+            )
+            p2 = brain.json(
+                part2_prompt,
+                {
+                    "topic": dossier["topic"],
+                    "already_covered_chapters": covered_chapters,
+                    "previous_last_narration": last_nar,
+                    "facts": facts[:28],
+                },
+            )
+            p2_beats = p2.get("beats") or p2.get("scenes") or []
+            if len(p2_beats) >= 6:
+                seen_ids = {b.get("id") for b in raw_beats}
+                for b2 in p2_beats[:16]:
+                    bid = b2.get("id") or f"B{len(raw_beats)+1:02d}"
+                    if bid in seen_ids:
+                        bid = f"B{len(raw_beats)+1:02d}"
+                    b2["id"] = bid
+                    seen_ids.add(bid)
+                    raw_beats.append(b2)
+        except Exception:
+            pass
+
     plan = {
         "style": style_key,
         "title": raw_plan.get("title") or dossier["topic"][:80],

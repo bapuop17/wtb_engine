@@ -12,6 +12,14 @@ from PIL import Image
 from .common import StudioError, digest, download, request, run_ff, save_json
 from .world_atlas import lookup_gazetteer
 
+
+JUNK_MEDIA_TERMS = (
+    "movie", "tv series", "season ", "episode", "poster", "imdb", "themoviedb", "netflix",
+    "starz", "hulu", "trailer", "dvd", "blu-ray", "clipart", "clip art", "cartoon",
+    "infographic", "diagram", "vector", "worksheet", "illustration", "meme", "wallpaper",
+    "stock vector", "icon ", "logo ", "50 cent", "cast ", "actors",
+)
+
 BAD_IMG_DOMAINS = (
     "shutterstock.com", "gettyimages.com", "alamy.com", "istockphoto.com",
     "dreamstime.com", "123rf.com", "depositphotos.com", "vecteezy.com",
@@ -144,7 +152,8 @@ def ddgs_news_photos(query, max_results=12):
             if not img_url.startswith("http"):
                 continue
             dom = (urlparse(img_url).hostname or "").lower()
-            if any(bad in dom for bad in BAD_IMG_DOMAINS):
+            low_meta = (title + " " + img_url + " " + page_url).lower()
+            if any(bad in dom for bad in BAD_IMG_DOMAINS) or any(jt in low_meta for jt in JUNK_MEDIA_TERMS):
                 continue
             if w and h and (w < 380 or h < 300):
                 continue
@@ -178,7 +187,7 @@ def serper_google_images(query, max_results=10):
             "POST",
             "https://google.serper.dev/images",
             headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
-            json={"q": clean_q, "num": max_results},
+            json={"q": f"{clean_q} news photo -poster -movie -tv -clipart -cartoon -infographic -vector -diagram", "num": max_results},
             timeout=15,
             retries=1,
         ).json()
@@ -191,7 +200,8 @@ def serper_google_images(query, max_results=10):
             if not img_url.startswith("http"):
                 continue
             dom = (urlparse(img_url).hostname or "").lower()
-            if any(bad in dom for bad in BAD_IMG_DOMAINS):
+            low_meta = (title + " " + img_url + " " + page_url).lower()
+            if any(bad in dom for bad in BAD_IMG_DOMAINS) or any(jt in low_meta for jt in JUNK_MEDIA_TERMS):
                 continue
             if w and h and (w < 420 or h < 300):
                 continue
@@ -199,6 +209,7 @@ def serper_google_images(query, max_results=10):
                 "provider": "Google Images (Serper)",
                 "kind": "photo",
                 "url": img_url,
+                "fallback_url": item.get("thumbnailUrl") or "",
                 "page_url": page_url,
                 "caption": title,
                 "creator": item.get("source") or urlparse(page_url).hostname or "News Source",
@@ -207,6 +218,87 @@ def serper_google_images(query, max_results=10):
                 "date": "recent",
                 "label": f"GOOGLE NEWS PHOTO • {title.upper()[:26]}",
             })
+    except Exception:
+        pass
+    return results
+
+
+
+
+def serper_google_videos(query, work_dir, max_clips=2):
+    """V101: Searches real Google Videos via Serper.dev (/videos) and extracts clean 10s HD clips via yt-dlp."""
+    yt_dlp_bin = shutil.which("yt-dlp")
+    api_key = os.getenv("SERPER_API_KEY", "").strip() or "247d3b097e204df7bb9da062ad4b2310dfd7d47d"
+    clean_q = re.sub(r"[^\w\s-]", " ", str(query or "")).strip()
+    if not yt_dlp_bin or not api_key or not clean_q:
+        return []
+    results = []
+    try:
+        r = request(
+            "POST",
+            "https://google.serper.dev/videos",
+            headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
+            json={"q": f"{clean_q} news report footage", "num": 8},
+            timeout=15,
+            retries=1,
+        ).json()
+        for item in (r.get("videos") or []):
+            if len(results) >= max_clips:
+                break
+            link = item.get("link") or ""
+            title = str(item.get("title") or clean_q).strip()
+            if not link.startswith("http") or "#shorts" in title.lower():
+                continue
+            if any(jt in title.lower() for jt in JUNK_MEDIA_TERMS):
+                continue
+            vid_key = digest(link)
+            out_raw = Path(work_dir) / f"sv_{vid_key}.mp4"
+            out_clean = Path(work_dir) / f"sv_{vid_key}_clean.mp4"
+            if not out_clean.exists():
+                try:
+                    dl = subprocess.run(
+                        [
+                            yt_dlp_bin, "--no-warnings", "--no-playlist",
+                            "--extractor-args", "youtube:player_client=tv_embedded,mweb,android",
+                            "-f", "bestvideo[height<=1080][height>=360][ext=mp4]/best[height<=1080][ext=mp4]/best",
+                            "--download-sections", "*00:08-00:20",
+                            "--force-keyframes-at-cuts",
+                            "-o", str(out_raw),
+                            link,
+                        ],
+                        capture_output=True, text=True, timeout=40,
+                    )
+                    if dl.returncode != 0 or not out_raw.exists() or out_raw.stat().st_size < 40_000:
+                        out_raw.unlink(missing_ok=True)
+                        continue
+                    run_ff(
+                        [
+                            "-i", str(out_raw), "-an", "-t", "11",
+                            "-vf", "crop=iw:ih*0.84:0:ih*0.04,scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=24",
+                            "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p",
+                            str(out_clean),
+                        ],
+                        timeout=60,
+                    )
+                    out_raw.unlink(missing_ok=True)
+                except Exception:
+                    out_raw.unlink(missing_ok=True)
+                    out_clean.unlink(missing_ok=True)
+                    continue
+            if out_clean.exists() and out_clean.stat().st_size > 40_000:
+                results.append({
+                    "provider": "Google News Video (Serper)",
+                    "kind": "footage",
+                    "url": link,
+                    "page_url": link,
+                    "path": str(out_clean),
+                    "caption": title,
+                    "creator": item.get("channel") or item.get("source") or "News Broadcast",
+                    "license": "Editorial News",
+                    "license_url": link,
+                    "date": item.get("date") or "recent",
+                    "label": "REAL NEWS FOOTAGE",
+                })
     except Exception:
         pass
     return results
@@ -537,9 +629,13 @@ class Media:
         self.dir.mkdir(parents=True, exist_ok=True)
         self.uses, self.hashes, self.ledger, self.cache = {}, {}, [], {}
         self.article_photos = []
+        self.topic_anchor = ""
 
     def preload_article_photos(self, dossier):
         """Scrapes real breaking-news hero photographs directly from the exact articles in dossier['sources']."""
+        stop_w = {"the", "and", "for", "with", "from", "that", "this", "over", "into", "after", "amid", "says", "said", "will", "have", "been", "were", "about", "their", "what", "when", "where", "why", "how", "just", "most", "more"}
+        t_words = [w for w in re.findall(r"[A-Za-z0-9]{3,}", str(dossier.get("topic") or "")) if w.lower() not in stop_w]
+        self.topic_anchor = " ".join(t_words[:4])
         urls = [s.get("url") for s in (dossier.get("sources") or []) if isinstance(s, dict) and s.get("url")]
         try:
             self.article_photos = extract_article_og_images(urls, max_images=8)
@@ -555,7 +651,28 @@ class Media:
                 suffix = ".mp4" if asset["kind"] == "footage" else ".jpg"
                 path = self.dir / (digest(asset["url"]) + suffix)
                 if not path.exists():
-                    download(asset["url"], path)
+                    import requests as _rq
+                    _hdrs = {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+                        "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                        "Referer": asset.get("page_url") or "https://www.google.com/",
+                    }
+                    _ok = False
+                    for _u in [asset["url"], asset.get("fallback_url")]:
+                        if not _u:
+                            continue
+                        try:
+                            _resp = _rq.get(_u, headers=_hdrs, timeout=18, stream=True)
+                            if _resp.status_code == 200:
+                                _data = _resp.content
+                                if len(_data) > 6000:
+                                    path.write_bytes(_data)
+                                    _ok = True
+                                    break
+                        except Exception:
+                            continue
+                    if not _ok:
+                        download(asset["url"], path)
 
             if asset["kind"] == "footage":
                 thumb = path.with_suffix(".jpg")
@@ -565,7 +682,7 @@ class Media:
             else:
                 with Image.open(path) as opened:
                     image = opened.convert("RGB")
-                if image.width < 640 or image.height < 360:
+                if image.width < 400 or image.height < 260:
                     return None
                 image.save(path, quality=94)
 
@@ -594,6 +711,11 @@ class Media:
         v = beat["visual"]
         kind = v["kind"]
         query = str(v.get("query") or v.get("headline") or "").strip()
+        if self.topic_anchor:
+            q_low = query.lower()
+            anchor_hits = sum(1 for w in self.topic_anchor.lower().split() if w in q_low)
+            if anchor_hits == 0 and len(query.split()) <= 3:
+                query = f"{self.topic_anchor} {query}".strip()
         must_inc = v.get("must_include") or []
         results = []
 
@@ -644,13 +766,20 @@ class Media:
         v = beat["visual"]
         kind = v["kind"]
         query = str(v.get("query") or v.get("headline") or "").strip()
+        if self.topic_anchor:
+            q_low = query.lower()
+            anchor_hits = sum(1 for w in self.topic_anchor.lower().split() if w in q_low)
+            if anchor_hits == 0 and len(query.split()) <= 3:
+                query = f"{self.topic_anchor} {query}".strip()
         must_inc = v.get("must_include") or []
         key = (query.lower(), kind)
 
         if key not in self.cache:
             found = []
             if kind == "footage":
-                found.extend(youtube_event_clips(query, self.dir, max_clips=3))
+                found.extend(serper_google_videos(query, self.dir, max_clips=2))
+                if len(found) < 2:
+                    found.extend(youtube_event_clips(query, self.dir, max_clips=2))
                 for prov in (pexels, pixabay, commons):
                     if len(found) >= 5:
                         break
@@ -705,7 +834,7 @@ class Media:
             # V99 Gemini Vision Script-to-Visual Verification (rejects off-topic or watermarked photos when GEMINI_API_KEY is live)
             if (
                 kind == "photo"
-                and os.getenv("GEMINI_API_KEY")
+                and (os.getenv("NVIDIA_API_KEY") or os.getenv("GEMINI_API_KEY"))
                 and self.brain is not None
                 and hasattr(self.brain, "json")
                 and vision_checks < 2

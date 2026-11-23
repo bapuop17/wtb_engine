@@ -7,6 +7,18 @@ import numpy as np
 from .common import StudioError, digest, load_json, request, run_ff, save_json
 
 
+
+def _normalize_tts_text(text):
+    """V100 TTS Normalizer: prevents Kokoro/Edge from misreading acronyms like COP31 as '31 Colombian pesos'."""
+    import re as _re
+    s = str(text or "")
+    s = _re.sub(r"\bCOP\s*(\d+)\b", r"Cop \1", s)
+    s = _re.sub(r"\bG(\d+)\b", r"G \1", s)
+    s = _re.sub(r"\bUN\b", "U.N.", s)
+    s = _re.sub(r"\bEU\b", "E.U.", s)
+    return s
+
+
 def _kokoro_available():
     """Returns (model_path, voices_path) if Kokoro-82M ONNX weights & package are installed locally."""
     try:
@@ -106,13 +118,13 @@ class Voice:
             kokoro = self._get_kokoro()
             voice_id = self.voice if self.voice in {"am_michael", "am_adam", "am_fenrir", "bm_george", "bm_lewis", "af_heart", "af_bella", "bf_emma"} else "am_michael"
             lang = "en-gb" if voice_id.startswith("b") else "en-us"
-            samples, sr = kokoro.create(text, voice=voice_id, speed=1.02, lang=lang)
+            samples, sr = kokoro.create(_normalize_tts_text(text), voice=voice_id, speed=1.02, lang=lang)
             raw = self.dir / (key + "_raw.wav")
             sf.write(str(raw), samples, sr)
         elif self.provider == "edge":
             async def synth():
                 import edge_tts
-                comm = edge_tts.Communicate(text, self.voice, rate="-3%", pitch="+0Hz", boundary="WordBoundary")
+                comm = edge_tts.Communicate(_normalize_tts_text(text), self.voice, rate="-3%", pitch="+0Hz", boundary="WordBoundary")
                 with raw.open("wb") as audio:
                     async for chunk in comm.stream():
                         if chunk["type"] == "audio": audio.write(chunk["data"])

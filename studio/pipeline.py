@@ -59,6 +59,13 @@ def build(args):
         media = Media(cfg, brain, cache / "media")
         if hasattr(media, 'preload_article_photos'):
             media.preload_article_photos(dossier)
+        try:
+            from .research import pick_rotating_category
+            _, _cat_meta = pick_rotating_category(history)
+            if not os.getenv("WTB_KOKORO_VOICE"):
+                os.environ["WTB_KOKORO_VOICE"] = _cat_meta["voice"]
+        except Exception:
+            pass
         voice = Voice(cfg, cache / "voice")
         audio_by_id = {}
         for i, beat in enumerate(plan["beats"], 1):

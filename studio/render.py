@@ -549,29 +549,42 @@ class Canvas:
             dark_tint = Image.new("RGBA", (w, h), (*self.ink, 195))
             im.paste(Image.alpha_composite(bg_blur.convert("RGBA"), dark_tint).convert("RGB"), (0, 0))
             d = ImageDraw.Draw(im)
-        card_w = int((w - p * 2) * (0.58 if self.still is not None and not self.portrait else 0.94))
+        card_w = int((w - p * 2) * (0.58 if self.still is not None and not self.portrait else 0.78))
         cx1 = p if (self.still is not None and not self.portrait) else int((w - card_w) // 2)
         cx2 = cx1 + card_w
-        # Off-white editorial newspaper clipping paper with drop shadow
-        d.rounded_rectangle((cx1 + int(8 * s), top + int(10 * s), cx2 + int(8 * s), bottom + int(10 * s)), radius=int(10 * s), fill=(4, 8, 14))
+        # Compact, balanced editorial newspaper cutout (never an empty slab!)
+        d.rounded_rectangle((cx1 + int(10 * s), top + int(12 * s), cx2 + int(10 * s), bottom + int(12 * s)), radius=int(10 * s), fill=(4, 8, 14))
         d.rounded_rectangle((cx1, top, cx2, bottom), radius=int(10 * s), fill=(244, 241, 232), outline=self.accent, width=max(2, int(3 * s)))
-        d.rectangle((cx1, top, cx2, top + int(48 * s)), fill=(22, 30, 44))
-        status_tag = f"DOCUMENTED REPORT  •  {str(fact.get('status', 'verified')).upper()} RECORD"
-        text_block(im, status_tag, (cx1 + int(24 * s), top + int(12 * s), card_w - int(48 * s), int(30 * s)), 19 * s, (254, 240, 138), True, 1)
-        # Animated yellow highlighter bar sweeping across the top two lines of the quote!
+        d.rectangle((cx1, top, cx2, top + int(50 * s)), fill=(20, 29, 43))
+        status_tag = f"VERIFIED REPORT  •  {str(self.beat['visual'].get('headline', 'PRIMARY SOURCE')).upper()[:42]}"
+        text_block(im, status_tag, (cx1 + int(24 * s), top + int(13 * s), card_w - int(48 * s), int(30 * s)), 19 * s, (254, 240, 138), True, 1)
+        # Animated yellow highlighter bar sweeping cleanly behind the key quote
         sweep = ease(min(1.0, max(0.0, (t - 0.3) / 1.1)))
         hl_w = int((card_w - int(68 * s)) * sweep)
         if hl_w > 4:
-            d.rectangle((cx1 + int(28 * s), top + int(76 * s), cx1 + int(28 * s) + hl_w, top + int(122 * s)), fill=(253, 224, 71))
+            d.rectangle((cx1 + int(28 * s), top + int(76 * s), cx1 + int(28 * s) + hl_w, top + int(124 * s)), fill=(253, 224, 71))
         text_block(
             im,
             f"“{fact['claim']}”",
-            (cx1 + int(32 * s), top + int(76 * s), card_w - int(64 * s), bottom - top - int(100 * s)),
-            34 * s if not self.portrait else 30 * s,
+            (cx1 + int(32 * s), top + int(76 * s), card_w - int(64 * s), int(165 * s)),
+            36 * s if not self.portrait else 30 * s,
             (15, 23, 42),
             True,
-            6,
+            3,
         )
+        # Divider rule + rich editorial context paragraph below quote so card feels like a real magazine/newspaper clipping
+        div_y = top + int(245 * s)
+        if div_y < bottom - int(80 * s):
+            d.line((cx1 + int(32 * s), div_y, cx2 - int(32 * s), div_y), fill=(195, 190, 178), width=max(1, int(2 * s)))
+            text_block(
+                im,
+                str(self.beat.get("narration", "")),
+                (cx1 + int(32 * s), div_y + int(18 * s), card_w - int(64 * s), bottom - div_y - int(32 * s)),
+                22 * s if not self.portrait else 20 * s,
+                (55, 65, 81),
+                False,
+                4,
+            )
         if self.still is not None and not self.portrait:
             rx = cx2 + int(24 * s)
             rw = w - p - rx
