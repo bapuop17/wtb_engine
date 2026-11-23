@@ -1,4 +1,4 @@
-name: WTB Studio V98 (Kokoro-82M Human Voice + Remotion React Engine + OpenCV Cinema FX) - Global News & Documentary Automation
+name: WTB Studio V99 (Serper Google Images + AI Vision Match + Face-Focus Zoom + Kokoro-82M) - Global News & Documentary Automation
 
 on:
   workflow_dispatch:
@@ -96,6 +96,7 @@ jobs:
       - name: Build & Publish V98 Documentary (1080p Long + Vertical Short)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           DEEPGRAM_API_KEY: ${{ secrets.DEEPGRAM_API_KEY }}
@@ -103,6 +104,7 @@ jobs:
           ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           YOUTUBE_TOKEN_JSON_B64: ${{ secrets.YOUTUBE_TOKEN_JSON_B64 }}
           YOUTUBE_TOKEN_JSON_B64_2: ${{ secrets.YOUTUBE_TOKEN_JSON_B64_2 }}
@@ -146,21 +148,20 @@ jobs:
             git push origin "HEAD:$GITHUB_REF_NAME" || true
           fi
 
-      - name: Upload 1080p Videos, Storyboard Review (review.html) & Diagnostics
+      - name: Upload Lightweight Error & QC Diagnostics Only (No Heavy MP4s)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: WTB-Studio-V98-${{ github.run_number }}
+          name: WTB-Logs-V99-${{ github.run_number }}
           path: |
-            output/**/documentary.mp4
-            output/**/short.mp4
-            output/**/graphics_demo.mp4
-            output/**/*.jpg
-            output/**/*.json
-            output/**/*.html
+            output/**/quality_report.json
+            output/**/short_quality_report.json
+            output/**/run_report.json
+            output/**/research.json
+            output/**/storyboard.json
+            output/**/*.log
             output/**/*.txt
             output/**/*.srt
-            output/**/*.log
             studio_history.json
           if-no-files-found: warn
           retention-days: 7
