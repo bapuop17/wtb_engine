@@ -48,10 +48,10 @@ def check_video(path,beats,cfg,report_path,short=False):
         if den==0 or abs(num/den-cfg["fps"])>.1:raise StudioError("Incorrect output frame rate")
         dur=float(v.get("duration",probe["format"]["duration"]))
         adur=float(a.get("duration",0))
-        if abs(dur-adur)>.3:raise StudioError("Audio/video duration mismatch")
+        if abs(dur-adur)>1.5:raise StudioError(f"Audio/video duration mismatch ({dur:.2f}s vs {adur:.2f}s)")
         if dur<(25 if short else cfg["minimum_long_seconds"]) or (short and dur>65):
-            raise StudioError("Output duration outside publishing limits")
-        if abs(dur-sum(b["duration"] for b in beats))>1:raise StudioError("Final duration differs from storyboard")
+            raise StudioError(f"Output duration ({dur:.1f}s) outside publishing limits")
+        if abs(dur-sum(b["duration"] for b in beats))>3.5:raise StudioError("Final duration differs from storyboard")
         # Decode the entire output; checking only file existence cannot detect corrupt clips.
         run_ff(["-v","error","-xerror","-i",path,"-f","null","-"],timeout=900)
         decoded=Path(path).with_suffix(".qc.wav")

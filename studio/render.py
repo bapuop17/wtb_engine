@@ -10,10 +10,12 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 from .common import StudioError, ffmpeg, run_ff
 from .voice import captions
 from .world_atlas import load_world_polygons, lookup_gazetteer
+from .satellite_map import fetch_satellite_basemap
 from .v98_cinema_fx import (
     anamorphic_light_leak_transition,
     apply_cinema_film_finish,
     directional_whip_pan,
+    detect_face_focus_center,
     spring_ease,
 )
 
@@ -256,9 +258,10 @@ class Canvas:
         else:  # Right-to-left pan + slight zoom
             z = 1.06 + 0.06 * prog
             px_r, py_r = 0.80 - 0.60 * ease(prog), 0.42
-        fitted = ImageOps.fit(img_src, (int(w * z), int(h * z)), method=Image.Resampling.BICUBIC, centering=(0.5, 0.45))
+        fcx, fcy = detect_face_focus_center(img_src)
+        fitted = ImageOps.fit(img_src, (int(w * z), int(h * z)), method=Image.Resampling.BICUBIC, centering=(fcx, fcy))
         pan_x = max(0, min(fitted.width - w, int((fitted.width - w) * px_r)))
-        pan_y = max(0, min(fitted.height - h, int((fitted.height - h) * py_r)))
+        pan_y = max(0, min(fitted.height - h, int((fitted.height - h) * (fcy if fcy != 0.45 else py_r))))
         shot = fitted.crop((pan_x, pan_y, pan_x + w, pan_y + h))
         # V98 Cinema Film Finish: S-curve contrast + teal/amber grade + radial vignette + 35mm grain
         seed = int(self.beat_num * 1000 + shot_idx * 100 + local_t * 24)
@@ -661,32 +664,53 @@ class Canvas:
         lat_min, lat_max = mean_lat - span_lat / 2.0, mean_lat + span_lat / 2.0
         lon_min, lon_max = mean_lon - span_lon / 2.0, mean_lon + span_lon / 2.0
 
-        def project_map(lat, lon):
-            rx = map_x1 + (lon - lon_min) / max(0.01, lon_max - lon_min) * mw
-            ry = map_y2 - (lat - lat_min) / max(0.01, lat_max - lat_min) * mh
-            return rx, ry
+        # V98.3: Attempt real Google-Earth-style Esri World Imagery satellite tiles (cached once per beat); clean fallback to 208-country vector atlas
+        if not hasattr(self, "_sat_checked"):
+            self._sat_checked = True
+            self._sat_img, self._sat_proj = fetch_satellite_basemap(places, mw, mh, cache_dir="cache/sat_tiles")
 
-        # Deep bathymetric ocean base + glowing latitude/longitude tactical grid
-        map_layer = Image.new("RGBA", (mw, mh), (8, 22, 38, 255))
-        md = ImageDraw.Draw(map_layer)
-        for gy in range(0, mh, max(36, int(72 * s))):
-            md.line((0, gy, mw, gy), fill=(17, 42, 66, 255), width=1)
-        for gx in range(0, mw, max(36, int(72 * s))):
-            md.line((gx, 0, gx, mh), fill=(17, 42, 66, 255), width=1)
+        if self._sat_img is not None and self._sat_proj is not None:
+            # Apply smooth cinematic 1.0x -> 1.14x zoom-in on real satellite imagery
+            zw, zh = int(mw * zoom_factor), int(mh * zoom_factor)
+            sat_zoomed = self._sat_img.resize((zw, zh), Image.Resampling.BICUBIC)
+            ox, oy = (zw - mw) // 2, (zh - mh) // 2
+            map_layer = sat_zoomed.crop((ox, oy, ox + mw, oy + mh)).convert("RGBA")
+            md = ImageDraw.Draw(map_layer)
+            def project_map(lat, lon):
+                bx, by = self._sat_proj(lat, lon)
+                return bx * zoom_factor - ox, by * zoom_factor - oy
+            # Subtle tactical grid overlay on top of real satellite terrain
+            for gy in range(0, mh, max(48, int(96 * s))):
+                md.line((0, gy, mw, gy), fill=(255, 255, 255, 26), width=1)
+            for gx in range(0, mw, max(48, int(96 * s))):
+                md.line((gx, 0, gx, mh), fill=(255, 255, 255, 26), width=1)
+        else:
+            def project_map(lat, lon):
+                rx = map_x1 + (lon - lon_min) / max(0.01, lon_max - lon_min) * mw
+                ry = map_y2 - (lat - lat_min) / max(0.01, lat_max - lat_min) * mh
+                return rx, ry
 
-        # Draw crisp 208-Country Natural Earth Landmasses
-        for cname, rings in polys.items():
-            if cname.startswith("ISO_") or cname == "_LOADED":
-                continue
-            is_target = cname in target_countries or any(cname in pl["name"].upper() for pl in places)
-            fill_col = (*self.accent, 155) if is_target else (24, 52, 76, 255)
-            out_col = (*WHITE, 245) if is_target else (72, 126, 158, 215)
-            for ring in rings:
-                if not any(lat_min - 25 <= lat <= lat_max + 25 and lon_min - 35 <= lon <= lon_max + 35 for lat, lon in ring[::2]):
+            # Deep bathymetric ocean base + glowing latitude/longitude tactical grid
+            map_layer = Image.new("RGBA", (mw, mh), (8, 22, 38, 255))
+            md = ImageDraw.Draw(map_layer)
+            for gy in range(0, mh, max(36, int(72 * s))):
+                md.line((0, gy, mw, gy), fill=(17, 42, 66, 255), width=1)
+            for gx in range(0, mw, max(36, int(72 * s))):
+                md.line((gx, 0, gx, mh), fill=(17, 42, 66, 255), width=1)
+
+            # Draw crisp 208-Country Natural Earth Landmasses
+            for cname, rings in polys.items():
+                if cname.startswith("ISO_") or cname == "_LOADED":
                     continue
-                pts_2d = [project_map(lat, lon) for lat, lon in ring]
-                if len(pts_2d) >= 3:
-                    md.polygon(pts_2d, fill=fill_col, outline=out_col)
+                is_target = cname in target_countries or any(cname in pl["name"].upper() for pl in places)
+                fill_col = (*self.accent, 155) if is_target else (24, 52, 76, 255)
+                out_col = (*WHITE, 245) if is_target else (72, 126, 158, 215)
+                for ring in rings:
+                    if not any(lat_min - 25 <= lat <= lat_max + 25 and lon_min - 35 <= lon <= lon_max + 35 for lat, lon in ring[::2]):
+                        continue
+                    pts_2d = [project_map(lat, lon) for lat, lon in ring]
+                    if len(pts_2d) >= 3:
+                        md.polygon(pts_2d, fill=fill_col, outline=out_col)
 
         # Glowing Animated Multi-Segment Route Arc + Traveling Signal Pulse!
         if len(places) >= 2:

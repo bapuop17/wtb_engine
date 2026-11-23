@@ -52,6 +52,38 @@ def _install_v95_research_shield():
                 hits = sum(1 for k in topic_kws if k in tl)
                 return hits >= min(2, len(topic_kws))
 
+            # 0) Serper.dev Google News API (fast, 100% relevant real breaking news)
+            if len(domains) < 4:
+                try:
+                    _sk = os.getenv("SERPER_API_KEY", "").strip() or "247d3b097e204df7bb9da062ad4b2310dfd7d47d"
+                    if _sk:
+                        sr = common.request(
+                            "POST",
+                            "https://google.serper.dev/news",
+                            headers={"X-API-KEY": _sk, "Content-Type": "application/json"},
+                            json={"q": clean_q, "num": 10},
+                            timeout=15,
+                            retries=1,
+                        ).json()
+                        for item in (sr.get("news") or []):
+                            href = item.get("link") or ""
+                            dom = urlparse(href).hostname or ""
+                            title = str(item.get("title") or "").strip()
+                            snip = str(item.get("snippet") or "").strip()
+                            para = f"{title}. {snip}".strip()
+                            if dom and dom not in domains and len(para.split()) >= 8 and _is_relevant(para):
+                                sources.append({
+                                    "id": f"S{len(sources) + 1}", "url": href, "title": title or topic,
+                                    "published": item.get("date") or "recent", "domain": dom,
+                                    "retrieved_utc": datetime.now(timezone.utc).isoformat(),
+                                    "text": para,
+                                })
+                                domains.add(dom)
+                                if len(domains) >= 5:
+                                    break
+                except Exception:
+                    pass
+
             # 1) Google News RSS (fast, zero-key, never returns off-topic spam on GitHub Actions)
             if len(domains) < 4:
                 try:

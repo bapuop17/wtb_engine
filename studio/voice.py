@@ -140,10 +140,31 @@ class Voice:
         run_ff(["-i", raw, "-af", "highpass=f=60,loudnorm=I=-16:TP=-1.5:LRA=9,apad=pad_dur=0.16",
                 "-ac", "1", "-ar", "48000", "-c:a", "pcm_s16le", wav])
         duration = inspect_audio(wav)
+        if not timings and os.getenv("WTB_WHISPER_SYNC", "1") == "1":
+            timings = _align_words_whisper(wav)
         meta = {"duration": duration, "provider": self.provider, "voice": self.voice, "timings": timings,
                 "timing_mode": "provider word timings" if timings else "beat-level exact; captions estimated within beat"}
         save_json(meta_path, meta)
         return {**meta, "path": str(wav)}
+
+
+
+
+def _align_words_whisper(wav_path):
+    """V99 Optional local faster-whisper word-exact timestamp alignment (zero cost, runs if faster-whisper is installed)."""
+    try:
+        from faster_whisper import WhisperModel
+        model = WhisperModel(os.getenv("WTB_WHISPER_MODEL", "tiny.en"), device="cpu", compute_type="int8")
+        segments, _ = model.transcribe(str(wav_path), word_timestamps=True)
+        out = []
+        for seg in segments:
+            for w in (seg.words or []):
+                tok = str(w.word or "").strip()
+                if tok:
+                    out.append({"text": tok, "start": round(float(w.start), 3), "end": round(float(w.end), 3)})
+        return out
+    except Exception:
+        return []
 
 
 def inspect_audio(path):

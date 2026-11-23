@@ -92,3 +92,43 @@ def anamorphic_light_leak_transition(prev_im, next_im, alpha):
     arr[..., 1] += bloom * 0.72   # Golden mid
     arr[..., 2] += bloom * 0.28   # Subtle cyan tail
     return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), mode="RGB")
+
+
+_FACE_CASCADE = None
+_FACE_CENTER_CACHE = {}
+
+
+def detect_face_focus_center(pil_img):
+    """V99 OpenCV Face-Aware Smart Crop: returns normalized (cx, cy) centered on the primary human face/eyes, or (0.5, 0.45) if no face."""
+    key = id(pil_img)
+    if key in _FACE_CENTER_CACHE:
+        return _FACE_CENTER_CACHE[key]
+    default = (0.5, 0.45)
+    if cv2 is None:
+        return default
+    global _FACE_CASCADE
+    try:
+        if _FACE_CASCADE is None:
+            import os as _os
+            xml = _os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
+            if _os.path.exists(xml):
+                _FACE_CASCADE = cv2.CascadeClassifier(xml)
+        if _FACE_CASCADE is None or _FACE_CASCADE.empty():
+            return default
+        w, h = pil_img.size
+        scale = min(1.0, 480.0 / max(1, w))
+        small = pil_img.resize((max(32, int(w * scale)), max(32, int(h * scale))))
+        gray = cv2.cvtColor(np.asarray(small), cv2.COLOR_RGB2GRAY)
+        faces = _FACE_CASCADE.detectMultiScale(gray, scaleFactor=1.15, minNeighbors=5, minSize=(28, 28))
+        if len(faces) > 0:
+            # Pick largest prominent face (leader, suspect, speaker)
+            x, y, fw, fh = max(faces, key=lambda r: r[2] * r[3])
+            sw, sh = small.size
+            cx = max(0.18, min(0.82, (x + fw * 0.5) / max(1, sw)))
+            cy = max(0.15, min(0.75, (y + fh * 0.38) / max(1, sh)))
+            _FACE_CENTER_CACHE[key] = (cx, cy)
+            return (cx, cy)
+    except Exception:
+        pass
+    _FACE_CENTER_CACHE[key] = default
+    return default
