@@ -67,19 +67,21 @@ jobs:
           key: kokoro-82m-v1.0-onnx
 
       - name: Install Renderer, Fonts, OpenCV Cinema FX & Kokoro-82M Human Voice
+        timeout-minutes: 8
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo apt-get update -qq || true
-          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-inter libcairo2-dev pkg-config espeak-ng libsndfile1 || true
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-          python3 -m pip install -U yt-dlp
-          python3 -m pip install kokoro-onnx || true
+          timeout 90 sudo -E apt-get update -qq || true
+          timeout 150 sudo -E apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --no-install-recommends ffmpeg fonts-dejavu-core fonts-inter libcairo2-dev pkg-config espeak-ng libsndfile1 || true
+          python3 -m pip install --prefer-binary --no-cache-dir -r requirements.txt
+          python3 -m pip install --prefer-binary --no-cache-dir -U yt-dlp
+          python3 -m pip install --prefer-binary --no-cache-dir kokoro-onnx || true
           mkdir -p cache/kokoro
-          if [ ! -f cache/kokoro/kokoro-v1.0.onnx ]; then
-            curl -L --fail --retry 3 -o cache/kokoro/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx || true
+          if [ ! -s cache/kokoro/kokoro-v1.0.onnx ]; then
+            curl -fL --connect-timeout 15 --max-time 120 --speed-time 25 --speed-limit 50000 --retry 2 -o cache/kokoro/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx || rm -f cache/kokoro/kokoro-v1.0.onnx
           fi
-          if [ ! -f cache/kokoro/voices-v1.0.bin ]; then
-            curl -L --fail --retry 3 -o cache/kokoro/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin || true
+          if [ ! -s cache/kokoro/voices-v1.0.bin ]; then
+            curl -fL --connect-timeout 15 --max-time 60 --speed-time 20 --speed-limit 20000 --retry 2 -o cache/kokoro/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin || rm -f cache/kokoro/voices-v1.0.bin
           fi
 
       - name: Install Remotion React Studio Dependencies (when remotion_react selected)
@@ -165,3 +167,4 @@ jobs:
             studio_history.json
           if-no-files-found: warn
           retention-days: 7
+          
