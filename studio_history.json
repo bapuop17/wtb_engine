@@ -69,6 +69,13 @@
       "title": "Why 24 Workers Died in This Indonesian Factory",
       "style": "abhi_niyu",
       "utc": "2026-11-23T16:13:52.726931+00:00"
+    },
+    {
+      "topic": "What strike on Russian ship in Libya says about spread of Ukraine war",
+      "long_id": "_cnqoeJVEms",
+      "title": "Why Ukraine Just Struck Russia in Libya",
+      "style": "think_school",
+      "utc": "2026-11-24T07:01:31.516981+00:00"
     }
   ],
   "uploads": {
@@ -191,6 +198,18 @@
       "video_id": "erN3MTtzc-A",
       "title": "Why 24 Workers Died in This Indonesian Factory #Shorts",
       "uploaded_utc": "2026-11-23T16:13:55.495383+00:00"
+    },
+    "ec7e87daf85016e375d7-long": {
+      "status": "uploaded",
+      "video_id": "_cnqoeJVEms",
+      "title": "Why Ukraine Just Struck Russia in Libya",
+      "uploaded_utc": "2026-11-24T07:01:28.740078+00:00"
+    },
+    "ec7e87daf85016e375d7-short": {
+      "status": "uploaded",
+      "video_id": "IkTWW7Qvuh4",
+      "title": "Why Ukraine Just Struck Russia in Libya #Shorts",
+      "uploaded_utc": "2026-11-24T07:01:35.707358+00:00"
     }
   },
   "legacy_titles": [
@@ -239,6 +258,7 @@
     "Israel Warns US: Iran Plot to Kill Trump",
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
-    "Why the World's Longest Climate Summit Just Failed"
+    "Why the World's Longest Climate Summit Just Failed",
+    "Why 24 Workers Died in This Indonesian Factory"
   ]
 }

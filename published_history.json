@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-23T16:13:52.727759+00:00",
-  "last_upload_epoch": 1795450432,
+  "updated_at": "2026-11-24T07:01:31.518061+00:00",
+  "last_upload_epoch": 1795503691,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9182,6 +9182,12 @@
       "title": "Why 24 Workers Died in This Indonesian Factory",
       "topic": "Deadly Fire Rips Through Candy Factory in Indonesia",
       "published_at": "2026-11-23T16:13:52.727759+00:00"
+    },
+    {
+      "video_id": "_cnqoeJVEms",
+      "title": "Why Ukraine Just Struck Russia in Libya",
+      "topic": "What strike on Russian ship in Libya says about spread of Ukraine war",
+      "published_at": "2026-11-24T07:01:31.518061+00:00"
     }
   ]
 }
