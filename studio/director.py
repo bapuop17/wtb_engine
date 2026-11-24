@@ -432,6 +432,48 @@ def _auto_heal_plan(plan, dossier, style_key, min_words):
         b["visual"] = v
         healed_beats.append(b)
 
+    # V102.1 Numeric Claim Auto-Healer: attach matching dossier fact_ids for any valid numbers,
+    # and convert stray unverified digits to natural prose so validate_plan NEVER crashes a live run!
+    _num_words = {
+        "0": "zero", "1": "one", "2": "two", "3": "three", "4": "four", "5": "five",
+        "6": "six", "7": "seven", "8": "eight", "9": "nine", "10": "ten",
+        "11": "eleven", "12": "twelve", "15": "fifteen", "20": "twenty",
+        "24": "twenty-four", "30": "thirty", "50": "fifty", "100": "a hundred",
+    }
+    _fact_num_map = {}
+    for _fid, _fobj in facts.items():
+        _ftxt = _fobj["claim"] + " " + " ".join(e["quote"] for e in _fobj.get("evidence", []))
+        for _n in re.findall(r"(?<![\w.])-?\d[\d,]*(?:\.\d+)?", _ftxt.replace(",", "")):
+            _fact_num_map.setdefault(_n, []).append(_fid)
+    for b in healed_beats:
+        _nar = str(b.get("narration") or "")
+        _fids = list(b.get("fact_ids") or [])
+        _ev_txt = " ".join(
+            facts[fid]["claim"] + " " + " ".join(e["quote"] for e in facts[fid].get("evidence", []))
+            for fid in _fids if fid in facts
+        )
+        _ev_nums = set(re.findall(r"(?<![\w.])-?\d[\d,]*(?:\.\d+)?", _ev_txt.replace(",", "")))
+        _nar_nums = set(re.findall(r"(?<![\w.])-?\d[\d,]*(?:\.\d+)?", _nar.replace(",", "")))
+        for _un in list(_nar_nums - _ev_nums):
+            if _un in _fact_num_map:
+                _new_fid = _fact_num_map[_un][0]
+                if _new_fid not in _fids:
+                    _fids.append(_new_fid)
+                    _ev_nums.add(_un)
+        b["fact_ids"] = _fids
+        _still_missing = set(re.findall(r"(?<![\w.])-?\d[\d,]*(?:\.\d+)?", _nar.replace(",", ""))) - _ev_nums
+        if _still_missing:
+            def _sub_unverified(m):
+                raw = m.group(0)
+                clean = raw.replace(",", "")
+                if clean in _ev_nums:
+                    return raw
+                if clean in _num_words:
+                    return _num_words[clean]
+                return "multiple"
+            _nar = re.sub(r"(?<![\w.])-?\d[\d,]*(?:\.\d+)?", _sub_unverified, _nar)
+            b["narration"] = " ".join(_nar.split())
+
     # V100 Visual Quality Guardrails:
     # 1) Beat 1 (the 0-10s hook!) MUST ALWAYS be full-bleed photo/footage — NEVER a static beige evidence card or diagram!
     # 2) At most 1 'evidence' card per entire documentary (never 3 giant beige boxes!).

@@ -122,7 +122,30 @@ class Brain:
         routes = []
         if "nvidia" not in self._dead_providers and os.getenv("NVIDIA_API_KEY", "").strip():
             nk = os.getenv("NVIDIA_API_KEY", "").strip()
-            for nm in ("meta/llama-3.3-70b-instruct", "google/gemma-4-31b-it", "minimaxai/minimax-m2.7", "stepfun/step-3.5-flash"):
+            nv_mods = getattr(self, "_nvidia_models", None)
+            if nv_mods is None:
+                # Live Nov 2026 NVIDIA NIM free endpoints + dynamic /v1/models check
+                preferred = [
+                    "nvidia/nemotron-3.5-lightning-30b-a3b",
+                    "nvidia/nemotron-3.5-super-vl-120b-a12b",
+                    "deepseek-ai/deepseek-v4.1-flash",
+                    "nvidia/nemotron-3-ultra-550b-a55b",
+                ]
+                try:
+                    import requests as _rq
+                    r_nv = _rq.get("https://integrate.api.nvidia.com/v1/models", headers={"Authorization": "Bearer " + nk}, timeout=10)
+                    if r_nv.status_code == 200:
+                        live_ids = {m.get("id") for m in (r_nv.json().get("data") or []) if m.get("id")}
+                        kept = [m for m in preferred if m in live_ids]
+                        extras = [m for m in sorted(live_ids) if any(k in m.lower() for k in ("nemotron-3", "deepseek", "llama-4", "qwen3")) and "embed" not in m.lower() and "guard" not in m.lower() and "rerank" not in m.lower() and m not in kept]
+                        nv_mods = (kept + extras)[:4] or preferred
+                    else:
+                        nv_mods = preferred
+                except Exception:
+                    nv_mods = preferred
+                self._nvidia_models = nv_mods
+                print(f"Brain: Live NVIDIA NIM models locked: {nv_mods}", flush=True)
+            for nm in nv_mods:
                 if ("nvidia", nm) not in self._dead_routes:
                     routes.append(("nvidia", nm, nk))
         if "groq" not in self._dead_providers and os.getenv("GROQ_API_KEY", "").strip():
@@ -251,7 +274,7 @@ class Brain:
             except Exception as exc:
                 last_err = exc
                 err_s = str(exc)
-                if any(c in err_s for c in ("HTTP 404", "HTTP 401", "HTTP 403", "HTTP 400", "network request failed")):
+                if any(c in err_s for c in ("HTTP 404", "HTTP 410", "HTTP 401", "HTTP 403", "HTTP 400", "network request failed")):
                     self._dead_routes.add((prov, mod))
                 if "network request failed" in err_s:
                     self._dead_providers.add(prov)
