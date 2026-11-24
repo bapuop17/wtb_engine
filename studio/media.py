@@ -18,6 +18,7 @@ JUNK_MEDIA_TERMS = (
     "starz", "hulu", "trailer", "dvd", "blu-ray", "clipart", "clip art", "cartoon",
     "infographic", "diagram", "vector", "worksheet", "illustration", "meme", "wallpaper",
     "stock vector", "icon ", "logo ", "50 cent", "cast ", "actors",
+    "instagram", "royanews", "tiktok", "facebook", "reel", "quote card", "social media",
 )
 
 BAD_IMG_DOMAINS = (

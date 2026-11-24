@@ -541,7 +541,7 @@ def create_plan(dossier, brain, out, requested_style="auto"):
                 "1. NEVER re-introduce the topic or repeat Act 1! Continue directly from the last beat.\n"
                 "2. Focus Part 2 on: Deeper global economic/human fallout, hidden winners & losers, historical parallels, what happens next, and a sharp closing verdict.\n"
                 "3. EXACT VISUAL-TO-SCRIPT MATCHING: Every photo/footage beat query MUST be 2-4 concrete words naming the exact person, place, or event + story context.\n"
-                "4. ZERO fact IDs in narration, complete sentences only (34-48 words per beat).\n"
+                "4. ZERO fact IDs, ZERO repeating endings (NEVER repeat phrases like 'for the future of...'), and complete crisp sentences only (34-44 words per beat).\n"
                 "Return JSON object with key: beats (list of beat objects matching the exact same schema)."
             )
             p2 = brain.json(

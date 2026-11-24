@@ -971,56 +971,74 @@ def concatenate(paths, output, music=None):
 
 
 def make_thumbnail(plan, dossier, path):
-    """V96 High-CTR YouTube Thumbnail: Full-bleed high-contrast visual + bold 3-word yellow/white focal text, zero clutter."""
+    """V102 Viral High-CTR YouTube Thumbnail (1280x720): Vivid full-bleed event photo + face-aware framing + auto-fitted giant outlined text + red impact badge."""
+    from PIL import ImageEnhance
     style_key = plan.get("style") or dossier.get("style") or "think_school"
     theme = STYLE_THEMES.get(style_key, STYLE_THEMES["think_school"])
-    beat = next((b for b in plan["beats"] if b.get("asset", {}).get("kind") == "photo" and Path(b["asset"]["path"]).exists()), plan["beats"][0])
-    try:
-        from .html_gfx import render_v97_high_ctr_thumbnail
-        bg_p = beat["asset"]["path"] if beat.get("asset", {}).get("kind") == "photo" else ""
-        acc_hex = "#%02x%02x%02x" % theme["accent"]
-        html_im = render_v97_high_ctr_thumbnail(plan.get("thumbnail_text", "WORLD BRIEF"), bg_p, accent_hex=acc_hex, badge_text=theme["badge"])
-        if html_im is not None:
-            html_im.save(path, quality=95, optimize=True)
-            return
-    except Exception:
-        pass
+    photo_beats = [b for b in plan["beats"] if b.get("asset", {}).get("kind") == "photo" and Path(b["asset"]["path"]).exists()]
+    beat = photo_beats[0] if photo_beats else plan["beats"][0]
+
     im = Image.new("RGB", (1280, 720), theme["ink"])
     if beat.get("asset", {}).get("kind") == "photo" and Path(beat["asset"]["path"]).exists():
         photo = Image.open(beat["asset"]["path"]).convert("RGB")
-        # Boost contrast slightly for mobile thumbnail pop
-        arr = np.asarray(ImageOps.fit(photo, (1280, 720), method=Image.Resampling.BICUBIC), dtype=np.float32)
-        arr = np.clip((arr - 128.0) * 1.15 + 128.0, 0, 255).astype(np.uint8)
-        im = Image.fromarray(arr, mode="RGB")
+        fcx, fcy = detect_face_focus_center(photo)
+        im = ImageOps.fit(photo, (1280, 720), method=Image.Resampling.BICUBIC, centering=(fcx, fcy))
+        im = ImageEnhance.Color(im).enhance(1.26)
+        im = ImageEnhance.Contrast(im).enhance(1.22)
+        im = ImageEnhance.Sharpness(im).enhance(1.30)
     else:
         c = Canvas(beat, dossier, 1280, 720)
         im = c.frame(2, 5)
 
-    # Strong left-to-right cinematic vignette so bold 3-word hook pops on mobile screens
-    overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
-    d = ImageDraw.Draw(overlay)
-    for x in range(900):
-        alpha = int(242 * max(0.0, 1.0 - x / 900.0) ** 1.15)
-        d.line((x, 0, x, 720), fill=(8, 12, 22, alpha))
+    # Rich cinematic left-and-bottom vignette (keeps right 65% of the dramatic photo bright and clear!)
+    overlay = Image.new("RGBA", (1280, 720), (0, 0, 0, 0))
+    od = ImageDraw.Draw(overlay)
+    for x in range(740):
+        a = int(218 * (max(0.0, 1.0 - x / 740.0) ** 1.35))
+        od.line((x, 0, x, 720), fill=(6, 10, 18, a))
+    for y in range(440, 720):
+        a = int(175 * (((y - 440) / 280.0) ** 1.4))
+        od.line((0, y, 1280, y), fill=(6, 10, 18, a))
     im = Image.alpha_composite(im.convert("RGBA"), overlay)
     d = ImageDraw.Draw(im)
 
-    # High-CTR accent bar on left edge
-    d.rectangle((0, 0, 18, 720), fill=theme["accent"])
+    # Crisp red/accent top-left impact pill badge
+    badge = str(theme.get("badge") or "SPECIAL REPORT").upper()[:24]
+    f_badge = font(26, True)
+    bb = d.textbbox((0, 0), badge, font=f_badge)
+    bw = (bb[2] - bb[0]) + 44
+    d.rounded_rectangle((56, 54, 56 + bw, 106), radius=8, fill=(220, 38, 38, 250))
+    d.text((78, 64), badge, font=f_badge, fill=(255, 255, 255, 255))
 
-    # Giant 2-to-4 word hook (top line bright yellow, remaining lines stark white with heavy drop shadow)
-    hook_words = str(plan.get("thumbnail_text") or "BREAKING SHIFT").upper().split()[:4]
-    line1 = " ".join(hook_words[:2])
-    line2 = " ".join(hook_words[2:]) if len(hook_words) > 2 else ""
+    # Auto-fitted giant 2-line hook text (NEVER clips off screen!)
+    raw_hook = str(plan.get("thumbnail_text") or plan.get("title") or "INSIDE THE CRISIS").upper()
+    words = [w for w in raw_hook.replace(":", "").split() if len(w) > 1][:4]
+    if len(words) <= 2:
+        lines = [" ".join(words)]
+    else:
+        mid = len(words) // 2
+        lines = [" ".join(words[:mid]), " ".join(words[mid:])]
 
-    f_big = font(118, True)
-    y_txt = 190 if line2 else 260
-    for ox, oy in [(-4, -4), (4, -4), (-4, 4), (4, 4), (0, 8)]:
-        d.text((62 + ox, y_txt + oy), line1, font=f_big, fill=(0, 0, 0, 240))
-    d.text((62, y_txt), line1, font=f_big, fill=(250, 204, 21, 255))
-    if line2:
-        for ox, oy in [(-4, -4), (4, -4), (-4, 4), (4, 4), (0, 8)]:
-            d.text((62 + ox, y_txt + 135 + oy), line2, font=f_big, fill=(0, 0, 0, 240))
-        d.text((62, y_txt + 135), line2, font=f_big, fill=(255, 255, 255, 255))
+    max_w = 780
+    fsize = 122
+    while fsize > 62:
+        f_big = font(fsize, True)
+        if all((d.textbbox((0, 0), ln, font=f_big)[2] - d.textbbox((0, 0), ln, font=f_big)[0]) <= max_w for ln in lines):
+            break
+        fsize -= 6
+    f_big = font(fsize, True)
+    line_h = int(fsize * 1.18)
+    y_start = 220 if len(lines) == 2 else 285
 
+    for idx_l, ln in enumerate(lines):
+        yy = y_start + idx_l * line_h
+        col = (250, 204, 21, 255) if idx_l == 0 else (255, 255, 255, 255)
+        # Hard shadow + thick crisp black stroke for instant mobile legibility
+        d.text((62, yy + 10), ln, font=f_big, fill=(0, 0, 0, 210))
+        d.text((56, yy), ln, font=f_big, fill=col, stroke_width=8, stroke_fill=(0, 0, 0, 255))
+
+    # Clean bottom accent strip + subtle channel mark
+    d.rectangle((0, 706, 1280, 720), fill=theme["accent"])
+    f_sub = font(24, True)
+    d.text((58, 648), "WORLD TALK BRIEF  •  DEEP INVESTIGATION", font=f_sub, fill=(226, 232, 240, 235), stroke_width=3, stroke_fill=(0, 0, 0, 220))
     im.convert("RGB").save(path, quality=95, optimize=True)
