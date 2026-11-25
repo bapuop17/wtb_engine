@@ -1,4 +1,4 @@
-name: WTB Studio V101 (Serper Google Images + AI Vision Match + Face-Focus Zoom + Kokoro-82M) - Global News & Documentary Automation
+name: WTB Studio V103 (Unified Cinema VFX + Real Google Video/Photo + Kokoro-82M) (Serper Google Images + AI Vision Match + Face-Focus Zoom + Kokoro-82M) - Global News & Documentary Automation
 
 on:
   workflow_dispatch:
@@ -13,11 +13,6 @@ on:
         type: choice
         options: [auto, bbc_dispatch, think_school, nitish_rajput, abhi_niyu]
         default: auto
-      renderer:
-        description: 'Video renderer engine (python_v98 = OpenCV Cinema FX + 208-Country Atlas; remotion_react = React/Remotion studio)'
-        type: choice
-        options: [python_v98, remotion_react]
-        default: python_v98
       topic:
         description: 'Optional custom topic; leave blank for automatic global news discovery'
         type: string
@@ -118,7 +113,6 @@ jobs:
           WTB_VOICE_PROVIDER: ${{ vars.WTB_VOICE_PROVIDER }}
           WTB_VOICE: ${{ vars.WTB_VOICE }}
           WTB_KOKORO_VOICE: ${{ vars.WTB_KOKORO_VOICE }}
-          WTB_RENDERER: ${{ inputs.renderer }}
           WTB_PRIVACY: ${{ vars.WTB_PRIVACY }}
           WTB_TOPIC: ${{ inputs.topic }}
           WTB_STYLE: ${{ inputs.style }}
@@ -154,7 +148,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: WTB-Logs-V101-${{ github.run_number }}
+          name: WTB-Logs-V103-${{ github.run_number }}
           path: |
             output/**/quality_report.json
             output/**/short_quality_report.json
@@ -167,4 +161,3 @@ jobs:
             studio_history.json
           if-no-files-found: warn
           retention-days: 7
-          
