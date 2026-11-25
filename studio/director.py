@@ -340,8 +340,8 @@ def _auto_heal_plan(plan, dossier, style_key, min_words):
                 if mnum in small_words:
                     nar = re.sub(r"(?<![\w.])" + re.escape(mnum) + r"(?![\w.])", small_words[mnum], nar)
                 else:
-                    nar = re.sub(r"(?<![\w.])" + re.escape(mnum) + r"\s*%", "a sharp fraction", nar)
-                    nar = re.sub(r"(?<![\w.])" + re.escape(mnum) + r"(?![\w.])", "significant", nar)
+                    nar = re.sub(r"(?<![\w.])" + re.escape(mnum) + r"\s*%", "a major share", nar)
+                    nar = re.sub(r"(?<![\w.])" + re.escape(mnum) + r"(?![\w.])", "major", nar)
         b["narration"] = nar
 
         v = b.get("visual") if isinstance(b.get("visual"), dict) else {}
@@ -463,6 +463,10 @@ def _auto_heal_plan(plan, dossier, style_key, min_words):
         b["fact_ids"] = _fids
         _still_missing = set(re.findall(r"(?<![\w.])-?\d[\d,]*(?:\.\d+)?", _nar.replace(",", ""))) - _ev_nums
         if _still_missing:
+            # Cleanly soften unverified numeric phrases so narration NEVER says 'significant billion' or 'a sharp fraction'!
+            _nar = re.sub(r"(?:[$£€]|US\$|EUR|PS)\s*\d[\d,.]*\s*(?:billion|million|trillion)", "billions of dollars", _nar, flags=re.I)
+            _nar = re.sub(r"\b\d[\d,.]*\s*%", "a major share", _nar)
+            _nar = re.sub(r"\b(19|20)\d\d\b", "recent years", _nar)
             def _sub_unverified(m):
                 raw = m.group(0)
                 clean = raw.replace(",", "")
@@ -470,7 +474,7 @@ def _auto_heal_plan(plan, dossier, style_key, min_words):
                     return raw
                 if clean in _num_words:
                     return _num_words[clean]
-                return "multiple"
+                return "many"
             _nar = re.sub(r"(?<![\w.])-?\d[\d,]*(?:\.\d+)?", _sub_unverified, _nar)
             b["narration"] = " ".join(_nar.split())
 
