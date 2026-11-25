@@ -91,7 +91,7 @@ class Voice:
             if not api_key:
                 raise StudioError("ELEVENLABS_API_KEY is missing")
             data = request("POST", f"https://api.elevenlabs.io/v1/text-to-speech/{self.voice}/with-timestamps",
-                headers={"xi-api-key": api_key}, json={"text": text,
+                headers={"xi-api-key": api_key}, json={"text": _normalize_tts_text(text),
                 "model_id": os.getenv("ELEVENLABS_MODEL", "eleven_multilingual_v2"),
                 "voice_settings": {"stability": 0.48, "similarity_boost": 0.75, "style": 0.15, "use_speaker_boost": True}}).json()
             raw.write_bytes(base64.b64decode(data["audio_base64"]))
@@ -111,7 +111,7 @@ class Voice:
                 raise StudioError("DEEPGRAM_API_KEY is missing")
             r = request("POST", "https://api.deepgram.com/v1/speak",
                 params={"model": self.voice, "encoding": "mp3"},
-                headers={"Authorization": "Token " + os.environ["DEEPGRAM_API_KEY"]}, json={"text": text})
+                headers={"Authorization": "Token " + os.environ["DEEPGRAM_API_KEY"]}, json={"text": _normalize_tts_text(text)})
             raw.write_bytes(r.content)
         elif self.provider == "kokoro":
             import soundfile as sf
