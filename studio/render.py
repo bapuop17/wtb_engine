@@ -11,6 +11,7 @@ from .common import StudioError, ffmpeg, run_ff
 from .voice import captions
 from .world_atlas import load_world_polygons, lookup_gazetteer
 from .satellite_map import fetch_satellite_basemap
+from .v107_minimal_cinema import render_v107_beat_frame
 from .v98_cinema_fx import (
     anamorphic_light_leak_transition,
     apply_cinema_film_finish,
@@ -932,6 +933,8 @@ def render_beat(beat, dossier, audio, out, cfg, portrait=False):
             stdin=subprocess.PIPE,
             stderr=log,
         )
+        use_v107 = (not portrait) and bool(beat.get("visual", {}).get("v107_archetype"))
+        still_rgb = np.array(canvas.still.convert("RGB"), dtype=np.uint8) if (use_v107 and canvas.still is not None) else None
         try:
             for frame in range(nframes):
                 data = None
@@ -940,8 +943,15 @@ def render_beat(beat, dossier, audio, out, cfg, portrait=False):
                     if len(data) != frame_bytes:
                         raise StudioError("Footage decode ended unexpectedly")
                 t_now = frame / fps
-                im = canvas.frame(t_now, duration, data)
-                im = caption_frame(im, cues, t_now, portrait)
+                if use_v107:
+                    bg_arr = np.frombuffer(data, dtype=np.uint8).reshape((h, w, 3)) if data is not None else still_rgb
+                    im = render_v107_beat_frame(
+                        beat, dossier, t_now, duration, bg_arr, w, h,
+                        frame_idx=frame, is_live_video=(data is not None),
+                    )
+                else:
+                    im = canvas.frame(t_now, duration, data)
+                    im = caption_frame(im, cues, t_now, portrait)
                 if t_now < 0.18:
                     fade_a = t_now / 0.18
                     im = Image.blend(Image.new("RGB", (w, h), canvas.ink), im, fade_a)
