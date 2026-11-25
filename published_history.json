@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-25T05:21:37.201899+00:00",
-  "last_upload_epoch": 1795584097,
+  "updated_at": "2026-11-25T12:49:09.567872+00:00",
+  "last_upload_epoch": 1795610949,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9200,6 +9200,12 @@
       "title": "Why 200 Nations Just Failed to Save the Planet",
       "topic": "What failure of COP31 reveals about a divided world",
       "published_at": "2026-11-25T05:21:37.201899+00:00"
+    },
+    {
+      "video_id": "J0V2MrabP4g",
+      "title": "Why Huawei's Trade Secret Win Isn't a Total Victory",
+      "topic": "Huawei found guilty of stealing US trade secrets but acquitted of racketeering",
+      "published_at": "2026-11-25T12:49:09.567872+00:00"
     }
   ]
 }

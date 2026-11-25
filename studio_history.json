@@ -90,6 +90,13 @@
       "title": "Why 200 Nations Just Failed to Save the Planet",
       "style": "abhi_niyu",
       "utc": "2026-11-25T05:21:37.201100+00:00"
+    },
+    {
+      "topic": "Huawei found guilty of stealing US trade secrets but acquitted of racketeering",
+      "long_id": "J0V2MrabP4g",
+      "title": "Why Huawei's Trade Secret Win Isn't a Total Victory",
+      "style": "think_school",
+      "utc": "2026-11-25T12:49:09.567110+00:00"
     }
   ],
   "uploads": {
@@ -248,6 +255,18 @@
       "video_id": "sHOeTpvB0Fg",
       "title": "Why 200 Nations Just Failed to Save the Planet #Shorts",
       "uploaded_utc": "2026-11-25T05:21:41.724802+00:00"
+    },
+    "89c5aa5886a22a619105-long": {
+      "status": "uploaded",
+      "video_id": "J0V2MrabP4g",
+      "title": "Why Huawei's Trade Secret Win Isn't a Total Victory",
+      "uploaded_utc": "2026-11-25T12:49:04.115201+00:00"
+    },
+    "89c5aa5886a22a619105-short": {
+      "status": "uploaded",
+      "video_id": "2xRKUXO9Eug",
+      "title": "Why Huawei's Trade Secret Win Isn't a Total Victory #Shorts",
+      "uploaded_utc": "2026-11-25T12:49:13.623378+00:00"
     }
   },
   "legacy_titles": [
@@ -299,6 +318,7 @@
     "Why the World's Longest Climate Summit Just Failed",
     "Why 24 Workers Died in This Indonesian Factory",
     "Why Ukraine Just Struck Russia in Libya",
-    "Why Your Winter Bill Is About to Shock You"
+    "Why Your Winter Bill Is About to Shock You",
+    "Why 200 Nations Just Failed to Save the Planet"
   ]
 }
