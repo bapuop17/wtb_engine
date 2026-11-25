@@ -4,6 +4,7 @@ import os
 import math
 import re
 from .common import StudioError, save_json
+from .v107_minimal_cinema import assign_v107_scene_archetypes
 
 KINDS = {
     "footage", "photo", "evidence", "chart", "timeline", "diagram",
@@ -532,7 +533,7 @@ def create_plan(dossier, brain, out, requested_style="auto"):
     facts = dossier.get("facts", [])
 
     single_pass_prompt = (
-        f"Write ONE complete, gripping, continuous {style_meta['label']} YouTube video script (16 to 18 beats, 620 to 780 total spoken words) for World Talk Brief.\n"
+        f"Write PART 1 of a gripping, continuous 10-12 minute {style_meta['label']} YouTube documentary (18 to 22 beats, 780 to 940 spoken words) for World Talk Brief.\n"
         f"{style_meta['structure']}\n"
         "STRICT QUALITY RULES (2026-2027 YOUTUBE RETENTION STANDARD):\n"
         "1. TITLE: Write a high-CTR curiosity-gap title (under 75 chars, like Think School or Johnny Harris, e.g. 'Why [Actor] Just Made This Shocking Move').\n"
@@ -588,7 +589,7 @@ def create_plan(dossier, brain, out, requested_style="auto"):
             last_nar = str(raw_beats[-1].get("narration", ""))[:220]
             covered_chapters = [str(b.get("chapter", "")) for b in raw_beats]
             part2_prompt = (
-                f"Write PART 2 (14 to 16 MORE beats, IDs B{len(raw_beats)+1:02d} to B{len(raw_beats)+16:02d}, ~620-750 additional words) "
+                f"Write PART 2 (18 to 22 MORE beats, IDs B{len(raw_beats)+1:02d} to B{len(raw_beats)+22:02d}, ~780-940 additional words so total video runs 10-12 minutes) "
                 f"continuing this {style_meta['label']} documentary seamlessly from the last beat.\n"
                 "CRITICAL RULES:\n"
                 "1. NEVER re-introduce the topic or repeat Act 1! Continue directly from the last beat.\n"
@@ -609,7 +610,7 @@ def create_plan(dossier, brain, out, requested_style="auto"):
             p2_beats = p2.get("beats") or p2.get("scenes") or []
             if len(p2_beats) >= 6:
                 seen_ids = {b.get("id") for b in raw_beats}
-                for b2 in p2_beats[:16]:
+                for b2 in p2_beats[:24]:
                     bid = b2.get("id") or f"B{len(raw_beats)+1:02d}"
                     if bid in seen_ids:
                         bid = f"B{len(raw_beats)+1:02d}"
@@ -632,6 +633,7 @@ def create_plan(dossier, brain, out, requested_style="auto"):
     min_w = 240
     plan = _auto_heal_plan(plan, dossier, style_key, min_w)
     validate_plan(plan, dossier, minimum_words=min_w)
+    assign_v107_scene_archetypes(plan["beats"], category=dossier.get("category", "geopolitics"))
     plan["editorial_audit"] = {"passed": True, "issues": [], "notes": "V96 single-pass cohesive script verified."}
     save_json(out / "storyboard.json", plan)
     (out / "narration.txt").write_text("\n\n".join(b["narration"] for b in plan["beats"]), encoding="utf-8")
