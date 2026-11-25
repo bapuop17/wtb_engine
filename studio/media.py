@@ -305,6 +305,155 @@ def serper_google_videos(query, work_dir, max_clips=2):
     return results
 
 
+
+
+def gdelt_news_photos(query, max_results=10):
+    """V105: 100% FREE, ZERO API KEY — GDELT DOC 2.0 Global News Press Photos (100+ countries, 65 languages, updated every 15m)."""
+    clean_q = re.sub(r"[^\w\s-]", " ", str(query or "")).strip()
+    if not clean_q:
+        return []
+    results = []
+    seen = set()
+    try:
+        r = request(
+            "GET",
+            "https://api.gdeltproject.org/api/v2/doc/doc",
+            params={
+                "query": clean_q,
+                "mode": "ArtList",
+                "format": "json",
+                "maxrecords": max(15, max_results * 2),
+                "sort": "HybridRel",
+            },
+            timeout=14,
+            retries=0,
+        )
+        data = r.json()
+        for art in (data.get("articles") or []):
+            img_u = str(art.get("socialimage") or "").strip()
+            page_u = str(art.get("url") or img_u).strip()
+            title = str(art.get("title") or clean_q).strip()
+            if not img_u.startswith("http") or img_u in seen:
+                continue
+            dom = (urlparse(img_u).hostname or "").lower()
+            low_meta = (title + " " + img_u + " " + page_u).lower()
+            if any(bad in dom for bad in BAD_IMG_DOMAINS) or any(jt in low_meta for jt in JUNK_MEDIA_TERMS):
+                continue
+            seen.add(img_u)
+            results.append({
+                "provider": "GDELT Global Press",
+                "kind": "photo",
+                "url": img_u,
+                "page_url": page_u,
+                "caption": title,
+                "creator": art.get("domain") or "Global News Wire",
+                "license": "Editorial News",
+                "license_url": page_u,
+                "date": str(art.get("seendate") or "recent")[:8],
+                "label": f"PRESS PHOTO • {title.upper()[:28]}",
+            })
+            if len(results) >= max_results:
+                break
+    except Exception:
+        pass
+    return results
+
+
+def tavily_web_images(query, max_results=8):
+    """V105: Optional Free Tavily Search API (TAVILY_API_KEY) — AI-ranked real web & news images with descriptions."""
+    api_key = os.getenv("TAVILY_API_KEY", "").strip()
+    clean_q = re.sub(r"[^\w\s-]", " ", str(query or "")).strip()
+    if not api_key or not clean_q:
+        return []
+    results = []
+    try:
+        r = request(
+            "POST",
+            "https://api.tavily.com/search",
+            json={
+                "api_key": api_key,
+                "query": f"{clean_q} news photograph",
+                "search_depth": "basic",
+                "include_images": True,
+                "include_image_descriptions": True,
+                "max_results": 5,
+            },
+            timeout=15,
+            retries=0,
+        ).json()
+        for item in (r.get("images") or []):
+            img_u = item.get("url") if isinstance(item, dict) else str(item)
+            desc = (item.get("description") if isinstance(item, dict) else clean_q) or clean_q
+            if not img_u or not str(img_u).startswith("http"):
+                continue
+            dom = (urlparse(img_u).hostname or "").lower()
+            low_meta = (str(desc) + " " + img_u).lower()
+            if any(bad in dom for bad in BAD_IMG_DOMAINS) or any(jt in low_meta for jt in JUNK_MEDIA_TERMS):
+                continue
+            results.append({
+                "provider": "Tavily Web Images",
+                "kind": "photo",
+                "url": img_u,
+                "page_url": img_u,
+                "caption": str(desc)[:140],
+                "creator": dom or "Web News",
+                "license": "Editorial News",
+                "license_url": img_u,
+                "date": "recent",
+                "label": f"WEB NEWS PHOTO • {clean_q.upper()[:26]}",
+            })
+            if len(results) >= max_results:
+                break
+    except Exception:
+        pass
+    return results
+
+
+def brave_web_images(query, max_results=8):
+    """V105: Optional Free Brave Search API (BRAVE_API_KEY) — Independent open-web news photo index."""
+    api_key = os.getenv("BRAVE_API_KEY", "").strip()
+    clean_q = re.sub(r"[^\w\s-]", " ", str(query or "")).strip()
+    if not api_key or not clean_q:
+        return []
+    results = []
+    try:
+        r = request(
+            "GET",
+            "https://api.search.brave.com/res/v1/images/search",
+            headers={"X-Subscription-Token": api_key, "Accept": "application/json"},
+            params={"q": f"{clean_q} news photo", "count": max_results, "safesearch": "moderate"},
+            timeout=15,
+            retries=0,
+        ).json()
+        for item in (r.get("results") or []):
+            props = item.get("properties") or {}
+            img_u = props.get("url") or (item.get("thumbnail") or {}).get("src") or ""
+            page_u = item.get("url") or img_u
+            title = str(item.get("title") or clean_q).strip()
+            if not img_u.startswith("http"):
+                continue
+            dom = (urlparse(img_u).hostname or "").lower()
+            low_meta = (title + " " + img_u + " " + page_u).lower()
+            if any(bad in dom for bad in BAD_IMG_DOMAINS) or any(jt in low_meta for jt in JUNK_MEDIA_TERMS):
+                continue
+            results.append({
+                "provider": "Brave Web Images",
+                "kind": "photo",
+                "url": img_u,
+                "fallback_url": (item.get("thumbnail") or {}).get("src") or "",
+                "page_url": page_u,
+                "caption": title,
+                "creator": item.get("source") or dom or "Web News",
+                "license": "Editorial News",
+                "license_url": page_u,
+                "date": "recent",
+                "label": f"WEB PHOTO • {title.upper()[:28]}",
+            })
+    except Exception:
+        pass
+    return results
+
+
 def wikipedia_entity_photos(query, max_results=5):
     """V98.4: 100% Free, zero-key, never-blocked Wikipedia PageImages API for exact faces, leaders, suspects, landmarks & events."""
     clean_q = re.sub(r"[^\w\s-]", " ", str(query or "")).strip()
@@ -730,10 +879,13 @@ class Media:
             alt_q = query if len(query.split()) <= 5 else " ".join(query.split()[:5])
             photo_key = (alt_q.lower(), "photo")
             if photo_key not in self.cache:
-                found = serper_google_images(alt_q, max_results=6) + wikipedia_entity_photos(alt_q, max_results=3)
-                for ap in self.article_photos:
-                    if self.uses.get(ap["url"], 0) == 0:
-                        found.append(ap)
+                found = (
+                    serper_google_images(alt_q, max_results=6)
+                    + gdelt_news_photos(alt_q, max_results=5)
+                    + tavily_web_images(alt_q, max_results=4)
+                    + brave_web_images(alt_q, max_results=4)
+                    + wikipedia_entity_photos(alt_q, max_results=3)
+                )
                 q_kws = [w.lower() for w in re.findall(r"[A-Za-z]{4,}", alt_q)]
                 for item in ddgs_news_photos(alt_q, max_results=12):
                     cap_l = (item.get("caption", "") + " " + item.get("url", "")).lower()
@@ -799,14 +951,19 @@ class Media:
                         continue
             else:
                 # V98.4 Exact Script-to-Visual Priority:
-                # 0) Serper.dev REAL Google Images (if SERPER_API_KEY configured — exact faces/events!)
+                # 0) Serper.dev REAL Google Images (exact faces/events from across the whole web!)
                 found.extend(serper_google_images(query, max_results=8))
-                # 1) Wikipedia Entity Photos (exact faces, leaders, suspects, landmarks, incidents)
-                found.extend(wikipedia_entity_photos(query, max_results=4))
-                # 2) Real Breaking-News Press Photos from the exact researched articles
-                for ap in self.article_photos:
-                    if self.uses.get(ap["url"], 0) == 0:
-                        found.append(ap)
+                # 1) GDELT DOC 2.0 Global Press Photos (100% free, zero-key, 100+ countries breaking news photos!)
+                if len(found) < 6:
+                    found.extend(gdelt_news_photos(query, max_results=6))
+                # 2) Tavily & Brave Open-Web Image APIs (if optional free keys set)
+                if len(found) < 6:
+                    found.extend(tavily_web_images(query, max_results=5))
+                if len(found) < 6:
+                    found.extend(brave_web_images(query, max_results=5))
+                # 3) Wikipedia Entity Photos (exact faces, leaders, landmarks, incidents)
+                if len(found) < 8:
+                    found.extend(wikipedia_entity_photos(query, max_results=4))
                 # 3) Relevance-filtered DuckDuckGo News Photos
                 q_kws = [w.lower() for w in re.findall(r"[A-Za-z]{4,}", query)]
                 for item in ddgs_news_photos(query, max_results=12):
