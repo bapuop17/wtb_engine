@@ -76,6 +76,13 @@
       "title": "Why Ukraine Just Struck Russia in Libya",
       "style": "think_school",
       "utc": "2026-11-24T07:01:31.516981+00:00"
+    },
+    {
+      "topic": "Households braced for soaring energy bills with new price cap to be announced",
+      "long_id": "zhSaPHVIIDU",
+      "title": "Why Your Winter Bill Is About to Shock You",
+      "style": "abhi_niyu",
+      "utc": "2026-11-25T00:56:59.940787+00:00"
     }
   ],
   "uploads": {
@@ -210,6 +217,18 @@
       "video_id": "IkTWW7Qvuh4",
       "title": "Why Ukraine Just Struck Russia in Libya #Shorts",
       "uploaded_utc": "2026-11-24T07:01:35.707358+00:00"
+    },
+    "69919f946941424abfbb-long": {
+      "status": "uploaded",
+      "video_id": "zhSaPHVIIDU",
+      "title": "Why Your Winter Bill Is About to Shock You",
+      "uploaded_utc": "2026-11-25T00:56:57.285479+00:00"
+    },
+    "69919f946941424abfbb-short": {
+      "status": "uploaded",
+      "video_id": "9NmsIc7hCgQ",
+      "title": "Why Your Winter Bill Is About to Shock You #Shorts",
+      "uploaded_utc": "2026-11-25T00:57:01.981788+00:00"
     }
   },
   "legacy_titles": [
@@ -259,6 +278,7 @@
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
     "Why the World's Longest Climate Summit Just Failed",
-    "Why 24 Workers Died in This Indonesian Factory"
+    "Why 24 Workers Died in This Indonesian Factory",
+    "Why Ukraine Just Struck Russia in Libya"
   ]
 }

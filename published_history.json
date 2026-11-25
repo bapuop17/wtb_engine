@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-24T07:01:31.518061+00:00",
-  "last_upload_epoch": 1795503691,
+  "updated_at": "2026-11-25T00:56:59.941402+00:00",
+  "last_upload_epoch": 1795568219,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9188,6 +9188,12 @@
       "title": "Why Ukraine Just Struck Russia in Libya",
       "topic": "What strike on Russian ship in Libya says about spread of Ukraine war",
       "published_at": "2026-11-24T07:01:31.518061+00:00"
+    },
+    {
+      "video_id": "zhSaPHVIIDU",
+      "title": "Why Your Winter Bill Is About to Shock You",
+      "topic": "Households braced for soaring energy bills with new price cap to be announced",
+      "published_at": "2026-11-25T00:56:59.941402+00:00"
     }
   ]
 }
