@@ -505,6 +505,13 @@ def _auto_heal_plan(plan, dossier, style_key, min_words):
                 v["kind"] = "photo"
                 v["query"] = f"{topic_q} {v.get('headline', '')}".strip()[:60]
                 v["data"] = {}
+        if v.get("kind") in {"photo", "footage"}:
+            q_str = str(v.get("query") or v.get("headline") or topic_q).strip() or topic_q
+            v["query"] = q_str
+            mi = [str(x).strip() for x in (v.get("must_include") or []) if str(x).strip()]
+            if not mi:
+                mi = [w for w in re.findall(r"[A-Za-z0-9]{3,}", q_str)[:2]] or ["News"]
+            v["must_include"] = mi[:3]
         b["visual"] = v
 
     plan["beats"] = healed_beats
