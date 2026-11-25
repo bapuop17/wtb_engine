@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-25T12:49:09.567872+00:00",
-  "last_upload_epoch": 1795610949,
+  "updated_at": "2026-11-25T16:05:24.049107+00:00",
+  "last_upload_epoch": 1795622724,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9206,6 +9206,12 @@
       "title": "Why Huawei's Trade Secret Win Isn't a Total Victory",
       "topic": "Huawei found guilty of stealing US trade secrets but acquitted of racketeering",
       "published_at": "2026-11-25T12:49:09.567872+00:00"
+    },
+    {
+      "video_id": "qSHMoCO2t1o",
+      "title": "Norway Just Killed Its Last Coal Mine",
+      "topic": "Norway Has Closed Its Last Coal Mine, Ending a Way of Life in the Arctic",
+      "published_at": "2026-11-25T16:05:24.049107+00:00"
     }
   ]
 }

@@ -97,6 +97,13 @@
       "title": "Why Huawei's Trade Secret Win Isn't a Total Victory",
       "style": "think_school",
       "utc": "2026-11-25T12:49:09.567110+00:00"
+    },
+    {
+      "topic": "Norway Has Closed Its Last Coal Mine, Ending a Way of Life in the Arctic",
+      "long_id": "qSHMoCO2t1o",
+      "title": "Norway Just Killed Its Last Coal Mine",
+      "style": "bbc_dispatch",
+      "utc": "2026-11-25T16:05:24.048464+00:00"
     }
   ],
   "uploads": {
@@ -267,6 +274,18 @@
       "video_id": "2xRKUXO9Eug",
       "title": "Why Huawei's Trade Secret Win Isn't a Total Victory #Shorts",
       "uploaded_utc": "2026-11-25T12:49:13.623378+00:00"
+    },
+    "8bebc6bef9c599cad22e-long": {
+      "status": "uploaded",
+      "video_id": "qSHMoCO2t1o",
+      "title": "Norway Just Killed Its Last Coal Mine",
+      "uploaded_utc": "2026-11-25T16:05:21.904831+00:00"
+    },
+    "8bebc6bef9c599cad22e-short": {
+      "status": "uploaded",
+      "video_id": "jCUhn6C2tkQ",
+      "title": "Norway Just Killed Its Last Coal Mine #Shorts",
+      "uploaded_utc": "2026-11-25T16:05:26.563287+00:00"
     }
   },
   "legacy_titles": [
@@ -319,6 +338,7 @@
     "Why 24 Workers Died in This Indonesian Factory",
     "Why Ukraine Just Struck Russia in Libya",
     "Why Your Winter Bill Is About to Shock You",
-    "Why 200 Nations Just Failed to Save the Planet"
+    "Why 200 Nations Just Failed to Save the Planet",
+    "Why Huawei's Trade Secret Win Isn't a Total Victory"
   ]
 }
