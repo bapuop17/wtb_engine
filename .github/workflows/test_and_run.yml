@@ -1,4 +1,4 @@
-name: WTB Studio V103 (Unified Cinema VFX + Real Google Video/Photo + Kokoro-82M) (Serper Google Images + AI Vision Match + Face-Focus Zoom + Kokoro-82M) - Global News & Documentary Automation
+name: WTB Studio V107 (20-Scene Adaptive Documentary Cinema + Real Web Footage + Kokoro-82M) - Global News & Geopolitics Automation
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ on:
         type: string
         default: ''
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '0 */3 * * *'
 
 permissions:
   contents: write
