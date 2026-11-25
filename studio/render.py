@@ -285,26 +285,42 @@ class Canvas:
             else:
                 cropped = anamorphic_light_leak_transition(prev_im, cropped, alpha)
 
-        # Kinetic 3-Word Impact Callout Pop-Up (Think School / Nitish Rajput style) during first 3.5s
+        return self._draw_kinetic_callout_vfx(cropped, t, duration)
+
+    def _draw_kinetic_callout_vfx(self, base_im, t, duration):
+        """V103 Kinetic Draw-On VFX: animated stroke border drawing itself, sweeping gold underline, pulsing live dot & spring pop-in."""
+        w, h, s, p = self.w, self.h, self.s, self.pad
         data = self.beat["visual"].get("data", {})
         callout = data.get("callout") or data.get("metric_badge")
-        if not callout and t >= 0.4 and t <= min(4.2, duration - 0.4):
+        if not callout and t >= 0.35 and t <= min(4.8, duration - 0.3):
             hl_words = [w_s for w_s in str(self.beat["visual"].get("headline", "")).split() if len(w_s) > 2][:4]
             callout = " ".join(hl_words) if hl_words else ""
-        if callout and t >= 0.35:
-            pop = max(0.0, min(1.05, spring_ease(min(1.0, (t - 0.35) / 0.52))))
-            layer = cropped.convert("RGBA")
-            d = ImageDraw.Draw(layer)
-            cw, ch = int(w * (0.62 if self.portrait else 0.34)), int(78 * s)
-            cx = int(p - (1.0 - pop) * 90 * s)
-            cy = int(h * (0.115 if self.portrait else 0.62))
-            d.rounded_rectangle((cx, cy, cx + cw, cy + ch), radius=int(8 * s), fill=(*self.ink, int(218 * pop)), outline=(*self.accent, int(235 * pop)), width=max(1, int(2.5 * s)))
-            d.rectangle((cx, cy, cx + int(8 * s), cy + ch), fill=(*self.accent, int(255 * pop)))
-            text_block(layer, str(callout).upper(), (cx + int(20 * s), cy + int(12 * s), cw - int(28 * s), int(32 * s)), 23 * s, (254, 240, 138), True, 1)
+        layer = base_im.convert("RGBA")
+        d = ImageDraw.Draw(layer)
+        # Subtle pulsing live editorial telemetry dot in top-right corner
+        pulse = 0.55 + 0.45 * math.sin(t * 5.2)
+        rx, ry = w - p - int(18 * s), int(34 * s)
+        d.ellipse((rx - int(10 * s), ry - int(10 * s), rx + int(10 * s), ry + int(10 * s)), fill=(*self.accent, int(90 * pulse)))
+        d.ellipse((rx - int(5 * s), ry - int(5 * s), rx + int(5 * s), ry + int(5 * s)), fill=(*self.accent, 245))
+        if callout and t >= 0.30:
+            pop = max(0.0, min(1.04, spring_ease(min(1.0, (t - 0.30) / 0.48))))
+            draw_prog = ease(min(1.0, max(0.0, (t - 0.35) / 0.65)))
+            cw, ch = int(w * (0.66 if self.portrait else 0.36)), int(88 * s)
+            cx = int(p - (1.0 - pop) * 110 * s)
+            cy = int(h * (0.115 if self.portrait else 0.60))
+            # Glass panel + animated draw-on accent bar & bottom sweeping underline
+            d.rounded_rectangle((cx, cy, cx + cw, cy + ch), radius=int(10 * s), fill=(*self.ink, int(224 * pop)))
+            # Vertical bar draws top-to-bottom
+            bar_h = int(ch * draw_prog)
+            d.rectangle((cx, cy, cx + int(9 * s), cy + bar_h), fill=(*self.accent, 255))
+            # Top & bottom glowing border lines draw left-to-right
+            line_w = int(cw * draw_prog)
+            d.line((cx, cy, cx + line_w, cy), fill=(*self.accent, 240), width=max(2, int(3 * s)))
+            d.line((cx, cy + ch, cx + line_w, cy + ch), fill=(250, 204, 21, 220), width=max(2, int(3 * s)))
+            text_block(layer, str(callout).upper(), (cx + int(22 * s), cy + int(12 * s), cw - int(32 * s), int(34 * s)), 24 * s, (254, 240, 138), True, 1)
             sub = (data.get("callout_sub") or self.beat.get("chapter", "WORLD TALK BRIEF")).upper()[:54]
-            text_block(layer, sub, (cx + int(20 * s), cy + int(44 * s), cw - int(28 * s), int(26 * s)), 16 * s, WHITE, False, 1)
-            return layer.convert("RGB")
-        return cropped
+            text_block(layer, sub, (cx + int(22 * s), cy + int(50 * s), cw - int(32 * s), int(26 * s)), 16 * s, WHITE, False, 1)
+        return layer.convert("RGB")
 
     def frame(self, t, duration, video_frame=None):
         w, h, s, p = self.w, self.h, self.s, self.pad
@@ -313,8 +329,12 @@ class Canvas:
         im = self.bg.copy()
         if video_frame is not None and kind == "footage":
             im = Image.frombytes("RGB", (w, h), video_frame)
+            im = apply_cinema_film_finish(im, frame_seed=int(t * 24), grain_amount=2.5, vignette_strength=0.25)
+            im = self._draw_kinetic_callout_vfx(im, t, duration)
         elif self.still is not None and kind in {"photo", "footage"}:
             im = self._render_full_bleed_still(self.still, t, duration)
+        elif self.extra_stills and kind in {"photo", "footage"}:
+            im = self._render_full_bleed_still(self.extra_stills[0], t, duration)
         else:
             d = ImageDraw.Draw(im)
             top, bottom = (int(h * 0.24), int(h * 0.60)) if self.portrait else (int(h * 0.285), int(h * 0.775))
