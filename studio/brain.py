@@ -126,10 +126,10 @@ class Brain:
             if nv_mods is None:
                 # Live Nov 2026 NVIDIA NIM free endpoints + dynamic /v1/models check
                 preferred = [
-                    "nvidia/nemotron-3.5-lightning-30b-a3b",
-                    "nvidia/nemotron-3.5-super-vl-120b-a12b",
-                    "deepseek-ai/deepseek-v4.1-flash",
                     "nvidia/nemotron-3-ultra-550b-a55b",
+                    "deepseek-ai/deepseek-v4.1-flash",
+                    "nvidia/nemotron-3-nano-30b-a3b",
+                    "meta/llama-4-maverick-17b-128e-instruct",
                 ]
                 try:
                     import requests as _rq
@@ -200,14 +200,16 @@ class Brain:
                 json={
                     "model": nv_model,
                     "temperature": 0.35,
-                    "max_tokens": 4096 if not image else 256,
+                    "max_tokens": 4096 if not image else 1024,
                     "messages": [
                         {"role": "system", "content": system + " Respond ONLY with a valid JSON object."},
                         {"role": "user", "content": user_content},
                     ],
                 },
             ).json()
-            return parse_json(res["choices"][0]["message"]["content"])
+            msg = res["choices"][0]["message"]
+            txt = (msg.get("content") or "").strip() or (msg.get("reasoning_content") or "").strip()
+            return parse_json(txt)
         if provider == "groq":
             body = {"model": model, "temperature": 0.35, "max_tokens": 4500, "response_format": {"type": "json_object"},
                     "messages": [{"role": "system", "content": system + " Respond ONLY with a valid JSON object."}, {"role": "user", "content": payload_text[:13500]}]}
@@ -274,7 +276,7 @@ class Brain:
             except Exception as exc:
                 last_err = exc
                 err_s = str(exc)
-                if any(c in err_s for c in ("HTTP 404", "HTTP 410", "HTTP 401", "HTTP 403", "HTTP 400", "network request failed")):
+                if any(c in err_s for c in ("HTTP 404", "HTTP 410", "HTTP 401", "HTTP 403", "HTTP 400", "network request failed", "Expecting value: line 1 column 1")):
                     self._dead_routes.add((prov, mod))
                 if "network request failed" in err_s:
                     self._dead_providers.add(prov)
