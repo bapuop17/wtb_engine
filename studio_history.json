@@ -83,6 +83,13 @@
       "title": "Why Your Winter Bill Is About to Shock You",
       "style": "abhi_niyu",
       "utc": "2026-11-25T00:56:59.940787+00:00"
+    },
+    {
+      "topic": "What failure of COP31 reveals about a divided world",
+      "long_id": "s5zOxso32Jo",
+      "title": "Why 200 Nations Just Failed to Save the Planet",
+      "style": "abhi_niyu",
+      "utc": "2026-11-25T05:21:37.201100+00:00"
     }
   ],
   "uploads": {
@@ -229,6 +236,18 @@
       "video_id": "9NmsIc7hCgQ",
       "title": "Why Your Winter Bill Is About to Shock You #Shorts",
       "uploaded_utc": "2026-11-25T00:57:01.981788+00:00"
+    },
+    "2baabcbd68c64338c8f5-long": {
+      "status": "uploaded",
+      "video_id": "s5zOxso32Jo",
+      "title": "Why 200 Nations Just Failed to Save the Planet",
+      "uploaded_utc": "2026-11-25T05:21:32.500953+00:00"
+    },
+    "2baabcbd68c64338c8f5-short": {
+      "status": "uploaded",
+      "video_id": "sHOeTpvB0Fg",
+      "title": "Why 200 Nations Just Failed to Save the Planet #Shorts",
+      "uploaded_utc": "2026-11-25T05:21:41.724802+00:00"
     }
   },
   "legacy_titles": [
@@ -279,6 +298,7 @@
     "Japan Scrambles Jets: Russia's Tsushima Strait Breach Explained",
     "Why the World's Longest Climate Summit Just Failed",
     "Why 24 Workers Died in This Indonesian Factory",
-    "Why Ukraine Just Struck Russia in Libya"
+    "Why Ukraine Just Struck Russia in Libya",
+    "Why Your Winter Bill Is About to Shock You"
   ]
 }
