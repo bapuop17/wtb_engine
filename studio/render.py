@@ -297,6 +297,24 @@ class Canvas:
             callout = " ".join(hl_words) if hl_words else ""
         layer = base_im.convert("RGBA")
         d = ImageDraw.Draw(layer)
+        # V104 Vox / Johnny Harris Draw-On Corner Focus Brackets (animating smoothly inward during first 0.55s)
+        brk_p = ease(min(1.0, max(0.0, t / 0.55)))
+        inset = int((42 - 18 * brk_p) * s)
+        blen = int(34 * s * brk_p)
+        b_col = (*self.accent, int(195 * brk_p))
+        bw = max(2, int(3 * s))
+        if blen > 4:
+            # Top-left & Top-right brackets
+            d.line((inset, inset, inset + blen, inset), fill=b_col, width=bw)
+            d.line((inset, inset, inset, inset + blen), fill=b_col, width=bw)
+            d.line((w - inset, inset, w - inset - blen, inset), fill=b_col, width=bw)
+            d.line((w - inset, inset, w - inset, inset + blen), fill=b_col, width=bw)
+            # Bottom-left & Bottom-right brackets above safe caption zone
+            by = int(h * (0.86 if self.portrait else 0.90))
+            d.line((inset, by, inset + blen, by), fill=b_col, width=bw)
+            d.line((inset, by, inset, by - blen), fill=b_col, width=bw)
+            d.line((w - inset, by, w - inset - blen, by), fill=b_col, width=bw)
+            d.line((w - inset, by, w - inset, by - blen), fill=b_col, width=bw)
         # Subtle pulsing live editorial telemetry dot in top-right corner
         pulse = 0.55 + 0.45 * math.sin(t * 5.2)
         rx, ry = w - p - int(18 * s), int(34 * s)
