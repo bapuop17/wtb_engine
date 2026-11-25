@@ -145,19 +145,46 @@ def render_dedicated_short(short_beats, dossier, audio_by_id, out_mp4, cfg, styl
                 for i in range(n_chunks)
             ]
 
-            for f_i in range(nframes):
-                t_local = f_i / float(fps)
-                t_global = elapsed + t_local
-                im = canvas.frame(t_local, dur)
-                # Sleek top retention progress bar across full Short duration
-                d = ImageDraw.Draw(im)
-                d.rectangle((0, 0, w, 10), fill=(15, 23, 42))
-                d.rectangle((0, 0, int(w * min(1.0, t_global / max(0.1, total_dur))), 10), fill=accent)
-                # Active word-by-word highlighted vertical captions
-                im = draw_shorts_word_highlight_captions(im, cues, t_local, accent_color=(250, 204, 21))
-                if b_idx > 0 and t_local < 0.14:
-                    im = Image.blend(Image.new("RGB", (w, h), theme["ink"]), im, t_local / 0.14)
-                encoder.stdin.write(im.tobytes())
+            # V103: Decode real HD footage MP4 clips natively in 9:16 Shorts (no more beige cards replacing video!)
+            decoder = None
+            frame_bytes = w * h * 3
+            asset = beat.get("asset") or {}
+            if asset.get("kind") == "footage" and asset.get("path") and Path(asset["path"]).exists():
+                decoder = subprocess.Popen(
+                    [
+                        ffmpeg(), "-v", "error", "-nostdin", "-stream_loop", "-1", "-i", str(asset["path"]),
+                        "-an", "-vf", f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},fps={fps}",
+                        "-t", str(dur + 0.5), "-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1",
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                )
+
+            try:
+                for f_i in range(nframes):
+                    t_local = f_i / float(fps)
+                    t_global = elapsed + t_local
+                    v_data = None
+                    if decoder:
+                        raw_f = decoder.stdout.read(frame_bytes)
+                        if len(raw_f) == frame_bytes:
+                            v_data = raw_f
+                    im = canvas.frame(t_local, dur, v_data)
+                    # Sleek top retention progress bar across full Short duration
+                    d = ImageDraw.Draw(im)
+                    d.rectangle((0, 0, w, 10), fill=(15, 23, 42))
+                    d.rectangle((0, 0, int(w * min(1.0, t_global / max(0.1, total_dur))), 10), fill=accent)
+                    # Active word-by-word highlighted vertical captions
+                    im = draw_shorts_word_highlight_captions(im, cues, t_local, accent_color=(250, 204, 21))
+                    if b_idx > 0 and t_local < 0.14:
+                        im = Image.blend(Image.new("RGB", (w, h), theme["ink"]), im, t_local / 0.14)
+                    encoder.stdin.write(im.tobytes())
+            finally:
+                if decoder:
+                    if decoder.poll() is None:
+                        decoder.kill()
+                    decoder.wait()
+                    decoder.stdout.close()
             elapsed += dur
         encoder.stdin.close()
         encoder.wait(timeout=240)
