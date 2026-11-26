@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-26T03:37:53.176344+00:00",
-  "last_upload_epoch": 1795664273,
+  "updated_at": "2026-11-26T12:02:35.732210+00:00",
+  "last_upload_epoch": 1795694555,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9224,6 +9224,12 @@
       "title": "Why Poundland's Collapse Threatens 11,000 Jobs",
       "topic": "Poundland collapses putting 11,000 jobs at risk",
       "published_at": "2026-11-26T03:37:53.176344+00:00"
+    },
+    {
+      "video_id": "0Q7HntOWh9I",
+      "title": "NASA Hit Asteroid: Did They Save Earth?",
+      "topic": "Nasa knocked an asteroid off course. New closeup photos shed light on aftermath",
+      "published_at": "2026-11-26T12:02:35.732210+00:00"
     }
   ]
 }

@@ -118,6 +118,13 @@
       "title": "Why Poundland's Collapse Threatens 11,000 Jobs",
       "style": "abhi_niyu",
       "utc": "2026-11-26T03:37:53.175693+00:00"
+    },
+    {
+      "topic": "Nasa knocked an asteroid off course. New closeup photos shed light on aftermath",
+      "long_id": "0Q7HntOWh9I",
+      "title": "NASA Hit Asteroid: Did They Save Earth?",
+      "style": "think_school",
+      "utc": "2026-11-26T12:02:35.731481+00:00"
     }
   ],
   "uploads": {
@@ -324,6 +331,18 @@
       "video_id": "5_yHPLuqUf0",
       "title": "Why Poundland's Collapse Threatens 11,000 Jobs #Shorts",
       "uploaded_utc": "2026-11-26T03:37:56.778211+00:00"
+    },
+    "6fa6da7808ecb8565360-long": {
+      "status": "uploaded",
+      "video_id": "0Q7HntOWh9I",
+      "title": "NASA Hit Asteroid: Did They Save Earth?",
+      "uploaded_utc": "2026-11-26T12:02:33.128656+00:00"
+    },
+    "6fa6da7808ecb8565360-short": {
+      "status": "uploaded",
+      "video_id": "WKXNNtreVAA",
+      "title": "NASA Hit Asteroid: Did They Save Earth? #Shorts",
+      "uploaded_utc": "2026-11-26T12:02:38.312454+00:00"
     }
   },
   "legacy_titles": [
@@ -379,6 +398,7 @@
     "Why 200 Nations Just Failed to Save the Planet",
     "Why Huawei's Trade Secret Win Isn't a Total Victory",
     "Norway Just Killed Its Last Coal Mine",
-    "Did NASA Actually Deflect an Asteroid? The DART Test"
+    "Did NASA Actually Deflect an Asteroid? The DART Test",
+    "Why Poundland's Collapse Threatens 11,000 Jobs"
   ]
 }
