@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-25T16:05:24.049107+00:00",
-  "last_upload_epoch": 1795622724,
+  "updated_at": "2026-11-26T01:38:09.939465+00:00",
+  "last_upload_epoch": 1795657089,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9212,6 +9212,12 @@
       "title": "Norway Just Killed Its Last Coal Mine",
       "topic": "Norway Has Closed Its Last Coal Mine, Ending a Way of Life in the Arctic",
       "published_at": "2026-11-25T16:05:24.049107+00:00"
+    },
+    {
+      "video_id": "4kn-3ucQt5A",
+      "title": "Did NASA Actually Deflect an Asteroid? The DART Test",
+      "topic": "Images of asteroid targeted to test Earth's defences reveal stadium-sized crater",
+      "published_at": "2026-11-26T01:38:09.939465+00:00"
     }
   ]
 }

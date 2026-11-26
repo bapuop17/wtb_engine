@@ -104,6 +104,13 @@
       "title": "Norway Just Killed Its Last Coal Mine",
       "style": "bbc_dispatch",
       "utc": "2026-11-25T16:05:24.048464+00:00"
+    },
+    {
+      "topic": "Images of asteroid targeted to test Earth's defences reveal stadium-sized crater",
+      "long_id": "4kn-3ucQt5A",
+      "title": "Did NASA Actually Deflect an Asteroid? The DART Test",
+      "style": "think_school",
+      "utc": "2026-11-26T01:38:09.938593+00:00"
     }
   ],
   "uploads": {
@@ -286,6 +293,18 @@
       "video_id": "jCUhn6C2tkQ",
       "title": "Norway Just Killed Its Last Coal Mine #Shorts",
       "uploaded_utc": "2026-11-25T16:05:26.563287+00:00"
+    },
+    "04822adf437ff2df12cc-long": {
+      "status": "uploaded",
+      "video_id": "4kn-3ucQt5A",
+      "title": "Did NASA Actually Deflect an Asteroid? The DART Test",
+      "uploaded_utc": "2026-11-26T01:38:07.693891+00:00"
+    },
+    "04822adf437ff2df12cc-short": {
+      "status": "uploaded",
+      "video_id": "PXWzwB1qFV8",
+      "title": "Did NASA Actually Deflect an Asteroid? The DART Test #Shorts",
+      "uploaded_utc": "2026-11-26T01:38:12.399866+00:00"
     }
   },
   "legacy_titles": [
@@ -339,6 +358,7 @@
     "Why Ukraine Just Struck Russia in Libya",
     "Why Your Winter Bill Is About to Shock You",
     "Why 200 Nations Just Failed to Save the Planet",
-    "Why Huawei's Trade Secret Win Isn't a Total Victory"
+    "Why Huawei's Trade Secret Win Isn't a Total Victory",
+    "Norway Just Killed Its Last Coal Mine"
   ]
 }
