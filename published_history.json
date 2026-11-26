@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-26T12:02:35.732210+00:00",
-  "last_upload_epoch": 1795694555,
+  "updated_at": "2026-11-26T21:16:58.074141+00:00",
+  "last_upload_epoch": 1795727818,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9230,6 +9230,12 @@
       "title": "NASA Hit Asteroid: Did They Save Earth?",
       "topic": "Nasa knocked an asteroid off course. New closeup photos shed light on aftermath",
       "published_at": "2026-11-26T12:02:35.732210+00:00"
+    },
+    {
+      "video_id": "klTtQkDmrf4",
+      "title": "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn",
+      "topic": "China’s Huawei convicted of stealing US trade secrets",
+      "published_at": "2026-11-26T21:16:58.074141+00:00"
     }
   ]
 }

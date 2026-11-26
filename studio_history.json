@@ -125,6 +125,13 @@
       "title": "NASA Hit Asteroid: Did They Save Earth?",
       "style": "think_school",
       "utc": "2026-11-26T12:02:35.731481+00:00"
+    },
+    {
+      "topic": "China’s Huawei convicted of stealing US trade secrets",
+      "long_id": "klTtQkDmrf4",
+      "title": "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn",
+      "style": "think_school",
+      "utc": "2026-11-26T21:16:58.073479+00:00"
     }
   ],
   "uploads": {
@@ -343,6 +350,18 @@
       "video_id": "WKXNNtreVAA",
       "title": "NASA Hit Asteroid: Did They Save Earth? #Shorts",
       "uploaded_utc": "2026-11-26T12:02:38.312454+00:00"
+    },
+    "8ae49167ed40303a519e-long": {
+      "status": "uploaded",
+      "video_id": "klTtQkDmrf4",
+      "title": "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn",
+      "uploaded_utc": "2026-11-26T21:16:56.442271+00:00"
+    },
+    "8ae49167ed40303a519e-short": {
+      "status": "uploaded",
+      "video_id": "mG3zvrH7MwA",
+      "title": "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn #Shorts",
+      "uploaded_utc": "2026-11-26T21:17:01.769484+00:00"
     }
   },
   "legacy_titles": [
@@ -399,6 +418,7 @@
     "Why Huawei's Trade Secret Win Isn't a Total Victory",
     "Norway Just Killed Its Last Coal Mine",
     "Did NASA Actually Deflect an Asteroid? The DART Test",
-    "Why Poundland's Collapse Threatens 11,000 Jobs"
+    "Why Poundland's Collapse Threatens 11,000 Jobs",
+    "NASA Hit Asteroid: Did They Save Earth?"
   ]
 }
