@@ -1107,3 +1107,321 @@ def render_v107_beat_frame(
         draw_tracked_text(d, (width * 0.73, height * 0.56), m2_l.upper(), f_l, TEXT_WHITE + (int(240 * p2),), tracking=3.5, anchor="ma")
     draw_source_attribution(d, source_tag, width, height, dot_color=accent)
     return Image.alpha_composite(img, ov).convert("RGB")
+
+
+# ===========================================================================
+# V108 WORD-SYNCED LIVE CHOREOGRAPHY & INSTANT ANIMATED PROPS ENGINE
+# ===========================================================================
+# Fixes the "10-15 second static visual" problem by:
+#   1. Computing exact per-word and per-sentence timestamps from audio["timings"].
+#   2. Detecting spoken props (clock times like 12:00, years like 1958, locations
+#      like Norway/Arctic, numbers/percentages like 51%, and key action stamps)
+#      and popping animated vector props onto screen at the EXACT millisecond spoken.
+#   3. Evolving the active sentence text & camera cadence on EVERY spoken sentence
+#      so the screen is alive every 2-3 seconds instead of freezing for 12 seconds.
+
+_COMMON_NON_PLACES = {
+    "The", "This", "That", "These", "Those", "There", "Their", "They", "When", "Where",
+    "What", "Which", "While", "With", "Without", "Within", "After", "Before", "Because",
+    "However", "Although", "Meanwhile", "Inside", "Outside", "Under", "Over", "Across",
+    "Between", "Through", "During", "Since", "Until", "About", "Against", "Around",
+    "Today", "Tomorrow", "Yesterday", "Now", "Here", "Just", "Even", "Still", "Only",
+    "Many", "Most", "Some", "More", "Less", "Every", "Each", "Both", "Such", "Into",
+    "From", "For", "And", "But", "Not", "Yet", "All", "One", "Two", "Three", "Four",
+    "Five", "First", "Second", "Third", "Last", "Next", "New", "Old", "Big", "High",
+}
+
+
+def _compute_word_timings(narration: str, audio: Optional[Dict[str, Any]], duration: float) -> List[Dict[str, Any]]:
+    """Return exact [{text, start, end}] word timings from provider/Whisper or syllable-weighted fallback."""
+    if audio and isinstance(audio.get("timings"), list) and len(audio["timings"]) >= 2:
+        out = []
+        for w in audio["timings"]:
+            txt = str(w.get("text") or "").strip()
+            if not txt:
+                continue
+            st = float(w.get("start", 0.0))
+            en = float(w.get("end", st + 0.25))
+            out.append({"text": txt, "start": st, "end": max(en, st + 0.08)})
+        if out:
+            return out
+
+    tokens = [tok for tok in str(narration or "").split() if tok.strip()]
+    if not tokens:
+        return []
+    weights = [max(2.0, float(len(re.sub(r"[^A-Za-z0-9]", "", tok))) + (2.5 if tok.endswith((".", "!", "?")) else 0.0)) for tok in tokens]
+    total_w = sum(weights) or 1.0
+    cur = 0.0
+    dur = max(0.5, float(duration))
+    out = []
+    for tok, wgt in zip(tokens, weights):
+        dt = dur * (wgt / total_w)
+        out.append({"text": tok, "start": cur, "end": cur + dt})
+        cur += dt
+    return out
+
+
+def build_beat_choreography(beat: Dict[str, Any], audio: Optional[Dict[str, Any]], duration: float) -> Dict[str, Any]:
+    """
+    Pre-compute per-sentence windows AND instant word-timed visual props for a beat.
+    Called ONCE per beat before the frame loop in render_beat().
+    """
+    narration = str(beat.get("narration") or "").strip()
+    words = _compute_word_timings(narration, audio, duration)
+
+    # 1. Group words into exact timed sentences
+    sentences: List[Dict[str, Any]] = []
+    cur_words: List[Dict[str, Any]] = []
+    for w in words:
+        cur_words.append(w)
+        if w["text"].endswith((".", "!", "?")) or len(cur_words) >= 16:
+            sentences.append({
+                "text": " ".join(x["text"] for x in cur_words),
+                "start": cur_words[0]["start"],
+                "end": cur_words[-1]["end"],
+            })
+            cur_words = []
+    if cur_words:
+        sentences.append({
+            "text": " ".join(x["text"] for x in cur_words),
+            "start": cur_words[0]["start"],
+            "end": cur_words[-1]["end"],
+        })
+    if not sentences:
+        sentences = [{"text": narration or str(beat.get("visual", {}).get("headline", "")), "start": 0.0, "end": max(0.5, duration)}]
+
+    # 2. Scan timed words for instant visual props (Clock, Year, Metric, Location Pin)
+    props: List[Dict[str, Any]] = []
+    last_prop_t = -10.0
+    for idx, w in enumerate(words):
+        raw = w["text"]
+        clean = raw.strip('.,!?;:"\'()[]')
+        t_st = float(w["start"])
+        is_high_prio = bool(re.match(r"^(\d{1,2}:\d{2}|18\d\d|19\d\d|20\d\d|[$€£]?\d[\d,\.]*(?:%|x|X|T|B|M|K)?)$", clean) or clean.lower() in {"midnight", "noon"})
+        min_gap = 1.10 if is_high_prio else 1.95
+        if t_st - last_prop_t < min_gap:
+            continue
+        # Cleanly end previous prop right before the new prop enters so they NEVER overlap
+        if props and props[-1]["end"] > max(0.0, t_st - 0.14):
+            props[-1]["end"] = max(props[-1]["start"] + 0.45, t_st - 0.14)
+
+        # A) Clock time (e.g., 12:00, 3:30, midnight, noon)
+        m_clock = re.match(r"^(\d{1,2}):(\d{2})$", clean)
+        if m_clock or clean.lower() in {"midnight", "noon"}:
+            hr = 12 if clean.lower() in {"midnight", "noon"} else int(m_clock.group(1))
+            mn = 0 if clean.lower() in {"midnight", "noon"} else int(m_clock.group(2))
+            props.append({
+                "kind": "clock",
+                "hour": hr % 12,
+                "minute": mn % 60,
+                "label": f"{hr:02d}:{mn:02d}" if m_clock else clean.upper(),
+                "start": max(0.0, t_st - 0.12),
+                "end": min(duration, t_st + 2.35),
+            })
+            last_prop_t = t_st
+            continue
+
+        # B) Historical / calendar year (e.g., 1958, 2026)
+        if re.match(r"^(18\d\d|19\d\d|20\d\d)$", clean):
+            props.append({
+                "kind": "year",
+                "value": clean,
+                "label": "HISTORICAL MARKER" if int(clean) < 2020 else "TIMELINE YEAR",
+                "start": max(0.0, t_st - 0.12),
+                "end": min(duration, t_st + 2.30),
+            })
+            last_prop_t = t_st
+            continue
+
+        # C) Concrete figure / % / $ / multiplier (e.g. 51%, $10.4T, 38x, 1,200)
+        if re.match(r"^([$€£]?\d[\d,\.]*(?:%|x|X|T|B|M|K)?)$", clean) and len(clean) <= 10:
+            nxt = words[idx + 1]["text"].strip(".,!?;:") if idx + 1 < len(words) else ""
+            unit = nxt.upper() if nxt.lower() in {"percent", "million", "billion", "trillion", "days", "hours", "years", "tons", "km", "miles", "mines", "ships"} else "KEY FIGURE"
+            props.append({
+                "kind": "metric",
+                "value": clean.upper(),
+                "label": unit,
+                "start": max(0.0, t_st - 0.12),
+                "end": min(duration, t_st + 2.25),
+            })
+            last_prop_t = t_st
+            continue
+
+        # D) Named location / country / proper noun (not sentence-initial filler)
+        is_sent_start = (idx == 0) or words[idx - 1]["text"].endswith((".", "!", "?"))
+        if (not is_sent_start) and re.match(r"^[A-Z][a-z]{3,}$", clean) and clean not in _COMMON_NON_PLACES:
+            props.append({
+                "kind": "location_pin",
+                "value": clean.upper(),
+                "label": "LOCATION FOCUS",
+                "start": max(0.0, t_st - 0.10),
+                "end": min(duration, t_st + 2.15),
+            })
+            last_prop_t = t_st
+            continue
+
+    return {
+        "words": words,
+        "sentences": sentences,
+        "props": props,
+        "duration": duration,
+    }
+
+
+def draw_live_prop_overlay(
+    im: Image.Image,
+    choreography: Dict[str, Any],
+    t_now: float,
+    accent: Tuple[int, int, int],
+    secondary: Tuple[int, int, int],
+) -> Image.Image:
+    """
+    Composite word-timed animated vector props (Clock Dial, Year Flip-Stamp,
+    Radar Location Pin, Live Metric Pill) + live sentence focus tracker onto the frame.
+    """
+    if not choreography:
+        return im
+    w, h = im.size
+    ov = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(ov)
+
+    # 1. Subtle top-right active prop widget synchronized to the EXACT spoken word
+    active_prop = None
+    for pr in choreography.get("props", []):
+        if pr["start"] <= t_now <= pr["end"]:
+            active_prop = pr
+            break
+
+    if active_prop is not None:
+        p_dur = max(0.25, active_prop["end"] - active_prop["start"])
+        local_t = t_now - active_prop["start"]
+        enter = ease_out_back(local_t / 0.32) if local_t < 0.32 else 1.0
+        exit_a = clamp((active_prop["end"] - t_now) / 0.25)
+        alpha = clamp(min(enter, exit_a))
+        ab = int(255 * alpha)
+        card_a = int(232 * alpha)
+        kind = active_prop["kind"]
+
+        px1 = int(w * 0.955)
+        py0 = int(h * 0.065) + int((1.0 - clamp(enter)) * 18)
+
+        if kind == "clock":
+            # Animated vector analog clock dial sweeping hands to the exact spoken hour:minute!
+            box_w, box_h = int(w * 0.19), int(h * 0.165)
+            px0 = px1 - box_w
+            d.rounded_rectangle([px0, py0, px1, py0 + box_h], radius=16, fill=CARD_DARK + (card_a,), outline=accent + (ab,), width=3)
+            cx = px0 + int(box_h * 0.50)
+            cy = py0 + int(box_h * 0.50)
+            r = int(box_h * 0.34)
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=TEXT_WHITE + (ab,), width=3)
+            # 12 tick marks
+            for tk in range(12):
+                ang = math.radians(tk * 30 - 90)
+                d.line([(cx + int((r - 7) * math.cos(ang)), cy + int((r - 7) * math.sin(ang))), (cx + int(r * math.cos(ang)), cy + int(r * math.sin(ang)))], fill=TEXT_MUTED + (ab,), width=2)
+            # Hands sweep smoothly into exact spoken time!
+            sweep = ease_out_expo(local_t / 0.65)
+            target_h_deg = (active_prop["hour"] * 30 + active_prop["minute"] * 0.5) - 90
+            target_m_deg = (active_prop["minute"] * 6) - 90
+            h_ang = math.radians(-180 + (target_h_deg + 180) * sweep)
+            m_ang = math.radians(-270 + (target_m_deg + 270) * sweep)
+            d.line([(cx, cy), (cx + int(r * 0.52 * math.cos(h_ang)), cy + int(r * 0.52 * math.sin(h_ang)))], fill=TEXT_WHITE + (ab,), width=5)
+            d.line([(cx, cy), (cx + int(r * 0.78 * math.cos(m_ang)), cy + int(r * 0.78 * math.sin(m_ang)))], fill=accent + (ab,), width=3)
+            d.ellipse([cx - 5, cy - 5, cx + 5, cy + 5], fill=accent + (ab,))
+            tx = cx + r + 22
+            draw_tracked_text(d, (tx, py0 + int(box_h * 0.24)), "TIME MARKER", get_font("mono", int(h * 0.015)), TEXT_MUTED + (ab,), tracking=2.0, anchor="la")
+            d.text((tx, py0 + int(box_h * 0.44)), active_prop["label"], font=get_font("bold", int(h * 0.044)), fill=accent + (ab,))
+
+        elif kind == "year":
+            # Flipping year stamp (e.g., 1958)
+            box_w, box_h = int(w * 0.165), int(h * 0.135)
+            px0 = px1 - box_w
+            d.rounded_rectangle([px0, py0, px1, py0 + box_h], radius=14, fill=CARD_DARK + (card_a,), outline=accent + (ab,), width=3)
+            draw_tracked_text(d, (px0 + 22, py0 + 18), active_prop["label"], get_font("mono", int(h * 0.015)), TEXT_MUTED + (ab,), tracking=2.5, anchor="la")
+            d.text((px0 + 22, py0 + 44), active_prop["value"], font=get_font("bold", int(h * 0.058)), fill=accent + (ab,))
+            bar_w = int((box_w - 44) * ease_out_expo(local_t / 0.55))
+            if bar_w > 2:
+                d.rounded_rectangle([px0 + 22, py0 + box_h - 14, px0 + 22 + bar_w, py0 + box_h - 8], radius=3, fill=accent + (ab,))
+
+        elif kind == "metric":
+            # Instant glowing stat pill
+            box_w, box_h = int(w * 0.185), int(h * 0.135)
+            px0 = px1 - box_w
+            d.rounded_rectangle([px0, py0, px1, py0 + box_h], radius=14, fill=CARD_DARK + (card_a,), outline=accent + (ab,), width=3)
+            draw_tracked_text(d, (px0 + 22, py0 + 18), active_prop["label"][:18], get_font("mono", int(h * 0.015)), TEXT_MUTED + (ab,), tracking=2.5, anchor="la")
+            d.text((px0 + 22, py0 + 44), active_prop["value"], font=get_font("bold", int(h * 0.056)), fill=accent + (ab,))
+
+        elif kind == "location_pin":
+            # Pulsing radar pin + location badge
+            f_loc = get_font("bold", int(h * 0.030))
+            lw = int(d.textlength(active_prop["value"], font=f_loc))
+            box_w = max(int(w * 0.16), lw + 96)
+            box_h = int(h * 0.095)
+            px0 = px1 - box_w
+            d.rounded_rectangle([px0, py0, px1, py0 + box_h], radius=14, fill=CARD_DARK + (card_a,), outline=secondary + (ab,), width=2)
+            pcx, pcy = px0 + 38, py0 + box_h // 2
+            pulse = (local_t * 2.2) % 1.0
+            rr = int(10 + 18 * pulse)
+            d.ellipse([pcx - rr, pcy - rr, pcx + rr, pcy + rr], outline=secondary + (int(190 * (1 - pulse) * alpha),), width=2)
+            d.ellipse([pcx - 8, pcy - 8, pcx + 8, pcy + 8], fill=secondary + (ab,))
+            draw_tracked_text(d, (px0 + 68, py0 + 16), "LOCATION", get_font("mono", int(h * 0.014)), TEXT_MUTED + (ab,), tracking=2.5, anchor="la")
+            d.text((px0 + 68, py0 + 38), active_prop["value"], font=f_loc, fill=TEXT_WHITE + (ab,))
+
+    # 2. Subtle hairline beat progress bar at very top edge (2px) so viewer feels continuous motion
+    dur = max(0.5, float(choreography.get("duration", 4.0)))
+    pw = int(w * clamp(t_now / dur))
+    if pw > 2:
+        d.rectangle([0, 0, pw, 4], fill=accent + (200,))
+
+    return Image.alpha_composite(im.convert("RGBA"), ov).convert("RGB")
+
+
+def render_v108_synced_beat_frame(
+    beat: Dict[str, Any],
+    dossier: Dict[str, Any],
+    t_now: float,
+    duration: float,
+    bg_rgb: Optional[np.ndarray],
+    width: int,
+    height: int,
+    choreography: Optional[Dict[str, Any]] = None,
+    frame_idx: int = 0,
+    is_live_video: bool = False,
+) -> Image.Image:
+    """
+    V108 Word-Synced Wrapper around the 20 V107 archetypes:
+      - Automatically rotates the displayed narration/highlight to the EXACT sentence
+        currently being spoken at t_now (resetting local animation time on each sentence
+        so visuals stay alive and punchy every 2.5-4.0 seconds instead of freezing!).
+      - Composites instant word-timed vector props (Clock, Year, Metric, Location Pin)
+        at the exact millisecond each trigger word is spoken.
+    """
+    vis = beat.get("visual") or {}
+    category = str(vis.get("v107_category") or dossier.get("category") or "geopolitics")
+    theme = get_category_theme(category)
+    accent = theme["primary"]
+    secondary = theme["secondary"]
+
+    active_beat = beat
+    local_t = t_now
+    local_dur = duration
+    if choreography and len(choreography.get("sentences", [])) >= 2:
+        sents = choreography["sentences"]
+        cur_s = sents[-1]
+        for s in sents:
+            if s["start"] <= t_now <= s["end"] + 0.12:
+                cur_s = s
+                break
+        # Feed ONLY the currently spoken sentence + its local elapsed time so
+        # pull-quotes, headlines, highlights & checklists re-animate on EVERY sentence!
+        active_beat = dict(beat)
+        active_beat["narration"] = cur_s["text"]
+        local_t = max(0.0, t_now - cur_s["start"])
+        local_dur = max(0.8, cur_s["end"] - cur_s["start"])
+
+    frame = render_v107_beat_frame(
+        active_beat, dossier, local_t, local_dur, bg_rgb, width, height,
+        frame_idx=frame_idx, is_live_video=is_live_video,
+    )
+    if choreography:
+        frame = draw_live_prop_overlay(frame, choreography, t_now, accent, secondary)
+    return frame
