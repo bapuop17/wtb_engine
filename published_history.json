@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-26T01:38:09.939465+00:00",
-  "last_upload_epoch": 1795657089,
+  "updated_at": "2026-11-26T03:37:53.176344+00:00",
+  "last_upload_epoch": 1795664273,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9218,6 +9218,12 @@
       "title": "Did NASA Actually Deflect an Asteroid? The DART Test",
       "topic": "Images of asteroid targeted to test Earth's defences reveal stadium-sized crater",
       "published_at": "2026-11-26T01:38:09.939465+00:00"
+    },
+    {
+      "video_id": "gved2lkJGBA",
+      "title": "Why Poundland's Collapse Threatens 11,000 Jobs",
+      "topic": "Poundland collapses putting 11,000 jobs at risk",
+      "published_at": "2026-11-26T03:37:53.176344+00:00"
     }
   ]
 }

@@ -111,6 +111,13 @@
       "title": "Did NASA Actually Deflect an Asteroid? The DART Test",
       "style": "think_school",
       "utc": "2026-11-26T01:38:09.938593+00:00"
+    },
+    {
+      "topic": "Poundland collapses putting 11,000 jobs at risk",
+      "long_id": "gved2lkJGBA",
+      "title": "Why Poundland's Collapse Threatens 11,000 Jobs",
+      "style": "abhi_niyu",
+      "utc": "2026-11-26T03:37:53.175693+00:00"
     }
   ],
   "uploads": {
@@ -305,6 +312,18 @@
       "video_id": "PXWzwB1qFV8",
       "title": "Did NASA Actually Deflect an Asteroid? The DART Test #Shorts",
       "uploaded_utc": "2026-11-26T01:38:12.399866+00:00"
+    },
+    "a92f43eff33ffc4f9219-long": {
+      "status": "uploaded",
+      "video_id": "gved2lkJGBA",
+      "title": "Why Poundland's Collapse Threatens 11,000 Jobs",
+      "uploaded_utc": "2026-11-26T03:37:51.101409+00:00"
+    },
+    "a92f43eff33ffc4f9219-short": {
+      "status": "uploaded",
+      "video_id": "5_yHPLuqUf0",
+      "title": "Why Poundland's Collapse Threatens 11,000 Jobs #Shorts",
+      "uploaded_utc": "2026-11-26T03:37:56.778211+00:00"
     }
   },
   "legacy_titles": [
@@ -359,6 +378,7 @@
     "Why Your Winter Bill Is About to Shock You",
     "Why 200 Nations Just Failed to Save the Planet",
     "Why Huawei's Trade Secret Win Isn't a Total Victory",
-    "Norway Just Killed Its Last Coal Mine"
+    "Norway Just Killed Its Last Coal Mine",
+    "Did NASA Actually Deflect an Asteroid? The DART Test"
   ]
 }
