@@ -132,6 +132,13 @@
       "title": "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn",
       "style": "think_school",
       "utc": "2026-11-26T21:16:58.073479+00:00"
+    },
+    {
+      "topic": "Lured by High Salaries, Some Brazilians Were Duped Into Fighting for Russia",
+      "long_id": "_Ow76Rp6PAs",
+      "title": "Why Brazilians Are Dying for Russian Paychecks",
+      "style": "abhi_niyu",
+      "utc": "2026-11-27T16:44:24.213628+00:00"
     }
   ],
   "uploads": {
@@ -362,6 +369,18 @@
       "video_id": "mG3zvrH7MwA",
       "title": "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn #Shorts",
       "uploaded_utc": "2026-11-26T21:17:01.769484+00:00"
+    },
+    "f71d36ceceb329e9c5b4-long": {
+      "status": "uploaded",
+      "video_id": "_Ow76Rp6PAs",
+      "title": "Why Brazilians Are Dying for Russian Paychecks",
+      "uploaded_utc": "2026-11-27T16:44:22.066648+00:00"
+    },
+    "f71d36ceceb329e9c5b4-short": {
+      "status": "uploaded",
+      "video_id": "dxV1oe9o9IU",
+      "title": "Why Brazilians Are Dying for Russian Paychecks #Shorts",
+      "uploaded_utc": "2026-11-27T16:44:28.223607+00:00"
     }
   },
   "legacy_titles": [
@@ -419,6 +438,7 @@
     "Norway Just Killed Its Last Coal Mine",
     "Did NASA Actually Deflect an Asteroid? The DART Test",
     "Why Poundland's Collapse Threatens 11,000 Jobs",
-    "NASA Hit Asteroid: Did They Save Earth?"
+    "NASA Hit Asteroid: Did They Save Earth?",
+    "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn"
   ]
 }

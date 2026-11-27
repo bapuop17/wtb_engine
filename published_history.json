@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-26T21:16:58.074141+00:00",
-  "last_upload_epoch": 1795727818,
+  "updated_at": "2026-11-27T16:44:24.216789+00:00",
+  "last_upload_epoch": 1795797864,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9236,6 +9236,12 @@
       "title": "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn",
       "topic": "China’s Huawei convicted of stealing US trade secrets",
       "published_at": "2026-11-26T21:16:58.074141+00:00"
+    },
+    {
+      "video_id": "_Ow76Rp6PAs",
+      "title": "Why Brazilians Are Dying for Russian Paychecks",
+      "topic": "Lured by High Salaries, Some Brazilians Were Duped Into Fighting for Russia",
+      "published_at": "2026-11-27T16:44:24.216789+00:00"
     }
   ]
 }
