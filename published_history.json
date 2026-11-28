@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-27T16:44:24.216789+00:00",
-  "last_upload_epoch": 1795797864,
+  "updated_at": "2026-11-28T01:12:58.755877+00:00",
+  "last_upload_epoch": 1795828378,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9242,6 +9242,12 @@
       "title": "Why Brazilians Are Dying for Russian Paychecks",
       "topic": "Lured by High Salaries, Some Brazilians Were Duped Into Fighting for Russia",
       "published_at": "2026-11-27T16:44:24.216789+00:00"
+    },
+    {
+      "video_id": "u1FIFij4DNE",
+      "title": "Why Kyiv Endures The Longest War In Europe",
+      "topic": "Weary of war but with no sign of backing down, Kyiv faces another punishing winter",
+      "published_at": "2026-11-28T01:12:58.755877+00:00"
     }
   ]
 }

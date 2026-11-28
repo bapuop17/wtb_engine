@@ -139,6 +139,13 @@
       "title": "Why Brazilians Are Dying for Russian Paychecks",
       "style": "abhi_niyu",
       "utc": "2026-11-27T16:44:24.213628+00:00"
+    },
+    {
+      "topic": "Weary of war but with no sign of backing down, Kyiv faces another punishing winter",
+      "long_id": "u1FIFij4DNE",
+      "title": "Why Kyiv Endures The Longest War In Europe",
+      "style": "abhi_niyu",
+      "utc": "2026-11-28T01:12:58.755010+00:00"
     }
   ],
   "uploads": {
@@ -381,6 +388,18 @@
       "video_id": "dxV1oe9o9IU",
       "title": "Why Brazilians Are Dying for Russian Paychecks #Shorts",
       "uploaded_utc": "2026-11-27T16:44:28.223607+00:00"
+    },
+    "f6ce3a49e7945b8dc110-long": {
+      "status": "uploaded",
+      "video_id": "u1FIFij4DNE",
+      "title": "Why Kyiv Endures The Longest War In Europe",
+      "uploaded_utc": "2026-11-28T01:12:56.704455+00:00"
+    },
+    "f6ce3a49e7945b8dc110-short": {
+      "status": "uploaded",
+      "video_id": "hbiTcWCRdm0",
+      "title": "Why Kyiv Endures The Longest War In Europe #Shorts",
+      "uploaded_utc": "2026-11-28T01:13:01.892733+00:00"
     }
   },
   "legacy_titles": [
@@ -439,6 +458,7 @@
     "Did NASA Actually Deflect an Asteroid? The DART Test",
     "Why Poundland's Collapse Threatens 11,000 Jobs",
     "NASA Hit Asteroid: Did They Save Earth?",
-    "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn"
+    "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn",
+    "Why Brazilians Are Dying for Russian Paychecks"
   ]
 }
