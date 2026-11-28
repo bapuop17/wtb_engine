@@ -146,6 +146,13 @@
       "title": "Why Kyiv Endures The Longest War In Europe",
       "style": "abhi_niyu",
       "utc": "2026-11-28T01:12:58.755010+00:00"
+    },
+    {
+      "topic": "From £250 job to £9,000 bill: Inside the rogue trader networks scamming customers at scale",
+      "long_id": "uCY1dPW1AX8",
+      "title": "£250 Job Became £9k Scam: The Plumber Network",
+      "style": "think_school",
+      "utc": "2026-11-28T11:30:22.277448+00:00"
     }
   ],
   "uploads": {
@@ -400,6 +407,18 @@
       "video_id": "hbiTcWCRdm0",
       "title": "Why Kyiv Endures The Longest War In Europe #Shorts",
       "uploaded_utc": "2026-11-28T01:13:01.892733+00:00"
+    },
+    "710e368e3af9e2ba16ef-long": {
+      "status": "uploaded",
+      "video_id": "uCY1dPW1AX8",
+      "title": "£250 Job Became £9k Scam: The Plumber Network",
+      "uploaded_utc": "2026-11-28T11:30:19.694343+00:00"
+    },
+    "710e368e3af9e2ba16ef-short": {
+      "status": "uploaded",
+      "video_id": "jWjVcnol3kI",
+      "title": "£250 Job Became £9k Scam: The Plumber Network #Shorts",
+      "uploaded_utc": "2026-11-28T11:30:25.024635+00:00"
     }
   },
   "legacy_titles": [
@@ -459,6 +478,7 @@
     "Why Poundland's Collapse Threatens 11,000 Jobs",
     "NASA Hit Asteroid: Did They Save Earth?",
     "The Huawei Verdict: How a Tech Giant Was Exposed in Brooklyn",
-    "Why Brazilians Are Dying for Russian Paychecks"
+    "Why Brazilians Are Dying for Russian Paychecks",
+    "Why Kyiv Endures The Longest War In Europe"
   ]
 }

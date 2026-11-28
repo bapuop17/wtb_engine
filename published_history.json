@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-28T01:12:58.755877+00:00",
-  "last_upload_epoch": 1795828378,
+  "updated_at": "2026-11-28T11:30:22.278216+00:00",
+  "last_upload_epoch": 1795865422,
   "round_robin_idx": 3,
   "country_rot_idx": 8,
   "bgm_track_counter": 3619682686,
@@ -9248,6 +9248,12 @@
       "title": "Why Kyiv Endures The Longest War In Europe",
       "topic": "Weary of war but with no sign of backing down, Kyiv faces another punishing winter",
       "published_at": "2026-11-28T01:12:58.755877+00:00"
+    },
+    {
+      "video_id": "uCY1dPW1AX8",
+      "title": "£250 Job Became £9k Scam: The Plumber Network",
+      "topic": "From £250 job to £9,000 bill: Inside the rogue trader networks scamming customers at scale",
+      "published_at": "2026-11-28T11:30:22.278216+00:00"
     }
   ]
 }
